@@ -1,21 +1,16 @@
-import React from 'react';
-import './App.scss';
+import React from "react";
+import "./App.scss";
 import Header from "./components/Header/Header";
-import {AppStoreProvider} from "./app/AppStore";
-import CaseTable from "./components/CaseTable";
+import { AppStoreProvider } from "./app/AppStore";
 import EpiMap from "./components/EpiMap";
 
 function App() {
-
-    return (
-        <AppStoreProvider>
-            <div className="App">
-                <Header title="Demand Modeller" titleRoute="/"/>
-                <EpiMap/>
-                <CaseTable/>
-            </div>
-        </AppStoreProvider>
-    );
+  return (
+    <AppStoreProvider>
+      <Header title="Demand Modeller" titleRoute="/" />
+      <EpiMap />
+    </AppStoreProvider>
+  );
 }
 
 export default App;

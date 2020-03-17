@@ -26,7 +26,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "prettier.write": "prettier --write './src/**/*.{ts,tsx}'"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -47,6 +48,7 @@
     "@types/d3": "^5.7.2",
     "@types/mapbox-gl": "^1.8.1",
     "@types/react-map-gl": "^5.2.0",
-    "node-sass": "^4.13.1"
+    "node-sass": "^4.13.1",
+    "prettier": "^1.19.1"
   }
 }
