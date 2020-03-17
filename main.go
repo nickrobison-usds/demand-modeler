@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"github.com/go-chi/chi/middleware"
-	"github.com/jackc/pgx/v4"
 	"github.com/nickrobison-usds/demand-modeling/api"
 	"github.com/nickrobison-usds/demand-modeling/cmd"
 	"log"
@@ -14,30 +13,46 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
+
+	"github.com/jackc/pgx/v4/pgxpool"
+	_ "github.com/urfave/cli/v2"
 )
 
 func main() {
+
+	log.Println("Server starting")
+
+	pgURL := "postgres://covid:goaway@localhost:5432/covid?sslmode=disable"
+
+	//app := &cli.App{
+	//	Action: func(c *cli.Context) error {
+	//	},
+	//}
+	workDir, _ := os.Getwd()
 	// Load it up
 	ctx := context.Background()
-	conn, err := pgx.Connect(ctx, "postgres://covid:goaway@localhost:5432/covid?sslmode=disable")
+	loader, err := cmd.NewLoader(ctx, pgURL, filepath.Join(workDir, "data"))
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer conn.Close(ctx)
+	defer loader.Close()
 
-	log.Println("Loading CoVid Cases")
-	err = cmd.LoadCases(ctx, "./data/covid19_cases_county_fips.csv", conn)
+	err = loader.Load()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	workDir, _ := os.Getwd()
+	pool, err := pgxpool.Connect(ctx, pgURL)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer pool.Close()
+
 	filesDir := filepath.Join(workDir, "ui/build")
-	err = serve(conn, filesDir)
+	err = serve(pool, filesDir)
 	if err != nil {
 		log.Fatal(err)
 	}
-
 }
 
 func rootHandler() http.HandlerFunc {
@@ -46,7 +61,7 @@ func rootHandler() http.HandlerFunc {
 	}
 }
 
-func serve(db *pgx.Conn, filesDir string) error {
+func serve(db *pgxpool.Pool, filesDir string) error {
 	r := chi.NewRouter()
 	r.Use(api.DBContext(db))
 
@@ -73,7 +88,7 @@ func serve(db *pgx.Conn, filesDir string) error {
 
 	r.Route("/api", api.MakeRouter)
 	FileServer(r, "", "/", http.Dir(filesDir))
-
+	log.Println("Listening")
 	return http.ListenAndServe(":8080", r)
 }
 

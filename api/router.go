@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/go-chi/chi"
-	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"log"
 	"net/http"
 )
@@ -35,7 +35,7 @@ func subHandler() http.HandlerFunc {
 func caseHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		conn := ctx.Value("db").(*pgx.Conn)
+		conn := ctx.Value("db").(*pgxpool.Pool)
 
 		rows, err := conn.Query(ctx, "SELECT c.ID, c.County, c.State, s.Confirmed, s.NewConfirmed, s.Dead, s.NewDead, ST_AsGeoJSON(t.geom) as geom FROM counties as c "+
 			"LEFT JOIN tiger as t "+
@@ -84,7 +84,7 @@ func caseHandler() http.HandlerFunc {
 	}
 }
 
-func DBContext(conn *pgx.Conn) func(next http.Handler) http.Handler {
+func DBContext(conn *pgxpool.Pool) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			ctx := context.WithValue(r.Context(), "db", conn)

@@ -9,9 +9,61 @@ import (
 	"io"
 	"log"
 	"os"
+	"path/filepath"
 )
 
-func LoadCases(ctx context.Context, file string, conn *pgx.Conn) error {
+type DataLoader struct {
+	ctx     context.Context
+	conn    *pgx.Conn
+	dataDir string
+}
+
+func NewLoader(ctx context.Context, url string, dataDir string) (*DataLoader, error) {
+	// Load it up
+	conn, err := pgx.Connect(ctx, url)
+	if err != nil {
+		return nil, err
+	}
+
+	//log.Println("Loading CoVid Cases")
+	//err = cmd.LoadCases(ctx, "./data/covid19_cases_county_fips.csv", conn)
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	return &DataLoader{
+		ctx:     ctx,
+		conn:    conn,
+		dataDir: dataDir,
+	}, nil
+}
+
+func (d *DataLoader) Load() error {
+	return d.loadCases()
+}
+
+func (d *DataLoader) Close() error {
+	return d.conn.Close(d.ctx)
+}
+
+func (d *DataLoader) loadCases() error {
+	log.Printf("Loading Case data from: %s\n", d.dataDir)
+	// Find all the temporal data files
+	files, err := filepath.Glob(filepath.Join(d.dataDir, "covid19_county_*.csv"))
+	if err != nil {
+		return err
+	}
+	// Load each file individually
+	for _, file := range files {
+		err := d.loadCaseFile(file)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (d *DataLoader) loadCaseFile(file string) error {
+	log.Printf("Loading file: %s\n", file)
 	f, err := os.Open(file)
 	if err != nil {
 		return err
@@ -37,7 +89,7 @@ func LoadCases(ctx context.Context, file string, conn *pgx.Conn) error {
 
 	// Truncate the database
 	log.Println("Truncating database")
-	_, err = conn.Exec(ctx, "TRUNCATE TABLE Cases")
+	_, err = d.conn.Exec(d.ctx, "TRUNCATE TABLE Cases")
 	if err != nil {
 		return err
 	}
@@ -51,13 +103,13 @@ func LoadCases(ctx context.Context, file string, conn *pgx.Conn) error {
 
 		// Determine if we've seen this county before, if not, create a new row in the table
 		var exists bool
-		err := conn.QueryRow(ctx, "SELECT EXISTS(SELECT 1 from Counties WHERE ID=$1)", geoid).Scan(&exists)
+		err := d.conn.QueryRow(d.ctx, "SELECT EXISTS(SELECT 1 from Counties WHERE ID=$1)", geoid).Scan(&exists)
 		if err != nil {
 			return err
 		}
 
 		if !exists {
-			_, err = conn.Exec(ctx, "INSERT INTO Counties(County, State, "+
+			_, err = d.conn.Exec(d.ctx, "INSERT INTO Counties(County, State, "+
 				"StateFP, CountyFP, ID) VALUES($1, $2, $3, $4, $5)", row[0], row[1], state, county, geoid)
 			if err != nil {
 				return err
@@ -65,7 +117,7 @@ func LoadCases(ctx context.Context, file string, conn *pgx.Conn) error {
 		}
 
 		// Now insert into the Cases table
-		_, err = conn.Exec(ctx, "INSERT INTO Cases(Geoid, "+
+		_, err = d.conn.Exec(d.ctx, "INSERT INTO Cases(Geoid, "+
 			"Confirmed, NewConfirmed, "+
 			"Dead, NewDead, Fatality, Update) VALUES($1, $2, $3, $4, $5, $6, $7)", geoid, row[2], row[3], row[4], row[5], row[6], row[9])
 		if err != nil {
@@ -73,6 +125,5 @@ func LoadCases(ctx context.Context, file string, conn *pgx.Conn) error {
 		}
 
 	}
-
 	return nil
 }
