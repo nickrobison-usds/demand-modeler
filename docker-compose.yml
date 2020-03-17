@@ -9,3 +9,11 @@ services:
       - POSTGRES_PASSWORD=goaway
     ports:
       - "5432:5432"
+  api:
+    build:
+      context: .
+      dockerfile: api.Dockerfile
+    container_name: "api"
+    ports:
+      # This is externalPort:internalPort, for the record
+      - "8080:8080"

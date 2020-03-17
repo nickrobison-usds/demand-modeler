@@ -11,6 +11,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
@@ -19,7 +20,8 @@ import (
 func main() {
 	// Load it up
 	ctx := context.Background()
-	conn, err := pgx.Connect(ctx, "postgres://covid:goaway@localhost:5432/covid?sslmode=disable")
+	time.Sleep(10 * time.Second)
+	conn, err := pgx.Connect(ctx, "postgres://covid:goaway@postgres:5432/covid?sslmode=disable")
 	if err != nil {
 		log.Fatal(err)
 	}
