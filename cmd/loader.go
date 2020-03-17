@@ -49,13 +49,29 @@ func LoadCases(ctx context.Context, file string, conn *pgx.Conn) error {
 		geoid := fmt.Sprintf("%s%s", state, county)
 		log.Printf("Loading record %d with ID: %s\n", idx, geoid)
 
-		_, err = conn.Exec(ctx, "INSERT INTO Cases(County, State, "+
-			"Confirmed, NewConfirmed, "+
-			"Dead, NewDead, Fatality, "+
-			"StateFP, CountyFP, Geoid, Update) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)", row[0], row[1], row[2], row[3], row[4], row[5], row[6], state, county, geoid, row[9])
+		// Determine if we've seen this county before, if not, create a new row in the table
+		var exists bool
+		err := conn.QueryRow(ctx, "SELECT EXISTS(SELECT 1 from Counties WHERE ID=$1)", geoid).Scan(&exists)
 		if err != nil {
 			return err
 		}
+
+		if !exists {
+			_, err = conn.Exec(ctx, "INSERT INTO Counties(County, State, "+
+				"StateFP, CountyFP, ID) VALUES($1, $2, $3, $4, $5)", row[0], row[1], state, county, geoid)
+			if err != nil {
+				return err
+			}
+		}
+
+		// Now insert into the Cases table
+		_, err = conn.Exec(ctx, "INSERT INTO Cases(Geoid, "+
+			"Confirmed, NewConfirmed, "+
+			"Dead, NewDead, Fatality, Update) VALUES($1, $2, $3, $4, $5, $6, $7)", geoid, row[2], row[3], row[4], row[5], row[6], row[9])
+		if err != nil {
+			return err
+		}
+
 	}
 
 	return nil
