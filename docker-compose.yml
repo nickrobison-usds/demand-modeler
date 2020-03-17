@@ -9,11 +9,16 @@ services:
       - POSTGRES_PASSWORD=goaway
     ports:
       - "5432:5432"
+
   api:
     build:
       context: .
       dockerfile: api.Dockerfile
     container_name: "api"
+    environment:
+      - POSTGRES_URL=postgres://covid:goaway@postgres:5432/covid?sslmode=disable
     ports:
       # This is externalPort:internalPort, for the record
       - "8080:8080"
+    depends_on:
+      - postgres

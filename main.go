@@ -2,7 +2,13 @@ package main
 
 import (
 	"context"
+	"fmt"
+	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/cors"
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jackc/pgx/v4"
 	"github.com/nickrobison-usds/demand-modeling/api"
 	"github.com/nickrobison-usds/demand-modeling/cmd"
@@ -12,16 +18,26 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
-
-	"github.com/go-chi/chi"
-	"github.com/go-chi/cors"
 )
 
 func main() {
+	workDir, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+	}
+	filesDir := filepath.Join(workDir, "ui/build")
+
+	url := os.Getenv("POSTGRES_URL")
+	// Do the migration
+	err = migrateDatabase(url, workDir)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// Load it up
 	ctx := context.Background()
 	time.Sleep(10 * time.Second)
-	conn, err := pgx.Connect(ctx, "postgres://covid:goaway@postgres:5432/covid?sslmode=disable")
+	conn, err := pgx.Connect(ctx, url)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -33,8 +49,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	workDir, _ := os.Getwd()
-	filesDir := filepath.Join(workDir, "ui/build")
 	err = serve(conn, filesDir)
 	if err != nil {
 		log.Fatal(err)
@@ -91,4 +105,21 @@ func FileServer(r chi.Router, basePath string, path string, root http.FileSystem
 	r.Get(path, func(w http.ResponseWriter, r *http.Request) {
 		fs.ServeHTTP(w, r)
 	})
+}
+
+func migrateDatabase(dbURL string, workDir string) error {
+	migrationDir := fmt.Sprintf("file://%s", filepath.Join(workDir, "db", "migrations"))
+	log.Printf("Connecting to %s from location: %s\n", dbURL, migrationDir)
+
+	m, err := migrate.New(
+		migrationDir,
+		dbURL)
+	if err != nil {
+		return err
+	}
+	err = m.Up()
+	if err != nil && err != migrate.ErrNoChange {
+		return err
+	}
+	return nil
 }
