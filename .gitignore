@@ -1,3 +1,5 @@
 .idea/
 data/tl_*
 *.iml
+ui/node_modules
+ui/build
