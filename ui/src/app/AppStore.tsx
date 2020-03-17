@@ -6,13 +6,18 @@ import React, {
   useReducer
 } from "react";
 import * as TypeGuards from "../guards";
+import {cases, yesterdaysCases} from "./mockData";
+
+interface Geo {
+  Geo: GeoJSON.Polygon; //GeoJSON.MultiPolygon;
+}
 
 export interface Case {
   ID: string;
   County: string;
   State: string;
   Confirmed: number;
-  Geo: GeoJSON.MultiPolygon;
+  Dead: number;
 }
 
 export enum ActionType {
@@ -30,6 +35,7 @@ export interface MapView {
 
 export interface AppState {
   cases: Case[];
+  yesterdaysCases: Case[];
   mapView: MapView;
 }
 
@@ -44,7 +50,8 @@ export interface AppContextType {
 }
 
 export const initialState: AppState = {
-  cases: [],
+  cases: cases, // MOCK: [],
+  yesterdaysCases: yesterdaysCases, // MOCK: [],
   mapView: {
     width: 400,
     height: 400,

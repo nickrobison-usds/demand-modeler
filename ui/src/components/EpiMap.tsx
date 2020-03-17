@@ -32,7 +32,7 @@ const labels = {
   type: "symbol",
   source: "data",
   layout: {
-    "text-field": "{name}\n",
+    "text-field": "{name}\nConfirmed: {confirmed}\nDead: {dead}",
     // "text-font": ["Droid Sans Regular"],
     "text-size": 12
     // 'symbol-placement': 'point'
@@ -97,7 +97,8 @@ const EpiMap: React.FunctionComponent = () => {
         type: "Feature",
         geometry: value.Geo,
         properties: {
-          cases: value.Confirmed,
+          confirmed: value.Confirmed,
+          dead: value.Dead,
           name: `${value.County}, ${value.State}`
         }
       };
@@ -105,7 +106,7 @@ const EpiMap: React.FunctionComponent = () => {
   };
 
   const accessor = (f: GeoJSON.Feature): number => {
-    return f.properties?.cases;
+    return f.properties?.confirmed;
   };
 
   const onHover = (event: PointerEvent) => {
@@ -129,16 +130,16 @@ const EpiMap: React.FunctionComponent = () => {
   return (
     <ReactMapGL
       {...state.mapView}
-      // We'll need to rotate this once we have a better method of storing this value
       mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
       onViewportChange={v => {
+        v.width = window.innerWidth;
         dispatch({ type: ActionType.UPDATE_MAPVIEW, payload: v });
       }}
       onHover={e => onHover(e)}
     >
       <Source id="data" type="geojson" data={data}>
         <Layer {...dataLayer} />
-        <Layer {...labels} />
+        {state.mapView.zoom > 7 ? <Layer {...labels} /> : <React.Fragment></React.Fragment>}
       </Source>
     </ReactMapGL>
   );
