@@ -10,7 +10,7 @@ import (
 )
 
 type Case struct {
-	ID        int
+	ID        string
 	County    string
 	State     string
 	Confirmed int
@@ -34,9 +34,11 @@ func caseHandler() http.HandlerFunc {
 		ctx := r.Context()
 		conn := ctx.Value("db").(*pgx.Conn)
 
-		rows, err := conn.Query(ctx, "SELECT c.ID, c.County, c.State, c.Confirmed, ST_AsGeoJSON(t.geom) as geom FROM cases as c "+
+		rows, err := conn.Query(ctx, "SELECT c.ID, c.County, c.State, s.Confirmed, ST_AsGeoJSON(t.geom) as geom FROM counties as c "+
 			"LEFT JOIN tiger as t "+
-			"ON c.Geoid = t.geoid;")
+			"ON c.ID = t.geoid "+
+			"LEFT JOIN cases as s "+
+			"ON s.geoid = c.ID;")
 		if err != nil {
 			log.Print(err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -46,7 +48,7 @@ func caseHandler() http.HandlerFunc {
 		cases := make([]Case, 0)
 
 		for rows.Next() {
-			var id int
+			var id string
 			var county string
 			var state string
 			var confirmed int
