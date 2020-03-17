@@ -9,7 +9,6 @@ import (
 	"io"
 	"log"
 	"os"
-	"strconv"
 )
 
 func LoadCases(ctx context.Context, file string, conn *pgx.Conn) error {
@@ -37,28 +36,23 @@ func LoadCases(ctx context.Context, file string, conn *pgx.Conn) error {
 	}
 
 	// Truncate the database
+	log.Println("Truncating database")
 	_, err = conn.Exec(ctx, "TRUNCATE TABLE Cases")
 	if err != nil {
-		return nil
+		return err
 	}
 
 	for idx, row := range rows {
-		county, err := strconv.Atoi(row[8])
-		if err != nil {
-			return nil
-		}
+		// Generate a geoid by padding the fips values
+		county := fmt.Sprintf("%03s", row[8])
+		state := fmt.Sprintf("%02s", row[7])
+		geoid := fmt.Sprintf("%s%s", state, county)
+		log.Printf("Loading record %d with ID: %s\n", idx, geoid)
 
-		state, err := strconv.Atoi(row[7])
-		if err != nil {
-			return err
-		}
-		id, err := strconv.Atoi(fmt.Sprintf("%d%d", state, county))
-		if err != nil {
-			return err
-		}
-		log.Printf("Loading record %d with ID: %d\n", idx, id)
-
-		_, err = conn.Exec(ctx, "INSERT INTO Cases(ID, StateFP, CountyFP) VALUES($1, $2, $3)", id, state, county)
+		_, err = conn.Exec(ctx, "INSERT INTO Cases(County, State, "+
+			"Confirmed, NewConfirmed, "+
+			"Dead, NewDead, Fatality, "+
+			"StateFP, CountyFP, Geoid, Update) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)", row[0], row[1], row[2], row[3], row[4], row[5], row[6], state, county, geoid, row[9])
 		if err != nil {
 			return err
 		}
