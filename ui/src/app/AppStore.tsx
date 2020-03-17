@@ -11,9 +11,6 @@ import {cases, yesterdaysCases} from "./mockData";
 interface Geo {
   Geo: GeoJSON.Polygon; //GeoJSON.MultiPolygon;
 }
-export interface CountyIDs {
-  ID: string[];
-}
 
 export interface Case {
   ID: string;
@@ -21,7 +18,6 @@ export interface Case {
   State: string;
   Confirmed: number;
   Dead: number;
-  Geo: GeoJSON.Polygon; //GeoJSON.MultiPolygon;
 }
 
 export enum ActionType {
