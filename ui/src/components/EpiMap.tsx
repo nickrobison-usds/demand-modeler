@@ -130,7 +130,7 @@ const EpiMap: React.FunctionComponent = () => {
     <ReactMapGL
       {...state.mapView}
       // We'll need to rotate this once we have a better method of storing this value
-      mapboxApiAccessToken="pk.eyJ1Ijoibmlja3JvYmlzb24tdXNkcyIsImEiOiJjazd2djdpenkwZmxxM2ZwNWV0NHJpMWVvIn0.ccAlySc6edOpNYfHci-6Aw"
+      mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
       onViewportChange={v => {
         dispatch({ type: ActionType.UPDATE_MAPVIEW, payload: v });
       }}
