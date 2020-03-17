@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"github.com/go-chi/chi/middleware"
 	"github.com/jackc/pgx/v4"
+	"github.com/nickrobison-usds/demand-modeling/api"
 	"github.com/nickrobison-usds/demand-modeling/cmd"
 	"log"
 	"net/http"
@@ -30,7 +32,7 @@ func main() {
 
 	workDir, _ := os.Getwd()
 	filesDir := filepath.Join(workDir, "ui/build")
-	err = serve(filesDir)
+	err = serve(conn, filesDir)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -43,10 +45,16 @@ func rootHandler() http.HandlerFunc {
 	}
 }
 
-func serve(filesDir string) error {
+func serve(db *pgx.Conn, filesDir string) error {
 	r := chi.NewRouter()
+	r.Use(api.DBContext(db))
 
-	r.Get("/api", rootHandler())
+	// A good base middleware stack
+	r.Use(middleware.RequestID)
+	r.Use(middleware.RealIP)
+	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
+	r.Route("/api", api.MakeRouter)
 	FileServer(r, "", "/", http.Dir(filesDir))
 
 	return http.ListenAndServe(":8080", r)
