@@ -32,7 +32,7 @@ const labels = {
   type: "symbol",
   source: "data",
   layout: {
-    "text-field": "{name}\n",
+    "text-field": "{name}\n{cases}",
     // "text-font": ["Droid Sans Regular"],
     "text-size": 12
     // 'symbol-placement': 'point'
