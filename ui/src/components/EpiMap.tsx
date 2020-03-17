@@ -138,7 +138,7 @@ const EpiMap: React.FunctionComponent = () => {
     >
       <Source id="data" type="geojson" data={data}>
         <Layer {...dataLayer} />
-        <Layer {...labels} />
+        {state.mapView.zoom > 7 ? <Layer {...labels} /> : <React.Fragment></React.Fragment>}
       </Source>
     </ReactMapGL>
   );
