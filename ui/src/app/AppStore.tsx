@@ -8,6 +8,13 @@ import React, {
 import * as TypeGuards from "../guards";
 import {cases, yesterdaysCases} from "./mockData";
 
+interface Geo {
+  Geo: GeoJSON.Polygon; //GeoJSON.MultiPolygon;
+}
+export interface CountyIDs {
+  ID: string[];
+}
+
 export interface Case {
   ID: string;
   County: string;

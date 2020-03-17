@@ -32,7 +32,7 @@ const labels = {
   type: "symbol",
   source: "data",
   layout: {
-    "text-field": "{name}\n{cases}",
+    "text-field": "{name}\nConfirmed: {confirmed}\nDead: {dead}",
     // "text-font": ["Droid Sans Regular"],
     "text-size": 12
     // 'symbol-placement': 'point'
@@ -97,7 +97,8 @@ const EpiMap: React.FunctionComponent = () => {
         type: "Feature",
         geometry: value.Geo,
         properties: {
-          cases: value.Confirmed,
+          confirmed: value.Confirmed,
+          dead: value.Dead,
           name: `${value.County}, ${value.State}`
         }
       };
@@ -105,7 +106,7 @@ const EpiMap: React.FunctionComponent = () => {
   };
 
   const accessor = (f: GeoJSON.Feature): number => {
-    return f.properties?.cases;
+    return f.properties?.confirmed;
   };
 
   const onHover = (event: PointerEvent) => {
