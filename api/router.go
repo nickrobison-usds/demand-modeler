@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"github.com/go-chi/chi"
 	"github.com/jackc/pgx/v4"
-	"github.com/twpayne/go-geom/encoding/ewkb"
 	"log"
 	"net/http"
 )
@@ -15,7 +14,7 @@ type Case struct {
 	County    string
 	State     string
 	Confirmed int
-	Geo       *ewkb.MultiPolygon
+	Geo       *json.RawMessage
 }
 
 func rootHandler() http.HandlerFunc {
@@ -35,7 +34,7 @@ func caseHandler() http.HandlerFunc {
 		ctx := r.Context()
 		conn := ctx.Value("db").(*pgx.Conn)
 
-		rows, err := conn.Query(ctx, "SELECT c.ID, c.County, c.State, c.Confirmed, ST_AsEWKB(t.geom) FROM cases as c "+
+		rows, err := conn.Query(ctx, "SELECT c.ID, c.County, c.State, c.Confirmed, ST_AsGeoJSON(t.geom) as geom FROM cases as c "+
 			"LEFT JOIN tiger as t "+
 			"ON c.Geoid = t.geoid;")
 		if err != nil {
@@ -51,7 +50,7 @@ func caseHandler() http.HandlerFunc {
 			var county string
 			var state string
 			var confirmed int
-			geo := &ewkb.MultiPolygon{}
+			geo := &json.RawMessage{}
 			err := rows.Scan(&id, &county, &state, &confirmed, geo)
 			if err != nil {
 				log.Print(err)

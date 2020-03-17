@@ -7,6 +7,7 @@ export interface Case {
     County: string;
     State: string;
     Confirmed: number;
+    Geo: GeoJSON.MultiPolygon;
 }
 
 export enum ActionType {
