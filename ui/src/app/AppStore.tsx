@@ -6,7 +6,6 @@ import React, {
   useReducer
 } from "react";
 import * as TypeGuards from "../guards";
-import { fetchCaseCounts } from "../api";
 
 export interface Case {
   ID: string;

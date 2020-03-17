@@ -3,7 +3,7 @@ import AppStore, { ActionType } from "../app/AppStore";
 import { fetchCaseCounts } from "../api";
 
 const CaseTable: React.FunctionComponent = () => {
-  const { dispatch, state } = useContext(AppStore.AppContext);
+  const { dispatch } = useContext(AppStore.AppContext);
 
   const handleClick = async (): Promise<void> => {
     console.debug("Handling click");
