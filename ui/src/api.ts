@@ -16,18 +16,32 @@ function formatDate(date: Date): string {
 
 // /api/county/:id?start=2020-12-1?&end=2020-12-17 // Empty values are everything before/after
 // /api/state/:id?start=2020-12-1?&end=2020-12-17 // Aggregated report
-new URL(
-export async function fetchCaseCounts(): Promise<Case[]> {
-  const url = URI(`${HOST}/api/cases`);
-  url.searchParams.append("query", query);
 
-  const resp = await Axios.get<Case[]>(url.readable());
+
+export async function getCountyCases(id: string, start?: Date, end?: Date): Promise<GeoData> {
+  const url = new URL(`${HOST}/api/county/${id}`);
+  if (start) {
+    url.searchParams.append("start", formatDate(start));
+  }
+  if (end) {
+    url.searchParams.append("end", formatDate(end));
+  }
+
+  const resp = await Axios.get<GeoJSON.Polygon>(url.href);
   return resp.data;
 }
 
+
 export async function getStateCases(id: string, start?: Date, end?: Date): Promise<GeoData> {
-  const url = URI(`${HOST}/api/state/${id}`);
-  const resp = await Axios.get<GeoJSON.Polygon>(url.readable());
+  const url = new URL(`${HOST}/api/state/${id}`);
+  if (start) {
+    url.searchParams.append("start", formatDate(start));
+  }
+  if (end) {
+    url.searchParams.append("end", formatDate(end));
+  }
+
+  const resp = await Axios.get<GeoJSON.Polygon>(url.href);
   return resp.data;
 }
 

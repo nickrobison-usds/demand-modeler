@@ -33,12 +33,6 @@ export interface MapView {
   zoom: number;
 }
 
-export interface AppState {
-  cases: Case[];
-  yesterdaysCases: Case[];
-  mapView: MapView;
-}
-
 export interface Action {
   type: ActionType;
   payload?: unknown;
@@ -49,9 +43,21 @@ export interface AppContextType {
   dispatch: Dispatch<Action>;
 }
 
+export interface CovidDateData {
+  [stateID: string]: State;
+}
+
+export interface AppState {
+  covidTimeSeries: {
+    [date: string]: CovidDateData
+  };
+  mapView: MapView;
+}
+
 export const initialState: AppState = {
-  cases: cases, // MOCK: [],
-  yesterdaysCases: yesterdaysCases, // MOCK: [],
+  timedata: {
+    [date: string]: {}
+  }.
   mapView: {
     width: 400,
     height: 400,
