@@ -6,6 +6,7 @@ import CaseTable from "./components/CaseTable";
 import EpiMap from "./components/EpiMap";
 
 function App() {
+
     return (
         <AppStoreProvider>
             <div className="App">

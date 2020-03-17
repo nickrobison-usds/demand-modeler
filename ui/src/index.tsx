@@ -5,6 +5,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import "uswds";
 import 'mapbox-gl/dist/mapbox-gl.css';
+require('dotenv').config();
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
