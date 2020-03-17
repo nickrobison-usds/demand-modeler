@@ -10,11 +10,14 @@ import (
 )
 
 type Case struct {
-	ID        int
-	County    string
-	State     string
-	Confirmed int
-	Geo       *json.RawMessage
+	ID           string
+	County       string
+	State        string
+	Confirmed    int
+	NewConfirmed int
+	Dead         int
+	NewDead      int
+	Geo          *json.RawMessage
 }
 
 func rootHandler() http.HandlerFunc {
@@ -34,9 +37,11 @@ func caseHandler() http.HandlerFunc {
 		ctx := r.Context()
 		conn := ctx.Value("db").(*pgx.Conn)
 
-		rows, err := conn.Query(ctx, "SELECT c.ID, c.County, c.State, c.Confirmed, ST_AsGeoJSON(t.geom) as geom FROM cases as c "+
+		rows, err := conn.Query(ctx, "SELECT c.ID, c.County, c.State, s.Confirmed, s.NewConfirmed, s.Dead, s.NewDead, ST_AsGeoJSON(t.geom) as geom FROM counties as c "+
 			"LEFT JOIN tiger as t "+
-			"ON c.Geoid = t.geoid;")
+			"ON c.ID = t.geoid "+
+			"LEFT JOIN cases as s "+
+			"ON s.geoid = c.ID;")
 		if err != nil {
 			log.Print(err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -46,12 +51,15 @@ func caseHandler() http.HandlerFunc {
 		cases := make([]Case, 0)
 
 		for rows.Next() {
-			var id int
+			var id string
 			var county string
 			var state string
 			var confirmed int
+			var newConfirmed int
+			var dead int
+			var newDead int
 			geo := &json.RawMessage{}
-			err := rows.Scan(&id, &county, &state, &confirmed, geo)
+			err := rows.Scan(&id, &county, &state, &confirmed, &newConfirmed, &dead, &newDead, geo)
 			if err != nil {
 				log.Print(err)
 				w.WriteHeader(http.StatusInternalServerError)
@@ -59,11 +67,14 @@ func caseHandler() http.HandlerFunc {
 			}
 
 			cases = append(cases, Case{
-				ID:        id,
-				County:    county,
-				State:     state,
-				Confirmed: confirmed,
-				Geo:       geo,
+				ID:           id,
+				County:       county,
+				State:        state,
+				Confirmed:    confirmed,
+				NewConfirmed: newConfirmed,
+				Dead:         dead,
+				NewDead:      newDead,
+				Geo:          geo,
 			})
 		}
 		err = json.NewEncoder(w).Encode(cases)
