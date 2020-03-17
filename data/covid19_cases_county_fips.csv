@@ -1,0 +1,461 @@
+﻿County Name,State Name,Confirmed,Newly Confirmed,Death,New Death,Fatality Rate,STATEFP,COUNTYFP,Last Update
+New York,New York,329,0,5,0,0.015,36,061,2020-03-16 13:00 EDT
+Westchester,New York,196,0,0,0,0,36,119,2020-03-16 13:00 EDT
+Nassau,New York,98,0,0,0,0,36,059,2020-03-16 13:00 EDT
+Suffolk,New York,47,0,0,0,0,36,103,2020-03-16 13:00 EDT
+Albany,New York,15,4,0,0,0,36,001,2020-03-16 13:00 EDT
+Rockland,New York,13,0,1,0,0.077,36,087,2020-03-16 13:00 EDT
+Monroe,New York,10,0,0,0,0,36,055,2020-03-16 13:00 EDT
+Dutchess,New York,7,0,0,0,0,36,027,2020-03-16 13:00 EDT
+Erie,New York,7,0,0,0,0,36,029,2020-03-16 13:00 EDT
+Orange,New York,6,0,0,0,0,36,071,2020-03-16 13:00 EDT
+Ulster,New York,5,0,0,0,0,36,111,2020-03-16 13:00 EDT
+Saratoga,New York,3,0,0,0,0,36,091,2020-03-16 13:00 EDT
+Schenectady,New York,2,0,0,0,0,36,093,2020-03-16 13:00 EDT
+Putnam,New York,2,0,0,0,0,36,079,2020-03-16 13:00 EDT
+Greene,New York,2,0,0,0,0,36,039,2020-03-16 13:00 EDT
+Allegany,New York,2,0,0,0,0,36,003,2020-03-16 13:00 EDT
+Delaware,New York,1,0,0,0,0,36,025,2020-03-16 13:00 EDT
+Herkimer,New York,1,0,0,0,0,36,043,2020-03-16 13:00 EDT
+Broome,New York,1,0,0,0,0,36,007,2020-03-16 13:00 EDT
+Tompkins,New York,1,0,0,0,0,36,109,2020-03-16 13:00 EDT
+Tioga,New York,1,0,0,0,0,36,107,2020-03-16 13:00 EDT
+Montgomery,New York,1,0,0,0,0,36,057,2020-03-16 13:00 EDT
+Onondaga,New York,1,1,0,0,0,36,067,2020-03-16 13:00 EDT
+King,Washington,420,0,37,0,0.088,53,033,2020-03-16 13:00 EDT
+Snohomish,Washington,176,0,4,0,0.023,53,061,2020-03-16 13:00 EDT
+Pierce,Washington,29,0,0,0,0,53,053,2020-03-16 13:00 EDT
+Island,Washington,6,0,0,0,0,53,029,2020-03-16 13:00 EDT
+Skagit,Washington,4,0,0,0,0,53,057,2020-03-16 13:00 EDT
+Yakima,Washington,4,0,0,0,0,53,077,2020-03-16 13:00 EDT
+Grant,Washington,3,0,1,0,0.333,53,025,2020-03-16 13:00 EDT
+Jefferson,Washington,3,0,0,0,0,53,031,2020-03-16 13:00 EDT
+Clark,Washington,3,0,0,0,0,53,011,2020-03-16 13:00 EDT
+Kittitas,Washington,3,0,0,0,0,53,037,2020-03-16 13:00 EDT
+Kitsap,Washington,3,0,0,0,0,53,035,2020-03-16 13:00 EDT
+Whatcom,Washington,3,0,0,0,0,53,073,2020-03-16 13:00 EDT
+Thurston,Washington,3,0,0,0,0,53,067,2020-03-16 13:00 EDT
+Spokane,Washington,3,0,0,0,0,53,063,2020-03-16 13:00 EDT
+Grays Harbor,Washington,1,0,0,0,0,53,027,2020-03-16 13:00 EDT
+Columbia,Washington,1,0,0,0,0,53,013,2020-03-16 13:00 EDT
+Lincoln,Washington,1,0,0,0,0,53,043,2020-03-16 13:00 EDT
+Cowlitz,Washington,1,0,0,0,0,53,015,2020-03-16 13:00 EDT
+Santa Clara,California,114,0,2,0,0.018,06,085,2020-03-16 13:00 EDT
+Los Angeles,California,69,0,1,0,0.014,06,037,2020-03-16 13:00 EDT
+San Mateo,California,41,10,1,0,0.024,06,081,2020-03-16 13:00 EDT
+San Francisco,California,37,0,0,0,0,06,075,2020-03-16 13:00 EDT
+San Diego,California,35,0,0,0,0,06,073,2020-03-16 13:00 EDT
+Sacramento,California,32,0,1,0,0.031,06,067,2020-03-16 13:00 EDT
+Contra Costa,California,29,0,0,0,0,06,013,2020-03-16 13:00 EDT
+Orange,California,17,0,0,0,0,06,059,2020-03-16 13:00 EDT
+Alameda,California,15,0,0,0,0,06,001,2020-03-16 13:00 EDT
+Riverside,California,14,0,0,0,0,06,065,2020-03-16 13:00 EDT
+Marin,California,9,0,0,0,0,06,041,2020-03-16 13:00 EDT
+San Joaquin,California,8,0,0,0,0,06,077,2020-03-16 13:00 EDT
+Solano,California,7,0,0,0,0,06,095,2020-03-16 13:00 EDT
+Santa Cruz,California,7,0,0,0,0,06,087,2020-03-16 13:00 EDT
+Placer,California,5,0,1,0,0.2,06,061,2020-03-16 13:00 EDT
+Sonoma,California,4,0,0,0,0,06,097,2020-03-16 13:00 EDT
+Ventura,California,4,0,0,0,0,06,111,2020-03-16 13:00 EDT
+San Benito,California,3,0,0,0,0,06,069,2020-03-16 13:00 EDT
+Yolo,California,2,0,0,0,0,06,113,2020-03-16 13:00 EDT
+Fresno,California,2,1,0,0,0,06,019,2020-03-16 13:00 EDT
+Calaveras,California,2,0,0,0,0,06,009,2020-03-16 13:00 EDT
+Stanislaus,California,2,0,0,0,0,06,099,2020-03-16 13:00 EDT
+Tulare,California,2,0,0,0,0,06,107,2020-03-16 13:00 EDT
+Imperial,California,2,0,0,0,0,06,025,2020-03-16 13:00 EDT
+San Luis Obispo,California,2,0,0,0,0,06,079,2020-03-16 13:00 EDT
+Humboldt,California,1,0,0,0,0,06,023,2020-03-16 13:00 EDT
+Madera,California,1,0,0,0,0,06,039,2020-03-16 13:00 EDT
+Shasta,California,1,0,0,0,0,06,089,2020-03-16 13:00 EDT
+San Bernardino,California,1,0,0,0,0,06,071,2020-03-16 13:00 EDT
+Santa Barbara,California,1,0,0,0,0,06,083,2020-03-16 13:00 EDT
+Middlesex,Massachusetts,75,0,0,0,0,25,017,2020-03-16 13:00 EDT
+Suffolk,Massachusetts,31,0,0,0,0,25,025,2020-03-16 13:00 EDT
+Norfolk,Massachusetts,31,0,0,0,0,25,021,2020-03-16 13:00 EDT
+Berkshire,Massachusetts,9,0,0,0,0,25,003,2020-03-16 13:00 EDT
+Worcester,Massachusetts,6,0,0,0,0,25,027,2020-03-16 13:00 EDT
+Essex,Massachusetts,6,0,0,0,0,25,009,2020-03-16 13:00 EDT
+Barnstable,Massachusetts,1,0,0,0,0,25,001,2020-03-16 13:00 EDT
+Bristol,Massachusetts,1,0,0,0,0,25,005,2020-03-16 13:00 EDT
+Plymouth,Massachusetts,1,0,0,0,0,25,023,2020-03-16 13:00 EDT
+Hampden,Massachusetts,1,0,0,0,0,25,013,2020-03-16 13:00 EDT
+Broward,Florida,36,0,0,0,0,12,011,2020-03-16 13:00 EDT
+Non-Florida-Resident,Florida,13,0,0,0,0,12,,2020-03-16 13:00 EDT
+Miami-Dade,Florida,13,0,0,0,0,12,086,2020-03-16 13:00 EDT
+Outside-Florida,Florida,6,0,1,0,0.167,12,,2020-03-16 13:00 EDT
+Lee,Florida,5,0,2,0,0.4,12,071,2020-03-16 13:00 EDT
+Volusia,Florida,5,0,0,0,0,12,127,2020-03-16 13:00 EDT
+Collier,Florida,5,0,0,0,0,12,021,2020-03-16 13:00 EDT
+Palm Beach,Florida,5,0,0,0,0,12,099,2020-03-16 13:00 EDT
+Manatee,Florida,4,0,0,0,0,12,081,2020-03-16 13:00 EDT
+Hillsborough,Florida,4,0,0,0,0,12,057,2020-03-16 13:00 EDT
+Duval,Florida,4,0,0,0,0,12,031,2020-03-16 13:00 EDT
+Clay,Florida,3,0,0,0,0,12,019,2020-03-16 13:00 EDT
+Pinellas,Florida,2,0,0,0,0,12,103,2020-03-16 13:00 EDT
+Pasco,Florida,2,0,0,0,0,12,101,2020-03-16 13:00 EDT
+Orange,Florida,2,0,0,0,0,12,095,2020-03-16 13:00 EDT
+Santa Rosa,Florida,1,0,1,0,1,12,113,2020-03-16 13:00 EDT
+Charlotte,Florida,1,0,0,0,0,12,015,2020-03-16 13:00 EDT
+Okaloosa,Florida,1,0,0,0,0,12,091,2020-03-16 13:00 EDT
+Nassau,Florida,1,0,0,0,0,12,089,2020-03-16 13:00 EDT
+Seminole,Florida,1,0,0,0,0,12,117,2020-03-16 13:00 EDT
+Alachua,Florida,1,0,0,0,0,12,001,2020-03-16 13:00 EDT
+Osceola,Florida,1,0,0,0,0,12,097,2020-03-16 13:00 EDT
+Sarasota,Florida,1,0,0,0,0,12,115,2020-03-16 13:00 EDT
+Citrus,Florida,1,0,0,0,0,12,017,2020-03-16 13:00 EDT
+St. Johns,Florida,1,0,0,0,0,12,109,2020-03-16 13:00 EDT
+Denver,Colorado,25,0,0,0,0,08,031,2020-03-16 13:00 EDT
+Eagle,Colorado,24,0,0,0,0,08,037,2020-03-16 13:00 EDT
+Arapahoe,Colorado,15,0,0,0,0,08,005,2020-03-16 13:00 EDT
+Jefferson,Colorado,12,0,0,0,0,08,059,2020-03-16 13:00 EDT
+Pitkin,Colorado,11,0,0,0,0,08,097,2020-03-16 13:00 EDT
+Douglas,Colorado,8,0,0,0,0,08,035,2020-03-16 13:00 EDT
+Gunnison,Colorado,8,0,0,0,0,08,051,2020-03-16 13:00 EDT
+Boulder,Colorado,7,0,0,0,0,08,013,2020-03-16 13:00 EDT
+Adams,Colorado,6,0,0,0,0,08,001,2020-03-16 13:00 EDT
+Weld,Colorado,5,0,0,0,0,08,123,2020-03-16 13:00 EDT
+El Paso,Colorado,4,0,1,0,0.25,08,041,2020-03-16 13:00 EDT
+Waiting on information,Colorado,2,0,0,0,0,08,,2020-03-16 13:00 EDT
+Summit,Colorado,1,0,0,0,0,08,117,2020-03-16 13:00 EDT
+Larimer,Colorado,1,0,0,0,0,08,069,2020-03-16 13:00 EDT
+Pueblo,Colorado,1,0,0,0,0,08,101,2020-03-16 13:00 EDT
+Routt,Colorado,1,0,0,0,0,08,107,2020-03-16 13:00 EDT
+Mesa,Colorado,1,0,0,0,0,08,077,2020-03-16 13:00 EDT
+Garfield,Colorado,1,0,0,0,0,08,045,2020-03-16 13:00 EDT
+Clear Creek,Colorado,1,0,0,0,0,08,019,2020-03-16 13:00 EDT
+Fulton,Georgia,27,7,0,0,0,13,121,2020-03-16 13:00 EDT
+Cobb,Georgia,22,3,1,0,0.045,13,067,2020-03-16 13:00 EDT
+DeKalb,Georgia,10,0,0,0,0,13,089,2020-03-16 13:00 EDT
+Bartow,Georgia,9,0,0,0,0,13,015,2020-03-16 13:00 EDT
+Cherokee,Georgia,6,0,0,0,0,13,057,2020-03-16 13:00 EDT
+Dougherty,Georgia,6,0,0,0,0,13,095,2020-03-16 13:00 EDT
+Fayette,Georgia,5,0,0,0,0,13,113,2020-03-16 13:00 EDT
+Floyd,Georgia,4,0,0,0,0,13,115,2020-03-16 13:00 EDT
+Gwinnett,Georgia,4,0,0,0,0,13,135,2020-03-16 13:00 EDT
+Lowndes,Georgia,2,0,0,0,0,13,185,2020-03-16 13:00 EDT
+Lee,Georgia,2,0,0,0,0,13,177,2020-03-16 13:00 EDT
+Gordon,Georgia,2,0,0,0,0,13,129,2020-03-16 13:00 EDT
+Coweta,Georgia,2,0,0,0,0,13,077,2020-03-16 13:00 EDT
+Clarke,Georgia,2,0,0,0,0,13,059,2020-03-16 13:00 EDT
+Clayton,Georgia,2,0,0,0,0,13,063,2020-03-16 13:00 EDT
+Polk,Georgia,1,0,0,0,0,13,233,2020-03-16 13:00 EDT
+Charlton,Georgia,1,0,0,0,0,13,049,2020-03-16 13:00 EDT
+Henry,Georgia,1,0,0,0,0,13,151,2020-03-16 13:00 EDT
+Newton,Georgia,1,0,0,0,0,13,217,2020-03-16 13:00 EDT
+Troup,Georgia,1,0,0,0,0,13,285,2020-03-16 13:00 EDT
+Orleans,Louisiana,79,5,2,0,0.025,22,071,2020-03-16 13:00 EDT
+Jefferson,Louisiana,16,2,0,0,0,22,051,2020-03-16 13:00 EDT
+St. Tammany,Louisiana,5,1,0,0,0,22,103,2020-03-16 13:00 EDT
+Caddo,Louisiana,3,1,0,0,0,22,017,2020-03-16 13:00 EDT
+St. Charles,Louisiana,3,0,0,0,0,22,089,2020-03-16 13:00 EDT
+Terrebonne,Louisiana,3,1,0,0,0,22,109,2020-03-16 13:00 EDT
+Lafourche,Louisiana,2,1,0,0,0,22,057,2020-03-16 13:00 EDT
+Bossier,Louisiana,1,0,0,0,0,22,015,2020-03-16 13:00 EDT
+St. John the Baptist,Louisiana,1,0,0,0,0,22,095,2020-03-16 13:00 EDT
+St. Bernard,Louisiana,1,0,0,0,0,22,087,2020-03-16 13:00 EDT
+Bergen,New Jersey,29,0,1,0,0.034,34,003,2020-03-16 13:00 EDT
+Middlesex,New Jersey,18,0,0,0,0,34,023,2020-03-16 13:00 EDT
+Hudson,New Jersey,12,0,0,0,0,34,017,2020-03-16 13:00 EDT
+Monmouth,New Jersey,12,0,1,0,0.083,34,025,2020-03-16 13:00 EDT
+Essex,New Jersey,11,0,0,0,0,34,013,2020-03-16 13:00 EDT
+Burlington,New Jersey,6,0,0,0,0,34,005,2020-03-16 13:00 EDT
+Passaic,New Jersey,5,0,0,0,0,34,031,2020-03-16 13:00 EDT
+Union,New Jersey,4,0,0,0,0,34,039,2020-03-16 13:00 EDT
+Morris,New Jersey,4,0,0,0,0,34,027,2020-03-16 13:00 EDT
+Ocean,New Jersey,3,0,0,0,0,34,029,2020-03-16 13:00 EDT
+Camden,New Jersey,2,0,0,0,0,34,007,2020-03-16 13:00 EDT
+Somerset,New Jersey,1,0,0,0,0,34,035,2020-03-16 13:00 EDT
+Mercer,New Jersey,1,0,0,0,0,34,021,2020-03-16 13:00 EDT
+Hunterdon,New Jersey,1,0,0,0,0,34,019,2020-03-16 13:00 EDT
+Cook,Illinois,61,0,0,0,0,17,031,2020-03-16 13:00 EDT
+Kane,Illinois,4,0,0,0,0,17,089,2020-03-16 13:00 EDT
+Lake,Illinois,4,0,0,0,0,17,097,2020-03-16 13:00 EDT
+St. Clair,Illinois,4,0,0,0,0,17,163,2020-03-16 13:00 EDT
+McHenry,Illinois,2,0,0,0,0,17,111,2020-03-16 13:00 EDT
+Sangamon,Illinois,2,0,0,0,0,17,167,2020-03-16 13:00 EDT
+DuPage,Illinois,1,0,0,0,0,17,043,2020-03-16 13:00 EDT
+Woodford,Illinois,1,0,0,0,0,17,203,2020-03-16 13:00 EDT
+Cumberland,Illinois,1,0,0,0,0,17,035,2020-03-16 13:00 EDT
+Champaign,Illinois,1,0,0,0,0,17,019,2020-03-16 13:00 EDT
+Dallas,Texas,14,0,0,0,0,48,113,2020-03-16 13:00 EDT
+Harris,Texas,13,0,0,0,0,48,201,2020-03-16 13:00 EDT
+Fort Bend,Texas,9,0,0,0,0,48,157,2020-03-16 13:00 EDT
+Collin,Texas,8,0,0,0,0,48,085,2020-03-16 13:00 EDT
+Travis,Texas,6,0,0,0,0,48,453,2020-03-16 13:00 EDT
+Tarrant,Texas,4,0,0,0,0,48,439,2020-03-16 13:00 EDT
+Montgomery,Texas,4,0,0,0,0,48,339,2020-03-16 13:00 EDT
+Smith,Texas,4,0,0,0,0,48,423,2020-03-16 13:00 EDT
+Bexar,Texas,3,0,0,0,0,48,029,2020-03-16 13:00 EDT
+El Paso,Texas,2,0,0,0,0,48,141,2020-03-16 13:00 EDT
+Brazoria,Texas,2,0,0,0,0,48,039,2020-03-16 13:00 EDT
+Gregg,Texas,1,0,0,0,0,48,183,2020-03-16 13:00 EDT
+Lavaca,Texas,1,0,0,0,0,48,285,2020-03-16 13:00 EDT
+Bell,Texas,1,0,0,0,0,48,027,2020-03-16 13:00 EDT
+Galveston,Texas,1,0,0,0,0,48,167,2020-03-16 13:00 EDT
+Hays,Texas,1,0,0,0,0,48,209,2020-03-16 13:00 EDT
+Matagorda,Texas,1,0,0,0,0,48,321,2020-03-16 13:00 EDT
+Denton,Texas,1,0,0,0,0,48,121,2020-03-16 13:00 EDT
+Montgomery,Pennsylvania,24,0,0,0,0,42,091,2020-03-16 13:00 EDT
+Philadelphia,Pennsylvania,8,0,0,0,0,42,101,2020-03-16 13:00 EDT
+Delaware,Pennsylvania,7,0,0,0,0,42,045,2020-03-16 13:00 EDT
+Monroe,Pennsylvania,6,0,0,0,0,42,089,2020-03-16 13:00 EDT
+Allegheny,Pennsylvania,6,2,0,0,0,42,003,2020-03-16 13:00 EDT
+Cumberland,Pennsylvania,5,0,0,0,0,42,041,2020-03-16 13:00 EDT
+Bucks,Pennsylvania,4,0,0,0,0,42,017,2020-03-16 13:00 EDT
+Chester,Pennsylvania,2,0,0,0,0,42,029,2020-03-16 13:00 EDT
+Wayne,Pennsylvania,1,0,0,0,0,42,127,2020-03-16 13:00 EDT
+Northampton,Pennsylvania,1,0,0,0,0,42,095,2020-03-16 13:00 EDT
+Pike,Pennsylvania,1,0,0,0,0,42,103,2020-03-16 13:00 EDT
+Washington,Pennsylvania,1,0,0,0,0,42,125,2020-03-16 13:00 EDT
+Lehigh,Pennsylvania,1,0,0,0,0,42,077,2020-03-16 13:00 EDT
+Luzerne,Pennsylvania,1,0,0,0,0,42,079,2020-03-16 13:00 EDT
+Hennepin,Minnesota,12,0,0,0,0,27,053,2020-03-16 13:00 EDT
+Ramsey,Minnesota,8,0,0,0,0,27,123,2020-03-16 13:00 EDT
+Dakota,Minnesota,3,0,0,0,0,27,037,2020-03-16 13:00 EDT
+Stearns,Minnesota,3,0,0,0,0,27,145,2020-03-16 13:00 EDT
+Anoka,Minnesota,2,0,0,0,0,27,003,2020-03-16 13:00 EDT
+Olmsted,Minnesota,2,0,0,0,0,27,109,2020-03-16 13:00 EDT
+Carver,Minnesota,1,0,0,0,0,27,019,2020-03-16 13:00 EDT
+Wright,Minnesota,1,0,0,0,0,27,171,2020-03-16 13:00 EDT
+Renville,Minnesota,1,0,0,0,0,27,129,2020-03-16 13:00 EDT
+Washington,Minnesota,1,0,0,0,0,27,163,2020-03-16 13:00 EDT
+Waseca,Minnesota,1,0,0,0,0,27,161,2020-03-16 13:00 EDT
+Oakland,Michigan,14,0,0,0,0,26,125,2020-03-16 13:00 EDT
+Wayne,Michigan,13,0,0,0,0,26,163,2020-03-16 13:00 EDT
+Washtenaw,Michigan,7,0,0,0,0,26,161,2020-03-16 13:00 EDT
+Kent,Michigan,5,0,0,0,0,26,081,2020-03-16 13:00 EDT
+Macomb,Michigan,5,0,0,0,0,26,099,2020-03-16 13:00 EDT
+St. Clair,Michigan,1,0,0,0,0,26,147,2020-03-16 13:00 EDT
+Ingham,Michigan,1,0,0,0,0,26,065,2020-03-16 13:00 EDT
+Montcalm,Michigan,1,0,0,0,0,26,117,2020-03-16 13:00 EDT
+Bay,Michigan,1,0,0,0,0,26,017,2020-03-16 13:00 EDT
+Charlevoix,Michigan,1,0,0,0,0,26,029,2020-03-16 13:00 EDT
+Monroe,Michigan,1,0,0,0,0,26,115,2020-03-16 13:00 EDT
+Ottawa,Michigan,1,0,0,0,0,26,139,2020-03-16 13:00 EDT
+Clair,Michigan,1,0,0,0,0,26,,2020-03-16 13:00 EDT
+Fairfax,Virginia,10,0,0,0,0,51,059,2020-03-16 13:00 EDT
+Fairfax,Virginia,10,0,0,0,0,51,600,2020-03-16 13:00 EDT
+Arlington,Virginia,9,1,0,0,0,51,013,2020-03-16 13:00 EDT
+James City,Virginia,8,0,1,0,0.125,51,095,2020-03-16 13:00 EDT
+Loudoun,Virginia,5,0,0,0,0,51,107,2020-03-16 13:00 EDT
+Virginia Beach City,Virginia,4,0,0,0,0,51,810,2020-03-16 13:00 EDT
+Charlottesville City,Virginia,4,4,0,0,0,51,540,2020-03-16 13:00 EDT
+Prince William,Virginia,3,0,0,0,0,51,153,2020-03-16 13:00 EDT
+Alexandria City,Virginia,2,0,0,0,0,51,510,2020-03-16 13:00 EDT
+Chesterfield,Virginia,2,1,0,0,0,51,041,2020-03-16 13:00 EDT
+Spotsylvania,Virginia,1,0,0,0,0,51,177,2020-03-16 13:00 EDT
+Hanover,Virginia,1,0,0,0,0,51,085,2020-03-16 13:00 EDT
+Prince Edward,Virginia,1,0,0,0,0,51,147,2020-03-16 13:00 EDT
+Harrisonburg,Virginia,1,0,0,0,0,51,660,2020-03-16 13:00 EDT
+Washington,Oregon,13,0,0,0,0,41,067,2020-03-16 13:00 EDT
+Linn,Oregon,10,0,0,0,0,41,043,2020-03-16 13:00 EDT
+Deschutes,Oregon,4,0,0,0,0,41,017,2020-03-16 13:00 EDT
+Jackson,Oregon,2,0,0,0,0,41,029,2020-03-16 13:00 EDT
+Umatilla,Oregon,2,0,0,0,0,41,059,2020-03-16 13:00 EDT
+Marion,Oregon,2,0,0,0,0,41,047,2020-03-16 13:00 EDT
+Klamath,Oregon,1,0,0,0,0,41,035,2020-03-16 13:00 EDT
+Douglas,Oregon,1,0,0,0,0,41,019,2020-03-16 13:00 EDT
+Multnomah,Oregon,1,0,1,0,1,41,051,2020-03-16 13:00 EDT
+Polk,Oregon,1,0,0,0,0,41,053,2020-03-16 13:00 EDT
+Clackamas,Oregon,1,0,0,0,0,41,005,2020-03-16 13:00 EDT
+Yamhill,Oregon,1,0,0,0,0,41,071,2020-03-16 13:00 EDT
+Davidson,Tennessee,17,0,0,0,0,47,037,2020-03-16 13:00 EDT
+Williamson,Tennessee,14,0,0,0,0,47,187,2020-03-16 13:00 EDT
+Shelby,Tennessee,2,0,0,0,0,47,157,2020-03-16 13:00 EDT
+Sullivan,Tennessee,1,0,0,0,0,47,163,2020-03-16 13:00 EDT
+Knox,Tennessee,1,0,0,0,0,47,093,2020-03-16 13:00 EDT
+Hamilton,Tennessee,1,0,0,0,0,47,065,2020-03-16 13:00 EDT
+Jefferson,Tennessee,1,0,0,0,0,47,089,2020-03-16 13:00 EDT
+Rutherford,Tennessee,1,0,0,0,0,47,149,2020-03-16 13:00 EDT
+Campbell,Tennessee,1,0,0,0,0,47,013,2020-03-16 13:00 EDT
+Cuyahoga,Ohio,14,0,0,0,0,39,035,2020-03-16 13:00 EDT
+Butler,Ohio,6,0,0,0,0,39,017,2020-03-16 13:00 EDT
+Stark,Ohio,3,0,0,0,0,39,151,2020-03-16 13:00 EDT
+Franklin,Ohio,3,0,0,0,0,39,049,2020-03-16 13:00 EDT
+Trumbull,Ohio,2,0,0,0,0,39,155,2020-03-16 13:00 EDT
+Belmont,Ohio,2,0,0,0,0,39,013,2020-03-16 13:00 EDT
+Summit,Ohio,2,0,0,0,0,39,153,2020-03-16 13:00 EDT
+Lorain,Ohio,2,0,0,0,0,39,093,2020-03-16 13:00 EDT
+Lucas,Ohio,1,0,0,0,0,39,095,2020-03-16 13:00 EDT
+Tuscarawas,Ohio,1,0,0,0,0,39,157,2020-03-16 13:00 EDT
+Medina,Ohio,1,0,0,0,0,39,103,2020-03-16 13:00 EDT
+Geauga,Ohio,1,1,0,0,0,39,055,2020-03-16 13:00 EDT
+Montgomery,Maryland,15,3,0,0,0,24,031,2020-03-16 13:00 EDT
+Prince George's,Maryland,10,0,0,0,0,24,033,2020-03-16 13:00 EDT
+Baltimore,Maryland,4,0,0,0,0,24,005,2020-03-16 13:00 EDT
+Baltimore,Maryland,4,0,0,0,0,24,510,2020-03-16 13:00 EDT
+Harford,Maryland,2,0,0,0,0,24,025,2020-03-16 13:00 EDT
+Charles,Maryland,1,0,0,0,0,24,017,2020-03-16 13:00 EDT
+Anne Arundel,Maryland,1,0,0,0,0,24,003,2020-03-16 13:00 EDT
+Carroll,Maryland,1,0,0,0,0,24,013,2020-03-16 13:00 EDT
+Baltimore City,Maryland,1,0,0,0,0,24,510,2020-03-16 13:00 EDT
+Howard,Maryland,1,0,0,0,0,24,027,2020-03-16 13:00 EDT
+Talbot,Maryland,1,0,0,0,0,24,041,2020-03-16 13:00 EDT
+Fond du Lac,Wisconsin,11,0,0,0,0,55,039,2020-03-16 13:00 EDT
+Milwaukee,Wisconsin,7,0,0,0,0,55,079,2020-03-16 13:00 EDT
+Dane,Wisconsin,6,0,0,0,0,55,025,2020-03-16 13:00 EDT
+Waukesha,Wisconsin,3,0,0,0,0,55,133,2020-03-16 13:00 EDT
+Sheboygan,Wisconsin,3,0,0,0,0,55,117,2020-03-16 13:00 EDT
+Pierce,Wisconsin,1,0,0,0,0,55,093,2020-03-16 13:00 EDT
+Racine,Wisconsin,1,0,0,0,0,55,101,2020-03-16 13:00 EDT
+Winnebago,Wisconsin,1,0,0,0,0,55,139,2020-03-16 13:00 EDT
+Wood,Wisconsin,1,0,0,0,0,55,141,2020-03-16 13:00 EDT
+Wake,North Carolina,14,0,0,0,0,37,183,2020-03-16 13:00 EDT
+Mecklenburg,North Carolina,4,0,0,0,0,37,119,2020-03-16 13:00 EDT
+Harnett,North Carolina,3,1,0,0,0,37,085,2020-03-16 13:00 EDT
+Forsyth,North Carolina,2,0,0,0,0,37,067,2020-03-16 13:00 EDT
+Johnston,North Carolina,2,0,0,0,0,37,101,2020-03-16 13:00 EDT
+Chatham,North Carolina,1,0,0,0,0,37,037,2020-03-16 13:00 EDT
+Durham,North Carolina,1,0,0,0,0,37,063,2020-03-16 13:00 EDT
+Cabarrus,North Carolina,1,0,0,0,0,37,025,2020-03-16 13:00 EDT
+Onslow,North Carolina,1,0,0,0,0,37,133,2020-03-16 13:00 EDT
+Wayne,North Carolina,1,0,0,0,0,37,191,2020-03-16 13:00 EDT
+Brunswick,North Carolina,1,0,0,0,0,37,019,2020-03-16 13:00 EDT
+Craven,North Carolina,1,0,0,0,0,37,049,2020-03-16 13:00 EDT
+Watauga,North Carolina,1,0,0,0,0,37,189,2020-03-16 13:00 EDT
+Wilson,North Carolina,1,0,0,0,0,37,195,2020-03-16 13:00 EDT
+Kershaw,South Carolina,14,0,0,0,0,45,055,2020-03-16 13:00 EDT
+Beaufort,South Carolina,3,0,0,0,0,45,013,2020-03-16 13:00 EDT
+Horry,South Carolina,3,0,0,0,0,45,051,2020-03-16 13:00 EDT
+Lancaster,South Carolina,2,0,0,0,0,45,057,2020-03-16 13:00 EDT
+Anderson,South Carolina,2,0,0,0,0,45,007,2020-03-16 13:00 EDT
+Charleston,South Carolina,1,0,0,0,0,45,019,2020-03-16 13:00 EDT
+Spartanburg,South Carolina,1,0,0,0,0,45,083,2020-03-16 13:00 EDT
+Lexington,South Carolina,1,0,1,1,1,45,063,2020-03-16 13:00 EDT
+Greenville,South Carolina,1,0,0,0,0,45,045,2020-03-16 13:00 EDT
+Salt Lake,Utah,14,0,0,0,0,49,035,2020-03-16 13:00 EDT
+Non-Utah resident,Utah,7,0,0,0,0,49,,2020-03-16 13:00 EDT
+Davis,Utah,3,0,0,0,0,49,011,2020-03-16 13:00 EDT
+Summit,Utah,2,0,0,0,0,49,043,2020-03-16 13:00 EDT
+Weber-Morgan,Utah,1,0,0,0,0,49,057,2020-03-16 13:00 EDT
+Southwest Utah,Utah,1,0,0,0,0,49,,2020-03-16 13:00 EDT
+Clark,Nevada,16,0,0,0,0,32,003,2020-03-16 13:00 EDT
+Washoe,Nevada,9,0,0,0,0,32,031,2020-03-16 13:00 EDT
+Ormsby,Nevada,1,0,0,0,0,32,510,2020-03-16 13:00 EDT
+Fairfield,Connecticut,16,0,0,0,0,09,001,2020-03-16 13:00 EDT
+New Haven,Connecticut,4,0,0,0,0,09,009,2020-03-16 13:00 EDT
+Litchfield,Connecticut,3,0,0,0,0,09,005,2020-03-16 13:00 EDT
+Hartford,Connecticut,3,0,0,0,0,09,003,2020-03-16 13:00 EDT
+Marion,Indiana,7,1,0,0,0,18,097,2020-03-16 13:00 EDT
+Hendricks,Indiana,3,1,0,0,0,18,063,2020-03-16 13:00 EDT
+Johnson,Indiana,3,0,0,0,0,18,081,2020-03-16 13:00 EDT
+Howard,Indiana,2,1,0,0,0,18,067,2020-03-16 13:00 EDT
+Noble,Indiana,1,0,0,0,0,18,113,2020-03-16 13:00 EDT
+Adams,Indiana,1,0,0,0,0,18,001,2020-03-16 13:00 EDT
+Boone,Indiana,1,0,0,0,0,18,011,2020-03-16 13:00 EDT
+St. Joseph,Indiana,1,0,0,0,0,18,141,2020-03-16 13:00 EDT
+Hancock,Indiana,1,0,0,0,0,18,059,2020-03-16 13:00 EDT
+Wells,Indiana,1,0,0,0,0,18,179,2020-03-16 13:00 EDT
+LaPorte,Indiana,1,0,0,0,0,18,091,2020-03-16 13:00 EDT
+Hamilton,Indiana,1,0,0,0,0,18,057,2020-03-16 13:00 EDT
+Floyd,Indiana,1,0,0,0,0,18,043,2020-03-16 13:00 EDT
+Bartholomew,Indiana,1,1,0,0,0,18,005,2020-03-16 13:00 EDT
+Johnson,Iowa,15,0,0,0,0,19,103,2020-03-16 13:00 EDT
+Allamakee,Iowa,2,0,0,0,0,19,005,2020-03-16 13:00 EDT
+Pottawattamie,Iowa,1,0,0,0,0,19,155,2020-03-16 13:00 EDT
+Carroll,Iowa,1,0,0,0,0,19,027,2020-03-16 13:00 EDT
+Harrison,Iowa,1,0,0,0,0,19,085,2020-03-16 13:00 EDT
+Dallas,Iowa,1,0,0,0,0,19,049,2020-03-16 13:00 EDT
+Polk,Iowa,1,0,0,0,0,19,153,2020-03-16 13:00 EDT
+Jefferson,Arkansas,3,0,0,0,0,05,069,2020-03-16 13:00 EDT
+Jefferson,Alabama,12,0,0,0,0,01,073,2020-03-16 13:00 EDT
+Tuscaloosa,Alabama,3,0,0,0,0,01,125,2020-03-16 13:00 EDT
+Shelby,Alabama,2,0,0,0,0,01,117,2020-03-16 13:00 EDT
+Montgomery,Alabama,1,0,0,0,0,01,101,2020-03-16 13:00 EDT
+Elmore,Alabama,1,0,0,0,0,01,051,2020-03-16 13:00 EDT
+Limestone,Alabama,1,0,0,0,0,01,083,2020-03-16 13:00 EDT
+Baldwin,Alabama,1,0,0,0,0,01,003,2020-03-16 13:00 EDT
+Lee,Alabama,1,0,0,0,0,01,081,2020-03-16 13:00 EDT
+Providence,Rhode Island,21,1,0,0,0,44,007,2020-03-16 13:00 EDT
+Harrison,Kentucky,6,0,0,0,0,21,097,2020-03-16 13:00 EDT
+Jefferson,Kentucky,6,0,0,0,0,21,111,2020-03-16 13:00 EDT
+Fayette,Kentucky,5,0,0,0,0,21,067,2020-03-16 13:00 EDT
+Montgomery,Kentucky,1,0,0,0,0,21,173,2020-03-16 13:00 EDT
+Nelson,Kentucky,1,0,0,0,0,21,179,2020-03-16 13:00 EDT
+Clark,Kentucky,1,0,0,0,0,21,049,2020-03-16 13:00 EDT
+Bourbon,Kentucky,1,1,1,1,1,21,017,2020-03-16 13:00 EDT
+Maricopa,Arizona,8,4,0,0,0,04,013,2020-03-16 13:00 EDT
+Pinal,Arizona,5,0,0,0,0,04,021,2020-03-16 13:00 EDT
+Pima,Arizona,4,1,0,0,0,04,019,2020-03-16 13:00 EDT
+Graham,Arizona,1,0,0,0,0,04,009,2020-03-16 13:00 EDT
+Douglas,Nebraska,16,0,0,0,0,31,055,2020-03-16 13:00 EDT
+Knox,Nebraska,1,0,0,0,0,31,107,2020-03-16 13:00 EDT
+Cass,Nebraska,1,0,0,0,0,31,025,2020-03-16 13:00 EDT
+Washington,District of Columbia,17,0,0,0,0,11,001,2020-03-16 13:00 EDT
+Bernalillo,New Mexico,10,0,0,0,0,35,001,2020-03-16 13:00 EDT
+Santa Fe,New Mexico,3,0,0,0,0,35,049,2020-03-16 13:00 EDT
+Socorro,New Mexico,2,0,0,0,0,35,053,2020-03-16 13:00 EDT
+Sandoval,New Mexico,2,0,0,0,0,35,043,2020-03-16 13:00 EDT
+Cumberland,Maine,13,5,0,0,0,23,005,2020-03-16 13:00 EDT
+Lincoln,Maine,2,0,0,0,0,23,015,2020-03-16 13:00 EDT
+Androscoggin,Maine,1,0,0,0,0,23,001,2020-03-16 13:00 EDT
+Rockingham,New Hampshire,9,0,0,0,0,33,015,2020-03-16 13:00 EDT
+Grafton,New Hampshire,3,0,0,0,0,33,009,2020-03-16 13:00 EDT
+Hillsborough,New Hampshire,1,0,0,0,0,33,011,2020-03-16 13:00 EDT
+Windsor,Vermont,3,0,0,0,0,50,027,2020-03-16 13:00 EDT
+Bennington,Vermont,2,0,0,0,0,50,003,2020-03-16 13:00 EDT
+Chittenden,Vermont,2,0,0,0,0,50,007,2020-03-16 13:00 EDT
+Washington,Vermont,1,0,0,0,0,50,023,2020-03-16 13:00 EDT
+Johnson,Kansas,8,2,0,0,0,20,091,2020-03-16 13:00 EDT
+Wyandotte,Kansas,1,0,1,0,1,20,209,2020-03-16 13:00 EDT
+Butler,Kansas,1,0,0,0,0,20,015,2020-03-16 13:00 EDT
+Franklin,Kansas,1,0,0,0,0,20,059,2020-03-16 13:00 EDT
+Forrest,Mississippi,3,0,0,0,0,28,035,2020-03-16 13:00 EDT
+Pearl River,Mississippi,2,0,0,0,0,28,109,2020-03-16 13:00 EDT
+Copiah,Mississippi,2,0,0,0,0,28,029,2020-03-16 13:00 EDT
+Hinds,Mississippi,2,0,0,0,0,28,049,2020-03-16 13:00 EDT
+Leflore,Mississippi,1,0,0,0,0,28,083,2020-03-16 13:00 EDT
+Minnehaha,South Dakota,3,0,0,0,0,46,099,2020-03-16 13:00 EDT
+Pennington,South Dakota,1,0,1,0,1,46,103,2020-03-16 13:00 EDT
+Beadle,South Dakota,1,0,0,0,0,46,005,2020-03-16 13:00 EDT
+Charles Mix,South Dakota,1,0,0,0,0,46,023,2020-03-16 13:00 EDT
+Davison,South Dakota,1,0,0,0,0,46,035,2020-03-16 13:00 EDT
+Bon Homme,South Dakota,1,0,0,0,0,46,009,2020-03-16 13:00 EDT
+McCook,South Dakota,1,0,0,0,0,46,087,2020-03-16 13:00 EDT
+Tulsa,Oklahoma,3,0,0,0,0,40,143,2020-03-16 13:00 EDT
+Jackson,Oklahoma,1,0,0,0,0,40,065,2020-03-16 13:00 EDT
+Oklahoma,Oklahoma,1,0,0,0,0,40,109,2020-03-16 13:00 EDT
+Cleveland,Oklahoma,1,0,0,0,0,40,027,2020-03-16 13:00 EDT
+Payne,Oklahoma,1,0,0,0,0,40,119,2020-03-16 13:00 EDT
+Kay,Oklahoma,1,1,0,0,0,40,071,2020-03-16 13:00 EDT
+Honolulu,Hawaii,4,0,0,0,0,15,003,2020-03-16 13:00 EDT
+Kauai,Hawaii,2,0,0,0,0,15,007,2020-03-16 13:00 EDT
+Maui,Hawaii,1,0,0,0,0,15,009,2020-03-16 13:00 EDT
+New Castle,Delaware,7,0,0,0,0,10,003,2020-03-16 13:00 EDT
+Missoula,Montana,2,0,0,0,0,30,063,2020-03-16 13:00 EDT
+Gallatin,Montana,1,0,0,0,0,30,031,2020-03-16 13:00 EDT
+Yellowstone,Montana,1,0,0,0,0,30,111,2020-03-16 13:00 EDT
+Silver Bow,Montana,1,0,0,0,0,30,093,2020-03-16 13:00 EDT
+Lewis and Clark,Montana,1,0,0,0,0,30,049,2020-03-16 13:00 EDT
+Greene,Missouri,3,1,0,0,0,29,077,2020-03-16 13:00 EDT
+St. Louis,Missouri,2,0,0,0,0,29,189,2020-03-16 13:00 EDT
+St. Louis,Missouri,2,0,0,0,0,29,510,2020-03-16 13:00 EDT
+Henry,Missouri,1,0,0,0,0,29,083,2020-03-16 13:00 EDT
+Ada,Idaho,2,0,0,0,0,16,001,2020-03-16 13:00 EDT
+Blaine,Idaho,1,0,0,0,0,16,013,2020-03-16 13:00 EDT
+Teton,Idaho,1,0,0,0,0,16,081,2020-03-16 13:00 EDT
+Unknown,Idaho,1,0,0,0,0,16,,2020-03-16 13:00 EDT
+Puerto Rico,Puerto Rico,5,0,0,0,0,72,,2020-03-16 13:00 EDT
+Sheridan County,Wyoming,1,0,0,0,0,56,033,2020-03-16 13:00 EDT
+Fremont,Wyoming,1,0,0,0,0,56,013,2020-03-16 13:00 EDT
+Sheridan,Wyoming,1,0,0,0,0,56,033,2020-03-16 13:00 EDT
+Ward,North Dakota,1,0,0,0,0,38,101,2020-03-16 13:00 EDT
+Anchorage,Alaska,1,0,0,0,0,02,020,2020-03-16 13:00 EDT
+Unassigned,New York,203,203,0,0,0,36,,2020-03-16 13:00 EDT
+Unassigned,Washington,102,0,0,0,0,53,,2020-03-16 13:00 EDT
+Unassigned,Massachusetts,2,0,0,0,0,25,,2020-03-16 13:00 EDT
+Unassigned,Florida,30,0,1,0,0.033,12,,2020-03-16 13:00 EDT
+Unassigned,Colorado,1,0,0,0,0,08,,2020-03-16 13:00 EDT
+Unassigned,Georgia,11,0,0,0,0,13,,2020-03-16 13:00 EDT
+Unassigned,Illinois,12,0,0,0,0,17,,2020-03-16 13:00 EDT
+Unassigned,Minnesota,19,19,0,0,0,27,,2020-03-16 13:00 EDT
+Unassigned,Michigan,1,0,0,0,0,26,,2020-03-16 13:00 EDT
+Unassigned,Virginia,1,1,0,0,0,51,,2020-03-16 13:00 EDT
+Unassigned,Arkansas,10,6,0,0,0,05,,2020-03-16 13:00 EDT
+Unassigned,Arkansas,9,0,0,0,0,05,,2020-03-16 13:00 EDT
+Unassigned,Vermont,4,4,0,0,0,50,,2020-03-16 13:00 EDT
+Unassigned,Montana,1,0,0,0,0,30,,2020-03-16 13:00 EDT
+Unassigned,Guam,3,0,0,0,0,66,,2020-03-16 13:00 EDT
+Unassigned,US Virgin Islands,1,0,0,0,0,78,,2020-03-16 13:00 EDT
+Konx,Maine,1,0,0,0,0,23,013,2020-03-16 13:00 EDT

@@ -1,0 +1,11 @@
+version: "3.7"
+
+services:
+  postgres:
+    image: mdillon/postgis:11
+    environment:
+      - POSTGRES_DB=covid
+      - POSTGRES_USER=covid
+      - POSTGRES_PASSWORD=goaway
+    ports:
+      - "5432:5432"
