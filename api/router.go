@@ -35,7 +35,7 @@ func caseHandler() http.HandlerFunc {
 		ctx := r.Context()
 		conn := ctx.Value("db").(*pgx.Conn)
 
-		rows, err := conn.Query(ctx, "SELECT c.ID, c.Confirmed, ST_AsEWKB(t.geom) FROM cases as c "+
+		rows, err := conn.Query(ctx, "SELECT c.ID, c.County, c.State, c.Confirmed, ST_AsEWKB(t.geom) FROM cases as c "+
 			"LEFT JOIN tiger as t "+
 			"ON c.Geoid = t.geoid;")
 		if err != nil {
@@ -61,6 +61,8 @@ func caseHandler() http.HandlerFunc {
 
 			cases = append(cases, Case{
 				ID:        id,
+				County:    county,
+				State:     state,
 				Confirmed: confirmed,
 				Geo:       geo,
 			})
