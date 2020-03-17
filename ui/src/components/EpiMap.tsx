@@ -129,9 +129,9 @@ const EpiMap: React.FunctionComponent = () => {
   return (
     <ReactMapGL
       {...state.mapView}
-      // We'll need to rotate this once we have a better method of storing this value
       mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
       onViewportChange={v => {
+        v.width = window.innerWidth;
         dispatch({ type: ActionType.UPDATE_MAPVIEW, payload: v });
       }}
       onHover={e => onHover(e)}
