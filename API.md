@@ -34,8 +34,8 @@ Case array order DESC
 ```js
   {
     ID: string;
-    County: string;
-    State: string;
+    CountyName: string;
+    StateName: string;
     Confirmed: number;
     Dead: number;
   }[]
@@ -84,7 +84,7 @@ Case array order DESC
 ```js
   {
     ID: string;
-    State: string;
+    StateName: string;
     Confirmed: number;
     Dead: number;
   }[]
