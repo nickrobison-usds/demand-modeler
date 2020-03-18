@@ -8,10 +8,6 @@ jobs:
       - image: circleci/node:latest
     steps:
       - checkout
-      - run:
-          name: Move to code
-          command: |
-            cd ui
       - restore_cache:
           name: Restore Yarn Package Cache
           keys:
@@ -19,7 +15,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            yarn install --frozen-lockfile
+            cd ui && yarn install --frozen-lockfile
       - save_cache:
           name: Save Yarn Package Cache
           key: yarn-packages-{{ checksum "ui/yarn.lock" }}
@@ -27,10 +23,11 @@ jobs:
             - ~/.cache/yarn
       - run:
           name: Test
-          command: yarn run test
+          command: |
+            cd ui && yarn run test
       - run:
           name: Build
-          command: yarn build
+          command: cd ui && yarn build
       - persist_to_workspace:
           root: ./
           paths:
