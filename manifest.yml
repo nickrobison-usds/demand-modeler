@@ -1,6 +1,8 @@
 ---
 applications:
 - name: FearlessDreamer
-  command: ./demand-modeling
   buildpacks:
   - go_buildpack
+  env:
+    GOPACKAGENAME: demand-modeling
+  command: demand-modeling
