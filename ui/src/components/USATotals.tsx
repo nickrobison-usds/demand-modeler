@@ -8,7 +8,11 @@ interface Stats {
   d: number;
 }
 
-const USATotal: React.FunctionComponent<{}> = props => {
+interface Props {
+  stat: "confirmed" | "dead";
+}
+
+const USATotal: React.FunctionComponent<Props> = props => {
   const {
     state: { covidTimeSeries, selection : {date, state, county} }
   } = useContext(AppContext);
@@ -69,8 +73,9 @@ const USATotal: React.FunctionComponent<{}> = props => {
 
   return (
     <div style={{ display: "flex", textAlign: "center" }}>
-      <Card header="Confirmed">{confirmed} ({renderChange(confirmed, previousConfirmed)})</Card>
-      <Card header="Dead">{dead} ({renderChange(dead, previousDead)})</Card>
+      {props.stat ==="confirmed" ? <Card header="Total">{confirmed} ({renderChange(confirmed, previousConfirmed)})</Card>:       <Card header="Total">{dead} ({renderChange(dead, previousDead)})</Card>}
+
+
     </div>
   );
 };

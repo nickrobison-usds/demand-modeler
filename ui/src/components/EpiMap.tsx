@@ -49,7 +49,11 @@ function updatePercentiles(
   };
 }
 
-const EpiMap: React.FunctionComponent = () => {
+interface Props {
+  stat: "confirmed" | "dead";
+}
+
+const EpiMap: React.FunctionComponent<Props> = (props) => {
   const [data, setData] = useState<GeoJSON.FeatureCollection>({
     type: "FeatureCollection",
     features: []
@@ -77,25 +81,19 @@ const EpiMap: React.FunctionComponent = () => {
   };
 
   const accessor = (f: GeoJSON.Feature): number => {
-    return f.properties?.confirmed;
-  };
-
-  const onHover = (event: PointerEvent) => {
-    const { features } = event;
-    const hoveredFeature =
-      features && features.find(f => f.layer.id === "data");
-    console.log("Hovered over: ", hoveredFeature);
+    if (props.stat === "confirmed") {
+      return f.properties?.confirmed;
+    } else {
+      return f.properties?.dead;
+    }
   };
 
   useEffect(() => {
-    console.debug("Effect cases: ", covidTimeSeries);
-    console.debug("Calling effect handler");
     const newData: GeoJSON.FeatureCollection = {
       type: "FeatureCollection",
       features: transformFeatures()
     };
     setData(updatePercentiles(newData, accessor));
-    console.debug("JSON: ", data);
   }, [covidTimeSeries]);
 
   return (
@@ -103,10 +101,9 @@ const EpiMap: React.FunctionComponent = () => {
       {...state.mapView}
       mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
       onViewportChange={v => {
-        v.width = window.innerWidth;
+        v.width = 400//window.innerWidth;
         dispatch({ type: ActionType.UPDATE_MAPVIEW, payload: v });
       }}
-      onHover={e => onHover(e)}
     >
       <Source id="data" type="geojson" data={data}>
         <Layer {...dataLayer} />
