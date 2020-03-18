@@ -18,10 +18,20 @@ type Props = {
 const colors = ["#E5A3A3", "#D05C5B", "#CB2626", "#C00001"];
 
 export const StateMixedBar = (props: Props) => {
-  const dates = Object.keys(props.timeSeries);
+  let applicableCounties: string[] = [];
+  let stateName;
+
+  Object.values(props.timeSeries).forEach(({ states }) => {
+    const state = Object.values(states).find(el => el.ID === props.state);
+    stateName = state?.Name;
+    applicableCounties.push(...(state?.CountyIDs || []));
+  });
+
+  const dates = Object.keys(props.timeSeries).sort();
   const counties = Object.entries(props.timeSeries).reduce(
     (acc, [date, { counties }]) => {
-      Object.entries(counties).forEach(([, { Name, Confirmed }]) => {
+      Object.entries(counties).forEach(([, { Name, Confirmed, ID }]) => {
+        if (!applicableCounties.includes(ID)) return acc;
         if (!acc[Name]) acc[Name] = {};
         acc[Name][date] = Confirmed;
         return acc;
@@ -54,11 +64,11 @@ export const StateMixedBar = (props: Props) => {
 
   return (
     <>
-      <h2>{props.state}</h2>
+      <h2>{stateName}</h2>
       <BarChart
-        width={500}
+        width={1000}
         height={300}
-        data={sortedData}
+        data={sortedData.slice(0, 10)}
         margin={{
           top: 20,
           right: 30,
@@ -67,7 +77,7 @@ export const StateMixedBar = (props: Props) => {
         }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="Name" />
+        <XAxis height={60} dataKey="Name" />
         <YAxis />
         <Tooltip />
         <Legend />

@@ -1,7 +1,12 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
 import { StateMixedBar } from "../components/Charts/StateMixedBar";
-import { CovidDateData } from "../app/AppStore";
+import {
+  CovidDateData,
+  AppContext,
+  AppStoreProvider,
+  ActionType
+} from "../app/AppStore";
 
 storiesOf("Charts", module).add("State - Mixed Bar", () => {
   const covidTimeSeries: CovidDateData = {
@@ -123,5 +128,25 @@ storiesOf("Charts", module).add("State - Mixed Bar", () => {
     }
   };
 
-  return <StateMixedBar state={"New York"} timeSeries={covidTimeSeries} />;
+  return (
+    <AppStoreProvider>
+      <AppContext.Consumer>
+        {({ state, dispatch }) => {
+          if (!state.selection.state) {
+            dispatch({
+              type: ActionType.UPDATE_SELECTED_STATE,
+              payload: "3"
+            });
+          }
+
+          return (
+            <StateMixedBar
+              state={state.selection.state || ""}
+              timeSeries={state.covidTimeSeries}
+            />
+          );
+        }}
+      </AppContext.Consumer>
+    </AppStoreProvider>
+  );
 });
