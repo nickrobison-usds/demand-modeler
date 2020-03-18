@@ -1,6 +1,7 @@
 import React from "react";
 import { AppContext } from "../../app/AppStore";
 import { StateMixedBar } from "./StateMixedBar";
+import Card from "../Card/Card";
 
 export const ChartContainer: React.FC = () => {
   return (
@@ -9,10 +10,12 @@ export const ChartContainer: React.FC = () => {
         console.log(state);
         return (
           state.selection.state && (
-            <StateMixedBar
-              state={state.selection.state}
-              timeSeries={state.covidTimeSeries}
-            />
+            <Card>
+              <StateMixedBar
+                state={state.selection.state}
+                timeSeries={state.covidTimeSeries}
+              />
+            </Card>
           )
         );
       }}
