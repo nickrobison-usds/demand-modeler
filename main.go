@@ -9,7 +9,7 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
-	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/nickrobison-usds/demand-modeling/api"
 	"github.com/nickrobison-usds/demand-modeling/cmd"
 	"log"
@@ -17,7 +17,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 )
 
 func main() {
@@ -36,24 +35,26 @@ func main() {
 
 	// Load it up
 	ctx := context.Background()
-	time.Sleep(10 * time.Second)
-	conn, err := pgx.Connect(ctx, url)
+	pool, err := pgxpool.Connect(ctx, url)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer conn.Close(ctx)
-
-	log.Println("Loading CoVid Cases")
-	err = cmd.LoadCases(ctx, "./data/covid19_cases_county_fips.csv", conn)
+	defer pool.Close()
+	loader, err := cmd.NewLoader(ctx, url, filepath.Join(workDir, "data"))
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer loader.Close()
 
-	err = serve(conn, filesDir)
+	err = loader.Load()
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	err = serve(pool, filesDir)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func rootHandler() http.HandlerFunc {
@@ -62,7 +63,7 @@ func rootHandler() http.HandlerFunc {
 	}
 }
 
-func serve(db *pgx.Conn, filesDir string) error {
+func serve(db *pgxpool.Pool, filesDir string) error {
 	r := chi.NewRouter()
 	r.Use(api.DBContext(db))
 
@@ -89,7 +90,7 @@ func serve(db *pgx.Conn, filesDir string) error {
 
 	r.Route("/api", api.MakeRouter)
 	FileServer(r, "", "/", http.Dir(filesDir))
-
+	log.Println("Listening")
 	return http.ListenAndServe(":8080", r)
 }
 
