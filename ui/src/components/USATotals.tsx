@@ -60,7 +60,7 @@ const USATotal: React.FunctionComponent<Props> = props => {
 
   const renderChange = (current: number, previous: number): string => {
     const change = current - previous;
-    return `${change >= 0 ? "+" : "-"}${change}`
+    return `${change >= 0 ? "+" : ""}${change}`
   };
 
   return (
