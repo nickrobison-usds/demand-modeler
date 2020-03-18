@@ -9,7 +9,7 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
-	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/nickrobison-usds/demand-modeling/api"
 	"github.com/nickrobison-usds/demand-modeling/cmd"
 	"log"
@@ -17,7 +17,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 )
 
 func main() {
@@ -36,8 +35,12 @@ func main() {
 
 	// Load it up
 	ctx := context.Background()
-	time.Sleep(10 * time.Second)
-	conn, err := pgx.Connect(ctx, url)
+	pool, err := pgxpool.Connect(ctx, url)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer pool.Close()
+	loader, err := cmd.NewLoader(ctx, url, filepath.Join(workDir, "data"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -48,13 +51,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	pool, err := pgxpool.Connect(ctx, pgURL)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer pool.Close()
-
-	filesDir := filepath.Join(workDir, "ui/build")
 	err = serve(pool, filesDir)
 	if err != nil {
 		log.Fatal(err)
