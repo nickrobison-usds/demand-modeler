@@ -5,17 +5,20 @@ import React, {
   Reducer,
   useReducer
 } from "react";
-import * as TypeGuards from "../guards";
+import * as TypeGuards from "../utils/guards";
+import * as DateUtils from "../utils/DateUtils";
+import {mockCovidTimeSeries} from "./mockData";
+import L from "leaflet";
+import mapboxgl from "mapbox-gl";
 
-export interface Case {
-  ID: string;
-  County: string;
-  State: string;
+export interface CovidStats {
   Confirmed: number;
-  Geo: GeoJSON.MultiPolygon;
+  Dead: number;
 }
 
 export enum ActionType {
+  UPDATE_SELECTED_STATE = "UPDATE_SELECTED_STATE",
+  UPDATE_SELECTED_COUNTY = "UPDATE_SELECTED_COUNTY",
   UPDATE_CASES = "UPDATE_CASES",
   UPDATE_MAPVIEW = "UPDATE_MAP"
 }
@@ -28,11 +31,6 @@ export interface MapView {
   zoom: number;
 }
 
-export interface AppState {
-  cases: Case[];
-  mapView: MapView;
-}
-
 export interface Action {
   type: ActionType;
   payload?: unknown;
@@ -43,14 +41,49 @@ export interface AppContextType {
   dispatch: Dispatch<Action>;
 }
 
+export interface County extends CovidStats {
+  ID: string;
+  Name: string;
+  Geo?: GeoJSON.Polygon; //GeoJSON.MultiPolygon;
+}
+
+export interface State extends CovidStats {
+  ID: string;
+  Name: string;
+  Geo?: GeoJSON.Polygon; //GeoJSON.MultiPolygon;
+  CountyIDs?: string[];
+}
+
+export interface CovidDateData {
+  [date: string]: {
+    states: { [stateID: string]: State };
+    counties: { [countyID: string]: County };
+  }
+}
+// TODO: seperate Geo data from time series data
+export interface AppState {
+  selection: {
+    date: string;
+    state?: string;
+    county?: string;
+  }
+  covidTimeSeries:  CovidDateData;
+  mapView: MapView;
+}
+const DEFAULT_LAT = 40.8136;
+const DEFAULT_LNG = -99.0762;
+const DEFAULT_ZOOM = 2;
 export const initialState: AppState = {
-  cases: [],
+  selection: {
+    date: DateUtils.formatDate(new Date()),
+  },
+  covidTimeSeries: mockCovidTimeSeries,
   mapView: {
     width: 400,
     height: 400,
-    latitude: 37.7577,
-    longitude: -122.4376,
-    zoom: 2
+    latitude: DEFAULT_LAT,
+    longitude: DEFAULT_LNG,
+    zoom: DEFAULT_ZOOM
   }
 };
 
@@ -69,22 +102,93 @@ const updateMapView = (state: AppState, { payload }: Action): AppState => {
 
 const updateCases = (state: AppState, { payload }: Action): AppState => {
   console.debug("Updating cases: ", payload);
-  if (TypeGuards.isCases(payload)) {
-    console.debug("To update");
-    return {
-      ...state,
-      cases: payload
-    };
-  }
+  // TODO
+  // if (TypeGuards.isCases(payload)) {
+  //   console.debug("To update");
+  //   return {
+  //     ...state,
+  //     // cases: payload
+  //   };
+  // }
   return state;
+};
+
+const updateSelectedState = (state: AppState, { payload }: Action): AppState => {
+  const selection = Object.assign({}, state.selection);
+  const id = payload as string | undefined
+  selection.state = id;
+  let lat = DEFAULT_LAT;
+  let lng = DEFAULT_LNG;
+  let zoom = DEFAULT_ZOOM;
+  if (id !== undefined) {
+    const s = state.covidTimeSeries[DateUtils.formatDate(new Date())].states[id];
+    if (s.Geo) {
+      var polygon = (s.Geo).coordinates;
+      var fit = new L.Polygon(polygon as any).getBounds();
+      const southWest = new mapboxgl.LngLat(fit.getSouthWest()['lat'], fit.getSouthWest()['lng']);
+      const northEast = new mapboxgl.LngLat(fit.getNorthEast()['lat'], fit.getNorthEast()['lng']);
+      const center = new mapboxgl.LngLatBounds(southWest, northEast).getCenter();
+      lat = center.lat;
+      lng = center.lng;
+      zoom = 4;
+    }
+  } else {
+    selection.county = undefined;
+  }
+  const mapView = Object.assign({}, state.mapView);
+  mapView.latitude = lat;
+  mapView.longitude = lng;
+  mapView.zoom = zoom;
+
+  return {
+    ...state,
+    selection,
+    mapView,
+  };
+};
+
+const updateSelectedCounty = (state: AppState, { payload }: Action): AppState => {
+  const selection = Object.assign({}, state.selection);
+  const id = payload as string | undefined
+  selection.county = id;
+  let lat = DEFAULT_LAT;
+  let lng = DEFAULT_LNG;
+  let zoom = DEFAULT_ZOOM;
+  if (id !== undefined) {
+    const s = state.covidTimeSeries[DateUtils.formatDate(new Date())].counties[id];
+    if (s.Geo) {
+      var polygon = (s.Geo).coordinates;
+      var fit = new L.Polygon(polygon as any).getBounds();
+      const southWest = new mapboxgl.LngLat(fit.getSouthWest()['lat'], fit.getSouthWest()['lng']);
+      const northEast = new mapboxgl.LngLat(fit.getNorthEast()['lat'], fit.getNorthEast()['lng']);
+      const center = new mapboxgl.LngLatBounds(southWest, northEast).getCenter();
+      lat = center.lat;
+      lng = center.lng;
+      zoom = 6;
+    }
+  }
+  const mapView = Object.assign({}, state.mapView);
+  mapView.latitude = lat;
+  mapView.longitude = lng;
+  mapView.zoom = zoom;
+
+  return {
+    ...state,
+    selection,
+    mapView,
+  };
+
 };
 
 const reducer: Reducer<AppState, Action> = (state, action) => {
   switch (action.type) {
+    case ActionType.UPDATE_SELECTED_STATE:
+      return updateSelectedState(state, action);
+    case ActionType.UPDATE_SELECTED_COUNTY:
+      return updateSelectedCounty(state, action);
     case ActionType.UPDATE_CASES:
       return updateCases(state, action);
     case ActionType.UPDATE_MAPVIEW:
-      console.log("Changing");
       return updateMapView(state, action);
   }
 };

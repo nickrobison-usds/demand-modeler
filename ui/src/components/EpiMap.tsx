@@ -1,8 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import { ActionType, AppContext } from "../app/AppStore";
-import ReactMapGL, { Layer, Source, PointerEvent } from "react-map-gl";
+import ReactMapGL, { Layer, Source } from "react-map-gl";
 import { range } from "d3-array";
 import { scaleQuantile } from "d3-scale";
+import { getContiesForState } from "../utils/utils";
 
 const dataLayer = {
   id: "data",
@@ -27,35 +28,6 @@ const dataLayer = {
   }
 };
 
-const labels = {
-  id: "county-name",
-  type: "symbol",
-  source: "data",
-  layout: {
-    "text-field": "{name}\n",
-    // "text-font": ["Droid Sans Regular"],
-    "text-size": 12
-    // 'symbol-placement': 'point'
-  },
-  paint: {
-    "text-color": "black"
-  }
-  // paint: {
-  //     "text-color": ["case",
-  //         ["boolean", ["feature-state", "hover"], false],
-  //         'rgba(255,0,0,0.75)',
-  //         'rgba(0,0,0,0.75)'
-  //     ],
-  //     "text-halo-color": ["case",
-  //         ["boolean", ["feature-state", "hover"], false],
-  //         'rgba(255,255,0,0.75)',
-  //         'rgba(255,255,255,0.75)'
-  //     ],
-  //     "text-halo-width": 2,
-  //     "text-halo-blur": 0,
-  // }
-};
-
 function updatePercentiles(
   featureCollection: GeoJSON.FeatureCollection,
   accessor: (f: GeoJSON.Feature) => number
@@ -78,7 +50,11 @@ function updatePercentiles(
   };
 }
 
-const EpiMap: React.FunctionComponent = () => {
+interface Props {
+  stat: "confirmed" | "dead";
+}
+
+const EpiMap: React.FunctionComponent<Props> = props => {
   const [data, setData] = useState<GeoJSON.FeatureCollection>({
     type: "FeatureCollection",
     features: []
@@ -87,58 +63,70 @@ const EpiMap: React.FunctionComponent = () => {
   const {
     dispatch,
     state,
-    state: { cases }
+    state: { covidTimeSeries, selection }
   } = useContext(AppContext);
 
   const transformFeatures = (): GeoJSON.Feature[] => {
-    console.debug("Updating cases");
-    return cases.map(value => {
+    const states =
+      selection.state === undefined
+        ? Object.values(covidTimeSeries[selection.date].states)
+        : getContiesForState(covidTimeSeries, selection.date, selection.state);
+    return states.map(value => {
       return {
         type: "Feature",
-        geometry: value.Geo,
+        geometry: value.Geo as any, // TODO: add check to see if Geo is loaded
         properties: {
-          cases: value.Confirmed,
-          name: `${value.County}, ${value.State}`
+          confirmed: value.Confirmed,
+          dead: value.Dead,
+          name: `${value.Name}`,
+          id: `${value.ID}`
         }
       };
     });
   };
 
   const accessor = (f: GeoJSON.Feature): number => {
-    return f.properties?.cases;
-  };
-
-  const onHover = (event: PointerEvent) => {
-    const { features } = event;
-    const hoveredFeature =
-      features && features.find(f => f.layer.id === "data");
-    console.log("Hovered over: ", hoveredFeature);
+    if (props.stat === "confirmed") {
+      return f.properties?.confirmed;
+    } else {
+      return f.properties?.dead;
+    }
   };
 
   useEffect(() => {
-    console.debug("Effect cases: ", cases);
-    console.debug("Calling effect handler");
     const newData: GeoJSON.FeatureCollection = {
       type: "FeatureCollection",
       features: transformFeatures()
     };
     setData(updatePercentiles(newData, accessor));
-    console.debug("JSON: ", data);
-  }, [cases]);
+  // eslint-disable-next-line
+  }, [covidTimeSeries, selection]);
 
   return (
     <ReactMapGL
       {...state.mapView}
-      // We'll need to rotate this once we have a better method of storing this value
       mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
       onViewportChange={v => {
+        v.width = 400; //window.innerWidth;
         dispatch({ type: ActionType.UPDATE_MAPVIEW, payload: v });
       }}
-      onHover={e => onHover(e)}
+      onClick={e => {
+        const { features } = e;
+        const clickedState = (features || []).find(
+          feature => feature.properties?.id
+        );
+        if (clickedState) {
+          dispatch({
+            type: state.selection.state
+              ? ActionType.UPDATE_SELECTED_COUNTY
+              : ActionType.UPDATE_SELECTED_STATE,
+            payload: clickedState.properties.id
+          });
+        }
+      }}
     >
       <Source id="data" type="geojson" data={data}>
         <Layer {...dataLayer} />
-        <Layer {...labels} />
       </Source>
     </ReactMapGL>
   );
