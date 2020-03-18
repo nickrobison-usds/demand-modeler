@@ -3,7 +3,6 @@ import { ActionType, AppContext } from "../app/AppStore";
 import ReactMapGL, { Layer, Source } from "react-map-gl";
 import { range } from "d3-array";
 import { scaleQuantile } from "d3-scale";
-import { getContiesForState } from "../utils/utils";
 
 const dataLayer = {
   id: "data",
@@ -66,24 +65,24 @@ const EpiMap: React.FunctionComponent<Props> = props => {
     state: { covidTimeSeries, selection }
   } = useContext(AppContext);
 
-  const transformFeatures = (): GeoJSON.Feature[] => {
-    const states =
-      selection.state === undefined
-        ? Object.values(covidTimeSeries[selection.date].states)
-        : getContiesForState(covidTimeSeries, selection.date, selection.state);
-    return states.map(value => {
-      return {
-        type: "Feature",
-        geometry: value.Geo as any, // TODO: add check to see if Geo is loaded
-        properties: {
-          confirmed: value.Confirmed,
-          dead: value.Dead,
-          name: `${value.Name}`,
-          id: `${value.ID}`
-        }
-      };
-    });
-  };
+  // const transformFeatures = (): GeoJSON.Feature[] => {
+  //   const states =
+  //     selection.state === undefined
+  //       ? Object.values(covidTimeSeries[selection.date].states)
+  //       : getContiesForState(covidTimeSeries, selection.date, selection.state);
+  //   return states.map(value => {
+  //     return {
+  //       type: "Feature",
+  //       geometry: value.Geo as any, // TODO: add check to see if Geo is loaded
+  //       properties: {
+  //         confirmed: value.Confirmed,
+  //         dead: value.Dead,
+  //         name: `${value.Name}`,
+  //         id: `${value.ID}`
+  //       }
+  //     };
+  //   });
+  // };
 
   const accessor = (f: GeoJSON.Feature): number => {
     if (props.stat === "confirmed") {
@@ -94,11 +93,11 @@ const EpiMap: React.FunctionComponent<Props> = props => {
   };
 
   useEffect(() => {
-    const newData: GeoJSON.FeatureCollection = {
-      type: "FeatureCollection",
-      features: transformFeatures()
-    };
-    setData(updatePercentiles(newData, accessor));
+    // const newData: GeoJSON.FeatureCollection = {
+    //   type: "FeatureCollection",
+    //   features: transformFeatures()
+    // };
+    // setData(updatePercentiles(newData, accessor));
   // eslint-disable-next-line
   }, [covidTimeSeries, selection]);
 

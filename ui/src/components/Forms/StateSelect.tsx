@@ -11,20 +11,22 @@ const DEFAULT_TEXT = "All States";
 const USATotal: React.FunctionComponent<{}> = props => {
   const { dispatch, state } = useContext(AppContext);
 
-  console.log(state.selection.date)
-  const states = state.covidTimeSeries[state.selection.date].states;
+
   const options: Option[] = [
     {
       text: DEFAULT_TEXT,
       value: undefined
     }
   ];
-  Object.values(states).forEach((s: State) => {
-    options.push({
-      text: s.Name,
+
+  const stateMap: {[ID: string]: Option} = {};
+  state.covidTimeSeries.states.forEach((s) => {
+    stateMap[s.ID] = {
+      text: s.State,
       value: s.ID
-    });
+    }
   });
+  Object.values(stateMap).forEach((o: Option) => options.push(o));
 
   const onUpdate = (stateID: string | undefined) => {
     dispatch({ type: ActionType.UPDATE_SELECTED_STATE, payload: stateID });
