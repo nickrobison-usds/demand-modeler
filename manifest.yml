@@ -2,3 +2,5 @@
 applications:
 - name: FearlessDreamer
   command: ./demand-modeling
+  buildpacks:
+  - go_buildpack
