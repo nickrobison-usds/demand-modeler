@@ -15,5 +15,5 @@ download: $(DATA_DIR)/tl_2019_us_county.shp $(DATA_DIR)/tl_2019_us_state.shp
 
 .PHONY: load
 load: download
-	@shp2pgsql -s 4269 data/tl_2019_us_county public.tiger | psql -d $(POSTGRES_URL)
-	@shp2pgsql -s 4269 data/tl_2019_us_state public.states | psql -d $(POSTGRES_URL)
+	@shp2pgsql -s 4269 data/tl_2019_us_county public.tiger | psql -d $(DATABASE_URL)
+	@shp2pgsql -s 4269 data/tl_2019_us_state public.states | psql -d $(DATABASE_URL)

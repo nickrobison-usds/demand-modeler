@@ -19,7 +19,6 @@ export interface CovidStats {
 export enum ActionType {
   UPDATE_SELECTED_STATE = "UPDATE_SELECTED_STATE",
   UPDATE_SELECTED_COUNTY = "UPDATE_SELECTED_COUNTY",
-  UPDATE_CASES = "UPDATE_CASES",
   UPDATE_MAPVIEW = "UPDATE_MAP"
 }
 
@@ -100,19 +99,6 @@ const updateMapView = (state: AppState, { payload }: Action): AppState => {
   return state;
 };
 
-const updateCases = (state: AppState, { payload }: Action): AppState => {
-  console.debug("Updating cases: ", payload);
-  // TODO
-  // if (TypeGuards.isCases(payload)) {
-  //   console.debug("To update");
-  //   return {
-  //     ...state,
-  //     // cases: payload
-  //   };
-  // }
-  return state;
-};
-
 const updateSelectedState = (state: AppState, { payload }: Action): AppState => {
   const selection = Object.assign({}, state.selection);
   const id = payload as string | undefined
@@ -186,8 +172,6 @@ const reducer: Reducer<AppState, Action> = (state, action) => {
       return updateSelectedState(state, action);
     case ActionType.UPDATE_SELECTED_COUNTY:
       return updateSelectedCounty(state, action);
-    case ActionType.UPDATE_CASES:
-      return updateCases(state, action);
     case ActionType.UPDATE_MAPVIEW:
       return updateMapView(state, action);
   }
