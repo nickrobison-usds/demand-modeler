@@ -18,7 +18,7 @@ import (
 
 const unknownState = "99"
 
-var unknownRegex = regexp.MustCompile("Indeterminate|Unassigned|Unknown|Non-*")
+var unknownRegex = regexp.MustCompile("Waiting on information|Indeterminate|Unassigned|Unknown|Non-*")
 
 var countyIter int32 = 800
 
