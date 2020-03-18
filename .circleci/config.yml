@@ -2,12 +2,16 @@ defaults: &defaults
   working_directory: ~/repo
 version: 2
 jobs:
-  build-frontend:
+  build-ui:
     <<: *defaults
     docker:
       node: circleci/node@1.1.6
     steps:
       - checkout
+      - run:
+          name: Move to code
+          command: |
+            cd ui
       - restore_cache:
           name: Restore Yarn Package Cache
           keys:
@@ -31,33 +35,21 @@ jobs:
           root: ./
           paths:
             - build
-  deploy:
+  build-api:
     <<: *defaults
     docker:
       - image: circleci/golang:1.12
     steps:
-      - attach_workspace:
-          at: ./
       - run:
-          name: Install CF
-          command: |
-            curl -v -L -o cf-cli_amd64.deb 'https://cli.run.pivotal.io/stable?release=debian64&source=github'
-            sudo dpkg -i cf-cli_amd64.deb
-            cf -v
-      - run:
-          name: Login to cloud.gov
-          command: cf login -a https://api.fr.cloud.gov -u $CF_USER -p $CF_PASS -o $CF_ORG -s $CF_SPACE
-      - run:
-          name: Depoy
-          command: cf push
+          name: Build
+          command: go build .
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - demand-modeling
 workflows:
   version: 2
   test-deploy:
     jobs:
-      - build
-      - deploy:
-          requires:
-            - build
-          filters:
-            branches:
-              only: master
+      - build-ui
+      - build-api
