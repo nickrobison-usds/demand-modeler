@@ -64,7 +64,6 @@ export interface AppState {
     state?: string;
     county?: string;
   }
-  activeDate: string;
   covidTimeSeries: {
     [date: string]: CovidDateData;
   };
