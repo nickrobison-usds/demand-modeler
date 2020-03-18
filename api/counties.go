@@ -11,6 +11,37 @@ import (
 	"time"
 )
 
+func getCountIDs(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	conn := ctx.Value("db").(*pgxpool.Pool)
+
+	rows, err := conn.Query(ctx, "SELECT county || ', ' || state as name, id from counties")
+	if err != nil {
+		log.Print(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	ids := make(map[string]string, 0)
+	for rows.Next() {
+		var name string
+		var id string
+		err = rows.Scan(&name, &id)
+		if err != nil {
+			log.Print(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		ids[name] = id
+	}
+
+	err = json.NewEncoder(w).Encode(ids)
+	if err != nil {
+		log.Print(err)
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+}
+
 func getCountyGeo(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	countyID := ctx.Value("countyID").(string)
@@ -99,4 +130,5 @@ func countyAPI(r chi.Router) {
 	// For some reason, the URL param context doesn't work unless you use the .with directly on the methods
 	r.With(countyCTX).Get("/{countyID}", getCountyCases)
 	r.With(countyCTX).Get("/{countyID}/geo", getCountyGeo)
+	r.Get("/id", getCountIDs)
 }

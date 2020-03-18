@@ -1,7 +1,7 @@
 package cmd
 
-//stateFips is a mapping of state names (uppercase) to FIPS codes
-var stateFips = map[string]int{
+//StateFips is a mapping of state names (uppercase) to FIPS codes
+var StateFips = map[string]int{
 	"ALABAMA":              1,
 	"ALASKA":               2,
 	"ARIZONA":              4,

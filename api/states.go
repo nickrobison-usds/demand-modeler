@@ -11,6 +11,14 @@ import (
 	"time"
 )
 
+func getStateIDs(w http.ResponseWriter, r *http.Request) {
+	err := json.NewEncoder(w).Encode(cmd.StateFips)
+	if err != nil {
+		log.Print(err)
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+}
+
 func getStateGeo(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	stateID := ctx.Value("stateID").(string)
@@ -91,4 +99,5 @@ func stateCTX(next http.Handler) http.Handler {
 func stateAPI(r chi.Router) {
 	r.With(stateCTX).Get("/{stateID}/geo", getStateGeo)
 	r.With(stateCTX).Get("/{stateID}", getStateCases)
+	r.Get("/id", getStateIDs)
 }
