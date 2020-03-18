@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import {
   BarChart,
   Bar,
@@ -18,7 +19,7 @@ type Props = {
   stat: "confirmed" | "dead";
 };
 
-const colors = ["#E5A3A3", "#D05C5B", "#CB2626", "#C00001"];
+const colors = ["#FEEFB3", "#ECAC53", "#E16742", "#fdae61"];
 
 export const MixedBar = (props: Props) => {
   let title = "Grand Total";
@@ -59,14 +60,14 @@ export const MixedBar = (props: Props) => {
   });
 
   maxCases = Math.max(...Object.values(maxCasesByDate));
-  console.log(maxCases);
+
   return (
-    <>
+    <div>
       <h3>{title}</h3>
       <BarChart
         barSize={10}
-        width={400}
-        height={300}
+        width={window.innerWidth * .9}
+        height={600}
         data={data}
         margin={{
           top: 0,
@@ -85,6 +86,6 @@ export const MixedBar = (props: Props) => {
         <Legend />
         <Bar dataKey="Grand Total" fill={colors[0]} />
       </BarChart>
-    </>
+    </div>
   );
 };

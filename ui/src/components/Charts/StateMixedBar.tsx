@@ -19,15 +19,20 @@ type Props = {
   stateCount: boolean;
 };
 
-const colors = ["#E5A3A3", "#D05C5B", "#CB2626", "#C00001"];
+const colors = ["#FEEFB3", "#ECAC53", "#E16742", "#fdae61"];
 
 export const StateMixedBar = (props: Props) => {
-  let title = "Top 10 Counties";
   let applicableCounties: string[] = [];
-
+  let title = `Top 10 Counties`;
   if ((props.stateCount && props.state) || props.county) {
     return null;
   }
+
+  if (props.state) {
+    const name = Object.values(props.timeSeries)[0].states[props.state].Name;
+    title = `Top 10 Counties in ${name}`;
+  }
+
 
   Object.values(props.timeSeries).forEach(({ states, counties }) => {
     if (props.stateCount) {
@@ -89,8 +94,8 @@ export const StateMixedBar = (props: Props) => {
       <h3>{title}</h3>
       <BarChart
         barSize={10}
-        width={400}
-        height={300}
+        width={window.innerWidth * .9}
+        height={600}
         data={sortedData.slice(0, 10)}
         margin={{
           top: 0,
