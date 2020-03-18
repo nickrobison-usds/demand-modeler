@@ -46,7 +46,7 @@ func getCountyCases(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cases := make([]cmd.CaseCount, 0)
+	cases := make([]cmd.CountyCases, 0)
 	for rows.Next() {
 		var id string
 		var county string
@@ -63,14 +63,18 @@ func getCountyCases(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		cases = append(cases, cmd.CaseCount{
-			ID:           id,
-			County:       county,
-			State:        state,
+		caseCount := &cmd.CaseCount{
 			Confirmed:    confirmed,
 			NewConfirmed: newConfirmed,
 			Dead:         dead,
 			NewDead:      newDead,
+		}
+
+		cases = append(cases, cmd.CountyCases{
+			ID:        id,
+			County:    county,
+			State:     state,
+			CaseCount: caseCount,
 		})
 	}
 	err = json.NewEncoder(w).Encode(cases)
