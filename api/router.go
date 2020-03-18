@@ -32,4 +32,5 @@ func MakeRouter(r chi.Router) {
 	r.Get("/", rootHandler())
 	r.Get("/sub", subHandler())
 	r.Route("/county", countyAPI)
+	r.Route("/state", stateAPI)
 }
