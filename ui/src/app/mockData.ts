@@ -39,7 +39,8 @@ const makeCountyData = () => {
     new Array(11).fill(1).forEach((_, j) => {
       counties[`${i}|${j}`] = {
         ID: `${i}|${j}`,
-        Name: `${state.slice(0, 2).toUpperCase()}-${j}`,
+        State: state,
+        County: `${state.slice(0, 2).toUpperCase()}-${j}`,
         Confirmed: Math.round(Math.random() * 400),
         NewConfirmed: Math.round(Math.random() * 300),
         Dead: Math.round(Math.random() * 10),
@@ -142,7 +143,8 @@ export const mockCovidTimeSeries: CovidDateData = {
     counties: {
       "01|02": {
         ID: "01|02",
-        Name: "Westchester",
+        State: "New York",
+        County: "Westchester",
         Confirmed: 180,
         NewConfirmed: 30,
         Dead: 3,
@@ -1659,7 +1661,8 @@ export const mockCovidTimeSeries: CovidDateData = {
     counties: {
       "01|02": {
         ID: "01|02",
-        Name: "Westchester",
+        State: "New York",
+        County: "Westchester",
         Confirmed: 160,
         NewConfirmed: 10,
         Dead: 2,

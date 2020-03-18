@@ -44,7 +44,8 @@ export interface AppContextType {
 
 export interface County extends CovidStats {
   ID: string;
-  Name: string;
+  State: string;
+  County: string;
   Geo?: GeoJSON.Polygon; //GeoJSON.MultiPolygon;
 }
 

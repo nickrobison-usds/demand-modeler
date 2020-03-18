@@ -14,28 +14,40 @@ storiesOf("Charts", module).add("State - Mixed Bar", () => {
       states: {},
       counties: {
         NY: {
-          Name: "New York",
+          State: "New York",
+          County: "New York",
           ID: "NY",
           Confirmed: 111,
-          Dead: 0
+          Dead: 0,
+          NewConfirmed: 0,
+          NewDead: 0
         },
         WC: {
-          Name: "Westchester",
+          State: "New York",
+          County: "Westchester",
           ID: "WC",
           Confirmed: 11,
-          Dead: 0
+          Dead: 0,
+          NewConfirmed: 0,
+          NewDead: 0
         },
         NA: {
-          Name: "Nassau",
+          State: "New York",
+          County: "Nassau",
           ID: "NA",
           Confirmed: 11,
-          Dead: 0
+          Dead: 0,
+          NewConfirmed: 0,
+          NewDead: 0
         },
         SU: {
-          Name: "Suffolk",
+          State: "New York",
+          County: "Suffolk",
           ID: "SU",
           Confirmed: 11,
-          Dead: 0
+          Dead: 0,
+          NewConfirmed: 0,
+          NewDead: 0
         }
       }
     },
@@ -43,28 +55,40 @@ storiesOf("Charts", module).add("State - Mixed Bar", () => {
       states: {},
       counties: {
         NY: {
-          Name: "New York",
+          State: "New York",
+          County: "New York",
           ID: "NY",
           Confirmed: 303,
-          Dead: 2
+          Dead: 2,
+          NewConfirmed: 0,
+          NewDead: 0
         },
         WC: {
-          Name: "Westchester",
+          State: "New York",
+          County: "Westchester",
           ID: "WC",
           Confirmed: 13,
-          Dead: 0
+          Dead: 0,
+          NewConfirmed: 0,
+          NewDead: 0
         },
         NA: {
-          Name: "Nassau",
+          State: "New York",
+          County: "Nassau",
           ID: "NA",
           Confirmed: 100,
-          Dead: 0
+          Dead: 0,
+          NewConfirmed: 0,
+          NewDead: 0
         },
         SU: {
-          Name: "Suffolk",
+          State: "New York",
+          County: "Suffolk",
           ID: "SU",
           Confirmed: 22,
-          Dead: 0
+          Dead: 0,
+          NewConfirmed: 0,
+          NewDead: 0
         }
       }
     },
@@ -72,28 +96,40 @@ storiesOf("Charts", module).add("State - Mixed Bar", () => {
       states: {},
       counties: {
         NY: {
-          Name: "New York",
+          State: "New York",
+          County: "New York",
           ID: "NY",
           Confirmed: 503,
-          Dead: 2
+          Dead: 2,
+          NewConfirmed: 0,
+          NewDead: 0
         },
         WC: {
-          Name: "Westchester",
+          State: "New York",
+          County: "Westchester",
           ID: "WC",
           Confirmed: 20,
-          Dead: 0
+          Dead: 0,
+          NewConfirmed: 0,
+          NewDead: 0
         },
         NA: {
-          Name: "Nassau",
+          State: "New York",
+          County: "Nassau",
           ID: "NA",
           Confirmed: 121,
-          Dead: 0
+          Dead: 0,
+          NewConfirmed: 0,
+          NewDead: 0
         },
         SU: {
-          Name: "Suffolk",
+          State: "New York",
+          County: "Suffolk",
           ID: "SU",
           Confirmed: 35,
-          Dead: 0
+          Dead: 0,
+          NewConfirmed: 0,
+          NewDead: 0
         }
       }
     },
@@ -101,28 +137,40 @@ storiesOf("Charts", module).add("State - Mixed Bar", () => {
       states: {},
       counties: {
         NY: {
-          Name: "New York",
+          State: "New York",
+          County: "New York",
           ID: "NY",
           Confirmed: 667,
-          Dead: 2
+          Dead: 2,
+          NewConfirmed: 0,
+          NewDead: 0
         },
         WC: {
-          Name: "Westchester",
+          State: "New York",
+          County: "Westchester",
           ID: "WC",
           Confirmed: 60,
-          Dead: 0
+          Dead: 0,
+          NewConfirmed: 0,
+          NewDead: 0
         },
         NA: {
-          Name: "Nassau",
+          State: "New York",
+          County: "Nassau",
           ID: "NA",
           Confirmed: 333,
-          Dead: 0
+          Dead: 0,
+          NewConfirmed: 0,
+          NewDead: 0
         },
         SU: {
-          Name: "Suffolk",
+          State: "New York",
+          County: "Suffolk",
           ID: "SU",
           Confirmed: 59,
-          Dead: 0
+          Dead: 0,
+          NewConfirmed: 0,
+          NewDead: 0
         }
       }
     }

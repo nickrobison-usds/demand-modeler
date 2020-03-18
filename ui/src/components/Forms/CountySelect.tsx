@@ -32,7 +32,7 @@ const USATotal: React.FunctionComponent<{}> = props => {
   if (counties) {
     Object.values(counties).forEach((c: County) => {
       options.push({
-        text: c.Name,
+        text: c.County,
         value: c.ID
       });
     });

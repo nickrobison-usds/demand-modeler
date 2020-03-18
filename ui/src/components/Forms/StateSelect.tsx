@@ -20,7 +20,7 @@ const USATotal: React.FunctionComponent<{}> = props => {
   ];
   Object.values(states).forEach((s: State) => {
     options.push({
-      text: s.Name,
+      text: s.State,
       value: s.ID
     });
   });

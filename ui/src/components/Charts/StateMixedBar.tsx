@@ -47,17 +47,20 @@ export const StateMixedBar = (props: Props) => {
   const counties = Object.entries(props.timeSeries).reduce(
     (acc, [date, { counties, states }]) => {
       const entries = props.stateCount ? states : counties;
-      Object.entries(entries).forEach(([, { Name, Confirmed, Dead, ID }]) => {
-        if (!applicableCounties.includes(ID)) return acc;
-        maxCases = Math.max(Confirmed, Dead, maxCases);
-        if (!acc[Name]) acc[Name] = {};
-        if (props.stat === "confirmed") {
-          acc[Name][date] = Confirmed;
-        } else {
-          acc[Name][date] = Dead;
+      Object.entries(entries).forEach(
+        ([, { State, County, Confirmed, Dead, ID }]) => {
+          const Name = County || State;
+          if (!applicableCounties.includes(ID)) return acc;
+          maxCases = Math.max(Confirmed, Dead, maxCases);
+          if (!acc[Name]) acc[Name] = {};
+          if (props.stat === "confirmed") {
+            acc[Name][date] = Confirmed;
+          } else {
+            acc[Name][date] = Dead;
+          }
+          return acc;
         }
-        return acc;
-      });
+      );
       return acc;
     },
     {} as { [N: string]: { [D: string]: number } }

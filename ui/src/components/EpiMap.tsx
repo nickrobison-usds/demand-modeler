@@ -71,14 +71,15 @@ const EpiMap: React.FunctionComponent<Props> = props => {
       selection.state === undefined
         ? Object.values(covidTimeSeries[selection.date].states)
         : getContiesForState(covidTimeSeries, selection.date, selection.state);
-    return states.map((value: State | County) => {
+    // TODO: cleanup typing here
+    return (states as any).map((value: any) => {
       return {
         type: "Feature",
         geometry: value.Geo as any, // TODO: add check to see if Geo is loaded
         properties: {
           confirmed: value.Confirmed,
           dead: value.Dead,
-          name: `${value.Name}`,
+          name: `${value.County || value.State}`,
           id: `${value.ID}`
         }
       };
