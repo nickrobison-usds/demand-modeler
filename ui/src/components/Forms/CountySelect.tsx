@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import { ActionType, AppContext, County } from "../../app/AppStore";
 import UsaSelect from "../Forms/USASelect";
-import { getContiesForState } from "../../utils/utils";
 
 interface Option {
   text: string;
@@ -9,12 +8,12 @@ interface Option {
 }
 
 const DEFAULT_TEXT = "All Counties";
-const USATotal: React.FunctionComponent<{}> = props => {
+const USATotal: React.FunctionComponent<{}> = _ => {
   const {
     dispatch,
     state: {
       covidTimeSeries,
-      selection: { date, state, county }
+      selection: { state, county }
     }
   } = useContext(AppContext);
 
@@ -22,22 +21,20 @@ const USATotal: React.FunctionComponent<{}> = props => {
     return null;
   }
 
-  const counties = getContiesForState(covidTimeSeries, date, state);
   const options: Option[] = [
     {
       text: DEFAULT_TEXT,
       value: undefined
     }
   ];
-  if (counties) {
-    Object.values(counties).forEach((c: County) => {
-      options.push({
-        text: c.Name,
-        value: c.ID
-      });
-    });
-  }
-
+  const countyMap: {[ID: string]: Option} = {};
+  covidTimeSeries.counties.forEach((c) => {
+    countyMap[c.ID] = {
+      text: c.State,
+      value: c.ID
+    }
+  });
+  Object.values(countyMap).forEach((o: Option) => options.push(o));
   const onUpdate = (countyID: string | undefined) => {
     dispatch({ type: ActionType.UPDATE_SELECTED_COUNTY, payload: countyID });
   };
