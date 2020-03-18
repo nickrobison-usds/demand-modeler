@@ -8,6 +8,7 @@ import (
 	"github.com/nickrobison-usds/demand-modeling/cmd"
 	"log"
 	"net/http"
+	"time"
 )
 
 func getCountyGeo(w http.ResponseWriter, r *http.Request) {
@@ -34,8 +35,8 @@ func getCountyCases(w http.ResponseWriter, r *http.Request) {
 	countyID := ctx.Value("countyID").(string)
 	conn := ctx.Value("db").(*pgxpool.Pool)
 
-	log.Println("Returning case data for: " + countyID)
-	rows, err := conn.Query(ctx, "SELECT c.ID, c.County, c.State, s.Confirmed, s.NewConfirmed, s.Dead, s.NewDead, ST_AsGeoJSON(t.geom) as geom FROM counties as c "+
+	log.Println("Returning case data for county: " + countyID)
+	rows, err := conn.Query(ctx, "SELECT c.ID, c.County, c.State, s.Update, s.Confirmed, s.NewConfirmed, s.Dead, s.NewDead, ST_AsGeoJSON(t.geom) as geom FROM counties as c "+
 		"LEFT JOIN tiger as t "+
 		"ON c.ID = t.geoid "+
 		"LEFT JOIN cases as s "+
@@ -46,31 +47,37 @@ func getCountyCases(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cases := make([]cmd.CaseCount, 0)
+	cases := make([]cmd.CountyCases, 0)
 	for rows.Next() {
 		var id string
 		var county string
 		var state string
+		var updated time.Time
 		var confirmed int
 		var newConfirmed int
 		var dead int
 		var newDead int
 		geo := &json.RawMessage{}
-		err := rows.Scan(&id, &county, &state, &confirmed, &newConfirmed, &dead, &newDead, geo)
+		err := rows.Scan(&id, &county, &state, &updated, &confirmed, &newConfirmed, &dead, &newDead, geo)
 		if err != nil {
 			log.Print(err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 
-		cases = append(cases, cmd.CaseCount{
-			ID:           id,
-			County:       county,
-			State:        state,
+		caseCount := &cmd.CaseCount{
 			Confirmed:    confirmed,
 			NewConfirmed: newConfirmed,
 			Dead:         dead,
 			NewDead:      newDead,
+			Reported:     updated,
+		}
+
+		cases = append(cases, cmd.CountyCases{
+			ID:        id,
+			County:    county,
+			State:     state,
+			CaseCount: caseCount,
 		})
 	}
 	err = json.NewEncoder(w).Encode(cases)
