@@ -12,8 +12,10 @@ import L from "leaflet";
 import mapboxgl from "mapbox-gl";
 
 export interface CovidStats {
+  NewConfirmed: number;
   Confirmed: number;
   Dead: number;
+  NewDead: number;
 }
 
 export enum ActionType {
@@ -42,23 +44,25 @@ export interface AppContextType {
 
 export interface County extends CovidStats {
   ID: string;
-  Name: string;
+  County: string;
+  State: string;
   Geo?: GeoJSON.Polygon; //GeoJSON.MultiPolygon;
+  Reported: string; // "2020-03-15T20:23:00Z"
 }
 
 export interface State extends CovidStats {
   ID: string;
-  Name: string;
+  State: string;
   Geo?: GeoJSON.Polygon; //GeoJSON.MultiPolygon;
   CountyIDs?: string[];
+  Reported: string; // "2020-03-15T20:23:00Z"
 }
 
 export interface CovidDateData {
-  [date: string]: {
-    states: { [stateID: string]: State };
-    counties: { [countyID: string]: County };
-  }
+  states: State[];
+  counties: County[];
 }
+
 // TODO: seperate Geo data from time series data
 export interface AppState {
   selection: {
@@ -66,7 +70,7 @@ export interface AppState {
     state?: string;
     county?: string;
   }
-  covidTimeSeries:  CovidDateData;
+  covidTimeSeries: CovidDateData;
   mapView: MapView;
 }
 const DEFAULT_LAT = 40.8136;

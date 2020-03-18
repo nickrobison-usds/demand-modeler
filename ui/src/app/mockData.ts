@@ -15,36 +15,37 @@ const testStates = [
   "Hawaii"
 ];
 
-const makeStateData = () =>
-  testStates
-    .map((name, i) => {
-      return {
-        ID: `${i}`,
-        Name: name,
-        Confirmed: Math.round(Math.random() * 1000),
-        Dead: Math.round(Math.random() * 100),
-        CountyIDs: new Array(11).fill(1).map((_, j) => `${i}|${j}`)
-      };
-    })
-    .reduce((acc, el) => {
-      acc[el.ID] = el;
-      return acc;
-    }, {} as { [stateID: string]: State });
+// const makeStateData = () =>
+//   testStates
+//     .map((name, i) => {
+//       return {
+//         ID: `${i}`,
+//         Name: name,
+//         Confirmed: Math.round(Math.random() * 1000),
+//         Dead: Math.round(Math.random() * 100),
+//         CountyIDs: new Array(11).fill(1).map((_, j) => `${i}|${j}`)
+//       };
+//     })
+//     .reduce((acc, el) => {
+//       acc[el.ID] = el;
+//       return acc;
+//     }, {} as { [stateID: string]: State });
 
-const makeCountyData = () => {
-  let counties = {} as { [countyID: string]: County };
-  testStates.forEach((state, i) => {
-    new Array(11).fill(1).forEach((_, j) => {
-      counties[`${i}|${j}`] = {
-        ID: `${i}|${j}`,
-        Name: `${state.slice(0, 2).toUpperCase()}-${j}`,
-        Confirmed: Math.round(Math.random() * 400),
-        Dead: Math.round(Math.random() * 30)
-      };
-    });
-  });
-  return counties;
-};
+// const makeCountyData = () => {
+//   let counties = {} as { [countyID: string]: County };
+//   testStates.forEach((state, i) => {
+//     new Array(11).fill(1).forEach((_, j) => {
+//       counties[`${i}|${j}`] = {
+//         ID: `${i}|${j}`,
+//         Name: `${state.slice(0, 2).toUpperCase()}-${j}`,
+//         Confirmed: Math.round(Math.random() * 400),
+//         Dead: Math.round(Math.random() * 30)
+//       };
+//     });
+//   });
+//   return counties;
+// };
+
 
 export const mockCovidTimeSeries: CovidDateData = {
   "2020-3-18": {
