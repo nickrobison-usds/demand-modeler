@@ -8,7 +8,7 @@
 1. Download the [TIGER files](https://www.census.gov/cgi-bin/geo/shapefiles/index.php?year=2019&layergroup=Counties+%28and+equivalent%29) add to `data/`
     ```bash
    wget https://www2.census.gov/geo/tiger/TIGER2019/STATE/tl_2019_us_state.zip -O data/tl_2019_us_state.zip
-   wget https://www2.census.gov/geo/tiger/TIGER2019/STATE/tl_2019_us_county.zip -O data/tl_2019_us_county.zip
+   wget https://www2.census.gov/geo/tiger/TIGER2019/COUNTY/tl_2019_us_county.zip -O data/tl_2019_us_county.zip
     ```
 1. Unzip the files (there should be a .shp, .shx, .dbf, .prj file for each)
 1. Load them into the database with the following command:
