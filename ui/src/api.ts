@@ -1,6 +1,6 @@
 import URI from "urijs";
 import Axios from "axios";
-import { County, State } from "./app/AppStore";
+import { County, State, CovidDateData } from "./app/AppStore";
 import { formatDate } from "./utils/DateUtils";
 
 const HOST = process.env.REACT_APP_API_URI;
@@ -13,6 +13,20 @@ export interface CountyIDs {
 export interface GeoResponse {
   ID: string;
   Geo: GeoData;
+}
+
+interface StateResponse {
+  ID: string;
+  State: string;
+  Confirmed: number;
+  NewConfirmed: number;
+  Dead: number;
+  NewDead: number;
+  Reported: string;
+}
+
+interface CountyResponse extends StateResponse {
+  County: string;
 }
 
 export async function getCountyCases(
@@ -46,7 +60,7 @@ export async function getStateCases(
   id: string,
   start?: Date,
   end?: Date
-): Promise<State> {
+): Promise<CovidDateData> {
   const url = new URL(`${HOST}/api/state/${id}`);
   if (start) {
     url.searchParams.append("start", formatDate(start));
@@ -55,8 +69,15 @@ export async function getStateCases(
     url.searchParams.append("end", formatDate(end));
   }
 
-  const resp = await Axios.get<State>(url.href);
-  return resp.data;
+  const resp = await Axios.get<StateResponse[]>(url.href);
+  const covidData: CovidDateData = resp.data.reduce((acc, el) => {
+    const { Reported, ...rest } = el;
+    if (!acc[Reported]) acc[Reported] = { states: {}, counties: {} };
+    acc[Reported].states[rest.ID] = rest;
+    return acc;
+  }, {} as CovidDateData);
+
+  return covidData;
 }
 
 export async function getStateGeo(
