@@ -111,8 +111,8 @@ const updateSelectedState = (state: AppState, { payload }: Action): AppState => 
   let lng = DEFAULT_LNG;
   let zoom = DEFAULT_ZOOM;
   if (id !== undefined) {
-    const s = state.covidTimeSeries[DateUtils.formatDate(new Date())].states[id];
-    if (s.Geo) {
+    const s = state.covidTimeSeries.states.find(s => s.ID === id);
+    if (s && s.Geo) {
       var polygon = (s.Geo).coordinates;
       var fit = new L.Polygon(polygon as any).getBounds();
       const southWest = new mapboxgl.LngLat(fit.getSouthWest()['lat'], fit.getSouthWest()['lng']);
@@ -145,9 +145,9 @@ const updateSelectedCounty = (state: AppState, { payload }: Action): AppState =>
   let lng = DEFAULT_LNG;
   let zoom = DEFAULT_ZOOM;
   if (id !== undefined) {
-    const s = state.covidTimeSeries[DateUtils.formatDate(new Date())].counties[id];
-    if (s.Geo) {
-      var polygon = (s.Geo).coordinates;
+    const c = state.covidTimeSeries.counties.find(c => c.ID === id);
+    if (c && c.Geo) {
+      var polygon = (c.Geo).coordinates;
       var fit = new L.Polygon(polygon as any).getBounds();
       const southWest = new mapboxgl.LngLat(fit.getSouthWest()['lat'], fit.getSouthWest()['lng']);
       const northEast = new mapboxgl.LngLat(fit.getNorthEast()['lat'], fit.getNorthEast()['lng']);
