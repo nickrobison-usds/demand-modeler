@@ -100,7 +100,13 @@ export const StateMixedBar = (props: Props) => {
         }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis height={60} dataKey="Name" />
+        <XAxis
+          angle={-45}
+          interval={0}
+          textAnchor="end"
+          height={100}
+          dataKey="Name"
+        />
         <YAxis domain={[0, getYMaxFromMaxCases(maxCases)]} />
         <Tooltip />
         <Legend />
