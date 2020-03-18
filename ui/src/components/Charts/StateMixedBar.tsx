@@ -64,9 +64,10 @@ export const StateMixedBar = (props: Props) => {
 
   return (
     <>
-      <h2>{stateName}</h2>
+      <h3>{stateName}</h3>
       <BarChart
-        width={1000}
+        barSize={10}
+        width={800}
         height={300}
         data={sortedData.slice(0, 10)}
         margin={{
