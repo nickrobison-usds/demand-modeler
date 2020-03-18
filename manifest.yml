@@ -5,3 +5,5 @@ applications:
   - go_buildpack
   env:
     GOVERSION: go1.13
+    GOPACKAGENAME: main
+  command: demand-modeling
