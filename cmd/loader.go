@@ -152,8 +152,11 @@ func (d *DataLoader) createNewCounty(row []string) (string, error) {
 		atomic.AddInt32(&countyIter, 1)
 	} else {
 
+		// Get the state fips code
+		state = fmt.Sprintf("%02d", stateFips[strings.ToUpper(row[1])])
+
 		// We need the fips information from the Shapefile database, so query for it
-		err := d.conn.QueryRow(d.ctx, "SELECT t.statefp, t.countyfp FROM tiger as t where ST_Intersects(t.geom, ST_Transform(ST_SetSRID(ST_Point($1, $2), 4326), 4269))", row[7], row[6]).Scan(&state, &county)
+		err := d.conn.QueryRow(d.ctx, "SELECT t.countyfp FROM tiger as t where (t.name = $1 OR t.namelsad = $1) and t.statefp = $2", row[0], state).Scan(&county)
 		// More gross
 		if err != nil && err.Error() == "no rows in result set" {
 			// No rows means we have a non-spatial county, so create a fake fips
