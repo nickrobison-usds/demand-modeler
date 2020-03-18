@@ -153,7 +153,7 @@ func (d *DataLoader) createNewCounty(row []string) (string, error) {
 	} else {
 
 		// Get the state fips code
-		state = fmt.Sprintf("%02d", stateFips[strings.ToUpper(row[1])])
+		state = fmt.Sprintf("%02d", StateFips[strings.ToUpper(row[1])])
 
 		// We need the fips information from the Shapefile database, so query for it
 		err := d.conn.QueryRow(d.ctx, "SELECT t.countyfp FROM tiger as t where (t.name = $1 OR t.namelsad = $1) and t.statefp = $2", row[0], state).Scan(&county)
