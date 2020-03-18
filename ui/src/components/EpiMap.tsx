@@ -3,6 +3,7 @@ import { ActionType, AppContext } from "../app/AppStore";
 import ReactMapGL, { Layer, Source, PointerEvent } from "react-map-gl";
 import { range } from "d3-array";
 import { scaleQuantile } from "d3-scale";
+import { getContiesForState } from "../utils/utils";
 
 const dataLayer = {
   id: "data",
@@ -53,7 +54,7 @@ interface Props {
   stat: "confirmed" | "dead";
 }
 
-const EpiMap: React.FunctionComponent<Props> = (props) => {
+const EpiMap: React.FunctionComponent<Props> = props => {
   const [data, setData] = useState<GeoJSON.FeatureCollection>({
     type: "FeatureCollection",
     features: []
@@ -66,7 +67,10 @@ const EpiMap: React.FunctionComponent<Props> = (props) => {
   } = useContext(AppContext);
 
   const transformFeatures = (): GeoJSON.Feature[] => {
-    const states = Object.values(covidTimeSeries[selection.date].states);
+    const states =
+      selection.state === undefined
+        ? Object.values(covidTimeSeries[selection.date].states)
+        : getContiesForState(covidTimeSeries, selection.date, selection.state);
     return states.map(value => {
       return {
         type: "Feature",
@@ -94,14 +98,14 @@ const EpiMap: React.FunctionComponent<Props> = (props) => {
       features: transformFeatures()
     };
     setData(updatePercentiles(newData, accessor));
-  }, [covidTimeSeries]);
+  }, [covidTimeSeries, selection]);
 
   return (
     <ReactMapGL
       {...state.mapView}
       mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
       onViewportChange={v => {
-        v.width = 400//window.innerWidth;
+        v.width = 400; //window.innerWidth;
         dispatch({ type: ActionType.UPDATE_MAPVIEW, payload: v });
       }}
     >
