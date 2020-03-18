@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { ActionType, AppContext } from "../app/AppStore";
-import ReactMapGL, { Layer, Source, PointerEvent } from "react-map-gl";
+import ReactMapGL, { Layer, Source } from "react-map-gl";
 import { range } from "d3-array";
 import { scaleQuantile } from "d3-scale";
 import { getContiesForState } from "../utils/utils";
@@ -99,6 +99,7 @@ const EpiMap: React.FunctionComponent<Props> = props => {
       features: transformFeatures()
     };
     setData(updatePercentiles(newData, accessor));
+  // eslint-disable-next-line
   }, [covidTimeSeries, selection]);
 
   return (
