@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/cloudfoundry-community/go-cfenv"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
@@ -127,20 +126,20 @@ func migrateDatabase(dbURL string, workDir string) error {
 }
 
 func getDBURL() string {
-	if cfenv.IsRunningOnCF() {
-		app, err := cfenv.Current()
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		serv, err := app.Services.WithName("fearless-dreamer-psql")
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		url, _ := serv.CredentialString()
-		return url
-	} else {
-		return os.Getenv("DATABASE_URL")
-	}
+	//if cfenv.IsRunningOnCF() {
+	//	app, err := cfenv.Current()
+	//	if err != nil {
+	//		log.Fatal(err)
+	//	}
+	//
+	//	serv, err := app.Services.WithName("fearless-dreamer-psql")
+	//	if err != nil {
+	//		log.Fatal(err)
+	//	}
+	//
+	//	url, _ := serv.CredentialString("uri")
+	//	return url
+	//} else {
+	return os.Getenv("DATABASE_URL")
+	//}
 }
