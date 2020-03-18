@@ -135,11 +135,9 @@ storiesOf("Charts", module).add("State - Mixed Bar", () => {
           if (!state.selection.state) {
             dispatch({
               type: ActionType.UPDATE_SELECTED_STATE,
-              payload: "Arkansas"
+              payload: "3"
             });
           }
-
-          console.log(state);
 
           return (
             <StateMixedBar

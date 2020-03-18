@@ -19,9 +19,11 @@ const colors = ["#E5A3A3", "#D05C5B", "#CB2626", "#C00001"];
 
 export const StateMixedBar = (props: Props) => {
   let applicableCounties: string[] = [];
+  let stateName;
 
   Object.values(props.timeSeries).forEach(({ states }) => {
-    const state = Object.values(states).find(el => el.Name === props.state);
+    const state = Object.values(states).find(el => el.ID === props.state);
+    stateName = state?.Name;
     applicableCounties.push(...(state?.CountyIDs || []));
   });
 
@@ -62,7 +64,7 @@ export const StateMixedBar = (props: Props) => {
 
   return (
     <>
-      <h2>{props.state}</h2>
+      <h2>{stateName}</h2>
       <BarChart
         width={1000}
         height={300}
