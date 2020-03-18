@@ -28,7 +28,7 @@ export default function UsaSelect<T>(props: Props<T>) {
   });
 
   const label = props.label && (
-    <label className="usa-label" htmlFor={selectId}>
+    <label className="usa-label" htmlFor={selectId} style={{margin: "0 5px 0 0"}}>
       {props.label}
     </label>
   );
@@ -61,6 +61,7 @@ export default function UsaSelect<T>(props: Props<T>) {
         className="usa-select"
         name={props.name}
         id={selectId}
+        style={{margin: "0 10px 0 0"}}
       >
         {placeholder}
         {props.options.map(renderOption)}

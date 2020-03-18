@@ -31,7 +31,7 @@ const USATotal: React.FunctionComponent<{}> = props => {
   };
 
   return (
-    <div style={{ display: "flex", textAlign: "center" }}>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
       <UsaSelect
         options={options}
         placeholder={DEFAULT_TEXT}
