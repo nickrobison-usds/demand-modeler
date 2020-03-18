@@ -36,7 +36,7 @@ const makeCountyData = () => {
   testStates.forEach((state, i) => {
     new Array(11).fill(1).forEach((_, j) => {
       counties[`${i}|${j}`] = {
-        ID: `${j}`,
+        ID: `${i}|${j}`,
         Name: `${state}-${j}`,
         Confirmed: Math.round(Math.random() * 400),
         Dead: Math.round(Math.random() * 30)
