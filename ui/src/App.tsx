@@ -1,6 +1,5 @@
 import React from "react";
 import "./App.scss";
-import Header from "./components/Header/Header";
 import { AppStoreProvider } from "./app/AppStore";
 import EpiMap from "./components/EpiMap";
 import Card from "./components/Card/Card";
@@ -13,7 +12,6 @@ import { ChartContainer2 } from "./components/Charts/ChartContainer2";
 function App() {
   return (
     <AppStoreProvider>
-      <Header title="Demand Modeller" titleRoute="/" />
       <Card>
         <div style={{ display: "flex" }}>
           <StateSelect />
