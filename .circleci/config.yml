@@ -45,6 +45,7 @@ jobs:
           root: ./
           paths:
             - demand-modeling
+            - manifest.yml
   deploy:
     <<: *defaults
     docker:
