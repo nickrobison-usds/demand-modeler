@@ -17,7 +17,7 @@ services:
     container_name: "api"
     environment:
       - LOAD=1
-      - POSTGRES_URL=postgres://covid:goaway@postgres:5432/covid?sslmode=disable
+      - DATABASE_URL=postgres://covid:goaway@postgres:5432/covid?sslmode=disable
     ports:
       # This is externalPort:internalPort, for the record
       - "8080:8080"
