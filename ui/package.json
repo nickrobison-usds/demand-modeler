@@ -27,7 +27,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "prettier.write": "prettier --write './src/**/*.{ts,tsx}'"
+    "prettier.write": "prettier --write './src/**/*.{ts,tsx}'",
+    "storybook": "start-storybook -p 9009 -s public",
+    "build-storybook": "build-storybook -s public"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -45,9 +47,11 @@
     ]
   },
   "devDependencies": {
+    "@storybook/react": "^5.3.17",
     "@types/d3": "^5.7.2",
     "@types/mapbox-gl": "^1.8.1",
     "@types/react-map-gl": "^5.2.0",
+    "@types/storybook__react": "^5.2.1",
     "node-sass": "^4.13.1",
     "prettier": "^1.19.1"
   }
