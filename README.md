@@ -21,5 +21,8 @@ shp2pgsql -s 4269 data/tl_2019_us_state public.states | psql --host localhost -d
 or via docker
 
 ```bash
-docker build -f loader.Dockerfile -t loader . && docker run -i -t loader
+docker-compose up --build postgres
+# `docker network ls` to find the correct network name
+docker build -f loader.Dockerfile -t loader . && docker run -it --network=demand-modeller_default loader
+docker-compose up --build api
 ```
