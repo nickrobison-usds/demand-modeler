@@ -9,6 +9,7 @@ import {
   Legend
 } from "recharts";
 import { CovidDateData } from "../../app/AppStore";
+import { getYMaxFromMaxCases } from "../../utils/utils";
 
 type Props = {
   state?: string;
@@ -18,11 +19,10 @@ type Props = {
   stateCount: boolean;
 };
 
-
 const colors = ["#E5A3A3", "#D05C5B", "#CB2626", "#C00001"];
 
 export const StateMixedBar = (props: Props) => {
-  let title = "Top 10 Counties"
+  let title = "Top 10 Counties";
   let applicableCounties: string[] = [];
 
   if ((props.stateCount && props.state) || props.county) {
@@ -31,7 +31,7 @@ export const StateMixedBar = (props: Props) => {
 
   Object.values(props.timeSeries).forEach(({ states, counties }) => {
     if (props.stateCount) {
-      title = "Top 10 States"
+      title = "Top 10 States";
       applicableCounties = Object.keys(states);
     } else if (props.state) {
       const state = Object.values(states).find(el => el.ID === props.state);
@@ -39,15 +39,17 @@ export const StateMixedBar = (props: Props) => {
     } else {
       applicableCounties = Object.keys(counties);
     }
-
   });
+
+  let maxCases = 0;
 
   const dates = Object.keys(props.timeSeries).sort();
   const counties = Object.entries(props.timeSeries).reduce(
     (acc, [date, { counties, states }]) => {
-      const entries =  props.stateCount ? states : counties;
+      const entries = props.stateCount ? states : counties;
       Object.entries(entries).forEach(([, { Name, Confirmed, Dead, ID }]) => {
         if (!applicableCounties.includes(ID)) return acc;
+        maxCases = Math.max(Confirmed, Dead, maxCases);
         if (!acc[Name]) acc[Name] = {};
         if (props.stat === "confirmed") {
           acc[Name][date] = Confirmed;
@@ -99,7 +101,7 @@ export const StateMixedBar = (props: Props) => {
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis height={60} dataKey="Name" />
-        <YAxis />
+        <YAxis domain={[0, getYMaxFromMaxCases(maxCases)]} />
         <Tooltip />
         <Legend />
         {dates.map((date, i) => (

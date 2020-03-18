@@ -9,7 +9,7 @@ import {
   Legend
 } from "recharts";
 import { CovidDateData } from "../../app/AppStore";
-import { getContiesForState } from "../../utils/utils";
+import { getContiesForState, getYMaxFromMaxCases } from "../../utils/utils";
 
 type Props = {
   state?: string;
@@ -23,30 +23,43 @@ const colors = ["#E5A3A3", "#D05C5B", "#CB2626", "#C00001"];
 export const MixedBar = (props: Props) => {
   let title = "Grand Total";
 
+  let maxCases = 0;
+  let maxCasesByDate: { [d: string]: number } = {};
+
   const dates = Object.keys(props.timeSeries).sort();
   const data = dates.map(date => {
     let total = 0;
     if (props.county) {
-      total = props.stat === "confirmed" ?
-        props.timeSeries[date].counties[props.county].Confirmed :
-        props.timeSeries[date].counties[props.county].Dead
+      total =
+        props.stat === "confirmed"
+          ? props.timeSeries[date].counties[props.county].Confirmed
+          : props.timeSeries[date].counties[props.county].Dead;
+      maxCasesByDate[date] =
+        (maxCasesByDate[date] || 0) +
+        props.timeSeries[date].counties[props.county].Confirmed;
     } else if (props.state) {
-      Object.values(getContiesForState(props.timeSeries, date, props.state)).forEach(s => {
+      Object.values(
+        getContiesForState(props.timeSeries, date, props.state)
+      ).forEach(s => {
         const count = props.stat === "confirmed" ? s.Confirmed : s.Dead;
+        maxCasesByDate[date] = (maxCasesByDate[date] || 0) + s.Confirmed;
         total += count;
       });
     } else {
       Object.values(props.timeSeries[date].states).forEach(s => {
         const count = props.stat === "confirmed" ? s.Confirmed : s.Dead;
+        maxCasesByDate[date] = (maxCasesByDate[date] || 0) + s.Confirmed;
         total += count;
       });
     }
-
     return {
       Name: date,
       "Grand Total": total
     };
   });
+
+  maxCases = Math.max(...Object.values(maxCasesByDate));
+  console.log(maxCases);
   return (
     <>
       <h3>{title}</h3>
@@ -64,7 +77,10 @@ export const MixedBar = (props: Props) => {
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis height={60} dataKey="Name" />
-        <YAxis dataKey="Grand Total" />
+        <YAxis
+          dataKey="Grand Total"
+          domain={[0, getYMaxFromMaxCases(maxCases)]}
+        />
         <Tooltip />
         <Legend />
         <Bar dataKey="Grand Total" fill={colors[0]} />
