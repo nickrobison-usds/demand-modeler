@@ -122,14 +122,18 @@ const updateSelectedState = (state: AppState, { payload }: Action): AppState => 
   let zoom = DEFAULT_ZOOM;
   if (id !== undefined) {
     const s = state.covidTimeSeries[DateUtils.formatDate(new Date())].states[id];
-    var polygon = (s.Geo as any as GeoJSON.Polygon).coordinates;
-    var fit = new L.Polygon(polygon as any).getBounds();
-    const southWest = new mapboxgl.LngLat(fit.getSouthWest()['lat'], fit.getSouthWest()['lng']);
-    const northEast = new mapboxgl.LngLat(fit.getNorthEast()['lat'], fit.getNorthEast()['lng']);
-    const center = new mapboxgl.LngLatBounds(southWest, northEast).getCenter();
-    lat = center.lat;
-    lng = center.lng;
-    zoom = 4;
+    if (s.Geo) {
+      var polygon = (s.Geo).coordinates;
+      var fit = new L.Polygon(polygon as any).getBounds();
+      const southWest = new mapboxgl.LngLat(fit.getSouthWest()['lat'], fit.getSouthWest()['lng']);
+      const northEast = new mapboxgl.LngLat(fit.getNorthEast()['lat'], fit.getNorthEast()['lng']);
+      const center = new mapboxgl.LngLatBounds(southWest, northEast).getCenter();
+      lat = center.lat;
+      lng = center.lng;
+      zoom = 4;
+    }
+  } else {
+    selection.county = undefined;
   }
   const mapView = Object.assign({}, state.mapView);
   mapView.latitude = lat;
@@ -152,14 +156,16 @@ const updateSelectedCounty = (state: AppState, { payload }: Action): AppState =>
   let zoom = DEFAULT_ZOOM;
   if (id !== undefined) {
     const s = state.covidTimeSeries[DateUtils.formatDate(new Date())].counties[id];
-    var polygon = (s.Geo as any as GeoJSON.Polygon).coordinates;
-    var fit = new L.Polygon(polygon as any).getBounds();
-    const southWest = new mapboxgl.LngLat(fit.getSouthWest()['lat'], fit.getSouthWest()['lng']);
-    const northEast = new mapboxgl.LngLat(fit.getNorthEast()['lat'], fit.getNorthEast()['lng']);
-    const center = new mapboxgl.LngLatBounds(southWest, northEast).getCenter();
-    lat = center.lat;
-    lng = center.lng;
-    zoom = 6;
+    if (s.Geo) {
+      var polygon = (s.Geo).coordinates;
+      var fit = new L.Polygon(polygon as any).getBounds();
+      const southWest = new mapboxgl.LngLat(fit.getSouthWest()['lat'], fit.getSouthWest()['lng']);
+      const northEast = new mapboxgl.LngLat(fit.getNorthEast()['lat'], fit.getNorthEast()['lng']);
+      const center = new mapboxgl.LngLatBounds(southWest, northEast).getCenter();
+      lat = center.lat;
+      lng = center.lng;
+      zoom = 6;
+    }
   }
   const mapView = Object.assign({}, state.mapView);
   mapView.latitude = lat;

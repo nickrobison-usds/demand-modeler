@@ -143,6 +143,8 @@ storiesOf("Charts", module).add("State - Mixed Bar", () => {
             <StateMixedBar
               state={state.selection.state || ""}
               timeSeries={state.covidTimeSeries}
+              stat="confirmed"
+              stateCount={false}
             />
           );
         }}

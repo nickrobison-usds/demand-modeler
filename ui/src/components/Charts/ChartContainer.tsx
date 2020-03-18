@@ -3,20 +3,25 @@ import { AppContext } from "../../app/AppStore";
 import { StateMixedBar } from "./StateMixedBar";
 import Card from "../Card/Card";
 
-export const ChartContainer: React.FC = () => {
+interface Props {
+  stat: "confirmed" | "dead"
+  stateCount: boolean;
+}
+
+export const ChartContainer: React.FC<Props> = (props) => {
   return (
     <AppContext.Consumer>
       {({ state }) => {
-        console.log(state);
         return (
-          state.selection.state && (
-            <Card>
-              <StateMixedBar
-                state={state.selection.state}
-                timeSeries={state.covidTimeSeries}
-              />
-            </Card>
-          )
+          <Card>
+            <StateMixedBar
+              state={state.selection.state}
+              county={state.selection.county}
+              timeSeries={state.covidTimeSeries}
+              stat={props.stat}
+              stateCount={props.stateCount}
+            />
+          </Card>
         );
       }}
     </AppContext.Consumer>

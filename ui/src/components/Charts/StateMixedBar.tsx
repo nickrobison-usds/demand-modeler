@@ -11,29 +11,49 @@ import {
 import { CovidDateData } from "../../app/AppStore";
 
 type Props = {
-  state: string;
+  state?: string;
+  county?: string;
   timeSeries: CovidDateData;
+  stat: "confirmed" | "dead";
+  stateCount: boolean;
 };
+
 
 const colors = ["#E5A3A3", "#D05C5B", "#CB2626", "#C00001"];
 
 export const StateMixedBar = (props: Props) => {
+  let title = "Top 10 Counties"
   let applicableCounties: string[] = [];
-  let stateName;
 
-  Object.values(props.timeSeries).forEach(({ states }) => {
-    const state = Object.values(states).find(el => el.ID === props.state);
-    stateName = state?.Name;
-    applicableCounties.push(...(state?.CountyIDs || []));
+  if ((props.stateCount && props.state) || props.county) {
+    return null;
+  }
+
+  Object.values(props.timeSeries).forEach(({ states, counties }) => {
+    if (props.stateCount) {
+      title = "Top 10 States"
+      applicableCounties = Object.keys(states);
+    } else if (props.state) {
+      const state = Object.values(states).find(el => el.ID === props.state);
+      applicableCounties.push(...(state?.CountyIDs || []));
+    } else {
+      applicableCounties = Object.keys(counties);
+    }
+
   });
 
   const dates = Object.keys(props.timeSeries).sort();
   const counties = Object.entries(props.timeSeries).reduce(
-    (acc, [date, { counties }]) => {
-      Object.entries(counties).forEach(([, { Name, Confirmed, ID }]) => {
+    (acc, [date, { counties, states }]) => {
+      const entries =  props.stateCount ? states : counties;
+      Object.entries(entries).forEach(([, { Name, Confirmed, Dead, ID }]) => {
         if (!applicableCounties.includes(ID)) return acc;
         if (!acc[Name]) acc[Name] = {};
-        acc[Name][date] = Confirmed;
+        if (props.stat === "confirmed") {
+          acc[Name][date] = Confirmed;
+        } else {
+          acc[Name][date] = Dead;
+        }
         return acc;
       });
       return acc;
@@ -64,17 +84,17 @@ export const StateMixedBar = (props: Props) => {
 
   return (
     <>
-      <h3>{stateName}</h3>
+      <h3>{title}</h3>
       <BarChart
         barSize={10}
-        width={800}
+        width={400}
         height={300}
         data={sortedData.slice(0, 10)}
         margin={{
-          top: 20,
-          right: 30,
-          left: 20,
-          bottom: 5
+          top: 0,
+          right: 0,
+          left: 0,
+          bottom: 0
         }}
       >
         <CartesianGrid strokeDasharray="3 3" />
