@@ -1,4 +1,4 @@
-import { CovidDateData } from "./AppStore";
+import { CovidDateData, State, County } from "./AppStore";
 // MOCK this file can be removed
 
 const testStates = [
@@ -29,14 +29,14 @@ const makeStateData = () =>
     .reduce((acc, el) => {
       acc[el.ID] = el;
       return acc;
-    }, {} as any);
+    }, {} as { [stateID: string]: State });
 
 const makeCountyData = () => {
-  let counties: any = {};
+  let counties = {} as { [countyID: string]: County };
   testStates.forEach((state, i) => {
     new Array(11).fill(1).forEach((_, j) => {
       counties[`${i}|${j}`] = {
-        ID: `${i}|${j}`,
+        ID: `${j}`,
         Name: `${state}-${j}`,
         Confirmed: Math.round(Math.random() * 400),
         Dead: Math.round(Math.random() * 30)
