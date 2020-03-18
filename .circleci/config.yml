@@ -5,7 +5,7 @@ jobs:
   build-ui:
     <<: *defaults
     docker:
-      - image: circleci/node:1.1.6
+      - image: circleci/node:latest
     steps:
       - checkout
       - run:
@@ -50,7 +50,7 @@ jobs:
             - demand-modeling
 workflows:
   version: 2
-  test-deploy:
+  deploy:
     jobs:
       - build-ui
       - build-api
