@@ -2,5 +2,6 @@
 applications:
 - name: FearlessDreamer
   docker:
-    image: docker-image-repository/docker-image-name
-
+    image: nickrobisonusds/fearless-dreamer:latest
+  services:
+    - dreamer-shared-psql
