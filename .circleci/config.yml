@@ -74,6 +74,3 @@ workflows:
           requires:
             - build-ui
             - build-api
-          filters:
-            branches:
-              only: master
