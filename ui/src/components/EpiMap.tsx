@@ -12,15 +12,15 @@ const dataLayer = {
     "fill-color": {
       property: "percentile",
       stops: [
-        [0, "#3288bd"],
-        [1, "#66c2a5"],
-        [2, "#abdda4"],
-        [3, "#e6f598"],
-        [4, "#ffffbf"],
-        [5, "#fee08b"],
-        [6, "#fdae61"],
-        [7, "#f46d43"],
-        [8, "#d53e4f"]
+        [0, "#FFF9E5"],
+        [1, "#FEEFB3"],
+        [2, "#F3CB7C"],
+        [3, "#ECAC53"],
+        [4, "#E58445"],
+        [5, "#E16742"],
+        [6, "#BC2D49"],
+        [7, "#fdae61"],
+        [8, "#8C114A"],
       ]
     },
     "fill-opacity": 0.8,
