@@ -27,7 +27,7 @@ func main() {
 	}
 	filesDir := filepath.Join(workDir, "ui/build")
 
-	url := os.Getenv("POSTGRES_URL")
+	url := os.Getenv("DATABASE_URL")
 	// Do the migration
 	err = migrateDatabase(url, workDir)
 	if err != nil {
