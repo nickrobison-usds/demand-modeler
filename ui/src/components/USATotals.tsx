@@ -1,28 +1,66 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Card from "./Card/Card";
-import { AppContext, State } from "../app/AppStore";
+import { AppContext, State, CovidStats } from "../app/AppStore";
 import { getPreviousDate } from "../utils/DateUtils";
 
+interface Stats {
+  c: number;
+  d: number;
+}
+
 const USATotal: React.FunctionComponent<{}> = props => {
-  const { state } = useContext(AppContext);
+  const {
+    state: { covidTimeSeries, selection : {date, state, county} }
+  } = useContext(AppContext);
+  const [confirmed, setConfirmed] = useState<number>(0);
+  const [dead, setDead] = useState<number>(0);
+  const [previousConfirmed, setPreviousConfirmed] = useState<number>(0);
+  const [previousDead, setPreviousDead] = useState<number>(0);
 
-  let confirmed = 0;
-  let dead = 0;
-  let previousConfirmed = 0;
-  let previousDead = 0;
-  const selectedDate = state.selection.date;
-  const slectedStates = state.covidTimeSeries[selectedDate].states;
-  Object.values(slectedStates).forEach((c: State) => {
-    confirmed += c.Confirmed;
-    dead += c.Dead;
-  });
+  useEffect(() => {
+    let currentStats: Stats;
+    let previousStats: Stats;
+    const previousDate = getPreviousDate(date);
+    if (county !== undefined) {
+      currentStats = {
+        c: covidTimeSeries[date].counties[county].Confirmed,
+        d: covidTimeSeries[date].counties[county].Dead,
+      };
+      previousStats = {
+        c: covidTimeSeries[previousDate].counties[county].Confirmed,
+        d: covidTimeSeries[previousDate].counties[county].Dead,
+      }
+    } else if (state !== undefined) {
+      console.log(state)
+      console.log(covidTimeSeries[date].states)
+      const CountyIDs = covidTimeSeries[date].states[state].CountyIDs;
+      if (CountyIDs !== undefined) {
+        const counties = CountyIDs.map((id: string) => covidTimeSeries[date].counties[id])
+        const previousCounties = CountyIDs.map((id: string) => covidTimeSeries[previousDate].counties[id])
+        currentStats = countCases(counties);
+        previousStats = countCases(previousCounties);
+      } else {
+        throw Error("CountyIDs not defiened")
+      }
+    } else {
+      currentStats = countCases(Object.values(covidTimeSeries[date].states));
+      previousStats = countCases(Object.values(covidTimeSeries[previousDate].states));
+    }
+    setConfirmed(currentStats.c);
+    setDead(currentStats.d);
+    setPreviousConfirmed(previousStats.c);
+    setPreviousDead(previousStats.d);
+  }, [covidTimeSeries, date, state, county]);
 
-  const previousDate = getPreviousDate(state.selection.date);
-  const previousStates = state.covidTimeSeries[previousDate].states;
-  Object.values(previousStates).forEach((c: State) => {
-    previousConfirmed += c.Confirmed;
-    previousDead += c.Dead;
-  });
+  const countCases = (data: CovidStats[]): Stats => {
+    let c = 0;
+    let d = 0;
+    data.forEach((stats: CovidStats) => {
+      c += stats.Confirmed;
+      d += stats.Dead;
+    });
+    return { c, d};
+  }
 
   const renderChange = (current: number, previous: number): string => {
     const change = current - previous;

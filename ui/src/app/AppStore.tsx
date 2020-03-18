@@ -9,7 +9,7 @@ import * as TypeGuards from "../utils/guards";
 import * as DateUtils from "../utils/DateUtils";
 import {mockCovidTimeSeries} from "./mockData";
 
-interface CovidStats {
+export interface CovidStats {
   Confirmed: number;
   Dead: number;
 }

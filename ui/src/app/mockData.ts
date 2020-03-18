@@ -2,13 +2,14 @@ import { CovidDateData } from "./AppStore"
 // MOCK this file can be removed
 
 export const mockCovidTimeSeries: CovidDateData = {
-  "2020-3-17": {
+  "2020-3-18": {
     states: {
       "01": {
-        ID: "1",
+        ID: "01",
         Name: "New York",
         Confirmed: 1204,
         Dead: 80,
+        CountyIDs: ["01|02"],
         Geo: {
           type: "Polygon",
           coordinates: [
@@ -88,7 +89,7 @@ export const mockCovidTimeSeries: CovidDateData = {
     },
     counties: {
       "01|02":   {
-        ID: "1",
+        ID: "01|02",
         Name: "Westchester",
         Confirmed: 180,
         Dead: 3,
@@ -1512,13 +1513,14 @@ export const mockCovidTimeSeries: CovidDateData = {
       }
     }
   },
-  "2020-3-16": {
+  "2020-3-17": {
     states: {
       "01": {
-        ID: "1",
+        ID: "01",
         Name: "New York",
         Confirmed: 1104,
         Dead: 76,
+        CountyIDs: ["01|02"],
         Geo: {
           type: "Polygon",
           coordinates: [
@@ -1598,7 +1600,7 @@ export const mockCovidTimeSeries: CovidDateData = {
     },
     counties: {
       "01|02":   {
-        ID: "1",
+        ID: "01|02",
         Name: "Westchester",
         Confirmed: 160,
         Dead: 2,
