@@ -7,10 +7,7 @@ import React, {
 } from "react";
 import * as TypeGuards from "../utils/guards";
 import * as DateUtils from "../utils/DateUtils";
-
-interface Geo {
-  Geo: GeoJSON.Polygon; //GeoJSON.MultiPolygon;
-}
+import {mockCovidTimeSeries} from "./mockData";
 
 interface CovidStats {
   Confirmed: number;
@@ -43,19 +40,21 @@ export interface AppContextType {
 export interface County extends CovidStats {
   ID: string;
   Name: string;
-  Geo?: Geo;
+  Geo?: GeoJSON.Polygon; //GeoJSON.MultiPolygon;
 }
 
 export interface State extends CovidStats {
   ID: string;
   Name: string;
-  Geo?: Geo;
+  Geo?: GeoJSON.Polygon; //GeoJSON.MultiPolygon;
   CountyIDs?: string[];
 }
 
 export interface CovidDateData {
-  states: { [stateID: string]: State };
-  countines: { [countyID: string]: County };
+  [date: string]: {
+    states: { [stateID: string]: State };
+    counties: { [countyID: string]: County };
+  }
 }
 
 export interface AppState {
@@ -64,9 +63,7 @@ export interface AppState {
     state?: string;
     county?: string;
   }
-  covidTimeSeries: {
-    [date: string]: CovidDateData;
-  };
+  covidTimeSeries:  CovidDateData;
   mapView: MapView;
 }
 
@@ -74,7 +71,7 @@ export const initialState: AppState = {
   selection: {
     date: DateUtils.formatDate(new Date()),
   },
-  covidTimeSeries: {},
+  covidTimeSeries: mockCovidTimeSeries,
   mapView: {
     width: 400,
     height: 400,

@@ -27,35 +27,6 @@ const dataLayer = {
   }
 };
 
-const labels = {
-  id: "county-name",
-  type: "symbol",
-  source: "data",
-  layout: {
-    "text-field": "{name}\nConfirmed: {confirmed}\nDead: {dead}",
-    // "text-font": ["Droid Sans Regular"],
-    "text-size": 12
-    // 'symbol-placement': 'point'
-  },
-  paint: {
-    "text-color": "black"
-  }
-  // paint: {
-  //     "text-color": ["case",
-  //         ["boolean", ["feature-state", "hover"], false],
-  //         'rgba(255,0,0,0.75)',
-  //         'rgba(0,0,0,0.75)'
-  //     ],
-  //     "text-halo-color": ["case",
-  //         ["boolean", ["feature-state", "hover"], false],
-  //         'rgba(255,255,0,0.75)',
-  //         'rgba(255,255,255,0.75)'
-  //     ],
-  //     "text-halo-width": 2,
-  //     "text-halo-blur": 0,
-  // }
-};
-
 function updatePercentiles(
   featureCollection: GeoJSON.FeatureCollection,
   accessor: (f: GeoJSON.Feature) => number
@@ -87,19 +58,19 @@ const EpiMap: React.FunctionComponent = () => {
   const {
     dispatch,
     state,
-    state: { covidTimeSeries, activeDate }
+    state: { covidTimeSeries, selection }
   } = useContext(AppContext);
 
   const transformFeatures = (): GeoJSON.Feature[] => {
-    console.debug("Updating cases");
-    return cases.map(value => {
+    const states = Object.values(covidTimeSeries[selection.date].states);
+    return states.map(value => {
       return {
         type: "Feature",
-        geometry: value.Geo,
+        geometry: value.Geo as any, // TODO: add check to see if Geo is loaded
         properties: {
           confirmed: value.Confirmed,
           dead: value.Dead,
-          name: `${value.County}`
+          name: `${value.Name}`
         }
       };
     });
@@ -117,7 +88,7 @@ const EpiMap: React.FunctionComponent = () => {
   };
 
   useEffect(() => {
-    console.debug("Effect cases: ", cases);
+    console.debug("Effect cases: ", covidTimeSeries);
     console.debug("Calling effect handler");
     const newData: GeoJSON.FeatureCollection = {
       type: "FeatureCollection",
@@ -125,7 +96,7 @@ const EpiMap: React.FunctionComponent = () => {
     };
     setData(updatePercentiles(newData, accessor));
     console.debug("JSON: ", data);
-  }, [cases]);
+  }, [covidTimeSeries]);
 
   return (
     <ReactMapGL
@@ -139,11 +110,6 @@ const EpiMap: React.FunctionComponent = () => {
     >
       <Source id="data" type="geojson" data={data}>
         <Layer {...dataLayer} />
-        {state.mapView.zoom > 7 ? (
-          <Layer {...labels} />
-        ) : (
-          <React.Fragment></React.Fragment>
-        )}
       </Source>
     </ReactMapGL>
   );
