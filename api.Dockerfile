@@ -3,6 +3,10 @@ FROM golang:latest
 COPY . /home/src
 WORKDIR /home/src
 
+RUN apt-get update
+RUN apt-get install unzip postgis -y
+
 RUN go build .
 
-ENTRYPOINT ./demand-modeling
+ENTRYPOINT ["./docker/entrypoint.sh"]
+CMD ["./demand-modeling"]
