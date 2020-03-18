@@ -1,4 +1,4 @@
-import { CovidDateData, County, AppState } from "../app/AppStore";
+import { CovidDateData, County } from "../app/AppStore";
 
 export const getContiesForState = (
   data: CovidDateData,
