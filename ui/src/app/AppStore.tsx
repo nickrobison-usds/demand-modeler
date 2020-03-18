@@ -5,17 +5,14 @@ import React, {
   Reducer,
   useReducer
 } from "react";
-import * as TypeGuards from "../guards";
-import {cases, yesterdaysCases} from "./mockData";
+import * as TypeGuards from "../utils/guards";
+import * as DateUtils from "../utils/DateUtils";
 
 interface Geo {
   Geo: GeoJSON.Polygon; //GeoJSON.MultiPolygon;
 }
 
-export interface Case {
-  ID: string;
-  County: string;
-  State: string;
+interface CovidStats {
   Confirmed: number;
   Dead: number;
 }
@@ -43,21 +40,41 @@ export interface AppContextType {
   dispatch: Dispatch<Action>;
 }
 
+export interface County extends CovidStats {
+  ID: string;
+  Name: string;
+  Geo?: Geo;
+}
+
+export interface State extends CovidStats {
+  ID: string;
+  Name: string;
+  Geo?: Geo;
+  CountyIDs?: string[];
+}
+
 export interface CovidDateData {
-  [stateID: string]: State;
+  states: { [stateID: string]: State };
+  countines: { [countyID: string]: County };
 }
 
 export interface AppState {
+  selection: {
+    date: string;
+    state?: string;
+    county?: string;
+  }
   covidTimeSeries: {
-    [date: string]: CovidDateData
+    [date: string]: CovidDateData;
   };
   mapView: MapView;
 }
 
 export const initialState: AppState = {
-  timedata: {
-    [date: string]: {}
-  }.
+  selection: {
+    date: DateUtils.formatDate(new Date()),
+  },
+  covidTimeSeries: {},
   mapView: {
     width: 400,
     height: 400,
@@ -82,13 +99,14 @@ const updateMapView = (state: AppState, { payload }: Action): AppState => {
 
 const updateCases = (state: AppState, { payload }: Action): AppState => {
   console.debug("Updating cases: ", payload);
-  if (TypeGuards.isCases(payload)) {
-    console.debug("To update");
-    return {
-      ...state,
-      cases: payload
-    };
-  }
+  // TODO
+  // if (TypeGuards.isCases(payload)) {
+  //   console.debug("To update");
+  //   return {
+  //     ...state,
+  //     // cases: payload
+  //   };
+  // }
   return state;
 };
 
