@@ -1,3 +1,4 @@
 ---
 applications:
 - name: FearlessDreamer
+  command: ./demand-modeling
