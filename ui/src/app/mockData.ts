@@ -1,5 +1,50 @@
-import { CovidDateData } from "./AppStore"
+import { CovidDateData } from "./AppStore";
 // MOCK this file can be removed
+
+const testStates = [
+  "Alabama",
+  "Alaska",
+  "Arizona",
+  "Arkansas",
+  "California",
+  "Colorado",
+  "Connecticut",
+  "Delaware",
+  "Florida",
+  "Georgia",
+  "Hawaii"
+];
+
+const makeStateData = () =>
+  testStates
+    .map((name, i) => {
+      return {
+        ID: `${i}`,
+        Name: name,
+        Confirmed: Math.round(Math.random() * 1000),
+        Dead: Math.round(Math.random() * 100),
+        CountyIDs: new Array(11).fill(1).map((_, j) => `${i}|${j}`)
+      };
+    })
+    .reduce((acc, el) => {
+      acc[el.ID] = el;
+      return acc;
+    }, {} as any);
+
+const makeCountyData = () => {
+  let counties: any = {};
+  testStates.forEach((state, i) => {
+    new Array(11).fill(1).forEach((_, j) => {
+      counties[`${i}|${j}`] = {
+        ID: `${i}|${j}`,
+        Name: `${state}-${j}`,
+        Confirmed: Math.round(Math.random() * 400),
+        Dead: Math.round(Math.random() * 30)
+      };
+    });
+  });
+  return counties;
+};
 
 export const mockCovidTimeSeries: CovidDateData = {
   "2020-3-18": {
@@ -85,10 +130,11 @@ export const mockCovidTimeSeries: CovidDateData = {
             ]
           ]
         }
-      }
+      },
+      ...makeStateData()
     },
     counties: {
-      "01|02":   {
+      "01|02": {
         ID: "01|02",
         Name: "Westchester",
         Confirmed: 180,
@@ -1510,7 +1556,8 @@ export const mockCovidTimeSeries: CovidDateData = {
             ]
           ]
         }
-      }
+      },
+      ...makeCountyData()
     }
   },
   "2020-3-17": {
@@ -1596,10 +1643,11 @@ export const mockCovidTimeSeries: CovidDateData = {
             ]
           ]
         }
-      }
+      },
+      ...makeStateData()
     },
     counties: {
-      "01|02":   {
+      "01|02": {
         ID: "01|02",
         Name: "Westchester",
         Confirmed: 160,
@@ -3021,7 +3069,8 @@ export const mockCovidTimeSeries: CovidDateData = {
             ]
           ]
         }
-      }
+      },
+      ...makeCountyData()
     }
-  },
+  }
 };
