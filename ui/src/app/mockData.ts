@@ -15,7 +15,7 @@ const testStates = [
   "Hawaii"
 ];
 
-const makeStateData = () => {
+const makeStateData = (day: number) => {
   return testStates.map((name, i) => {
     return {
       ID: `${i}`,
@@ -25,12 +25,12 @@ const makeStateData = () => {
       Dead: Math.round(Math.random() * 100),
       NewDead: Math.round(Math.random() * 100),
       CountyIDs: new Array(11).fill(1).map((_, j) => `${i}|${j}`),
-      Reported: "2020-03-15T20:23:00Z"
+      Reported: `2020-03-${day}T20:23:00Z`
     };
   });
 };
 
-const makeCountyData = () => {
+const makeCountyData = (day: number) => {
   let counties: County[] = [];
   testStates.forEach((state, i) => {
     new Array(11).fill(1).forEach((_, j) => {
@@ -42,7 +42,7 @@ const makeCountyData = () => {
         NewConfirmed: Math.round(Math.random() * 400),
         Dead: Math.round(Math.random() * 30),
         NewDead: Math.round(Math.random() * 30),
-        Reported: "2020-03-15T20:23:00Z"
+        Reported: `2020-03-${day}T20:23:00Z`
       });
     });
   });
@@ -136,7 +136,9 @@ export const mockCovidTimeSeries: CovidDateData = {
       },
       Reported: "2020-03-15T20:23:00Z"
     },
-    ...makeStateData()
+    ...makeStateData(14),
+    ...makeStateData(15),
+    ...makeStateData(16)
   ],
   counties: [
     {
@@ -1566,6 +1568,8 @@ export const mockCovidTimeSeries: CovidDateData = {
       },
       Reported: "2020-03-15T20:23:00Z"
     },
-    ...makeCountyData()
+    ...makeCountyData(14),
+    ...makeCountyData(15),
+    ...makeCountyData(16)
   ]
 };
