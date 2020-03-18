@@ -87,7 +87,7 @@ const EpiMap: React.FunctionComponent = () => {
   const {
     dispatch,
     state,
-    state: { cases }
+    state: { covidTimeSeries, activeDate }
   } = useContext(AppContext);
 
   const transformFeatures = (): GeoJSON.Feature[] => {
@@ -99,7 +99,7 @@ const EpiMap: React.FunctionComponent = () => {
         properties: {
           confirmed: value.Confirmed,
           dead: value.Dead,
-          name: `${value.County}, ${value.State}`
+          name: `${value.County}`
         }
       };
     });
@@ -139,7 +139,11 @@ const EpiMap: React.FunctionComponent = () => {
     >
       <Source id="data" type="geojson" data={data}>
         <Layer {...dataLayer} />
-        {state.mapView.zoom > 7 ? <Layer {...labels} /> : <React.Fragment></React.Fragment>}
+        {state.mapView.zoom > 7 ? (
+          <Layer {...labels} />
+        ) : (
+          <React.Fragment></React.Fragment>
+        )}
       </Source>
     </ReactMapGL>
   );

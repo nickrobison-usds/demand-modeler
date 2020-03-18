@@ -15,6 +15,8 @@
 ### County Cases
 
 `GET /api/county/:id`
+example `/api/county/05|032`
+
 
 #### Parameters
 
@@ -33,7 +35,7 @@ Case array order DESC
 
 ```js
   {
-    ID: string;
+    ID: string; (ex: "05|032")
     CountyName: string;
     StateName: string;
     Confirmed: number;
@@ -44,6 +46,7 @@ Case array order DESC
 ### County Geo
 
 `GET /api/county/:id/geo`
+example `/api/county/05|032/geo`
 
 #### Parameters
 
@@ -53,9 +56,9 @@ none
 
 Case array order DESC
 
-```JSON
+```js
   {
-    ID: string;
+    ID: string; (ex: "05|032")
     Geo: GeoJSON;
   }[]
 ```
@@ -65,6 +68,7 @@ Case array order DESC
 ### State Cases
 
 `GET /api/state/:id`
+example `/api/state/05`
 
 #### Parameters
 
@@ -83,7 +87,7 @@ Case array order DESC
 
 ```js
   {
-    ID: string;
+    ID: string; (ex: "05")
     StateName: string;
     Confirmed: number;
     Dead: number;
@@ -93,6 +97,7 @@ Case array order DESC
 ### State Geo
 
 `GET /api/state/:id/geo`
+example `/api/state/05/geo`
 
 #### Parameters
 
@@ -102,9 +107,9 @@ none
 
 Case array order DESC
 
-```JSON
+```js
   {
-    ID: string;
+    ID: string; (ex: "05")
     Geo: GeoJSON;
   }[]
 ```
@@ -112,6 +117,7 @@ Case array order DESC
 ### State Counties
 
 `GET /api/state/:id/counties`
+example `/api/state/05/counties`
 
 #### Parameters
 
@@ -121,8 +127,8 @@ none
 
 any order
 
-```JSON
+```js
   {
-    ID: string;
+    ID: string; (ex: "05|032")
   }[]
 ```

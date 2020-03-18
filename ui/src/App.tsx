@@ -10,7 +10,7 @@ function App() {
     <AppStoreProvider>
       <Header title="Demand Modeller" titleRoute="/" />
       <EpiMap />
-      <USATotals/>
+      <USATotals />
     </AppStoreProvider>
   );
 }
