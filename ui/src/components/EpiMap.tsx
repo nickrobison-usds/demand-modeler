@@ -78,7 +78,8 @@ const EpiMap: React.FunctionComponent<Props> = props => {
         properties: {
           confirmed: value.Confirmed,
           dead: value.Dead,
-          name: `${value.Name}`
+          name: `${value.Name}`,
+          id: `${value.ID}`
         }
       };
     });
@@ -107,6 +108,20 @@ const EpiMap: React.FunctionComponent<Props> = props => {
       onViewportChange={v => {
         v.width = 400; //window.innerWidth;
         dispatch({ type: ActionType.UPDATE_MAPVIEW, payload: v });
+      }}
+      onClick={e => {
+        const { features } = e;
+        const clickedState = (features || []).find(
+          feature => feature.properties?.id
+        );
+        if (clickedState) {
+          dispatch({
+            type: state.selection.state
+              ? ActionType.UPDATE_SELECTED_COUNTY
+              : ActionType.UPDATE_SELECTED_STATE,
+            payload: clickedState.properties.id
+          });
+        }
       }}
     >
       <Source id="data" type="geojson" data={data}>
