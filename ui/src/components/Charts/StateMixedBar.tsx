@@ -8,38 +8,49 @@ import {
   Tooltip,
   Legend
 } from "recharts";
-
-export type CountyStat = {
-  Name: string;
-  data: {
-    [k: string]: number;
-  };
-};
+import { CovidDateData } from "../../app/AppStore";
 
 type Props = {
   state: string;
-  countyStats: CountyStat[];
+  timeSeries: CovidDateData;
 };
 
 const colors = ["#E5A3A3", "#D05C5B", "#CB2626", "#C00001"];
 
 export const StateMixedBar = (props: Props) => {
-  const dates = Object.keys(props.countyStats[0].data);
-
-  const sortedStats = [...props.countyStats].sort((a, b) => {
-    const aSum = Object.values(a.data).reduce((acc, el) => acc + el, 0);
-    const bSum = Object.values(b.data).reduce((acc, el) => acc + el, 0);
-    return bSum - aSum;
-  });
-
-  const data = sortedStats.reduce((acc, el) => {
-    const stats = {
-      Name: el.Name,
-      ...el.data
-    };
-    acc.push(stats);
+  const dates = Object.keys(props.timeSeries);
+  const counties = Object.entries(props.timeSeries).reduce(
+    (acc, [date, { counties }]) => {
+      Object.entries(counties).forEach(([, { Name, Confirmed }]) => {
+        if (!acc[Name]) acc[Name] = {};
+        acc[Name][date] = Confirmed;
+        return acc;
+      });
+      return acc;
+    },
+    {} as { [N: string]: { [D: string]: number } }
+  );
+  const data = Object.entries(counties).reduce((acc, [Name, data]) => {
+    acc.push({
+      Name,
+      ...data
+    });
     return acc;
   }, [] as { [k: string]: string | number }[]);
+
+  const sortedData = data.sort((a, b) => {
+    const { Name: aName, ...aData } = a;
+    const { Name: bName, ...bData } = b;
+    const aSum = (Object.values(aData) as number[]).reduce(
+      (acc, el) => acc + el,
+      0
+    );
+    const bSum = (Object.values(bData) as number[]).reduce(
+      (acc, el) => acc + el,
+      0
+    );
+    return bSum - aSum;
+  });
 
   return (
     <>
@@ -47,7 +58,7 @@ export const StateMixedBar = (props: Props) => {
       <BarChart
         width={500}
         height={300}
-        data={data}
+        data={sortedData}
         margin={{
           top: 20,
           right: 30,

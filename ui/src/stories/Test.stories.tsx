@@ -1,56 +1,127 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
 import { StateMixedBar } from "../components/Charts/StateMixedBar";
-import { CountyStat } from "../components/Charts/StateMixedBar";
+import { CovidDateData } from "../app/AppStore";
 
 storiesOf("Charts", module).add("State - Mixed Bar", () => {
-  const countyStats: CountyStat[] = [
-    {
-      Name: "Westchester",
-      data: {
-        "14-Mar": 11,
-        "15-Mar": 22,
-        "16-Mar": 33,
-        "17-Mar": 44
+  const covidTimeSeries: CovidDateData = {
+    "14-Mar": {
+      states: {},
+      counties: {
+        NY: {
+          Name: "New York",
+          ID: "NY",
+          Confirmed: 111,
+          Dead: 0
+        },
+        WC: {
+          Name: "Westchester",
+          ID: "WC",
+          Confirmed: 11,
+          Dead: 0
+        },
+        NA: {
+          Name: "Nassau",
+          ID: "NA",
+          Confirmed: 11,
+          Dead: 0
+        },
+        SU: {
+          Name: "Suffolk",
+          ID: "SU",
+          Confirmed: 11,
+          Dead: 0
+        }
       }
     },
-    {
-      Name: "New York",
-      data: {
-        "14-Mar": 111,
-        "15-Mar": 222,
-        "16-Mar": 333,
-        "17-Mar": 444
+    "15-Mar": {
+      states: {},
+      counties: {
+        NY: {
+          Name: "New York",
+          ID: "NY",
+          Confirmed: 303,
+          Dead: 2
+        },
+        WC: {
+          Name: "Westchester",
+          ID: "WC",
+          Confirmed: 13,
+          Dead: 0
+        },
+        NA: {
+          Name: "Nassau",
+          ID: "NA",
+          Confirmed: 100,
+          Dead: 0
+        },
+        SU: {
+          Name: "Suffolk",
+          ID: "SU",
+          Confirmed: 22,
+          Dead: 0
+        }
       }
     },
-    {
-      Name: "Nassau",
-      data: {
-        "14-Mar": 44,
-        "15-Mar": 66,
-        "16-Mar": 88,
-        "17-Mar": 122
+    "16-Mar": {
+      states: {},
+      counties: {
+        NY: {
+          Name: "New York",
+          ID: "NY",
+          Confirmed: 503,
+          Dead: 2
+        },
+        WC: {
+          Name: "Westchester",
+          ID: "WC",
+          Confirmed: 20,
+          Dead: 0
+        },
+        NA: {
+          Name: "Nassau",
+          ID: "NA",
+          Confirmed: 121,
+          Dead: 0
+        },
+        SU: {
+          Name: "Suffolk",
+          ID: "SU",
+          Confirmed: 35,
+          Dead: 0
+        }
       }
     },
-    {
-      Name: "Suffolk",
-      data: {
-        "14-Mar": 44,
-        "15-Mar": 66,
-        "16-Mar": 88,
-        "17-Mar": 122
-      }
-    },
-    {
-      Name: "Albany",
-      data: {
-        "14-Mar": 4,
-        "15-Mar": 6,
-        "16-Mar": 8,
-        "17-Mar": 22
+    "17-Mar": {
+      states: {},
+      counties: {
+        NY: {
+          Name: "New York",
+          ID: "NY",
+          Confirmed: 667,
+          Dead: 2
+        },
+        WC: {
+          Name: "Westchester",
+          ID: "WC",
+          Confirmed: 60,
+          Dead: 0
+        },
+        NA: {
+          Name: "Nassau",
+          ID: "NA",
+          Confirmed: 333,
+          Dead: 0
+        },
+        SU: {
+          Name: "Suffolk",
+          ID: "SU",
+          Confirmed: 59,
+          Dead: 0
+        }
       }
     }
-  ];
+  };
 
-  return <StateMixedBar state={"New York"} countyStats={countyStats} />;
+  return <StateMixedBar state={"New York"} timeSeries={covidTimeSeries} />;
 });
