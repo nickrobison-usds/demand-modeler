@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { ActionType, AppContext } from "../app/AppStore";
+import { ActionType, AppContext, State, County } from "../app/AppStore";
 import ReactMapGL, { Layer, Source } from "react-map-gl";
 import { range } from "d3-array";
 import { scaleQuantile } from "d3-scale";
@@ -71,7 +71,7 @@ const EpiMap: React.FunctionComponent<Props> = props => {
       selection.state === undefined
         ? Object.values(covidTimeSeries[selection.date].states)
         : getContiesForState(covidTimeSeries, selection.date, selection.state);
-    return states.map(value => {
+    return states.map((value: State | County) => {
       return {
         type: "Feature",
         geometry: value.Geo as any, // TODO: add check to see if Geo is loaded
@@ -99,7 +99,7 @@ const EpiMap: React.FunctionComponent<Props> = props => {
       features: transformFeatures()
     };
     setData(updatePercentiles(newData, accessor));
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [covidTimeSeries, selection]);
 
   return (

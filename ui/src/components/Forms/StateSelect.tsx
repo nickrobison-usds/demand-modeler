@@ -11,7 +11,6 @@ const DEFAULT_TEXT = "All States";
 const USATotal: React.FunctionComponent<{}> = props => {
   const { dispatch, state } = useContext(AppContext);
 
-  console.log(state.selection.date)
   const states = state.covidTimeSeries[state.selection.date].states;
   const options: Option[] = [
     {
@@ -31,7 +30,13 @@ const USATotal: React.FunctionComponent<{}> = props => {
   };
 
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center"
+      }}
+    >
       <UsaSelect
         options={options}
         placeholder={DEFAULT_TEXT}

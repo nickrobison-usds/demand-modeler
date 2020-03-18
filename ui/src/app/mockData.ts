@@ -20,9 +20,11 @@ const makeStateData = () =>
     .map((name, i) => {
       return {
         ID: `${i}`,
-        Name: name,
+        State: name,
         Confirmed: Math.round(Math.random() * 1000),
+        NewConfirmed: Math.round(Math.random() * 300),
         Dead: Math.round(Math.random() * 100),
+        NewDead: Math.round(Math.random() * 10),
         CountyIDs: new Array(11).fill(1).map((_, j) => `${i}|${j}`)
       };
     })
@@ -39,7 +41,9 @@ const makeCountyData = () => {
         ID: `${i}|${j}`,
         Name: `${state.slice(0, 2).toUpperCase()}-${j}`,
         Confirmed: Math.round(Math.random() * 400),
-        Dead: Math.round(Math.random() * 30)
+        NewConfirmed: Math.round(Math.random() * 300),
+        Dead: Math.round(Math.random() * 10),
+        NewDead: Math.round(Math.random() * 5)
       };
     });
   });
@@ -51,9 +55,11 @@ export const mockCovidTimeSeries: CovidDateData = {
     states: {
       "01": {
         ID: "01",
-        Name: "New York",
+        State: "New York",
         Confirmed: 1204,
+        NewConfirmed: 300,
         Dead: 80,
+        NewDead: 20,
         CountyIDs: ["01|02"],
         Geo: {
           type: "Polygon",
@@ -138,7 +144,9 @@ export const mockCovidTimeSeries: CovidDateData = {
         ID: "01|02",
         Name: "Westchester",
         Confirmed: 180,
+        NewConfirmed: 30,
         Dead: 3,
+        NewDead: 1,
         Geo: {
           type: "Polygon",
           coordinates: [
@@ -1564,9 +1572,11 @@ export const mockCovidTimeSeries: CovidDateData = {
     states: {
       "01": {
         ID: "01",
-        Name: "New York",
+        State: "New York",
         Confirmed: 1104,
+        NewConfirmed: 200,
         Dead: 76,
+        NewDead: 2,
         CountyIDs: ["01|02"],
         Geo: {
           type: "Polygon",
@@ -1651,7 +1661,9 @@ export const mockCovidTimeSeries: CovidDateData = {
         ID: "01|02",
         Name: "Westchester",
         Confirmed: 160,
+        NewConfirmed: 10,
         Dead: 2,
+        NewDead: 0,
         Geo: {
           type: "Polygon",
           coordinates: [

@@ -59,7 +59,6 @@ export const MixedBar = (props: Props) => {
   });
 
   maxCases = Math.max(...Object.values(maxCasesByDate));
-  console.log(maxCases);
   return (
     <>
       <h3>{title}</h3>
