@@ -1,17 +1,63 @@
-version: 2.1
-orbs:
-  node: circleci/node@1.1.6
+defaults: &defaults
+  working_directory: ~/repo
+version: 2
 jobs:
-  build-and-test:
-    executor:
-      name: node/default
+  build-frontend:
+    <<: *defaults
+    docker:
+      node: circleci/node@1.1.6
     steps:
       - checkout
-      - node/with-cache:
-          steps:
-            - run: npm install
-            - run: npm test
+      - restore_cache:
+          name: Restore Yarn Package Cache
+          keys:
+            - yarn-packages-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install dependencies
+          command: |
+            yarn install --frozen-lockfile
+      - save_cache:
+          name: Save Yarn Package Cache
+          key: yarn-packages-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+      - run:
+          name: Test
+          command: yarn test
+      - run:
+          name: Build
+          command: yarn build
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - build
+  deploy:
+    <<: *defaults
+    docker:
+      - image: circleci/golang:1.12
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Install CF
+          command: |
+            curl -v -L -o cf-cli_amd64.deb 'https://cli.run.pivotal.io/stable?release=debian64&source=github'
+            sudo dpkg -i cf-cli_amd64.deb
+            cf -v
+      - run:
+          name: Login to cloud.gov
+          command: cf login -a https://api.fr.cloud.gov -u $CF_USER -p $CF_PASS -o $CF_ORG -s $CF_SPACE
+      - run:
+          name: Depoy
+          command: cf push
 workflows:
-    build-and-test:
-      jobs:
-        - build-and-test
+  version: 2
+  test-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
