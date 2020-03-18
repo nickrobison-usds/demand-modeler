@@ -8,6 +8,8 @@ import React, {
 import * as TypeGuards from "../utils/guards";
 import * as DateUtils from "../utils/DateUtils";
 import {mockCovidTimeSeries} from "./mockData";
+import L from "leaflet";
+import mapboxgl from "mapbox-gl";
 
 export interface CovidStats {
   Confirmed: number;
@@ -58,7 +60,7 @@ export interface CovidDateData {
     counties: { [countyID: string]: County };
   }
 }
-
+// TODO: seperate Geo data from time series data
 export interface AppState {
   selection: {
     date: string;
@@ -68,7 +70,9 @@ export interface AppState {
   covidTimeSeries:  CovidDateData;
   mapView: MapView;
 }
-
+const DEFAULT_LAT = 40.8136;
+const DEFAULT_LNG = -99.0762;
+const DEFAULT_ZOOM = 2;
 export const initialState: AppState = {
   selection: {
     date: DateUtils.formatDate(new Date()),
@@ -77,9 +81,9 @@ export const initialState: AppState = {
   mapView: {
     width: 400,
     height: 400,
-    latitude: 37.7577,
-    longitude: -122.4376,
-    zoom: 2
+    latitude: DEFAULT_LAT,
+    longitude: DEFAULT_LNG,
+    zoom: DEFAULT_ZOOM
   }
 };
 
@@ -111,22 +115,64 @@ const updateCases = (state: AppState, { payload }: Action): AppState => {
 
 const updateSelectedState = (state: AppState, { payload }: Action): AppState => {
   const selection = Object.assign({}, state.selection);
-  selection.state = payload as string | undefined;
+  const id = payload as string | undefined
+  selection.state = id;
+  let lat = DEFAULT_LAT;
+  let lng = DEFAULT_LNG;
+  let zoom = DEFAULT_ZOOM;
+  if (id !== undefined) {
+    const s = state.covidTimeSeries[DateUtils.formatDate(new Date())].states[id];
+    var polygon = (s.Geo as any as GeoJSON.Polygon).coordinates;
+    var fit = new L.Polygon(polygon as any).getBounds();
+    const southWest = new mapboxgl.LngLat(fit.getSouthWest()['lat'], fit.getSouthWest()['lng']);
+    const northEast = new mapboxgl.LngLat(fit.getNorthEast()['lat'], fit.getNorthEast()['lng']);
+    const center = new mapboxgl.LngLatBounds(southWest, northEast).getCenter();
+    lat = center.lat;
+    lng = center.lng;
+    zoom = 4;
+  }
+  const mapView = Object.assign({}, state.mapView);
+  mapView.latitude = lat;
+  mapView.longitude = lng;
+  mapView.zoom = zoom;
+
   return {
     ...state,
-    selection
+    selection,
+    mapView,
   };
 };
 
 const updateSelectedCounty = (state: AppState, { payload }: Action): AppState => {
   const selection = Object.assign({}, state.selection);
-  selection.county = payload as string | undefined;
+  const id = payload as string | undefined
+  selection.county = id;
+  let lat = DEFAULT_LAT;
+  let lng = DEFAULT_LNG;
+  let zoom = DEFAULT_ZOOM;
+  if (id !== undefined) {
+    const s = state.covidTimeSeries[DateUtils.formatDate(new Date())].counties[id];
+    var polygon = (s.Geo as any as GeoJSON.Polygon).coordinates;
+    var fit = new L.Polygon(polygon as any).getBounds();
+    const southWest = new mapboxgl.LngLat(fit.getSouthWest()['lat'], fit.getSouthWest()['lng']);
+    const northEast = new mapboxgl.LngLat(fit.getNorthEast()['lat'], fit.getNorthEast()['lng']);
+    const center = new mapboxgl.LngLatBounds(southWest, northEast).getCenter();
+    lat = center.lat;
+    lng = center.lng;
+    zoom = 6;
+  }
+  const mapView = Object.assign({}, state.mapView);
+  mapView.latitude = lat;
+  mapView.longitude = lng;
+  mapView.zoom = zoom;
+
   return {
     ...state,
-    selection
+    selection,
+    mapView,
   };
-};
 
+};
 
 const reducer: Reducer<AppState, Action> = (state, action) => {
   switch (action.type) {
