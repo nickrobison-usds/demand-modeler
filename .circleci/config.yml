@@ -1,0 +1,53 @@
+defaults: &defaults
+  working_directory: ~/repo
+version: 2
+jobs:
+  build-ui:
+    <<: *defaults
+    docker:
+      - image: circleci/node:latest
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore Yarn Package Cache
+          keys:
+            - yarn-packages-{{ checksum "ui/yarn.lock" }}
+      - run:
+          name: Install dependencies
+          command: |
+            cd ui && yarn install --frozen-lockfile
+      - save_cache:
+          name: Save Yarn Package Cache
+          key: yarn-packages-{{ checksum "ui/yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+      - run:
+          name: Test
+          command: |
+            cd ui && yarn run test
+      - run:
+          name: Build
+          command: cd ui && yarn build
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ui/build
+  build-api:
+    <<: *defaults
+    docker:
+      - image: circleci/golang:1.12
+    steps:
+      - checkout
+      - run:
+          name: Build
+          command: go build .
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - demand-modeling
+workflows:
+  version: 2
+  deploy:
+    jobs:
+      - build-ui
+      - build-api
