@@ -1,7 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
 import Card from "./Card/Card";
-import { AppContext, State, CovidStats } from "../app/AppStore";
+import { AppContext, CovidStats } from "../app/AppStore";
 import { getPreviousDate } from "../utils/DateUtils";
+import { getContiesForState } from "../utils/utils";
 
 interface Stats {
   c: number;
@@ -35,17 +36,8 @@ const USATotal: React.FunctionComponent<Props> = props => {
         d: covidTimeSeries[previousDate].counties[county].Dead,
       }
     } else if (state !== undefined) {
-      console.log(state)
-      console.log(covidTimeSeries[date].states)
-      const CountyIDs = covidTimeSeries[date].states[state].CountyIDs;
-      if (CountyIDs !== undefined) {
-        const counties = CountyIDs.map((id: string) => covidTimeSeries[date].counties[id])
-        const previousCounties = CountyIDs.map((id: string) => covidTimeSeries[previousDate].counties[id])
-        currentStats = countCases(counties);
-        previousStats = countCases(previousCounties);
-      } else {
-        throw Error("CountyIDs not defiened")
-      }
+      currentStats = countCases(getContiesForState(covidTimeSeries, date, state));
+      previousStats = countCases(getContiesForState(covidTimeSeries, previousDate, state));
     } else {
       currentStats = countCases(Object.values(covidTimeSeries[date].states));
       previousStats = countCases(Object.values(covidTimeSeries[previousDate].states));
