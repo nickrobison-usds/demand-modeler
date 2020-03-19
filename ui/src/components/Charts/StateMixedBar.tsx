@@ -10,6 +10,7 @@ import {
 } from "recharts";
 import { CovidDateData } from "../../app/AppStore";
 import { getYMaxFromMaxCases } from "../../utils/utils";
+import { formatDate } from "../../utils/DateUtils";
 
 type Props = {
   state?: string;
@@ -45,10 +46,12 @@ export const StateMixedBar = (props: Props) => {
       return acc;
     }, {} as { [c: string]: number });
     maxCases = Math.max(...Object.values(maxCasesByCounty));
-    dates = [...new Set(countyData.map(({ Reported }) => Reported))].sort();
+    dates = [
+      ...new Set(countyData.map(({ Reported }) => formatDate(Reported)))
+    ].sort();
     const counties = countyData.reduce((acc, el) => {
       if (!acc[el.County]) acc[el.County] = {};
-      acc[el.County][el.Reported] =
+      acc[el.County][formatDate(el.Reported)] =
         props.stat === "confirmed" ? el.Confirmed : el.Dead;
       return acc;
     }, {} as { [c: string]: { [d: string]: number } });
@@ -63,7 +66,9 @@ export const StateMixedBar = (props: Props) => {
     // Top 10 states
     title = "Top 10 States";
     const stateData = props.timeSeries.states;
-    dates = [...new Set(stateData.map(({ Reported }) => Reported))].sort();
+    dates = [
+      ...new Set(stateData.map(({ Reported }) => formatDate(Reported)))
+    ].sort();
     const maxCasesByState = stateData.reduce((acc, el) => {
       acc[el.State] = acc[el.State] || 0 + el.Confirmed;
       return acc;
@@ -71,7 +76,7 @@ export const StateMixedBar = (props: Props) => {
     maxCases = Math.max(...Object.values(maxCasesByState));
     const states = stateData.reduce((acc, el) => {
       if (!acc[el.State]) acc[el.State] = {};
-      acc[el.State][el.Reported] =
+      acc[el.State][formatDate(el.Reported)] =
         props.stat === "confirmed" ? el.Confirmed : el.Dead;
       return acc;
     }, {} as { [c: string]: { [d: string]: number } });
