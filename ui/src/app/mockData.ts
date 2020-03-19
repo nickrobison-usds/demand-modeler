@@ -25,7 +25,7 @@ const makeStateData = (day: number) => {
       Dead: Math.round(Math.random() * 100),
       NewDead: Math.round(Math.random() * 100),
       CountyIDs: new Array(11).fill(1).map((_, j) => `${i}|${j}`),
-      Reported: `2020-03-${day}T20:23:00Z`
+      Reported: new Date(`3/${day}/2020`)
     };
   });
 };
@@ -42,7 +42,7 @@ const makeCountyData = (day: number) => {
         NewConfirmed: Math.round(Math.random() * 400),
         Dead: Math.round(Math.random() * 30),
         NewDead: Math.round(Math.random() * 30),
-        Reported: `2020-03-${day}T20:23:00Z`
+        Reported: new Date(`3/${day}/2020`)
       });
     });
   });
@@ -134,7 +134,7 @@ export const mockCovidTimeSeries: CovidDateData = {
           ]
         ]
       },
-      Reported: "2020-03-15T20:23:00Z"
+      Reported: new Date("3/15/2020")
     },
     ...makeStateData(14),
     ...makeStateData(15),
@@ -1566,7 +1566,7 @@ export const mockCovidTimeSeries: CovidDateData = {
           ]
         ]
       },
-      Reported: "2020-03-15T20:23:00Z"
+      Reported: new Date("3/15/2020")
     },
     ...makeCountyData(14),
     ...makeCountyData(15),

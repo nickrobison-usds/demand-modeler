@@ -47,7 +47,7 @@ export interface County extends CovidStats {
   County: string;
   State: string;
   Geo?: GeoJSON.Polygon; //GeoJSON.MultiPolygon;
-  Reported: string; // "2020-03-15T20:23:00Z"
+  Reported: Date;
 }
 
 export interface State extends CovidStats {
@@ -55,7 +55,7 @@ export interface State extends CovidStats {
   State: string;
   Geo?: GeoJSON.Polygon; //GeoJSON.MultiPolygon;
   CountyIDs?: string[];
-  Reported: string; // "2020-03-15T20:23:00Z"
+  Reported: Date;
 }
 
 export interface CovidDateData {

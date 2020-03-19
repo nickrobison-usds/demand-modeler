@@ -15,11 +15,32 @@ export interface GeoResponse {
   Geo: GeoData;
 }
 
+interface StateResopnse {
+  ID: string;
+  State: string;
+  Reported: string;
+  NewConfirmed: number;
+  Confirmed: number;
+  Dead: number;
+  NewDead: number;
+}
+
+interface CountyResponse {
+  ID: string;
+  County: string;
+  State: string;
+  Reported: string;
+  NewConfirmed: number;
+  Confirmed: number;
+  Dead: number;
+  NewDead: number;
+}
+
 export async function getCountyCases(
   id: string,
   start?: Date,
   end?: Date
-): Promise<County> {
+): Promise<County[]> {
   const url = new URL(`${HOST}/api/county/${id}`);
   if (start) {
     url.searchParams.append("start", formatDate(start));
@@ -28,8 +49,13 @@ export async function getCountyCases(
     url.searchParams.append("end", formatDate(end));
   }
 
-  const resp = await Axios.get<County>(url.href);
-  return resp.data;
+  const resp = await Axios.get<CountyResponse[]>(url.href);
+  return resp.data.map((c: CountyResponse): County => {
+    return {
+      ...c,
+      Reported: new Date(c.Reported),
+    }
+  });
 }
 
 export async function getCountyGeo(
@@ -46,7 +72,7 @@ export async function getStateCases(
   id: string,
   start?: Date,
   end?: Date
-): Promise<State> {
+): Promise<State[]> {
   const url = new URL(`${HOST}/api/state/${id}`);
   if (start) {
     url.searchParams.append("start", formatDate(start));
@@ -55,8 +81,13 @@ export async function getStateCases(
     url.searchParams.append("end", formatDate(end));
   }
 
-  const resp = await Axios.get<State>(url.href);
-  return resp.data;
+  const resp = await Axios.get<StateResopnse[]>(url.href);
+  return resp.data.map((s: StateResopnse): State => {
+    return {
+      ...s,
+      Reported: new Date(s.Reported),
+    }
+  });
 }
 
 export async function getStateGeo(
@@ -65,6 +96,12 @@ export async function getStateGeo(
   end?: Date
 ): Promise<GeoResponse> {
   const url = new URL(`${HOST}/api/state/${id}/geo`);
+  if (start) {
+    url.searchParams.append("start", formatDate(start));
+  }
+  if (end) {
+    url.searchParams.append("end", formatDate(end));
+  }
   const resp = await Axios.get<GeoResponse>(url.href);
   return resp.data;
 }
