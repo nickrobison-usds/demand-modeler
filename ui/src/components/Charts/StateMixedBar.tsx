@@ -8,7 +8,7 @@ import {
   Tooltip,
   Legend
 } from "recharts";
-import { CovidDateData } from "../../app/AppStore";
+import { CovidDateData, GraphMetaData, EXCLUDED_STATES } from "../../app/AppStore";
 import { getYMaxFromMaxCases } from "../../utils/utils";
 import { monthDay } from "../../utils/DateUtils";
 
@@ -19,17 +19,18 @@ type Props = {
   stat: "confirmed" | "dead";
   stateCount: boolean;
   reportView?: boolean;
+  meta?: GraphMetaData;
   title?: string;
 };
 
-const colors = ["#E5A3A3", "#D05C5C", "#CB2727", "#C00000", "#900000"];
+const colors = ["#E5A3A3", "#D05C5C", "#CB2727", "#C00000", "#900000", "#700000"];
 
 export const StateMixedBar = (props: Props) => {
   if ((props.stateCount && props.state) || props.county) {
     return null;
   }
   let title: string;
-  let maxCases: number;
+  let maxCases: number | undefined;
   let dates: string[];
   let data;
 
@@ -49,11 +50,9 @@ export const StateMixedBar = (props: Props) => {
     if (props.state) {
       countyData = countyData.filter(({ State }) => State === stateName);
     }
-    const maxCasesByCounty = countyData.reduce((acc, el) => {
-      acc[el.County] = acc[el.County] || 0 + el.Confirmed;
-      return acc;
-    }, {} as { [c: string]: number });
-    maxCases = Math.max(...Object.values(maxCasesByCounty));
+    if (props.meta) {
+      maxCases = props.meta.maxConfirmedCounty;
+    }
     dates = [
       ...new Set(countyData.map(({ Reported }) => monthDay(Reported)))
     ].sort();
@@ -77,11 +76,9 @@ export const StateMixedBar = (props: Props) => {
     dates = [
       ...new Set(stateData.map(({ Reported }) => monthDay(Reported)))
     ].sort();
-    const maxCasesByState = stateData.reduce((acc, el) => {
-      acc[el.State] = acc[el.State] || 0 + el.Confirmed;
-      return acc;
-    }, {} as { [c: string]: number });
-    maxCases = Math.max(...Object.values(maxCasesByState));
+    if (props.meta) {
+      maxCases = props.meta.maxConfirmedState;
+    }
     const states = stateData.reduce((acc, el) => {
       if (!acc[el.State]) acc[el.State] = {};
       acc[el.State][monthDay(el.Reported)] =
@@ -139,6 +136,8 @@ export const StateMixedBar = (props: Props) => {
     }
   });
 
+    console.log(props.meta)
+    console.log(maxCases)
   return (
     <>
       <h3>{props.title ? props.title : title}</h3>
@@ -162,7 +161,7 @@ export const StateMixedBar = (props: Props) => {
           height={100}
           dataKey="Name"
         />
-        <YAxis domain={[0, getYMaxFromMaxCases(maxCases)]} />
+        <YAxis domain={maxCases && !EXCLUDED_STATES.includes(props.state as any) ? [0, getYMaxFromMaxCases(maxCases)]: undefined} />
         <Tooltip />
         <div style={{padding: "10px"}}/>
         <Legend />
