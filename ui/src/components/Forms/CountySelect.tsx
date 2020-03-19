@@ -8,7 +8,7 @@ interface Option {
 }
 
 const DEFAULT_TEXT = "All Counties";
-const USATotal: React.FunctionComponent<{}> = _ => {
+const USATotal: React.FunctionComponent<{}> = () => {
   const {
     dispatch,
     state: {
@@ -21,19 +21,24 @@ const USATotal: React.FunctionComponent<{}> = _ => {
     return null;
   }
 
+  const stateName = covidTimeSeries.states.find(s => s.ID === state)?.State;
+
   const options: Option[] = [
     {
       text: DEFAULT_TEXT,
       value: undefined
     }
   ];
-  const countyMap: {[ID: string]: Option} = {};
-  covidTimeSeries.counties.forEach((c) => {
-    countyMap[c.ID] = {
-      text: c.State,
-      value: c.ID
-    }
-  });
+
+  const countyMap: { [ID: string]: Option } = {};
+  covidTimeSeries.counties
+    .filter(c => c.State === stateName)
+    .forEach(c => {
+      countyMap[c.ID] = {
+        text: c.County,
+        value: c.ID
+      };
+    });
   Object.values(countyMap).forEach((o: Option) => options.push(o));
   const onUpdate = (countyID: string | undefined) => {
     dispatch({ type: ActionType.UPDATE_SELECTED_COUNTY, payload: countyID });
