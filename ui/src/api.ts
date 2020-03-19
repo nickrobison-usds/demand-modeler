@@ -96,6 +96,12 @@ export async function getStateGeo(
   end?: Date
 ): Promise<GeoResponse> {
   const url = new URL(`${HOST}/api/state/${id}/geo`);
+  if (start) {
+    url.searchParams.append("start", formatDate(start));
+  }
+  if (end) {
+    url.searchParams.append("end", formatDate(end));
+  }
   const resp = await Axios.get<GeoResponse>(url.href);
   return resp.data;
 }
