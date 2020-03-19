@@ -88,10 +88,19 @@ func serve(db *pgxpool.Pool, filesDir string) error {
 	})
 	r.Use(cors.Handler)
 
+	// Get the port
+	var port string
+	portenv := os.Getenv("PORT")
+	if portenv == "" {
+		port = "8080"
+	} else {
+		port = portenv
+	}
+
 	r.Route("/api", api.MakeRouter)
 	FileServer(r, "", "/", http.Dir(filesDir))
-	log.Println("Listening")
-	return http.ListenAndServe(":8080", r)
+	log.Printf("Listening on %s\n", port)
+	return http.ListenAndServe(":"+port, r)
 }
 
 // FileServer conveniently sets up a http.FileServer handler to serve
