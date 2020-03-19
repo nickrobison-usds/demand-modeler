@@ -39,7 +39,7 @@ func getStates(w http.ResponseWriter, r *http.Request) {
 	if ok && len(limit) == 1 {
 		query = fmt.Sprintf("%s LIMIT %s", query, limit[0])
 	}
-	cases, err := getCases(ctx, conn, query)
+	cases, err := queryStateCases(ctx, conn, query)
 	if err != nil {
 		log.Print(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -90,7 +90,7 @@ func getStateCases(w http.ResponseWriter, r *http.Request) {
 		"GROUP BY c.statefp, c.state, a.update " +
 		"ORDER BY a.update DESC, confirmed DESC"
 
-	cases, err := getCases(ctx, conn, query, stateID)
+	cases, err := queryStateCases(ctx, conn, query, stateID)
 	if err != nil {
 		log.Print(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -105,7 +105,7 @@ func getStateCases(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func getCases(ctx context.Context, conn *pgxpool.Conn, sql string, args ...interface{}) ([]cmd.StateCases, error) {
+func queryStateCases(ctx context.Context, conn *pgxpool.Conn, sql string, args ...interface{}) ([]cmd.StateCases, error) {
 	cases := make([]cmd.StateCases, 0)
 
 	rows, err := conn.Query(ctx, sql, args...)
