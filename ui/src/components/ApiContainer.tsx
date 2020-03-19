@@ -47,8 +47,8 @@ export const ApiContainer: React.FC = props => {
   useEffect(() => {
     (async () => {
       const [states, counties] = await loadData();
-      const CovidDateData: CovidDateData = { states, counties };
-      dispatch({ type: ActionType.LOAD_DATA, payload: CovidDateData });
+      const data: CovidDateData = { states, counties };
+      dispatch({ type: ActionType.LOAD_DATA, payload: data });
       setIsLoading(false);
     })();
     // eslint-disable-next-line
