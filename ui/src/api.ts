@@ -3,7 +3,6 @@ import Axios from "axios";
 import { County, State } from "./app/AppStore";
 import { formatDate } from "./utils/DateUtils";
 
-const HOST = process.env.REACT_APP_API_URI;
 type GeoData = GeoJSON.Polygon; // GeoJSON.MultiPolygon;
 
 export interface StateIDs {
@@ -45,7 +44,7 @@ export async function getCountyCases(
   start?: Date,
   end?: Date
 ): Promise<County[]> {
-  const url = new URL(`${HOST}/api/county/${id}`);
+  const url = new URL(`/api/county/${id}`, window.location.origin);
   if (start) {
     url.searchParams.append("start", formatDate(start));
   }
@@ -65,11 +64,11 @@ export async function getCountyCases(
 }
 
 export async function getTopCountyCases(
-    limit: number = 10,
-    start?: Date,
-    end?: Date
+  limit: number = 10,
+  start?: Date,
+  end?: Date
 ): Promise<County[]> {
-  const url = new URL(`${HOST}/api/county`);
+  const url = new URL(`/api/county`, window.location.origin);
   if (start) {
     url.searchParams.append("start", formatDate(start));
   }
@@ -80,12 +79,12 @@ export async function getTopCountyCases(
 
   const resp = await Axios.get<CountyResponse[]>(url.href);
   return resp.data.map(
-      (s: CountyResponse): County => {
-        return {
-          ...s,
-          Reported: new Date(s.Reported)
-        };
-      }
+    (s: CountyResponse): County => {
+      return {
+        ...s,
+        Reported: new Date(s.Reported)
+      };
+    }
   );
 }
 
@@ -94,7 +93,7 @@ export async function getCountyGeo(
   start?: Date,
   end?: Date
 ): Promise<GeoResponse> {
-  const url = new URL(`${HOST}/api/county/${id}/geo`);
+  const url = new URL(`/api/county/${id}/geo`, window.location.origin);
   const resp = await Axios.get<GeoResponse>(url.href);
   return resp.data;
 }
@@ -104,7 +103,7 @@ export async function getStateCases(
   start?: Date,
   end?: Date
 ): Promise<State[]> {
-  const url = new URL(`${HOST}/api/state/${id}`);
+  const url = new URL(`/api/state/${id}`, window.location.origin);
   if (start) {
     url.searchParams.append("start", formatDate(start));
   }
@@ -124,11 +123,11 @@ export async function getStateCases(
 }
 
 export async function getTopStateCases(
-    limit: number = 10,
-    start?: Date,
-    end?: Date
+  limit: number = 10,
+  start?: Date,
+  end?: Date
 ): Promise<State[]> {
-  const url = new URL(`${HOST}/api/state`);
+  const url = new URL(`/api/state`, window.location.origin);
   if (start) {
     url.searchParams.append("start", formatDate(start));
   }
@@ -139,12 +138,12 @@ export async function getTopStateCases(
 
   const resp = await Axios.get<StateResponse[]>(url.href);
   return resp.data.map(
-      (s: StateResponse): State => {
-        return {
-          ...s,
-          Reported: new Date(s.Reported)
-        };
-      }
+    (s: StateResponse): State => {
+      return {
+        ...s,
+        Reported: new Date(s.Reported)
+      };
+    }
   );
 }
 
@@ -153,7 +152,7 @@ export async function getStateGeo(
   start?: Date,
   end?: Date
 ): Promise<GeoResponse> {
-  const url = new URL(`${HOST}/api/state/${id}/geo`);
+  const url = new URL(`/api/state/${id}/geo`, window.location.origin);
   if (start) {
     url.searchParams.append("start", formatDate(start));
   }
@@ -165,19 +164,19 @@ export async function getStateGeo(
 }
 
 export async function getStateIDs(): Promise<string[]> {
-  const url = URI(`${HOST}/api/state/id`);
+  const url = URI(`/api/state/id`);
   const resp = await Axios.get<StateIDs>(url.readable());
   return Object.values(resp.data).map(id => (id < 10 ? `0${id}` : `${id}`));
 }
 
 export async function getCountyIDs(): Promise<string[]> {
-  const url = URI(`${HOST}/api/county/id`);
+  const url = URI(`/api/county/id`);
   const resp = await Axios.get<CountyIDs>(url.readable());
   return Object.values(resp.data);
 }
 
 export async function getStateCounties(id: string): Promise<string[]> {
-  const url = URI(`${HOST}/api/state/${id}/counties`);
+  const url = URI(`/api/state/${id}/counties`);
   const resp = await Axios.get<CountyIDs>(url.readable());
   return Object.values(resp.data);
 }
