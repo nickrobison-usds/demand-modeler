@@ -99,7 +99,7 @@ export const MixedBar = (props: Props) => {
         />
         <Tooltip />
         <Legend />
-        <Bar dataKey="Grand Total" fill="#E4A3A4" />
+        <Bar dataKey="Grand Total" fill="#900000" />
       </BarChart>
     </div>
   );

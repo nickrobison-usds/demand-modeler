@@ -22,7 +22,7 @@ type Props = {
   title?: string;
 };
 
-const colors = ["#E5A3A3", "#D05C5C", "#CB2727", "#C00000"];
+const colors = ["#E5A3A3", "#D05C5C", "#CB2727", "#C00000", "#900000"];
 
 export const StateMixedBar = (props: Props) => {
   if ((props.stateCount && props.state) || props.county) {
