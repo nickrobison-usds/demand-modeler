@@ -97,20 +97,22 @@ export const StateMixedBar = (props: Props) => {
 
   const dedupedData: any[] = [];
   data.forEach(e => {
-    const dateSet = new Set();
-    const dedupede: any = {};
-    Object.keys(e).forEach((k) => {
-      if (k.toString().includes("|")) {
-        const day = k.toString().split("|")[0]
-        if (!dateSet.has(day)) {
-          dedupede[day] = e[k];
-          dateSet.add(day);
-        }
-      } else {
-        dedupede[k] = e[k];
+    const dedupedElement: any = {};
+    const d = Object.keys(e).sort();
+    for (let i = 0; i < d.length; i++) {
+      const key = d[i];
+      if (!key.toString().includes("|")) {
+        dedupedElement[key] = e[key];
+        continue;
       }
-    })
-    dedupedData.push(dedupede)
+      if (d[i+1]) {
+        if (d[i].toString().split("|")[0] === d[i+1].toString().split("|")[0]) {
+          continue;
+        }
+      }
+      dedupedElement[d[i].toString().split("|")[0]] = e[key];
+    }
+    dedupedData.push(dedupedElement);
   });
 
   const sortedData = dedupedData.sort((a, b) => {

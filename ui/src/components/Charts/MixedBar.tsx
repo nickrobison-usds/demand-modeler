@@ -72,15 +72,15 @@ export const MixedBar = (props: Props) => {
     };
   });
   const dedupedData: any[] = [];
-  const dateSet = new Set();
-  data.forEach(e => {
-    const day = e.Name.split("|")[0];
-    if (!dateSet.has(day)) {
-      e.Name = day;
-      dedupedData.push(e);
-      dateSet.add(day);
+  for (let i = 0; i < data.length; i++) {
+    if (data[i+1]) {
+      if (data[i].Name.split("|")[0] === data[i+1].Name.split("|")[0]) {
+        continue;
+      }
     }
-  });
+    data[i].Name = data[i].Name.split("|")[0];
+    dedupedData.push(data[i]);
+  }
 
   return (
     <div>
