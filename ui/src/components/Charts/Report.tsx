@@ -41,9 +41,10 @@ export const Report: React.FC<{}> = () => {
         const stateIDs = new Set();
         const dedupedStates: State[] = [];
         states.forEach(s => {
-          if (!stateIDs.has(s.ID)) {
+          const key = `${s.ID}|${s.State}`;
+          if (!stateIDs.has(key)) {
             dedupedStates.push(s);
-            stateIDs.add(s.ID);
+            stateIDs.add(key);
           }
         });
           const top10States = [...dedupedStates]
@@ -53,7 +54,7 @@ export const Report: React.FC<{}> = () => {
           <div className="report grid-container" style={{marginLeft: 0}}>
             <div>
               <h1>COVID-19 county-level case data</h1>
-              <p>Data as of 22:00 March 17, 2020</p>
+              <p>Data as of {dateTimeString(LAST_UPDATED)}</p>
               <div className="pagebreak" />
             </div>
             {top10States.map(s => (
