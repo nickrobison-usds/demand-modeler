@@ -28,9 +28,13 @@ function App() {
       <AppStoreProvider>
         <ApiContainer>
           <Card>
-            <div style={{ display: "flex" }}>
-              <StateSelect />
-              <CountySelect />
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <div style={{ display: "flex" }}>
+                <StateSelect />
+                <CountySelect />
+                <a className="uas-button" href="?report=true">Report</a>
+              </div>
+              <a className="uas-button" href="?report=true">Report</a>
             </div>
           </Card>
           <div style={{ display: "flex" }}>
