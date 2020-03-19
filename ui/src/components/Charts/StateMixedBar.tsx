@@ -129,6 +129,7 @@ export const StateMixedBar = (props: Props) => {
         />
         <YAxis domain={[0, getYMaxFromMaxCases(maxCases)]} />
         <Tooltip />
+        <div style={{padding: "10px"}}/>
         <Legend />
         {dates.map((date, i) => (
           <Bar key={date} dataKey={date} fill={colors[i]} />
