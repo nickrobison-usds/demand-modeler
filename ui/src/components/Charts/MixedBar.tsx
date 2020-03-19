@@ -29,26 +29,24 @@ export const MixedBar = (props: Props) => {
   // const dates = Object.keys(props.timeSeries).sort();
   const dates = [
     ...new Set(
-      props.timeSeries.counties.map(({ Reported }) => monthDay(Reported))
+      Object.keys(props.timeSeries.counties).flatMap(k => props.timeSeries.counties[k]).map(({ Reported }) => monthDay(Reported))
     )
   ].sort();
   const data = dates.map(date => {
     let total = 0;
     if (props.county) {
-      total = props.timeSeries.counties
+      total = props.timeSeries.counties[props.county]
         .filter(
-          ({ Reported, ID }) =>
-          monthDay(Reported) === date && ID === props.county
-        )
+          c => monthDay(c.Reported) === date)
         .reduce((acc, el) => {
           return acc + el[props.stat === "confirmed" ? "Confirmed" : "Dead"];
         }, 0);
       maxCasesByDate[date] = (maxCasesByDate[date] || 0) + total;
     } else if (props.state) {
-      const state = props.timeSeries.states.find(({ ID }) => ID === props.state)
-        ?.State;
+        // We just need the first value in order to match the counties
+      const state = props.timeSeries.states[props.state][0].ID;
 
-      const counties = props.timeSeries.counties.filter(
+      const counties = Object.keys(props.timeSeries.counties).flatMap(k => props.timeSeries.counties[k]).filter(
         ({ State }) => State === state
       );
 
@@ -60,7 +58,7 @@ export const MixedBar = (props: Props) => {
           total += count;
         });
     } else {
-      props.timeSeries.states
+      Object.keys(props.timeSeries.states).flatMap(k => props.timeSeries.states[k])
         .filter(({ Reported }) => monthDay(Reported) === date)
         .forEach(s => {
           const count = props.stat === "confirmed" ? s.Confirmed : s.Dead;

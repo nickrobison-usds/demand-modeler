@@ -64,10 +64,10 @@ export async function getCountyCases(
 }
 
 export async function getTopCountyCases(
-  limit: number = 10,
-  start?: Date,
-  end?: Date
-): Promise<County[]> {
+    limit: number = 10,
+    start?: Date,
+    end?: Date
+): Promise<{[key: string]: County[]}> {
   const url = new URL(`/api/county`, window.location.origin);
   if (start) {
     url.searchParams.append("start", formatDate(start));
@@ -77,15 +77,28 @@ export async function getTopCountyCases(
   }
   url.searchParams.append("limit", limit.toString());
 
+  let counties: {[key: string]: County[]} = {};
+
   const resp = await Axios.get<CountyResponse[]>(url.href);
-  return resp.data.map(
-    (s: CountyResponse): County => {
-      return {
-        ...s,
-        Reported: new Date(s.Reported)
-      };
-    }
-  );
+  resp.data.map(
+      (s: CountyResponse): County => {
+        return {
+          ...s,
+          Reported: new Date(s.Reported)
+        };
+      }
+  )
+      .forEach(county => {
+        let c = counties[county.ID];
+        if (c) {
+          c.push(county);
+        } else {
+          c = [county];
+        }
+        counties[county.ID] = c;
+      });
+
+  return counties;
 }
 
 export async function getCountyGeo(
@@ -123,10 +136,10 @@ export async function getStateCases(
 }
 
 export async function getTopStateCases(
-  limit: number = 10,
-  start?: Date,
-  end?: Date
-): Promise<State[]> {
+    limit: number = 10,
+    start?: Date,
+    end?: Date
+): Promise<{[key:string]: State[]}> {
   const url = new URL(`/api/state`, window.location.origin);
   if (start) {
     url.searchParams.append("start", formatDate(start));
@@ -136,15 +149,28 @@ export async function getTopStateCases(
   }
   url.searchParams.append("limit", limit.toString());
 
+  let states: {[key: string]: State[]} = {};
+
   const resp = await Axios.get<StateResponse[]>(url.href);
-  return resp.data.map(
-    (s: StateResponse): State => {
-      return {
-        ...s,
-        Reported: new Date(s.Reported)
-      };
-    }
-  );
+  resp.data.map(
+      (s: StateResponse): State => {
+        return {
+          ...s,
+          Reported: new Date(s.Reported)
+        };
+      }
+  )
+      .forEach(state => {
+        let s = states[state.ID];
+        if (s) {
+          s.push(state);
+        } else {
+          s = [state];
+        }
+        states[state.ID] = s;
+      });
+
+  return states;
 }
 
 export async function getStateGeo(

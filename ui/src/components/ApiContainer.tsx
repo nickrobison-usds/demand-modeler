@@ -5,11 +5,11 @@ import {getTopCountyCases, getTopStateCases} from "../api";
 const loadData = async () => {
   const loadStateData = async () => {
     const chunkedStateData = await getTopStateCases();
-    return chunkedStateData.flat();
+    return chunkedStateData;
   };
   const loadCountyData = async () => {
     const chunkedCountyData = await getTopCountyCases();
-    return chunkedCountyData.flat();
+    return chunkedCountyData;
   };
   return await Promise.all([await loadStateData(), await loadCountyData()]);
 };

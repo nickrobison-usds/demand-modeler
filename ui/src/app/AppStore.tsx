@@ -7,7 +7,6 @@ import React, {
 } from "react";
 import * as TypeGuards from "../utils/guards";
 import * as DateUtils from "../utils/DateUtils";
-import { mockCovidTimeSeries } from "./mockData";
 import L from "leaflet";
 import mapboxgl from "mapbox-gl";
 
@@ -60,8 +59,8 @@ export interface State extends CovidStats {
 }
 
 export interface CovidDateData {
-  states: State[];
-  counties: County[];
+  states: {[key:string]: State[]};
+  counties: {[key: string]: County[]};
 }
 
 // TODO: seperate Geo data from time series data
@@ -81,7 +80,10 @@ export const initialState: AppState = {
   selection: {
     date: DateUtils.formatDate(new Date())
   },
-  covidTimeSeries: mockCovidTimeSeries,
+  covidTimeSeries: {
+    states: {},
+    counties: {}
+  },
   mapView: {
     width: 400,
     height: 400,
@@ -125,7 +127,8 @@ const updateSelectedState = (
   let lng = DEFAULT_LNG;
   let zoom = DEFAULT_ZOOM;
   if (id !== undefined) {
-    const s = state.covidTimeSeries.states.find(s => s.ID === id);
+    // It's fine to pull a single value out of the array because the boundary doesn't change
+    const s = state.covidTimeSeries.states[id][0];
     if (s && s.Geo) {
       var polygon = s.Geo.coordinates;
       var fit = new L.Polygon(polygon as any).getBounds();
@@ -171,7 +174,7 @@ const updateSelectedCounty = (
   let lng = DEFAULT_LNG;
   let zoom = DEFAULT_ZOOM;
   if (id !== undefined) {
-    const c = state.covidTimeSeries.counties.find(c => c.ID === id);
+    const c = state.covidTimeSeries.counties[id][0];
     if (c && c.Geo) {
       var polygon = c.Geo.coordinates;
       var fit = new L.Polygon(polygon as any).getBounds();
