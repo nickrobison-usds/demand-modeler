@@ -29,13 +29,13 @@ export const MixedBar = (props: Props) => {
   // const dates = Object.keys(props.timeSeries).sort();
   const dates = [
     ...new Set(
-      props.timeSeries.counties.map(({ Reported }) => formatDate(Reported))
+      Object.values(props.timeSeries.counties).map(({ Reported }) => formatDate(Reported))
     )
   ].sort();
   const data = dates.map(date => {
     let total = 0;
     if (props.county) {
-      total = props.timeSeries.counties
+      total = Object.values(props.timeSeries.counties)
         .filter(
           ({ Reported, ID }) =>
             formatDate(Reported) === date && ID === props.county
@@ -45,10 +45,10 @@ export const MixedBar = (props: Props) => {
         }, 0);
       maxCasesByDate[date] = (maxCasesByDate[date] || 0) + total;
     } else if (props.state) {
-      const state = props.timeSeries.states.find(({ ID }) => ID === props.state)
+      const state = Object.values(props.timeSeries.states).find(({ ID }) => ID === props.state)
         ?.State;
 
-      const counties = props.timeSeries.counties.filter(
+      const counties = Object.values(props.timeSeries.counties).filter(
         ({ State }) => State === state
       );
 
@@ -60,7 +60,7 @@ export const MixedBar = (props: Props) => {
           total += count;
         });
     } else {
-      props.timeSeries.states
+      Object.values(props.timeSeries.states)
         .filter(({ Reported }) => formatDate(Reported) === date)
         .forEach(s => {
           const count = props.stat === "confirmed" ? s.Confirmed : s.Dead;

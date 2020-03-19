@@ -35,7 +35,7 @@ export const Report: React.FC<{}> = () => {
   return (
     <AppContext.Consumer>
       {({ state }) => {
-        const states = state.covidTimeSeries.states.filter(
+        const states = Object.values(state.covidTimeSeries.states).filter(
           ({ Reported }) => formatDate(Reported) === state.selection.date
         );
         const top10States = [...states]

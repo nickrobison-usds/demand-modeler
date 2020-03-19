@@ -36,7 +36,7 @@ export const StateMixedBar = (props: Props) => {
   // Top 10 Counties (total or in state)
   if (props.state || !props.stateCount) {
     const stateName =
-      props.timeSeries.states.find(state => state.ID === props.state)?.State ||
+      Object.values(props.timeSeries.states).find(state => state.ID === props.state)?.State ||
       "";
     if (stateName) {
       title = `${stateName}`;
@@ -45,7 +45,7 @@ export const StateMixedBar = (props: Props) => {
       title = `Counties with the highest number of cases`;
 
     }
-    let countyData = props.timeSeries.counties;
+    let countyData = Object.values(props.timeSeries.counties);
     if (props.state) {
       countyData = countyData.filter(({ State }) => State === stateName);
     }
@@ -73,7 +73,7 @@ export const StateMixedBar = (props: Props) => {
   } else {
     // Top 10 states
     title = "States with the highest number of cases";
-    const stateData = props.timeSeries.states;
+    const stateData = Object.values(props.timeSeries.states);
     dates = [
       ...new Set(stateData.map(({ Reported }) => formatDate(Reported)))
     ].sort();

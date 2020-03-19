@@ -19,7 +19,7 @@ const USATotal: React.FunctionComponent<{}> = props => {
   ];
 
   const stateMap: { [ID: string]: Option } = {};
-  state.covidTimeSeries.states.forEach(s => {
+  Object.values(state.covidTimeSeries.states).forEach(s => {
     stateMap[s.ID] = {
       text: s.State,
       value: s.ID
