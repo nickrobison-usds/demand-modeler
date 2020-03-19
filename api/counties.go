@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/go-chi/chi"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/nickrobison-usds/demand-modeling/cmd"
@@ -42,6 +43,49 @@ func getCountIDs(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func getTopCounties(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	conn, err := ctx.Value("db").(*pgxpool.Pool).Acquire(ctx)
+	if err != nil {
+		log.Print(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer conn.Release()
+
+	innerQuery := "SELECT c.ID, c.County, c.State, a.update, a.confirmed, a.newconfirmed, a.dead, a.newdead, ST_AsGeoJSON(t.geom) as geom from counties as c " +
+		"LEFT JOIN cases as a ON c.id = a.geoid " +
+		"ORDER BY a.update DESC, confirmed DESC "
+
+	limit, ok := r.URL.Query()["limit"]
+	if ok && len(limit) == 1 {
+		innerQuery = fmt.Sprintf("%s LIMIT %s", innerQuery, limit[0])
+	}
+
+	// 							 SELECT c.ID, c.County, c.State, s.Update, s.Confirmed, s.NewConfirmed, s.Dead, s.NewDead, ST_AsGeoJSON(t.geom) as geom FROM counties as c
+	query := fmt.Sprintf("SELECT c.ID, c.County, c.State, a.update, a.confirmed, a.newconfirmed, a.dead, a.newdead, ST_AsGeoJSON(t.geom) as geom from counties as c "+
+		"LEFT JOIN cases as a "+
+		"ON c.id = a.geoid "+
+		"LEFT JOIN tiger as t "+
+		"ON c.ID = t.geoid "+
+		"WHERE c.ID in (SELECT Z.ID from (%s) AS Z) "+
+		"ORDER BY c.ID, a.update DESC, confirmed DESC", innerQuery)
+
+	cases, err := queryCountyCases(ctx, conn, query)
+	if err != nil {
+		log.Print(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	err = json.NewEncoder(w).Encode(cases)
+	if err != nil {
+		log.Print(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+}
+
 func getCountyGeo(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	countyID := ctx.Value("countyID").(string)
@@ -64,21 +108,46 @@ func getCountyGeo(w http.ResponseWriter, r *http.Request) {
 func getCountyCases(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	countyID := ctx.Value("countyID").(string)
-	conn := ctx.Value("db").(*pgxpool.Pool)
+	conn, err := ctx.Value("db").(*pgxpool.Pool).Acquire(ctx)
+	if err != nil {
+		log.Print(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer conn.Release()
 
 	log.Println("Returning case data for county: " + countyID)
-	rows, err := conn.Query(ctx, "SELECT c.ID, c.County, c.State, s.Update, s.Confirmed, s.NewConfirmed, s.Dead, s.NewDead, ST_AsGeoJSON(t.geom) as geom FROM counties as c "+
-		"LEFT JOIN tiger as t "+
-		"ON c.ID = t.geoid "+
-		"LEFT JOIN cases as s "+
-		"ON s.geoid = c.ID WHERE c.id = $1;", countyID)
+
+	query := "SELECT c.ID, c.County, c.State, s.Update, s.Confirmed, s.NewConfirmed, s.Dead, s.NewDead, ST_AsGeoJSON(t.geom) as geom FROM counties as c " +
+		"LEFT JOIN tiger as t " +
+		"ON c.ID = t.geoid " +
+		"LEFT JOIN cases as s " +
+		"ON s.geoid = c.ID WHERE c.id = $1 " +
+		"ORDER BY update DESC;"
+
+	cases, err := queryCountyCases(ctx, conn, query, countyID)
 	if err != nil {
 		log.Print(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
+	err = json.NewEncoder(w).Encode(cases)
+	if err != nil {
+		log.Print(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+}
+
+func queryCountyCases(ctx context.Context, conn *pgxpool.Conn, sql string, args ...interface{}) ([]cmd.CountyCases, error) {
 	cases := make([]cmd.CountyCases, 0)
+
+	rows, err := conn.Query(ctx, sql, args...)
+	if err != nil {
+		return cases, err
+	}
+
 	for rows.Next() {
 		var id string
 		var county string
@@ -91,9 +160,7 @@ func getCountyCases(w http.ResponseWriter, r *http.Request) {
 		geo := &json.RawMessage{}
 		err := rows.Scan(&id, &county, &state, &updated, &confirmed, &newConfirmed, &dead, &newDead, geo)
 		if err != nil {
-			log.Print(err)
-			w.WriteHeader(http.StatusInternalServerError)
-			return
+			return cases, err
 		}
 
 		caseCount := &cmd.CaseCount{
@@ -111,10 +178,8 @@ func getCountyCases(w http.ResponseWriter, r *http.Request) {
 			CaseCount: caseCount,
 		})
 	}
-	err = json.NewEncoder(w).Encode(cases)
-	if err != nil {
-		log.Print(err)
-	}
+
+	return cases, nil
 }
 
 func countyCTX(next http.Handler) http.Handler {
@@ -131,4 +196,5 @@ func countyAPI(r chi.Router) {
 	r.With(countyCTX).Get("/{countyID}", getCountyCases)
 	r.With(countyCTX).Get("/{countyID}/geo", getCountyGeo)
 	r.Get("/id", getCountIDs)
+	r.Get("/", getTopCounties)
 }

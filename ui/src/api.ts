@@ -19,7 +19,7 @@ export interface GeoResponse {
   Geo: GeoData;
 }
 
-interface StateResopnse {
+interface StateResponse {
   ID: string;
   State: string;
   Reported: string;
@@ -64,6 +64,31 @@ export async function getCountyCases(
   );
 }
 
+export async function getTopCountyCases(
+    limit: number = 10,
+    start?: Date,
+    end?: Date
+): Promise<County[]> {
+  const url = new URL(`${HOST}/api/county`);
+  if (start) {
+    url.searchParams.append("start", formatDate(start));
+  }
+  if (end) {
+    url.searchParams.append("end", formatDate(end));
+  }
+  url.searchParams.append("limit", limit.toString());
+
+  const resp = await Axios.get<CountyResponse[]>(url.href);
+  return resp.data.map(
+      (s: CountyResponse): County => {
+        return {
+          ...s,
+          Reported: new Date(s.Reported)
+        };
+      }
+  );
+}
+
 export async function getCountyGeo(
   id: string,
   start?: Date,
@@ -87,14 +112,39 @@ export async function getStateCases(
     url.searchParams.append("end", formatDate(end));
   }
 
-  const resp = await Axios.get<StateResopnse[]>(url.href);
+  const resp = await Axios.get<StateResponse[]>(url.href);
   return resp.data.map(
-    (s: StateResopnse): State => {
+    (s: StateResponse): State => {
       return {
         ...s,
         Reported: new Date(s.Reported)
       };
     }
+  );
+}
+
+export async function getTopStateCases(
+    limit: number = 10,
+    start?: Date,
+    end?: Date
+): Promise<State[]> {
+  const url = new URL(`${HOST}/api/state`);
+  if (start) {
+    url.searchParams.append("start", formatDate(start));
+  }
+  if (end) {
+    url.searchParams.append("end", formatDate(end));
+  }
+  url.searchParams.append("limit", limit.toString());
+
+  const resp = await Axios.get<StateResponse[]>(url.href);
+  return resp.data.map(
+      (s: StateResponse): State => {
+        return {
+          ...s,
+          Reported: new Date(s.Reported)
+        };
+      }
   );
 }
 

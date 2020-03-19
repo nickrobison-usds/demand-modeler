@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/go-chi/chi"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/nickrobison-usds/demand-modeling/cmd"
@@ -16,6 +17,49 @@ func getStateIDs(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Print(err)
 		w.WriteHeader(http.StatusInternalServerError)
+	}
+}
+
+func getTopStates(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	conn, err := ctx.Value("db").(*pgxpool.Pool).Acquire(ctx)
+	if err != nil {
+		log.Print(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer conn.Release()
+
+	innerQuery := "SELECT c.statefp, c.state, a.update, SUM(a.confirmed)as confirmed, SUM(a.newconfirmed), SUM(a.dead), SUM(a.newdead) from counties as c " +
+		"LEFT JOIN cases as a " +
+		"ON c.id = a.geoid " +
+		"GROUP BY c.statefp, c.state, a.update " +
+		"ORDER BY a.update DESC, confirmed DESC "
+
+	limit, ok := r.URL.Query()["limit"]
+	if ok && len(limit) == 1 {
+		innerQuery = fmt.Sprintf("%s LIMIT %s", innerQuery, limit[0])
+	}
+
+	query := fmt.Sprintf("SELECT c.statefp, c.state, a.update, SUM(a.confirmed)as confirmed, SUM(a.newconfirmed), SUM(a.dead), SUM(a.newdead) from counties as c "+
+		"LEFT JOIN cases as a "+
+		"ON c.id = a.geoid "+
+		"WHERE c.statefp in ( select Z.statefp from (%s) as Z) "+
+		"GROUP BY c.statefp, c.state, a.update "+
+		"ORDER BY c.statefp, a.update DESC, confirmed DESC", innerQuery)
+
+	cases, err := queryStateCases(ctx, conn, query)
+	if err != nil {
+		log.Print(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	err = json.NewEncoder(w).Encode(cases)
+	if err != nil {
+		log.Print(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 }
 
@@ -39,20 +83,45 @@ func getStateGeo(w http.ResponseWriter, r *http.Request) {
 func getStateCases(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	stateID := ctx.Value("stateID").(string)
-	conn := ctx.Value("db").(*pgxpool.Pool)
+	conn, err := ctx.Value("db").(*pgxpool.Pool).Acquire(ctx)
+	if err != nil {
+		log.Print(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer conn.Release()
 
 	log.Println("Returning case data for state: " + stateID)
-	rows, err := conn.Query(ctx, "SELECT c.statefp, c.state, a.update, SUM(a.confirmed), SUM(a.newconfirmed), SUM(a.dead), SUM(a.newdead) from counties as c "+
-		"LEFT JOIN cases as a ON c.id = a.geoid "+
-		"WHERE c.statefp = $1 "+
-		"GROUP BY c.statefp, c.state, a.update", stateID)
+
+	query := "SELECT c.statefp, c.state, a.update, SUM(a.confirmed) as confirmed, SUM(a.newconfirmed), SUM(a.dead), SUM(a.newdead) from counties as c " +
+		"LEFT JOIN cases as a ON c.id = a.geoid " +
+		"WHERE c.statefp = $1 " +
+		"GROUP BY c.statefp, c.state, a.update " +
+		"ORDER BY a.update DESC, confirmed DESC"
+
+	cases, err := queryStateCases(ctx, conn, query, stateID)
 	if err != nil {
 		log.Print(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
+	err = json.NewEncoder(w).Encode(cases)
+	if err != nil {
+		log.Print(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+}
+
+func queryStateCases(ctx context.Context, conn *pgxpool.Conn, sql string, args ...interface{}) ([]cmd.StateCases, error) {
 	cases := make([]cmd.StateCases, 0)
+
+	rows, err := conn.Query(ctx, sql, args...)
+	if err != nil {
+		return cases, err
+	}
+
 	for rows.Next() {
 		var id string
 		var state string
@@ -63,9 +132,7 @@ func getStateCases(w http.ResponseWriter, r *http.Request) {
 		var reported time.Time
 		err := rows.Scan(&id, &state, &reported, &confirmed, &newConfirmed, &dead, &newDead)
 		if err != nil {
-			log.Print(err)
-			w.WriteHeader(http.StatusInternalServerError)
-			return
+			return cases, err
 		}
 		caseCount := &cmd.CaseCount{
 			Confirmed:    confirmed,
@@ -81,10 +148,7 @@ func getStateCases(w http.ResponseWriter, r *http.Request) {
 			CaseCount: caseCount,
 		})
 	}
-	err = json.NewEncoder(w).Encode(cases)
-	if err != nil {
-		log.Print(err)
-	}
+	return cases, nil
 }
 
 func stateCTX(next http.Handler) http.Handler {
@@ -100,4 +164,5 @@ func stateAPI(r chi.Router) {
 	r.With(stateCTX).Get("/{stateID}/geo", getStateGeo)
 	r.With(stateCTX).Get("/{stateID}", getStateCases)
 	r.Get("/id", getStateIDs)
+	r.Get("/", getTopStates)
 }
