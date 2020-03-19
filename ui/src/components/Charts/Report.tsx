@@ -1,5 +1,5 @@
 import React from "react";
-import { AppContext } from "../../app/AppStore";
+import { AppContext, State } from "../../app/AppStore";
 import { StateMixedBar } from "./StateMixedBar";
 import { MixedBar } from "./MixedBar";
 import "./Report.scss";
@@ -38,7 +38,15 @@ export const Report: React.FC<{}> = () => {
         const states = state.covidTimeSeries.states.filter(
           ({ Reported }) => formatDate(Reported) === state.selection.date
         );
-        const top10States = [...states]
+        const stateIDs = new Set();
+        const dedupedStates: State[] = [];
+        states.forEach(s => {
+          if (!stateIDs.has(s.ID)) {
+            dedupedStates.push(s);
+            stateIDs.add(s.ID);
+          }
+        });
+          const top10States = [...dedupedStates]
           .sort((s1, s2) => s2.Confirmed - s1.Confirmed)
           .slice(0, 10);
         return (
