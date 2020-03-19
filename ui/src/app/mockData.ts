@@ -1,4 +1,4 @@
-import { CovidDateData, State, County } from "./AppStore";
+import { CovidDateData, County } from "./AppStore";
 // MOCK this file can be removed
 
 const testStates = [

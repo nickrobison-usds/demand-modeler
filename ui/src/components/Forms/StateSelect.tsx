@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { ActionType, AppContext, State } from "../../app/AppStore";
+import { ActionType, AppContext } from "../../app/AppStore";
 import UsaSelect from "../Forms/USASelect";
 
 interface Option {
