@@ -41,13 +41,6 @@ function App() {
               <ChartContainer stat="confirmed" stateCount={true} />
               <ChartContainer stat="confirmed" stateCount={false} />
             </Card>
-            <Card header="Dead">
-              {/* <EpiMap stat="dead" /> */}
-              {/* <USATotals stat="dead" /> */}
-              <ChartContainer2 stat="dead" />
-              <ChartContainer stat="dead" stateCount={true} />
-              <ChartContainer stat="dead" stateCount={false} />
-            </Card>
           </div>
           <div></div>
         </ApiContainer>
