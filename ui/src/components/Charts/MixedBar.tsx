@@ -9,7 +9,6 @@ import {
   Legend
 } from "recharts";
 import { CovidDateData } from "../../app/AppStore";
-import { getYMaxFromMaxCases } from "../../utils/utils";
 import { monthDay } from "../../utils/DateUtils";
 
 type Props = {
@@ -23,7 +22,6 @@ type Props = {
 export const MixedBar = (props: Props) => {
   let title = "Grand Total";
 
-  let maxCases = 0;
   let maxCasesByDate: { [d: string]: number } = {};
 
   // const dates = Object.keys(props.timeSeries).sort();
@@ -82,8 +80,6 @@ export const MixedBar = (props: Props) => {
     }
   });
 
-  maxCases = Math.max(...Object.values(maxCasesByDate));
-
   return (
     <div>
       <h3>{title}</h3>
@@ -103,7 +99,6 @@ export const MixedBar = (props: Props) => {
         <XAxis height={60} dataKey="Name" />
         <YAxis
           dataKey="Grand Total"
-          domain={[0, getYMaxFromMaxCases(maxCases)]}
         />
         <Tooltip />
         <Legend />

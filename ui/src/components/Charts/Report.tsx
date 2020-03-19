@@ -65,6 +65,7 @@ export const Report: React.FC<{}> = () => {
                   stat="confirmed"
                   stateCount={false}
                   reportView
+                  meta={state.graphMetaData}
                 />
                 {pagebreak()}
               </>
@@ -76,6 +77,7 @@ export const Report: React.FC<{}> = () => {
               stat="confirmed"
               stateCount={false}
               reportView
+              meta={state.graphMetaData}
             />
             {pagebreak()}
             <StateMixedBar
@@ -85,6 +87,7 @@ export const Report: React.FC<{}> = () => {
               stat="confirmed"
               stateCount={true}
               reportView
+              meta={state.graphMetaData}
             />
             {pagebreak()}
             <MixedBar

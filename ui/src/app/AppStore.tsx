@@ -100,7 +100,7 @@ export const initialState: AppState = {
 };
 
 export const AppContext = createContext({} as AppContextType);
-export const EXCLUDED_STATES = ["36"];
+export const EXCLUDED_STATES = ["New York"];
 const setCovidData = (state: AppState, { payload }: Action): AppState => {
   if (TypeGuards.isCovidData(payload)) {
     const stateData = Object.keys(payload.states).flatMap(k => payload.states[k]);

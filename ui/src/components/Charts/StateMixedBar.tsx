@@ -33,13 +33,14 @@ export const StateMixedBar = (props: Props) => {
   let maxCases: number | undefined;
   let dates: string[];
   let data;
+  let stateName: string = "";
 
   // Top 10 Counties (total or in state)
   if (props.state || !props.stateCount) {
-    const stateName =
+    stateName =
       Object.keys(props.timeSeries.states).flatMap(k => props.timeSeries.states[k]).find(state => state.ID === props.state)?.State ||
       "";
-    if (stateName) {
+    if (stateName !== "") {
       title = `${stateName}`;
 
     } else {
@@ -136,8 +137,6 @@ export const StateMixedBar = (props: Props) => {
     }
   });
 
-    console.log(props.meta)
-    console.log(maxCases)
   return (
     <>
       <h3>{props.title ? props.title : title}</h3>
@@ -161,7 +160,7 @@ export const StateMixedBar = (props: Props) => {
           height={100}
           dataKey="Name"
         />
-        <YAxis domain={maxCases && !EXCLUDED_STATES.includes(props.state as any) ? [0, getYMaxFromMaxCases(maxCases)]: undefined} />
+        <YAxis domain={maxCases && !EXCLUDED_STATES.includes(stateName as any) ? [0, getYMaxFromMaxCases(maxCases)]: undefined} />
         <Tooltip />
         <div style={{padding: "10px"}}/>
         <Legend />
