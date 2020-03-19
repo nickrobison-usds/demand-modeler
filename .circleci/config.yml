@@ -52,7 +52,3 @@ workflows:
     jobs:
       - build-ui
       - build-api
-      - deploy:
-          requires:
-            - build-ui
-            - build-api
