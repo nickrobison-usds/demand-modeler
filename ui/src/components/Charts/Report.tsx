@@ -16,6 +16,7 @@ export const Report: React.FC<{}> = () => {
           <a
             href="https://www.csbs.org/information-covid-19-coronavirus"
             target="_blank"
+            rel="noopener noreferrer"
           >
             Conference of State Bank Supervisors
           </a>

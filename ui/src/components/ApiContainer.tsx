@@ -51,6 +51,7 @@ export const ApiContainer: React.FC = props => {
       dispatch({ type: ActionType.LOAD_DATA, payload: CovidDateData });
       setIsLoading(false);
     })();
+    // eslint-disable-next-line
   }, []);
 
   return isLoading ? (

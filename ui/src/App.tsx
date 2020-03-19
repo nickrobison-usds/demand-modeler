@@ -33,7 +33,7 @@ function App() {
                 <StateSelect />
                 <CountySelect />
               </div>
-              <a className="uas-button" href="?report=true" target="_blank">View Report</a>
+              <a className="uas-button" href="?report=true" target="_blank" rel="noopener noreferrer">View Report</a>
             </div>
           </Card>
           <div style={{ display: "flex" }}>
