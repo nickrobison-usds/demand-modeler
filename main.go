@@ -26,7 +26,7 @@ func main() {
 	}
 	filesDir := filepath.Join(workDir, "ui/build")
 
-	url := os.Getenv("DATABASE_URL")
+	url := getDBURL()
 	// Do the migration
 	err = migrateDatabase(url, workDir)
 	if err != nil {
@@ -88,10 +88,19 @@ func serve(db *pgxpool.Pool, filesDir string) error {
 	})
 	r.Use(cors.Handler)
 
+	// Get the port
+	var port string
+	portenv := os.Getenv("PORT")
+	if portenv == "" {
+		port = "8080"
+	} else {
+		port = portenv
+	}
+
 	r.Route("/api", api.MakeRouter)
 	FileServer(r, "", "/", http.Dir(filesDir))
-	log.Println("Listening")
-	return http.ListenAndServe(":8080", r)
+	log.Printf("Listening on %s\n", port)
+	return http.ListenAndServe(":"+port, r)
 }
 
 // FileServer conveniently sets up a http.FileServer handler to serve
@@ -123,4 +132,23 @@ func migrateDatabase(dbURL string, workDir string) error {
 		return err
 	}
 	return nil
+}
+
+func getDBURL() string {
+	//if cfenv.IsRunningOnCF() {
+	//	app, err := cfenv.Current()
+	//	if err != nil {
+	//		log.Fatal(err)
+	//	}
+	//
+	//	serv, err := app.Services.WithName("fearless-dreamer-psql")
+	//	if err != nil {
+	//		log.Fatal(err)
+	//	}
+	//
+	//	url, _ := serv.CredentialString("uri")
+	//	return url
+	//} else {
+	return os.Getenv("DATABASE_URL")
+	//}
 }
