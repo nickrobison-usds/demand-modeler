@@ -3,7 +3,7 @@ FROM golang:latest
 COPY . /home/src
 WORKDIR /home/src
 
-ARG REACT_APP_API_URI="/"
+ARG REACT_APP_API_URI="https://fearless-dreamer.nickrobison.com"
 
 RUN apt-get update
 RUN apt-get install unzip postgis curl -y
