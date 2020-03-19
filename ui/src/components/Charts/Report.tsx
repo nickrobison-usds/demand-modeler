@@ -6,11 +6,9 @@ import "./Report.scss";
 import { formatDate, dateTimeString } from "../../utils/DateUtils";
 
 export const Report: React.FC<{}> = () => {
-  const LAST_UPDATED = new Date("22:00 March 17, 2020")
-
-  const pagebreak = () => {
+  const pagebreak = (lastUpdated: Date | undefined) => {
     return (
-      <div style={{margin: "20px 0", fontSize:"13px"}}>
+      <div style={{ margin: "20px 0", fontSize: "13px" }}>
         <div>
           Source:{" "}
           <a
@@ -20,7 +18,7 @@ export const Report: React.FC<{}> = () => {
           >
             Conference of State Bank Supervisors
           </a>
-          , as of {dateTimeString(LAST_UPDATED)}.
+          , as of {lastUpdated && dateTimeString(lastUpdated)}.
           {/* 12 states with highest case count as of 3/17 shown. */}
         </div>
         <div>
@@ -35,9 +33,20 @@ export const Report: React.FC<{}> = () => {
   return (
     <AppContext.Consumer>
       {({ state }) => {
-        const states = Object.keys(state.covidTimeSeries.states).flatMap(k => state.covidTimeSeries.states[k]).filter(
-          ({ Reported }) => formatDate(Reported) === state.selection.date
-        );
+        let lastUpdated: Date | undefined = undefined;
+        Object.values(state.covidTimeSeries.states)
+          .flat()
+          .forEach(({ Reported }) => {
+            if (!lastUpdated || Reported > lastUpdated) {
+              lastUpdated = Reported;
+            }
+          });
+
+        const states = Object.keys(state.covidTimeSeries.states)
+          .flatMap(k => state.covidTimeSeries.states[k])
+          .filter(
+            ({ Reported }) => formatDate(Reported) === state.selection.date
+          );
         const stateIDs = new Set();
         const dedupedStates: State[] = [];
         states.forEach(s => {
@@ -47,14 +56,14 @@ export const Report: React.FC<{}> = () => {
             stateIDs.add(key);
           }
         });
-          const top10States = [...dedupedStates]
+        const top10States = [...dedupedStates]
           .sort((s1, s2) => s2.Confirmed - s1.Confirmed)
           .slice(0, 10);
         return (
-          <div className="report grid-container" style={{marginLeft: 0}}>
+          <div className="report grid-container" style={{ marginLeft: 0 }}>
             <div>
               <h1>COVID-19 county-level case data</h1>
-              <p>Data as of {dateTimeString(LAST_UPDATED)}</p>
+              <p>Data as of {lastUpdated && dateTimeString(lastUpdated)}</p>
               <div className="pagebreak" />
             </div>
             {top10States.map(s => (
@@ -68,7 +77,7 @@ export const Report: React.FC<{}> = () => {
                   reportView
                   meta={state.graphMetaData}
                 />
-                {pagebreak()}
+                {lastUpdated && pagebreak(lastUpdated)}
               </>
             ))}
             <StateMixedBar
@@ -80,7 +89,7 @@ export const Report: React.FC<{}> = () => {
               reportView
               meta={state.graphMetaData}
             />
-            {pagebreak()}
+            {pagebreak(lastUpdated)}
             <StateMixedBar
               state={undefined}
               county={undefined}
@@ -90,7 +99,7 @@ export const Report: React.FC<{}> = () => {
               reportView
               meta={state.graphMetaData}
             />
-            {pagebreak()}
+            {lastUpdated && pagebreak(lastUpdated)}
             <MixedBar
               state={undefined}
               county={undefined}
