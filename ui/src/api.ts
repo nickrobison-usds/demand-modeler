@@ -64,7 +64,7 @@ export async function getCountyCases(
 }
 
 export async function getTopCountyCases(
-    limit: number = 10000,
+    limit: number = 100,
     start?: Date,
     end?: Date
 ): Promise<{[key: string]: County[]}> {
