@@ -46,7 +46,7 @@ export const Report: React.FC<{}> = () => {
             <div>
               <h1>COVID-19 county-level case data</h1>
               <p>Data as of 22:00 March 17, 2020</p>
-              {pagebreak()}
+              <div className="pagebreak" />
             </div>
             {top10States.map(s => (
               <>
