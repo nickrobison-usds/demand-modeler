@@ -1,17 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AppContext, ActionType, CovidDateData } from "../app/AppStore";
-import {
-  getStateCases,
-  getStateIDs,
-  getCountyIDs,
-  getCountyCases, getTopStateCases, getTopCountyCases
-} from "../api";
-
-const fetchStateCases = async (stateID: string) => await getStateCases(stateID);
-const fetchCountyCases = async (countyID: string) =>
-  await getCountyCases(countyID);
-const fetchStateIDs = async () => await getStateIDs();
-const fetchCountyIDs = async () => await getCountyIDs();
+import {getTopCountyCases, getTopStateCases} from "../api";
 
 const loadData = async () => {
   const loadStateData = async () => {
