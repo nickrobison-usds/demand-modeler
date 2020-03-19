@@ -10,7 +10,7 @@ import {
 } from "recharts";
 import { CovidDateData } from "../../app/AppStore";
 import { getYMaxFromMaxCases } from "../../utils/utils";
-import { formatDate } from "../../utils/DateUtils";
+import { monthDay } from "../../utils/DateUtils";
 
 type Props = {
   state?: string;
@@ -29,7 +29,7 @@ export const MixedBar = (props: Props) => {
   // const dates = Object.keys(props.timeSeries).sort();
   const dates = [
     ...new Set(
-      props.timeSeries.counties.map(({ Reported }) => formatDate(Reported))
+      props.timeSeries.counties.map(({ Reported }) => monthDay(Reported))
     )
   ].sort();
   const data = dates.map(date => {
@@ -38,7 +38,7 @@ export const MixedBar = (props: Props) => {
       total = props.timeSeries.counties
         .filter(
           ({ Reported, ID }) =>
-            formatDate(Reported) === date && ID === props.county
+          monthDay(Reported) === date && ID === props.county
         )
         .reduce((acc, el) => {
           return acc + el[props.stat === "confirmed" ? "Confirmed" : "Dead"];
@@ -53,7 +53,7 @@ export const MixedBar = (props: Props) => {
       );
 
       counties
-        .filter(({ Reported }) => formatDate(Reported) === date)
+        .filter(({ Reported }) => monthDay(Reported) === date)
         .forEach(s => {
           const count = props.stat === "confirmed" ? s.Confirmed : s.Dead;
           maxCasesByDate[date] = (maxCasesByDate[date] || 0) + s.Confirmed;
@@ -61,7 +61,7 @@ export const MixedBar = (props: Props) => {
         });
     } else {
       props.timeSeries.states
-        .filter(({ Reported }) => formatDate(Reported) === date)
+        .filter(({ Reported }) => monthDay(Reported) === date)
         .forEach(s => {
           const count = props.stat === "confirmed" ? s.Confirmed : s.Dead;
           maxCasesByDate[date] = (maxCasesByDate[date] || 0) + s.Confirmed;
@@ -73,6 +73,16 @@ export const MixedBar = (props: Props) => {
       "Grand Total": total
     };
   });
+  const dedupedData: any[] = [];
+  const dateSet = new Set()
+  data.forEach(e => {
+    const day = e.Name.split("|")[0]
+    if (!dateSet.has(day)) {
+      e.Name = day;
+      dedupedData.push(e);
+      dateSet.add(day);
+    }
+  });
 
   maxCases = Math.max(...Object.values(maxCasesByDate));
 
@@ -83,7 +93,7 @@ export const MixedBar = (props: Props) => {
         barSize={50}
         width={window.innerWidth * 0.9}
         height={600}
-        data={data}
+        data={dedupedData}
         margin={{
           top: 0,
           right: 0,

@@ -29,7 +29,17 @@ export const dateTimeString = (date: Date) => {
   const hour = addZero(date.getHours());
   const minute = addZero(date.getMinutes());
   const month = theMonths[date.getMonth()];
-  const day = date.getDay();
+  const day = date.getDate();
   const year = date.getFullYear()
   return `${hour}:${minute} ${month} ${day}, ${year}`;
+}
+
+export const monthDay = (date: Date) => {
+  const hour = addZero(date.getHours());
+  const minute = addZero(date.getMinutes());
+  const month = theMonths[date.getMonth()];
+  const day = date.getDate();
+  const year = date.getFullYear()
+  // Changing this may break all the bar graphs
+  return `${month}-${day}|${year}${hour}:${minute} `;
 }

@@ -10,7 +10,7 @@ import {
 } from "recharts";
 import { CovidDateData } from "../../app/AppStore";
 import { getYMaxFromMaxCases } from "../../utils/utils";
-import { formatDate } from "../../utils/DateUtils";
+import { monthDay } from "../../utils/DateUtils";
 
 type Props = {
   state?: string;
@@ -55,11 +55,11 @@ export const StateMixedBar = (props: Props) => {
     }, {} as { [c: string]: number });
     maxCases = Math.max(...Object.values(maxCasesByCounty));
     dates = [
-      ...new Set(countyData.map(({ Reported }) => formatDate(Reported)))
+      ...new Set(countyData.map(({ Reported }) => monthDay(Reported)))
     ].sort();
     const counties = countyData.reduce((acc, el) => {
       if (!acc[el.County]) acc[el.County] = {};
-      acc[el.County][formatDate(el.Reported)] =
+      acc[el.County][monthDay(el.Reported)] =
         props.stat === "confirmed" ? el.Confirmed : el.Dead;
       return acc;
     }, {} as { [c: string]: { [d: string]: number } });
@@ -75,7 +75,7 @@ export const StateMixedBar = (props: Props) => {
     title = "States with the highest number of cases";
     const stateData = props.timeSeries.states;
     dates = [
-      ...new Set(stateData.map(({ Reported }) => formatDate(Reported)))
+      ...new Set(stateData.map(({ Reported }) => monthDay(Reported)))
     ].sort();
     const maxCasesByState = stateData.reduce((acc, el) => {
       acc[el.State] = acc[el.State] || 0 + el.Confirmed;
@@ -84,7 +84,7 @@ export const StateMixedBar = (props: Props) => {
     maxCases = Math.max(...Object.values(maxCasesByState));
     const states = stateData.reduce((acc, el) => {
       if (!acc[el.State]) acc[el.State] = {};
-      acc[el.State][formatDate(el.Reported)] =
+      acc[el.State][monthDay(el.Reported)] =
         props.stat === "confirmed" ? el.Confirmed : el.Dead;
       return acc;
     }, {} as { [c: string]: { [d: string]: number } });
@@ -97,7 +97,25 @@ export const StateMixedBar = (props: Props) => {
     }, [] as { [k: string]: string | number }[]);
   }
 
-  const sortedData = data.sort((a, b) => {
+  const dedupedData: any[] = [];
+  data.forEach(e => {
+    const dateSet = new Set();
+    const dedupede: any = {};
+    Object.keys(e).forEach((k) => {
+      if (k.toString().includes("|")) {
+        const day = k.toString().split("|")[0]
+        if (!dateSet.has(day)) {
+          dedupede[day] = e[k];
+          dateSet.add(day);
+        }
+      } else {
+        dedupede[k] = e[k];
+      }
+    })
+    dedupedData.push(dedupede)
+  });
+
+  const sortedData = dedupedData.sort((a, b) => {
     const { Name: aName, ...aData } = a;
     const { Name: bName, ...bData } = b;
     const aSum = (Object.values(aData) as number[]).reduce(
@@ -109,6 +127,16 @@ export const StateMixedBar = (props: Props) => {
       0
     );
     return bSum - aSum;
+  });
+
+  const displayDates: string[] = []
+  const displayDateSet = new Set();
+  dates.forEach(d => {
+    const key = d.split("|")[0];
+    if (!displayDateSet.has(key)) {
+      displayDates.push(key)
+      displayDateSet.add(key);
+    }
   });
 
   return (
@@ -138,8 +166,8 @@ export const StateMixedBar = (props: Props) => {
         <Tooltip />
         <div style={{padding: "10px"}}/>
         <Legend />
-        {dates.map((date, i) => (
-          <Bar key={date} dataKey={date} fill={colors[i]} />
+        {displayDates.map((date, i) => (
+          <Bar key={date} dataKey={date.split("|")[0]} fill={colors[i]} />
         ))}
       </BarChart>
     </>
