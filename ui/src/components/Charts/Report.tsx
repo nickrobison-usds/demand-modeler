@@ -50,7 +50,7 @@ export const Report: React.FC<{}> = () => {
         const stateIDs = new Set();
         const dedupedStates: State[] = [];
         states.forEach(s => {
-          const key = `${s.ID}|${s.State}`;
+          const key = `${s.State}`;
           if (!stateIDs.has(key)) {
             dedupedStates.push(s);
             stateIDs.add(key);
