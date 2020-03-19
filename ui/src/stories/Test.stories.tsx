@@ -3,6 +3,8 @@ import { storiesOf } from "@storybook/react";
 import { StateMixedBar } from "../components/Charts/StateMixedBar";
 import { mockCovidTimeSeries } from "../app/mockData";
 import { MixedBar } from "../components/Charts/MixedBar";
+import { AppStoreProvider } from "../app/AppStore";
+import USATotals from "../components/USATotals";
 
 storiesOf("Charts", module)
   .add("Top 10 counties by state", () => {
@@ -48,5 +50,49 @@ storiesOf("Charts", module)
         timeSeries={mockCovidTimeSeries}
         stat="confirmed"
       />
+    );
+  });
+
+storiesOf("USA Totals", module)
+  .add("Stats, All", () => {
+    return (
+      <AppStoreProvider
+        initialState={{
+          covidTimeSeries: mockCovidTimeSeries,
+          selection: { date: "2020-3-16" },
+          mapView: { width: 0, height: 0, latitude: 0, longitude: 0, zoom: 0 }
+        }}
+      >
+        <USATotals stat="dead" />
+        <USATotals stat="confirmed" />
+      </AppStoreProvider>
+    );
+  })
+  .add("Stats, State", () => {
+    return (
+      <AppStoreProvider
+        initialState={{
+          covidTimeSeries: mockCovidTimeSeries,
+          selection: { date: "2020-3-15", state: "1" },
+          mapView: { width: 0, height: 0, latitude: 0, longitude: 0, zoom: 0 }
+        }}
+      >
+        <USATotals stat="dead" />
+        <USATotals stat="confirmed" />
+      </AppStoreProvider>
+    );
+  })
+  .add("Stats, County", () => {
+    return (
+      <AppStoreProvider
+        initialState={{
+          covidTimeSeries: mockCovidTimeSeries,
+          selection: { date: "2020-3-15", state: "1", county: "1|1" },
+          mapView: { width: 0, height: 0, latitude: 0, longitude: 0, zoom: 0 }
+        }}
+      >
+        <USATotals stat="dead" />
+        <USATotals stat="confirmed" />
+      </AppStoreProvider>
     );
   });
