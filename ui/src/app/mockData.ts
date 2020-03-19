@@ -1,4 +1,4 @@
-import {CovidDateData, County, State} from "./AppStore";
+import { CovidDateData, County, State } from "./AppStore";
 // MOCK this file can be removed
 
 const testStates = [
@@ -49,9 +49,7 @@ const makeCountyData = (day: number): County[] => {
   return counties;
 };
 
-
-
-function buildStateMap(): {[key: string]: State[]} {
+function buildStateMap(): { [key: string]: State[] } {
   const testStateData = [
     {
       ID: "01",
@@ -143,16 +141,20 @@ function buildStateMap(): {[key: string]: State[]} {
     ...makeStateData(16)
   ];
 
-  let states: {[key: string]: State[]} = {};
+  let states: { [key: string]: State[] } = {};
 
   testStateData.forEach(state => {
+    if (!states[state.ID]) {
+      states[state.ID] = [];
+    }
+
     states[state.ID].push(state);
   });
 
   return states;
 }
 
-function buildCountyMap(): {[key: string]: County[]} {
+function buildCountyMap(): { [key: string]: County[] } {
   const testCountyData = [
     {
       ID: "01|02",
@@ -1586,9 +1588,13 @@ function buildCountyMap(): {[key: string]: County[]} {
     ...makeCountyData(16)
   ];
 
-  let counties: {[key: string]: County[]} = {};
+  let counties: { [key: string]: County[] } = {};
 
   testCountyData.forEach(county => {
+    if (!counties[county.ID]) {
+      counties[county.ID] = [];
+    }
+
     counties[county.ID].push(county);
   });
 
