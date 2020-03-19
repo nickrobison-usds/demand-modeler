@@ -3,29 +3,30 @@ import { AppContext } from "../../app/AppStore";
 import { StateMixedBar } from "./StateMixedBar";
 import { MixedBar } from "./MixedBar";
 import "./Report.scss";
+import { formatDate } from "../../utils/DateUtils";
 
-export const Report: React.FC<{}> = props => {
+export const Report: React.FC<{}> = () => {
   return (
     <AppContext.Consumer>
       {({ state }) => {
-        const states = Object.values(
-          state.covidTimeSeries[state.selection.date].states
+        const states = state.covidTimeSeries.states.filter(
+          ({ Reported }) => formatDate(Reported) === state.selection.date
         );
-        const top10States = states
+        const top10States = [...states]
           .sort((s1, s2) => s2.Confirmed - s1.Confirmed)
           .slice(0, 10);
         return (
           <div className="report">
             {top10States.map(s => (
               <>
-              <StateMixedBar
-                state={s.ID}
-                county={undefined}
-                timeSeries={state.covidTimeSeries}
-                stat="confirmed"
-                stateCount={false}
-              />
-              <div className="pagebreak"/>
+                <StateMixedBar
+                  state={s.ID}
+                  county={undefined}
+                  timeSeries={state.covidTimeSeries}
+                  stat="confirmed"
+                  stateCount={false}
+                />
+                <div className="pagebreak" />
               </>
             ))}
             <StateMixedBar
@@ -35,7 +36,7 @@ export const Report: React.FC<{}> = props => {
               stat="confirmed"
               stateCount={false}
             />
-            <div className="pagebreak"/>
+            <div className="pagebreak" />
             <StateMixedBar
               state={undefined}
               county={undefined}
@@ -43,7 +44,7 @@ export const Report: React.FC<{}> = props => {
               stat="confirmed"
               stateCount={true}
             />
-            <div className="pagebreak"/>
+            <div className="pagebreak" />
             <MixedBar
               state={undefined}
               county={undefined}

@@ -34,8 +34,8 @@ export const StateMixedBar = (props: Props) => {
   // Top 10 Counties (total or in state)
   if (props.state || !props.stateCount) {
     const stateName =
-      props.timeSeries.states.find(state => state.State === props.state)
-        ?.State || "";
+      props.timeSeries.states.find(state => state.ID === props.state)?.State ||
+      "";
     title = `Top 10 Counties${props.state ? " in" + stateName : ""}`;
     let countyData = props.timeSeries.counties;
     if (props.state) {

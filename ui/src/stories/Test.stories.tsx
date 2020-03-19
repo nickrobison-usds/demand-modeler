@@ -8,7 +8,7 @@ storiesOf("Charts", module)
   .add("Top 10 counties by state", () => {
     return (
       <StateMixedBar
-        state={"Arizona"}
+        state={"1"}
         timeSeries={mockCovidTimeSeries}
         stat="confirmed"
         stateCount={false}
