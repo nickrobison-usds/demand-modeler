@@ -81,8 +81,8 @@ export const MixedBar = (props: Props) => {
       <h3>{title}</h3>
       <BarChart
         barSize={50}
-        width={props.reportView ? window.innerWidth * 0.9 : 400}
-        height={props.reportView ? 600 : 300}
+        width={window.innerWidth * 0.9}
+        height={600}
         data={data}
         margin={{
           top: 0,

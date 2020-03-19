@@ -28,17 +28,16 @@ function App() {
       <AppStoreProvider>
         <ApiContainer>
           <Card>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <div style={{ display: "flex" }}>
                 <StateSelect />
                 <CountySelect />
-                <a className="uas-button" href="?report=true">Report</a>
               </div>
-              <a className="uas-button" href="?report=true">Report</a>
+              <a className="uas-button" href="?report=true" target="_blank">View Report</a>
             </div>
           </Card>
           <div style={{ display: "flex" }}>
-            <Card header="Confirmed">
+            <Card>
               {/* <EpiMap stat="confirmed" /> */}
               {/* <USATotals stat="confirmed" /> */}
               <ChartContainer2 stat="confirmed" />
