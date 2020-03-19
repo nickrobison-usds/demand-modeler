@@ -63,6 +63,11 @@ export interface CovidDateData {
   counties: {[key: string]: County[]};
 }
 
+export interface GraphMetaData {
+  maxConfirmedCounty: number;
+  maxConfirmedState: number;
+}
+
 // TODO: seperate Geo data from time series data
 export interface AppState {
   selection: {
@@ -70,6 +75,7 @@ export interface AppState {
     state?: string;
     county?: string;
   };
+  graphMetaData?: GraphMetaData;
   covidTimeSeries: CovidDateData;
   mapView: MapView;
 }
@@ -94,12 +100,30 @@ export const initialState: AppState = {
 };
 
 export const AppContext = createContext({} as AppContextType);
-
+export const EXCLUDED_STATES = ["New York"];
 const setCovidData = (state: AppState, { payload }: Action): AppState => {
   if (TypeGuards.isCovidData(payload)) {
+    const stateData = Object.keys(payload.states).flatMap(k => payload.states[k]);
+    const countyData = Object.keys(payload.counties).flatMap(k => payload.counties[k]);
+    let maxConfirmedCounty = 0;
+    let maxConfirmedState = 0;
+    countyData.forEach((e) => {
+      if (maxConfirmedCounty < e.Confirmed && !EXCLUDED_STATES.includes(e.State)) {
+        maxConfirmedCounty = e.Confirmed;
+      }
+    });
+    stateData.forEach((e) => {
+      if (maxConfirmedState < e.Confirmed && !EXCLUDED_STATES.includes(e.State)) {
+        maxConfirmedState = e.Confirmed;
+      }
+    });
     return {
       ...state,
-      covidTimeSeries: payload
+      covidTimeSeries: payload,
+      graphMetaData: {
+        maxConfirmedCounty,
+        maxConfirmedState
+      }
     };
   }
   return state;

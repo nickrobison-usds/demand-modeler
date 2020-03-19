@@ -18,6 +18,7 @@ export const ChartContainer: React.FC<Props> = props => {
             timeSeries={state.covidTimeSeries}
             stat={props.stat}
             stateCount={props.stateCount}
+            meta={state.graphMetaData}
           />
         );
       }}
