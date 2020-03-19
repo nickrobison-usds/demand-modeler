@@ -51,7 +51,7 @@ const makeCountyData = (day: number): County[] => {
 
 
 
-function buildStateMap(): {[key: string]: State} {
+function buildStateMap(): {[key: string]: State[]} {
   const testStateData = [
     {
       ID: "01",
@@ -143,16 +143,16 @@ function buildStateMap(): {[key: string]: State} {
     ...makeStateData(16)
   ];
 
-  let states: {[key: string]: State} = {};
+  let states: {[key: string]: State[]} = {};
 
   testStateData.forEach(state => {
-    states[state.ID] = state;
+    states[state.ID].push(state);
   });
 
   return states;
 }
 
-function buildCountyMap(): {[key: string]: County} {
+function buildCountyMap(): {[key: string]: County[]} {
   const testCountyData = [
     {
       ID: "01|02",
@@ -1586,10 +1586,10 @@ function buildCountyMap(): {[key: string]: County} {
     ...makeCountyData(16)
   ];
 
-  let counties: {[key: string]: County} = {};
+  let counties: {[key: string]: County[]} = {};
 
   testCountyData.forEach(county => {
-    counties[county.ID] = county;
+    counties[county.ID].push(county);
   });
 
   return counties;

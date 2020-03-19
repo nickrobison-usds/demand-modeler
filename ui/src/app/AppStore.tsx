@@ -59,8 +59,8 @@ export interface State extends CovidStats {
 }
 
 export interface CovidDateData {
-  states: {[key:string]: State};
-  counties: {[key: string]: County};
+  states: {[key:string]: State[]};
+  counties: {[key: string]: County[]};
 }
 
 // TODO: seperate Geo data from time series data
@@ -127,7 +127,8 @@ const updateSelectedState = (
   let lng = DEFAULT_LNG;
   let zoom = DEFAULT_ZOOM;
   if (id !== undefined) {
-    const s = Object.values(state.covidTimeSeries.states).find(s => s.ID === id);
+    // It's fine to pull a single value out of the array because the boundary doesn't change
+    const s = state.covidTimeSeries.states[id][0];
     if (s && s.Geo) {
       var polygon = s.Geo.coordinates;
       var fit = new L.Polygon(polygon as any).getBounds();
@@ -173,7 +174,7 @@ const updateSelectedCounty = (
   let lng = DEFAULT_LNG;
   let zoom = DEFAULT_ZOOM;
   if (id !== undefined) {
-    const c = Object.values(state.covidTimeSeries.counties).find(c => c.ID === id);
+    const c = state.covidTimeSeries.counties[id][0];
     if (c && c.Geo) {
       var polygon = c.Geo.coordinates;
       var fit = new L.Polygon(polygon as any).getBounds();

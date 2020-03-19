@@ -21,7 +21,7 @@ const USATotal: React.FunctionComponent<{}> = () => {
     return null;
   }
 
-  const stateName = covidTimeSeries.states[state]?.State;
+  const stateName = covidTimeSeries.states[state][0].State;
 
   const options: Option[] = [
     {
@@ -31,7 +31,7 @@ const USATotal: React.FunctionComponent<{}> = () => {
   ];
 
   const countyMap: { [ID: string]: Option } = {};
-  Object.values(covidTimeSeries.counties)
+  Object.keys(covidTimeSeries.counties).flatMap(k => covidTimeSeries.counties[k])
     .filter(c => c.State === stateName)
     .forEach(c => {
       countyMap[c.ID] = {
