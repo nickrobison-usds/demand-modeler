@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import * as TypeGuards from "../utils/guards";
 import * as DateUtils from "../utils/DateUtils";
-import {mockCovidTimeSeries} from "./mockData";
+import { mockCovidTimeSeries } from "./mockData";
 import L from "leaflet";
 import mapboxgl from "mapbox-gl";
 
@@ -21,7 +21,8 @@ export interface CovidStats {
 export enum ActionType {
   UPDATE_SELECTED_STATE = "UPDATE_SELECTED_STATE",
   UPDATE_SELECTED_COUNTY = "UPDATE_SELECTED_COUNTY",
-  UPDATE_MAPVIEW = "UPDATE_MAP"
+  UPDATE_MAPVIEW = "UPDATE_MAP",
+  LOAD_DATA = "LOAD_DATA"
 }
 
 export interface MapView {
@@ -69,7 +70,7 @@ export interface AppState {
     date: string;
     state?: string;
     county?: string;
-  }
+  };
   covidTimeSeries: CovidDateData;
   mapView: MapView;
 }
@@ -78,7 +79,7 @@ const DEFAULT_LNG = -99.0762;
 const DEFAULT_ZOOM = 2;
 export const initialState: AppState = {
   selection: {
-    date: DateUtils.formatDate(new Date()),
+    date: DateUtils.formatDate(new Date())
   },
   covidTimeSeries: mockCovidTimeSeries,
   mapView: {
@@ -92,6 +93,16 @@ export const initialState: AppState = {
 
 export const AppContext = createContext({} as AppContextType);
 
+const setCovidData = (state: AppState, { payload }: Action): AppState => {
+  if (TypeGuards.isCovidData(payload)) {
+    return {
+      ...state,
+      covidTimeSeries: payload
+    };
+  }
+  return state;
+};
+
 const updateMapView = (state: AppState, { payload }: Action): AppState => {
   if (TypeGuards.isMapView(payload)) {
     return {
@@ -103,9 +114,12 @@ const updateMapView = (state: AppState, { payload }: Action): AppState => {
   return state;
 };
 
-const updateSelectedState = (state: AppState, { payload }: Action): AppState => {
+const updateSelectedState = (
+  state: AppState,
+  { payload }: Action
+): AppState => {
   const selection = Object.assign({}, state.selection);
-  const id = payload as string | undefined
+  const id = payload as string | undefined;
   selection.state = id;
   let lat = DEFAULT_LAT;
   let lng = DEFAULT_LNG;
@@ -113,11 +127,20 @@ const updateSelectedState = (state: AppState, { payload }: Action): AppState => 
   if (id !== undefined) {
     const s = state.covidTimeSeries.states.find(s => s.ID === id);
     if (s && s.Geo) {
-      var polygon = (s.Geo).coordinates;
+      var polygon = s.Geo.coordinates;
       var fit = new L.Polygon(polygon as any).getBounds();
-      const southWest = new mapboxgl.LngLat(fit.getSouthWest()['lat'], fit.getSouthWest()['lng']);
-      const northEast = new mapboxgl.LngLat(fit.getNorthEast()['lat'], fit.getNorthEast()['lng']);
-      const center = new mapboxgl.LngLatBounds(southWest, northEast).getCenter();
+      const southWest = new mapboxgl.LngLat(
+        fit.getSouthWest()["lat"],
+        fit.getSouthWest()["lng"]
+      );
+      const northEast = new mapboxgl.LngLat(
+        fit.getNorthEast()["lat"],
+        fit.getNorthEast()["lng"]
+      );
+      const center = new mapboxgl.LngLatBounds(
+        southWest,
+        northEast
+      ).getCenter();
       lat = center.lat;
       lng = center.lng;
       zoom = 4;
@@ -133,13 +156,16 @@ const updateSelectedState = (state: AppState, { payload }: Action): AppState => 
   return {
     ...state,
     selection,
-    mapView,
+    mapView
   };
 };
 
-const updateSelectedCounty = (state: AppState, { payload }: Action): AppState => {
+const updateSelectedCounty = (
+  state: AppState,
+  { payload }: Action
+): AppState => {
   const selection = Object.assign({}, state.selection);
-  const id = payload as string | undefined
+  const id = payload as string | undefined;
   selection.county = id;
   let lat = DEFAULT_LAT;
   let lng = DEFAULT_LNG;
@@ -147,11 +173,20 @@ const updateSelectedCounty = (state: AppState, { payload }: Action): AppState =>
   if (id !== undefined) {
     const c = state.covidTimeSeries.counties.find(c => c.ID === id);
     if (c && c.Geo) {
-      var polygon = (c.Geo).coordinates;
+      var polygon = c.Geo.coordinates;
       var fit = new L.Polygon(polygon as any).getBounds();
-      const southWest = new mapboxgl.LngLat(fit.getSouthWest()['lat'], fit.getSouthWest()['lng']);
-      const northEast = new mapboxgl.LngLat(fit.getNorthEast()['lat'], fit.getNorthEast()['lng']);
-      const center = new mapboxgl.LngLatBounds(southWest, northEast).getCenter();
+      const southWest = new mapboxgl.LngLat(
+        fit.getSouthWest()["lat"],
+        fit.getSouthWest()["lng"]
+      );
+      const northEast = new mapboxgl.LngLat(
+        fit.getNorthEast()["lat"],
+        fit.getNorthEast()["lng"]
+      );
+      const center = new mapboxgl.LngLatBounds(
+        southWest,
+        northEast
+      ).getCenter();
       lat = center.lat;
       lng = center.lng;
       zoom = 6;
@@ -165,9 +200,8 @@ const updateSelectedCounty = (state: AppState, { payload }: Action): AppState =>
   return {
     ...state,
     selection,
-    mapView,
+    mapView
   };
-
 };
 
 const reducer: Reducer<AppState, Action> = (state, action) => {
@@ -178,6 +212,10 @@ const reducer: Reducer<AppState, Action> = (state, action) => {
       return updateSelectedCounty(state, action);
     case ActionType.UPDATE_MAPVIEW:
       return updateMapView(state, action);
+    case ActionType.LOAD_DATA:
+      return setCovidData(state, action);
+    default:
+      return state;
   }
 };
 
