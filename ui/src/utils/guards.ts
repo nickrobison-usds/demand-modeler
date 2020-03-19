@@ -1,7 +1,11 @@
-import { MapView } from "../app/AppStore";
+import { MapView, CovidDateData } from "../app/AppStore";
 
 export function isMapView(payload: unknown): payload is MapView {
   return payload && "zoom" in (payload as MapView);
+}
+
+export function isCovidData(payload: unknown): payload is CovidDateData {
+  return !!payload;
 }
 
 // export function isCases(payload: unknown): payload is Case[] {

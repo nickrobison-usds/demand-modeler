@@ -4,11 +4,11 @@ import { StateMixedBar } from "./StateMixedBar";
 import Card from "../Card/Card";
 
 interface Props {
-  stat: "confirmed" | "dead"
+  stat: "confirmed" | "dead";
   stateCount: boolean;
 }
 
-export const ChartContainer: React.FC<Props> = (props) => {
+export const ChartContainer: React.FC<Props> = props => {
   return (
     <AppContext.Consumer>
       {({ state }) => {

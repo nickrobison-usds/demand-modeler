@@ -10,6 +10,7 @@ import {
 } from "recharts";
 import { CovidDateData } from "../../app/AppStore";
 import { getYMaxFromMaxCases } from "../../utils/utils";
+import { formatDate } from "../../utils/DateUtils";
 
 type Props = {
   state?: string;
@@ -17,63 +18,77 @@ type Props = {
   timeSeries: CovidDateData;
   stat: "confirmed" | "dead";
   stateCount: boolean;
+  reportView?: boolean;
 };
 
 const colors = ["#FEEFB3", "#ECAC53", "#E16742", "#fdae61"];
 
 export const StateMixedBar = (props: Props) => {
-  let applicableCounties: string[] = [];
-  let title = `Top 10 Counties`;
   if ((props.stateCount && props.state) || props.county) {
     return null;
   }
+  let title: string;
+  let maxCases: number;
+  let dates: string[];
+  let data;
 
-  if (props.state) {
-    const name = Object.values(props.timeSeries)[0].states[props.state].Name;
-    title = `Top 10 Counties in ${name}`;
-  }
-
-
-  Object.values(props.timeSeries).forEach(({ states, counties }) => {
-    if (props.stateCount) {
-      title = "Top 10 States";
-      applicableCounties = Object.keys(states);
-    } else if (props.state) {
-      const state = Object.values(states).find(el => el.ID === props.state);
-      applicableCounties.push(...(state?.CountyIDs || []));
-    } else {
-      applicableCounties = Object.keys(counties);
+  // Top 10 Counties (total or in state)
+  if (props.state || !props.stateCount) {
+    const stateName =
+      props.timeSeries.states.find(state => state.ID === props.state)?.State ||
+      "";
+    title = `Top 10 Counties${props.state ? " in" + stateName : ""}`;
+    let countyData = props.timeSeries.counties;
+    if (props.state) {
+      countyData = countyData.filter(({ State }) => State === stateName);
     }
-  });
-
-  let maxCases = 0;
-
-  const dates = Object.keys(props.timeSeries).sort();
-  const counties = Object.entries(props.timeSeries).reduce(
-    (acc, [date, { counties, states }]) => {
-      const entries = props.stateCount ? states : counties;
-      Object.entries(entries).forEach(([, { Name, Confirmed, Dead, ID }]) => {
-        if (!applicableCounties.includes(ID)) return acc;
-        maxCases = Math.max(Confirmed, Dead, maxCases);
-        if (!acc[Name]) acc[Name] = {};
-        if (props.stat === "confirmed") {
-          acc[Name][date] = Confirmed;
-        } else {
-          acc[Name][date] = Dead;
-        }
-        return acc;
+    const maxCasesByCounty = countyData.reduce((acc, el) => {
+      acc[el.County] = acc[el.County] || 0 + el.Confirmed;
+      return acc;
+    }, {} as { [c: string]: number });
+    maxCases = Math.max(...Object.values(maxCasesByCounty));
+    dates = [
+      ...new Set(countyData.map(({ Reported }) => formatDate(Reported)))
+    ].sort();
+    const counties = countyData.reduce((acc, el) => {
+      if (!acc[el.County]) acc[el.County] = {};
+      acc[el.County][formatDate(el.Reported)] =
+        props.stat === "confirmed" ? el.Confirmed : el.Dead;
+      return acc;
+    }, {} as { [c: string]: { [d: string]: number } });
+    data = Object.entries(counties).reduce((acc, [Name, data]) => {
+      acc.push({
+        Name,
+        ...data
       });
       return acc;
-    },
-    {} as { [N: string]: { [D: string]: number } }
-  );
-  const data = Object.entries(counties).reduce((acc, [Name, data]) => {
-    acc.push({
-      Name,
-      ...data
-    });
-    return acc;
-  }, [] as { [k: string]: string | number }[]);
+    }, [] as { [k: string]: string | number }[]);
+  } else {
+    // Top 10 states
+    title = "Top 10 States";
+    const stateData = props.timeSeries.states;
+    dates = [
+      ...new Set(stateData.map(({ Reported }) => formatDate(Reported)))
+    ].sort();
+    const maxCasesByState = stateData.reduce((acc, el) => {
+      acc[el.State] = acc[el.State] || 0 + el.Confirmed;
+      return acc;
+    }, {} as { [c: string]: number });
+    maxCases = Math.max(...Object.values(maxCasesByState));
+    const states = stateData.reduce((acc, el) => {
+      if (!acc[el.State]) acc[el.State] = {};
+      acc[el.State][formatDate(el.Reported)] =
+        props.stat === "confirmed" ? el.Confirmed : el.Dead;
+      return acc;
+    }, {} as { [c: string]: { [d: string]: number } });
+    data = Object.entries(states).reduce((acc, [Name, data]) => {
+      acc.push({
+        Name,
+        ...data
+      });
+      return acc;
+    }, [] as { [k: string]: string | number }[]);
+  }
 
   const sortedData = data.sort((a, b) => {
     const { Name: aName, ...aData } = a;
@@ -94,8 +109,8 @@ export const StateMixedBar = (props: Props) => {
       <h3>{title}</h3>
       <BarChart
         barSize={10}
-        width={window.innerWidth * .9}
-        height={600}
+        width={props.reportView ? window.innerWidth * 0.9 : 400}
+        height={props.reportView ? 600 : 300}
         data={sortedData.slice(0, 10)}
         margin={{
           top: 0,

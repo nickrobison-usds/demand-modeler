@@ -7,19 +7,22 @@ import React, {
 } from "react";
 import * as TypeGuards from "../utils/guards";
 import * as DateUtils from "../utils/DateUtils";
-import {mockCovidTimeSeries} from "./mockData";
+import { mockCovidTimeSeries } from "./mockData";
 import L from "leaflet";
 import mapboxgl from "mapbox-gl";
 
 export interface CovidStats {
+  NewConfirmed: number;
   Confirmed: number;
   Dead: number;
+  NewDead: number;
 }
 
 export enum ActionType {
   UPDATE_SELECTED_STATE = "UPDATE_SELECTED_STATE",
   UPDATE_SELECTED_COUNTY = "UPDATE_SELECTED_COUNTY",
-  UPDATE_MAPVIEW = "UPDATE_MAP"
+  UPDATE_MAPVIEW = "UPDATE_MAP",
+  LOAD_DATA = "LOAD_DATA"
 }
 
 export interface MapView {
@@ -42,31 +45,33 @@ export interface AppContextType {
 
 export interface County extends CovidStats {
   ID: string;
-  Name: string;
+  County: string;
+  State: string;
   Geo?: GeoJSON.Polygon; //GeoJSON.MultiPolygon;
+  Reported: Date;
 }
 
 export interface State extends CovidStats {
   ID: string;
-  Name: string;
+  State: string;
   Geo?: GeoJSON.Polygon; //GeoJSON.MultiPolygon;
   CountyIDs?: string[];
+  Reported: Date;
 }
 
 export interface CovidDateData {
-  [date: string]: {
-    states: { [stateID: string]: State };
-    counties: { [countyID: string]: County };
-  }
+  states: State[];
+  counties: County[];
 }
+
 // TODO: seperate Geo data from time series data
 export interface AppState {
   selection: {
     date: string;
     state?: string;
     county?: string;
-  }
-  covidTimeSeries:  CovidDateData;
+  };
+  covidTimeSeries: CovidDateData;
   mapView: MapView;
 }
 const DEFAULT_LAT = 40.8136;
@@ -74,7 +79,7 @@ const DEFAULT_LNG = -99.0762;
 const DEFAULT_ZOOM = 2;
 export const initialState: AppState = {
   selection: {
-    date: DateUtils.formatDate(new Date()),
+    date: DateUtils.formatDate(new Date())
   },
   covidTimeSeries: mockCovidTimeSeries,
   mapView: {
@@ -88,6 +93,16 @@ export const initialState: AppState = {
 
 export const AppContext = createContext({} as AppContextType);
 
+const setCovidData = (state: AppState, { payload }: Action): AppState => {
+  if (TypeGuards.isCovidData(payload)) {
+    return {
+      ...state,
+      covidTimeSeries: payload
+    };
+  }
+  return state;
+};
+
 const updateMapView = (state: AppState, { payload }: Action): AppState => {
   if (TypeGuards.isMapView(payload)) {
     return {
@@ -99,21 +114,33 @@ const updateMapView = (state: AppState, { payload }: Action): AppState => {
   return state;
 };
 
-const updateSelectedState = (state: AppState, { payload }: Action): AppState => {
+const updateSelectedState = (
+  state: AppState,
+  { payload }: Action
+): AppState => {
   const selection = Object.assign({}, state.selection);
-  const id = payload as string | undefined
+  const id = payload as string | undefined;
   selection.state = id;
   let lat = DEFAULT_LAT;
   let lng = DEFAULT_LNG;
   let zoom = DEFAULT_ZOOM;
   if (id !== undefined) {
-    const s = state.covidTimeSeries[DateUtils.formatDate(new Date())].states[id];
-    if (s.Geo) {
-      var polygon = (s.Geo).coordinates;
+    const s = state.covidTimeSeries.states.find(s => s.ID === id);
+    if (s && s.Geo) {
+      var polygon = s.Geo.coordinates;
       var fit = new L.Polygon(polygon as any).getBounds();
-      const southWest = new mapboxgl.LngLat(fit.getSouthWest()['lat'], fit.getSouthWest()['lng']);
-      const northEast = new mapboxgl.LngLat(fit.getNorthEast()['lat'], fit.getNorthEast()['lng']);
-      const center = new mapboxgl.LngLatBounds(southWest, northEast).getCenter();
+      const southWest = new mapboxgl.LngLat(
+        fit.getSouthWest()["lat"],
+        fit.getSouthWest()["lng"]
+      );
+      const northEast = new mapboxgl.LngLat(
+        fit.getNorthEast()["lat"],
+        fit.getNorthEast()["lng"]
+      );
+      const center = new mapboxgl.LngLatBounds(
+        southWest,
+        northEast
+      ).getCenter();
       lat = center.lat;
       lng = center.lng;
       zoom = 4;
@@ -129,25 +156,37 @@ const updateSelectedState = (state: AppState, { payload }: Action): AppState => 
   return {
     ...state,
     selection,
-    mapView,
+    mapView
   };
 };
 
-const updateSelectedCounty = (state: AppState, { payload }: Action): AppState => {
+const updateSelectedCounty = (
+  state: AppState,
+  { payload }: Action
+): AppState => {
   const selection = Object.assign({}, state.selection);
-  const id = payload as string | undefined
+  const id = payload as string | undefined;
   selection.county = id;
   let lat = DEFAULT_LAT;
   let lng = DEFAULT_LNG;
   let zoom = DEFAULT_ZOOM;
   if (id !== undefined) {
-    const s = state.covidTimeSeries[DateUtils.formatDate(new Date())].counties[id];
-    if (s.Geo) {
-      var polygon = (s.Geo).coordinates;
+    const c = state.covidTimeSeries.counties.find(c => c.ID === id);
+    if (c && c.Geo) {
+      var polygon = c.Geo.coordinates;
       var fit = new L.Polygon(polygon as any).getBounds();
-      const southWest = new mapboxgl.LngLat(fit.getSouthWest()['lat'], fit.getSouthWest()['lng']);
-      const northEast = new mapboxgl.LngLat(fit.getNorthEast()['lat'], fit.getNorthEast()['lng']);
-      const center = new mapboxgl.LngLatBounds(southWest, northEast).getCenter();
+      const southWest = new mapboxgl.LngLat(
+        fit.getSouthWest()["lat"],
+        fit.getSouthWest()["lng"]
+      );
+      const northEast = new mapboxgl.LngLat(
+        fit.getNorthEast()["lat"],
+        fit.getNorthEast()["lng"]
+      );
+      const center = new mapboxgl.LngLatBounds(
+        southWest,
+        northEast
+      ).getCenter();
       lat = center.lat;
       lng = center.lng;
       zoom = 6;
@@ -161,9 +200,8 @@ const updateSelectedCounty = (state: AppState, { payload }: Action): AppState =>
   return {
     ...state,
     selection,
-    mapView,
+    mapView
   };
-
 };
 
 const reducer: Reducer<AppState, Action> = (state, action) => {
@@ -174,6 +212,10 @@ const reducer: Reducer<AppState, Action> = (state, action) => {
       return updateSelectedCounty(state, action);
     case ActionType.UPDATE_MAPVIEW:
       return updateMapView(state, action);
+    case ActionType.LOAD_DATA:
+      return setCovidData(state, action);
+    default:
+      return state;
   }
 };
 
