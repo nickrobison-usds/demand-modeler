@@ -27,26 +27,27 @@ export const MixedBar = (props: Props) => {
   // const dates = Object.keys(props.timeSeries).sort();
   const dates = [
     ...new Set(
-      Object.keys(props.timeSeries.counties).flatMap(k => props.timeSeries.counties[k]).map(({ Reported }) => monthDay(Reported))
+      Object.keys(props.timeSeries.counties)
+        .flatMap(k => props.timeSeries.counties[k])
+        .map(({ Reported }) => monthDay(Reported))
     )
   ].sort();
   const data = dates.map(date => {
     let total = 0;
     if (props.county) {
       total = props.timeSeries.counties[props.county]
-        .filter(
-          c => monthDay(c.Reported) === date)
+        .filter(c => monthDay(c.Reported) === date)
         .reduce((acc, el) => {
           return acc + el[props.stat === "confirmed" ? "Confirmed" : "Dead"];
         }, 0);
       maxCasesByDate[date] = (maxCasesByDate[date] || 0) + total;
     } else if (props.state) {
-        // We just need the first value in order to match the counties
-      const state = props.timeSeries.states[props.state][0].ID;
+      // We just need the first value in order to match the counties
+      const state = props.timeSeries.states[props.state][0].State;
 
-      const counties = Object.keys(props.timeSeries.counties).flatMap(k => props.timeSeries.counties[k]).filter(
-        ({ State }) => State === state
-      );
+      const counties = Object.values(props.timeSeries.counties)
+        .flat()
+        .filter(({ State }) => State === state);
 
       counties
         .filter(({ Reported }) => monthDay(Reported) === date)
@@ -56,7 +57,8 @@ export const MixedBar = (props: Props) => {
           total += count;
         });
     } else {
-      Object.keys(props.timeSeries.states).flatMap(k => props.timeSeries.states[k])
+      Object.keys(props.timeSeries.states)
+        .flatMap(k => props.timeSeries.states[k])
         .filter(({ Reported }) => monthDay(Reported) === date)
         .forEach(s => {
           const count = props.stat === "confirmed" ? s.Confirmed : s.Dead;
@@ -70,9 +72,9 @@ export const MixedBar = (props: Props) => {
     };
   });
   const dedupedData: any[] = [];
-  const dateSet = new Set()
+  const dateSet = new Set();
   data.forEach(e => {
-    const day = e.Name.split("|")[0]
+    const day = e.Name.split("|")[0];
     if (!dateSet.has(day)) {
       e.Name = day;
       dedupedData.push(e);
@@ -97,9 +99,7 @@ export const MixedBar = (props: Props) => {
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis height={60} dataKey="Name" />
-        <YAxis
-          dataKey="Grand Total"
-        />
+        <YAxis dataKey="Grand Total" />
         <Tooltip />
         <Legend />
         <Bar dataKey="Grand Total" fill="#900000" />
