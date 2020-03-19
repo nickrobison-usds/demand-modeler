@@ -3,9 +3,34 @@ import { AppContext } from "../../app/AppStore";
 import { StateMixedBar } from "./StateMixedBar";
 import { MixedBar } from "./MixedBar";
 import "./Report.scss";
-import { formatDate } from "../../utils/DateUtils";
+import { formatDate, dateTimeString } from "../../utils/DateUtils";
 
 export const Report: React.FC<{}> = () => {
+  const LAST_UPDATED = new Date("22:00 March 17, 2020")
+
+  const pagebreak = () => {
+    return (
+      <div style={{margin: "20px 0", fontSize:"13px"}}>
+        <div>
+          Source:{" "}
+          <a
+            href="https://www.csbs.org/information-covid-19-coronavirus"
+            target="_blank"
+          >
+            Conference of State Bank Supervisors
+          </a>
+          , as of {dateTimeString(LAST_UPDATED)}.
+          {/* 12 states with highest case count as of 3/17 shown. */}
+        </div>
+        <div>
+          Data sourced from state health department websites; reporting may be
+          incomplete or delayed
+        </div>
+        <div className="pagebreak" />
+      </div>
+    );
+  };
+
   return (
     <AppContext.Consumer>
       {({ state }) => {
@@ -16,7 +41,7 @@ export const Report: React.FC<{}> = () => {
           .sort((s1, s2) => s2.Confirmed - s1.Confirmed)
           .slice(0, 10);
         return (
-          <div className="report">
+          <div className="report grid-container" style={{marginLeft: 0}}>
             {top10States.map(s => (
               <>
                 <StateMixedBar
@@ -27,7 +52,7 @@ export const Report: React.FC<{}> = () => {
                   stateCount={false}
                   reportView
                 />
-                <div className="pagebreak" />
+                {pagebreak()}
               </>
             ))}
             <StateMixedBar
@@ -38,7 +63,7 @@ export const Report: React.FC<{}> = () => {
               stateCount={false}
               reportView
             />
-            <div className="pagebreak" />
+            {pagebreak()}
             <StateMixedBar
               state={undefined}
               county={undefined}
@@ -47,7 +72,7 @@ export const Report: React.FC<{}> = () => {
               stateCount={true}
               reportView
             />
-            <div className="pagebreak" />
+            {pagebreak()}
             <MixedBar
               state={undefined}
               county={undefined}
