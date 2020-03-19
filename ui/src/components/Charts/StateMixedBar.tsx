@@ -19,9 +19,10 @@ type Props = {
   stat: "confirmed" | "dead";
   stateCount: boolean;
   reportView?: boolean;
+  title?: string;
 };
 
-const colors = ["#FEEFB3", "#ECAC53", "#E16742", "#fdae61"];
+const colors = ["#E5A3A3", "#D05C5C", "#CB2727", "#C00000"];
 
 export const StateMixedBar = (props: Props) => {
   if ((props.stateCount && props.state) || props.county) {
@@ -37,7 +38,13 @@ export const StateMixedBar = (props: Props) => {
     const stateName =
       props.timeSeries.states.find(state => state.ID === props.state)?.State ||
       "";
-    title = `Top 10 Counties${props.state ? " in" + stateName : ""}`;
+    if (stateName) {
+      title = `${stateName}`;
+
+    } else {
+      title = `Counties with the highest number of cases`;
+
+    }
     let countyData = props.timeSeries.counties;
     if (props.state) {
       countyData = countyData.filter(({ State }) => State === stateName);
@@ -65,7 +72,7 @@ export const StateMixedBar = (props: Props) => {
     }, [] as { [k: string]: string | number }[]);
   } else {
     // Top 10 states
-    title = "Top 10 States";
+    title = "States with the highest number of cases";
     const stateData = props.timeSeries.states;
     dates = [
       ...new Set(stateData.map(({ Reported }) => formatDate(Reported)))
@@ -106,11 +113,11 @@ export const StateMixedBar = (props: Props) => {
 
   return (
     <>
-      <h3>{title}</h3>
+      <h3>{props.title ? props.title : title}</h3>
       <BarChart
         barSize={10}
-        width={props.reportView ? window.innerWidth * 0.9 : 400}
-        height={props.reportView ? 600 : 300}
+        width={window.innerWidth * 0.9}
+        height={600}
         data={sortedData.slice(0, 10)}
         margin={{
           top: 0,
@@ -129,6 +136,7 @@ export const StateMixedBar = (props: Props) => {
         />
         <YAxis domain={[0, getYMaxFromMaxCases(maxCases)]} />
         <Tooltip />
+        <div style={{padding: "10px"}}/>
         <Legend />
         {dates.map((date, i) => (
           <Bar key={date} dataKey={date} fill={colors[i]} />

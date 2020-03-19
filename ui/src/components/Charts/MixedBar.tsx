@@ -20,8 +20,6 @@ type Props = {
   reportView?: boolean;
 };
 
-const colors = ["#FEEFB3", "#ECAC53", "#E16742", "#fdae61"];
-
 export const MixedBar = (props: Props) => {
   let title = "Grand Total";
 
@@ -82,9 +80,9 @@ export const MixedBar = (props: Props) => {
     <div>
       <h3>{title}</h3>
       <BarChart
-        barSize={10}
-        width={props.reportView ? window.innerWidth * 0.9 : 400}
-        height={props.reportView ? 600 : 300}
+        barSize={50}
+        width={window.innerWidth * 0.9}
+        height={600}
         data={data}
         margin={{
           top: 0,
@@ -101,7 +99,7 @@ export const MixedBar = (props: Props) => {
         />
         <Tooltip />
         <Legend />
-        <Bar dataKey="Grand Total" fill={colors[0]} />
+        <Bar dataKey="Grand Total" fill="#E4A3A4" />
       </BarChart>
     </div>
   );

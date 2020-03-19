@@ -1,6 +1,10 @@
 
 # Demand Modeller
 
+[![CircleCI](https://circleci.com/gh/nickrobison-usds/demand-modeler.svg?style=svg)](https://circleci.com/gh/nickrobison-usds/demand-modeler)
+
+[https://fearless-dreamer.herokuapp.com/](https://fearless-dreamer.herokuapp.com/)
+
 ## Loading Data
 
 ### County shapefiles
