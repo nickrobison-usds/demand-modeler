@@ -4,7 +4,7 @@ import {
   getStateCases,
   getStateIDs,
   getCountyIDs,
-  getCountyCases
+  getCountyCases, getTopStateCases, getTopCountyCases
 } from "../api";
 
 const fetchStateCases = async (stateID: string) => await getStateCases(stateID);
@@ -15,17 +15,19 @@ const fetchCountyIDs = async () => await getCountyIDs();
 
 const loadData = async () => {
   const loadStateData = async () => {
-    const stateIDs = await fetchStateIDs();
-    const chunkedStateData = await Promise.all(
-      stateIDs.map(id => fetchStateCases(id))
-    );
+    // const stateIDs = await fetchStateIDs();
+    // const chunkedStateData = await Promise.all(
+    //   stateIDs.map(id => fetchStateCases(id))
+    // );
+    const chunkedStateData = await getTopStateCases();
     return chunkedStateData.flat();
   };
   const loadCountyData = async () => {
-    const countyIDs = await fetchCountyIDs();
-    const chunkedCountyData = await Promise.all(
-      countyIDs.map(id => fetchCountyCases(id))
-    );
+    // const countyIDs = await fetchCountyIDs();
+    // const chunkedCountyData = await Promise.all(
+    //   countyIDs.map(id => fetchCountyCases(id))
+    // );
+    const chunkedCountyData = await getTopCountyCases();
     return chunkedCountyData.flat();
   };
   return await Promise.all([await loadStateData(), await loadCountyData()]);
