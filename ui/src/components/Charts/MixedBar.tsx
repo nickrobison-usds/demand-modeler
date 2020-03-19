@@ -9,7 +9,8 @@ import {
   Legend
 } from "recharts";
 import { CovidDateData } from "../../app/AppStore";
-import { getContiesForState, getYMaxFromMaxCases } from "../../utils/utils";
+import { getYMaxFromMaxCases } from "../../utils/utils";
+import { formatDate } from "../../utils/DateUtils";
 
 type Props = {
   state?: string;
@@ -26,31 +27,47 @@ export const MixedBar = (props: Props) => {
   let maxCases = 0;
   let maxCasesByDate: { [d: string]: number } = {};
 
-  const dates = Object.keys(props.timeSeries).sort();
+  // const dates = Object.keys(props.timeSeries).sort();
+  const dates = [
+    ...new Set(
+      props.timeSeries.counties.map(({ Reported }) => formatDate(Reported))
+    )
+  ].sort();
   const data = dates.map(date => {
     let total = 0;
     if (props.county) {
-      total =
-        props.stat === "confirmed"
-          ? props.timeSeries[date].counties[props.county].Confirmed
-          : props.timeSeries[date].counties[props.county].Dead;
-      maxCasesByDate[date] =
-        (maxCasesByDate[date] || 0) +
-        props.timeSeries[date].counties[props.county].Confirmed;
+      total = props.timeSeries.counties
+        .filter(
+          ({ Reported, ID }) =>
+            formatDate(Reported) === date && ID === props.county
+        )
+        .reduce((acc, el) => {
+          return acc + el[props.stat === "confirmed" ? "Confirmed" : "Dead"];
+        }, 0);
+      maxCasesByDate[date] = (maxCasesByDate[date] || 0) + total;
     } else if (props.state) {
-      Object.values(
-        getContiesForState(props.timeSeries, date, props.state)
-      ).forEach(s => {
-        const count = props.stat === "confirmed" ? s.Confirmed : s.Dead;
-        maxCasesByDate[date] = (maxCasesByDate[date] || 0) + s.Confirmed;
-        total += count;
-      });
+      const state = props.timeSeries.states.find(({ ID }) => ID === props.state)
+        ?.State;
+
+      const counties = props.timeSeries.counties.filter(
+        ({ State }) => State === state
+      );
+
+      counties
+        .filter(({ Reported }) => formatDate(Reported) === date)
+        .forEach(s => {
+          const count = props.stat === "confirmed" ? s.Confirmed : s.Dead;
+          maxCasesByDate[date] = (maxCasesByDate[date] || 0) + s.Confirmed;
+          total += count;
+        });
     } else {
-      Object.values(props.timeSeries[date].states).forEach(s => {
-        const count = props.stat === "confirmed" ? s.Confirmed : s.Dead;
-        maxCasesByDate[date] = (maxCasesByDate[date] || 0) + s.Confirmed;
-        total += count;
-      });
+      props.timeSeries.states
+        .filter(({ Reported }) => formatDate(Reported) === date)
+        .forEach(s => {
+          const count = props.stat === "confirmed" ? s.Confirmed : s.Dead;
+          maxCasesByDate[date] = (maxCasesByDate[date] || 0) + s.Confirmed;
+          total += count;
+        });
     }
     return {
       Name: date,
@@ -65,7 +82,7 @@ export const MixedBar = (props: Props) => {
       <h3>{title}</h3>
       <BarChart
         barSize={10}
-        width={window.innerWidth * .9}
+        width={window.innerWidth * 0.9}
         height={600}
         data={data}
         margin={{
