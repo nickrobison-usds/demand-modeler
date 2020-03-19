@@ -6,8 +6,12 @@ import { formatDate } from "./utils/DateUtils";
 const HOST = process.env.REACT_APP_API_URI;
 type GeoData = GeoJSON.Polygon; // GeoJSON.MultiPolygon;
 
+export interface StateIDs {
+  [name: string]: number
+}
+
 export interface CountyIDs {
-  IDs: string[];
+  [name: string]: string
 }
 
 export interface GeoResponse {
@@ -106,8 +110,14 @@ export async function getStateGeo(
   return resp.data;
 }
 
-export async function getStateCounties(id: string): Promise<CountyIDs> {
+export async function getStateIDs(id: string): Promise<string[]> {
+  const url = URI(`${HOST}/api/state/id`);
+  const resp = await Axios.get<StateIDs>(url.readable());
+  return Object.values(resp.data).map(id => id < 10 ? `0${id}`:`${id}`)
+}
+
+export async function getStateCounties(id: string): Promise<string[]> {
   const url = URI(`${HOST}/api/state/${id}/counties`);
   const resp = await Axios.get<CountyIDs>(url.readable());
-  return resp.data;
+  return Object.values(resp.data);
 }
