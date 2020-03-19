@@ -25,6 +25,7 @@ export const Report: React.FC<{}> = () => {
                   timeSeries={state.covidTimeSeries}
                   stat="confirmed"
                   stateCount={false}
+                  reportView
                 />
                 <div className="pagebreak" />
               </>
@@ -35,6 +36,7 @@ export const Report: React.FC<{}> = () => {
               timeSeries={state.covidTimeSeries}
               stat="confirmed"
               stateCount={false}
+              reportView
             />
             <div className="pagebreak" />
             <StateMixedBar
@@ -43,6 +45,7 @@ export const Report: React.FC<{}> = () => {
               timeSeries={state.covidTimeSeries}
               stat="confirmed"
               stateCount={true}
+              reportView
             />
             <div className="pagebreak" />
             <MixedBar
@@ -50,6 +53,7 @@ export const Report: React.FC<{}> = () => {
               county={undefined}
               timeSeries={state.covidTimeSeries}
               stat="confirmed"
+              reportView
             />
           </div>
         );
