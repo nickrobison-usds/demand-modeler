@@ -1,9 +1,8 @@
 ---
 applications:
-- name: FearlessDreamer
-  buildpacks:
-  - go_buildpack
-  env:
-    GOVERSION: go1.13
-    GOPACKAGENAME: main
-  command: demand-modeling
+- name: FearlessDreamer2
+  docker:
+    image: nickrobisonusds/fearless-dreamer:latest
+  disk_quota: 2G
+  services:
+    - fearless-dreamer-psql

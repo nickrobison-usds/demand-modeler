@@ -56,7 +56,7 @@ func (d *DataLoader) loadCases() error {
 
 	// Truncate the database
 	log.Println("Truncating database")
-	_, err := d.conn.Exec(d.ctx, "TRUNCATE TABLE Counties CASCADE;")
+	_, err := d.conn.Exec(d.ctx, "TRUNCATE TABLE Counties CASCADE; TRUNCATE TABLE Cases CASCADE;")
 	if err != nil {
 		return err
 	}
@@ -116,6 +116,8 @@ func (d *DataLoader) loadCaseFile(file string) error {
 			} else {
 				return err
 			}
+		} else {
+			log.Printf("Loading existing county: %s, %s. %s\n", row[0], row[1], geoid)
 		}
 
 		// Split the dead column into
@@ -127,7 +129,7 @@ func (d *DataLoader) loadCaseFile(file string) error {
 		// Now insert into the Cases table
 		_, err = d.conn.Exec(d.ctx, "INSERT INTO Cases(Geoid, "+
 			"Confirmed, NewConfirmed, "+
-			"Dead, NewDead, Fatality, Update) VALUES($1, $2, $3, $4, $5, $6, $7)", geoid, row[2], row[3], dead, newDead, row[6], row[8])
+			"Dead, NewDead, Update) VALUES($1, $2, $3, $4, $5, $6)", geoid, row[2], row[3], dead, newDead, row[8])
 		if err != nil {
 			return err
 		}
