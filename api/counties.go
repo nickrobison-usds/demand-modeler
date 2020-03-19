@@ -43,7 +43,7 @@ func getCountIDs(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func getCounties(w http.ResponseWriter, r *http.Request) {
+func getTopCounties(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	conn, err := ctx.Value("db").(*pgxpool.Pool).Acquire(ctx)
 	if err != nil {
@@ -53,17 +53,23 @@ func getCounties(w http.ResponseWriter, r *http.Request) {
 	}
 	defer conn.Release()
 
-	query := "SELECT c.ID, c.County, c.State, s.Update, s.Confirmed, s.NewConfirmed, s.Dead, s.NewDead, ST_AsGeoJSON(t.geom) as geom FROM counties as c " +
-		"LEFT JOIN tiger as t " +
-		"ON c.ID = t.geoid " +
-		"LEFT JOIN cases as s " +
-		"ON s.geoid = c.ID " +
-		"ORDER BY update DESC, confirmed DESC "
+	innerQuery := "SELECT c.ID, c.County, c.State, a.update, a.confirmed, a.newconfirmed, a.dead, a.newdead, ST_AsGeoJSON(t.geom) as geom from counties as c " +
+		"LEFT JOIN cases as a ON c.id = a.geoid " +
+		"ORDER BY a.update DESC, confirmed DESC "
 
 	limit, ok := r.URL.Query()["limit"]
 	if ok && len(limit) == 1 {
-		query = fmt.Sprintf("%s LIMIT %s", query, limit[0])
+		innerQuery = fmt.Sprintf("%s LIMIT %s", innerQuery, limit[0])
 	}
+
+	// 							 SELECT c.ID, c.County, c.State, s.Update, s.Confirmed, s.NewConfirmed, s.Dead, s.NewDead, ST_AsGeoJSON(t.geom) as geom FROM counties as c
+	query := fmt.Sprintf("SELECT c.ID, c.County, c.State, a.update, a.confirmed, a.newconfirmed, a.dead, a.newdead, ST_AsGeoJSON(t.geom) as geom from counties as c "+
+		"LEFT JOIN cases as a "+
+		"ON c.id = a.geoid "+
+		"LEFT JOIN tiger as t "+
+		"ON c.ID = t.geoid "+
+		"WHERE c.ID in (SELECT Z.ID from (%s) AS Z) "+
+		"ORDER BY c.ID, a.update DESC, confirmed DESC", innerQuery)
 
 	cases, err := queryCountyCases(ctx, conn, query)
 	if err != nil {
@@ -190,5 +196,5 @@ func countyAPI(r chi.Router) {
 	r.With(countyCTX).Get("/{countyID}", getCountyCases)
 	r.With(countyCTX).Get("/{countyID}/geo", getCountyGeo)
 	r.Get("/id", getCountIDs)
-	r.Get("/", getCounties)
+	r.Get("/", getTopCounties)
 }

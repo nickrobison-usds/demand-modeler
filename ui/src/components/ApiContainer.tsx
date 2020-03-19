@@ -15,18 +15,10 @@ const fetchCountyIDs = async () => await getCountyIDs();
 
 const loadData = async () => {
   const loadStateData = async () => {
-    // const stateIDs = await fetchStateIDs();
-    // const chunkedStateData = await Promise.all(
-    //   stateIDs.map(id => fetchStateCases(id))
-    // );
     const chunkedStateData = await getTopStateCases();
     return chunkedStateData.flat();
   };
   const loadCountyData = async () => {
-    // const countyIDs = await fetchCountyIDs();
-    // const chunkedCountyData = await Promise.all(
-    //   countyIDs.map(id => fetchCountyCases(id))
-    // );
     const chunkedCountyData = await getTopCountyCases();
     return chunkedCountyData.flat();
   };
