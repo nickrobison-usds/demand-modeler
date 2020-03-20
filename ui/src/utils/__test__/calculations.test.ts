@@ -11,7 +11,8 @@ import {
   top10DeadOverall,
   top10StatesConfirmed,
   countyGrandTotalForState,
-  countyGrandTotalForCounty
+  countyGrandTotalForCounty,
+  top10StatesDead
 } from "./matchers";
 
 describe("calculations", () => {
@@ -59,7 +60,7 @@ describe("calculations", () => {
     it("should get the top 10 states (dead)", () => {
       const state = createMockState({ date: "2020-03-19" });
       const top10 = getTopStates(state, "dead");
-      expect(top10).toEqual(top10StatesConfirmed);
+      expect(top10).toEqual(top10StatesDead);
     });
   });
 

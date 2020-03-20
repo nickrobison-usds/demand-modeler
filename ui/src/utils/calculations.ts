@@ -51,6 +51,9 @@ export const getTopCounties = (
     })
     .sort((a, b) => {
       const metric = stat === "confirmed" ? "Confirmed" : "Dead";
+      if (b[metric] === a[metric]) {
+        return b.County > a.County ? 1 : -1;
+      }
       return b[metric] > a[metric] ? 1 : -1;
     });
   const topCounties = newestCounties
@@ -90,6 +93,9 @@ export const getTopStates = (
     })
     .sort((a, b) => {
       const metric = stat === "confirmed" ? "Confirmed" : "Dead";
+      if (b[metric] === a[metric]) {
+        return b.State > a.State ? 1 : -1;
+      }
       return b[metric] > a[metric] ? 1 : -1;
     });
   const topStates = newestStateData
