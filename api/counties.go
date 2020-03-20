@@ -56,9 +56,15 @@ func getTopCounties(w http.ResponseWriter, r *http.Request) {
 	log.Println("Returning case data")
 
 	query := "SELECT c.ID, c.County, c.State, s.Update, s.Confirmed, s.NewConfirmed, s.Dead, s.NewDead FROM counties as c " +
-		"LEFT JOIN cases as s " +
-		"ON s.geoid = c.ID " +
-		"ORDER BY c.ID, s.update DESC, s.Confirmed DESC;"
+		"LEFT JOIN cases as s "
+
+	start, ok := r.URL.Query()["start"]
+	if ok && len(start) == 1 {
+		query += "WHERE s.update > %s ", start[0]
+	}
+
+	query += "ON s.geoid = c.ID " +
+			"ORDER BY c.ID, s.update DESC, s.Confirmed DESC;"
 
 	cases, err := queryCountyCasesb(ctx, conn, query)
 	if err != nil {
