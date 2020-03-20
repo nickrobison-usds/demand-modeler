@@ -104,7 +104,7 @@ export const StateBar = (props: Props) => {
       <BarChart
         barSize={10}
         width={window.innerWidth * 0.9}
-        height={600}
+        height={880}
         data={dedupedData.slice(0, 10)}
         margin={{
           top: 0,
