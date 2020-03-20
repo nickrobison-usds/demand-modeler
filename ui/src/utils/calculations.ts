@@ -31,7 +31,8 @@ export const getTopCounties = (
   const newestCountyData = countyData
     .filter(county => {
       if (
-        county.Reported.getDate() !== latestDate.getDate() ||
+        county.Reported.toLocaleDateString() !==
+          latestDate.toLocaleDateString() ||
         seenCounties.has(county.ID)
       ) {
         return false;

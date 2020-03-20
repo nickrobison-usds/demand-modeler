@@ -1,6 +1,6 @@
 import { createMockState } from "../../app/mockState";
 import { getTopCounties } from "../calculations";
-import { top10ConfirmedByState } from "./matchers";
+import { top10ConfirmedByState, top10DeadByState } from "./matchers";
 
 describe("calculations", () => {
   describe("top 10 calculations in state", () => {
@@ -10,20 +10,20 @@ describe("calculations", () => {
       expect(top10.length).toEqual(10);
       expect(top10).toEqual(top10ConfirmedByState);
     });
-    // it("should return chart data for the top 5 counties (confirmed)", () => {
-    //   const state = createMockState({ date: "2020-03-19", state: "03" });
-    //   const top10 = getTopCounties(state, "confirmed", 5);
-    //   expect(top10).toEqual(null);
-    // });
-    // it("should return chart data for the top 10 counties (dead)", () => {
-    //   const state = createMockState({ date: "2020-03-19", state: "03" });
-    //   const top10 = getTopCounties(state, "dead");
-    //   expect(top10).toEqual(null);
-    // });
-    // it("should return chart data for the top 5 counties (dead)", () => {
-    //   const state = createMockState({ date: "2020-03-19", state: "03" });
-    //   const top10 = getTopCounties(state, "dead", 5);
-    //   expect(top10).toEqual(null.slice(0, 5));
-    // });
+    it("should return chart data for the top 5 counties (confirmed)", () => {
+      const state = createMockState({ date: "2020-03-19", state: "03" });
+      const top10 = getTopCounties(state, "confirmed", 5);
+      expect(top10).toEqual(top10ConfirmedByState.slice(0, 5));
+    });
+    it("should return chart data for the top 10 counties (dead)", () => {
+      const state = createMockState({ date: "2020-03-19", state: "03" });
+      const top10 = getTopCounties(state, "dead");
+      expect(top10).toEqual(top10DeadByState);
+    });
+    it("should return chart data for the top 5 counties (dead)", () => {
+      const state = createMockState({ date: "2020-03-19", state: "03" });
+      const top10 = getTopCounties(state, "dead", 5);
+      expect(top10).toEqual(top10DeadByState.slice(0, 5));
+    });
   });
 });
