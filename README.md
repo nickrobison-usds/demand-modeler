@@ -27,6 +27,6 @@ or via docker
 ```bash
 docker-compose up --build postgres
 # `docker network ls` to find the correct network name
-docker build -f loader.Dockerfile -t loader . && docker run -it --network=demand-modeller_default loader
+docker build -f loader.Dockerfile -t loader . && docker run -it --network=demand-modeler_default loader
 docker-compose up --build api
 ```
