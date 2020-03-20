@@ -1,6 +1,7 @@
 import React from "react";
 import { AppContext, State } from "../../app/AppStore";
 import { StateMixedBar } from "./StateMixedBar";
+import { Top10Counties } from "./Top10Counties";
 import { MixedBar } from "./MixedBar";
 import "./Report.scss";
 import { formatDate, dateTimeString } from "../../utils/DateUtils";
@@ -80,12 +81,9 @@ export const Report: React.FC<{}> = () => {
                 {lastUpdated && pagebreak(lastUpdated)}
               </>
             ))}
-            <StateMixedBar
-              state={undefined}
-              county={undefined}
+            <Top10Counties
               timeSeries={state.covidTimeSeries}
               stat="confirmed"
-              stateCount={false}
               reportView
               meta={state.graphMetaData}
             />
