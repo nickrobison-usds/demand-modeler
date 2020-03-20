@@ -1,10 +1,10 @@
 {
-  "name": "ui",
+  "name": "fearless-dreamer",
   "version": "0.1.0",
   "proxy": "http://localhost:8080",
   "private": true,
   "scripts": {
-    "install": "yarn --cwd ui/ install",
+    "install": "yarn --cwd ui/ install --production=false",
     "build.react": "yarn --cwd ui/ run build",
     "build": "yarn run install && yarn run build.react"
   },
