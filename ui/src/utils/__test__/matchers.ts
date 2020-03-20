@@ -1385,3 +1385,9 @@ export const countyGrandTotalForState = {
   "3/18/2020": { Confirmed: 269, Dead: 42, NewConfirmed: 78, NewDead: 18 },
   "3/19/2020": { Confirmed: 403, Dead: 51, NewConfirmed: 136, NewDead: 9 }
 };
+
+export const countyGrandTotalForCounty = {
+  "3/17/2020": { Confirmed: 20, Dead: 4, NewConfirmed: 5, NewDead: 1 },
+  "3/18/2020": { Confirmed: 30, Dead: 6, NewConfirmed: 10, NewDead: 2 },
+  "3/19/2020": { Confirmed: 41, Dead: 9, NewConfirmed: 11, NewDead: 3 }
+};
