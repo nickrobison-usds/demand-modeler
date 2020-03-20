@@ -61,11 +61,6 @@ export const Report: React.FC<{}> = () => {
           .slice(0, 10);
         return (
           <div className="report grid-container" style={{ marginLeft: 0 }}>
-            <div>
-              <h1>COVID-19 county-level case data</h1>
-              <p>Data as of {lastUpdated && dateTimeString(lastUpdated)}</p>
-              <div className="pagebreak" />
-            </div>
             {top10States.map(s => (
               <>
                 <StateBar
