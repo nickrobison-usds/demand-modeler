@@ -64,18 +64,16 @@ export async function getCountyCases(
 }
 
 export async function getTopCountyCases(
-    limit: number = 10,
     start?: Date,
     end?: Date
 ): Promise<{[key: string]: County[]}> {
   const url = new URL(`/api/county`, window.location.origin);
   if (start) {
-    url.searchParams.append("start", formatDate(start));
+    url.searchParams.append("start", start.toISOString());
   }
   if (end) {
-    url.searchParams.append("end", formatDate(end));
+    url.searchParams.append("end", end.toISOString());
   }
-  url.searchParams.append("limit", limit.toString());
 
   let counties: {[key: string]: County[]} = {};
 
@@ -136,18 +134,16 @@ export async function getStateCases(
 }
 
 export async function getTopStateCases(
-    limit: number = 10,
     start?: Date,
     end?: Date
 ): Promise<{[key:string]: State[]}> {
   const url = new URL(`/api/state`, window.location.origin);
   if (start) {
-    url.searchParams.append("start", formatDate(start));
+    url.searchParams.append("start", start.toISOString());
   }
   if (end) {
-    url.searchParams.append("end", formatDate(end));
+    url.searchParams.append("end", end.toISOString());
   }
-  url.searchParams.append("limit", limit.toString());
 
   let states: {[key: string]: State[]} = {};
 

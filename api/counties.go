@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/go-chi/chi"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/nickrobison-usds/demand-modeling/cmd"
@@ -57,8 +58,20 @@ func getTopCounties(w http.ResponseWriter, r *http.Request) {
 
 	query := "SELECT c.ID, c.County, c.State, s.Update, s.Confirmed, s.NewConfirmed, s.Dead, s.NewDead FROM counties as c " +
 		"LEFT JOIN cases as s " +
-		"ON s.geoid = c.ID " +
-		"ORDER BY c.ID, s.update DESC, s.Confirmed DESC;"
+		"ON s.geoid = c.ID "
+
+	start, ok := r.URL.Query()["start"]
+	if ok && len(start) == 1 {
+		startTime, err := time.Parse(time.RFC3339, start[0])
+		if err != nil {
+			log.Print(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		query = fmt.Sprintf("%s WHERE s.update > '%s' ", query, startTime.Format(time.RFC3339))
+	}
+
+	query = query + "ORDER BY c.ID, s.update DESC, s.Confirmed DESC;"
 
 	cases, err := queryCountyCasesb(ctx, conn, query)
 	if err != nil {

@@ -4,11 +4,13 @@ import {getTopCountyCases, getTopStateCases} from "../api";
 
 const loadData = async () => {
   const loadStateData = async () => {
-    const chunkedStateData = await getTopStateCases();
+    const date = new Date("2020-03-15 16:23 EDT");
+    const chunkedStateData = await getTopStateCases(date);
     return chunkedStateData;
   };
   const loadCountyData = async () => {
-    const chunkedCountyData = await getTopCountyCases();
+    const date = new Date("2020-03-15 16:23 EDT");
+    const chunkedCountyData = await getTopCountyCases(date);
     return chunkedCountyData;
   };
   return await Promise.all([await loadStateData(), await loadCountyData()]);

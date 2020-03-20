@@ -20,7 +20,7 @@ func getStateIDs(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func getTopStates(w http.ResponseWriter, r *http.Request) {
+func getStates(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	conn, err := ctx.Value("db").(*pgxpool.Pool).Acquire(ctx)
 	if err != nil {
@@ -30,23 +30,22 @@ func getTopStates(w http.ResponseWriter, r *http.Request) {
 	}
 	defer conn.Release()
 
-	innerQuery := "SELECT c.statefp, c.state, a.update, SUM(a.confirmed)as confirmed, SUM(a.newconfirmed), SUM(a.dead), SUM(a.newdead) from counties as c " +
-		"LEFT JOIN cases as a " +
-		"ON c.id = a.geoid " +
-		"GROUP BY c.statefp, c.state, a.update " +
-		"ORDER BY a.update DESC, confirmed DESC "
+	query := "SELECT c.statefp, c.State, s.Update, SUM(s.Confirmed) as confirmed, SUM(s.NewConfirmed), SUM(s.Dead), SUM(s.NewDead) FROM counties as c " +
+		"LEFT JOIN cases as s " +
+		"ON s.geoid = c.ID "
 
-	limit, ok := r.URL.Query()["limit"]
-	if ok && len(limit) == 1 {
-		innerQuery = fmt.Sprintf("%s LIMIT %s", innerQuery, limit[0])
+	start, ok := r.URL.Query()["start"]
+	if ok && len(start) == 1 {
+		startTime, err := time.Parse(time.RFC3339, start[0])
+		if err != nil {
+			log.Print(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		query = fmt.Sprintf("%s WHERE s.update > '%s' ", query, startTime.Format(time.RFC3339))
 	}
-
-	query := fmt.Sprintf("SELECT c.statefp, c.state, a.update, SUM(a.confirmed)as confirmed, SUM(a.newconfirmed), SUM(a.dead), SUM(a.newdead) from counties as c "+
-		"LEFT JOIN cases as a "+
-		"ON c.id = a.geoid "+
-		"WHERE c.statefp in ( select Z.statefp from (%s) as Z) "+
-		"GROUP BY c.statefp, c.state, a.update "+
-		"ORDER BY c.statefp, a.update DESC, confirmed DESC", innerQuery)
+	query = query + "GROUP BY c.statefp, c.state, s.update " +
+		"ORDER BY c.state, s.update;"
 
 	cases, err := queryStateCases(ctx, conn, query)
 	if err != nil {
@@ -164,5 +163,5 @@ func stateAPI(r chi.Router) {
 	r.With(stateCTX).Get("/{stateID}/geo", getStateGeo)
 	r.With(stateCTX).Get("/{stateID}", getStateCases)
 	r.Get("/id", getStateIDs)
-	r.Get("/", getTopStates)
+	r.Get("/", getStates)
 }
