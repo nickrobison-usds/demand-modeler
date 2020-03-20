@@ -30,3 +30,22 @@ docker-compose up --build postgres
 docker build -f loader.Dockerfile -t loader . && docker run -it --network=demand-modeler_default loader
 docker-compose up --build api
 ```
+
+## Bootstrapping Heroku
+
+1. Create a Postgres service and link it to the application
+    ```bash
+    heroku addons:create heroku-postgresql:hobby-dev
+   ```
+1. Load the initial state and county shapefiles into the database using the `DATABASE_URL` parameter from Heroku
+    ```bash
+   heroku config
+   export DATABASE_URL="{DBURL from heroku}
+   make load
+    ```
+1. Install the Go and Nodejs buildpacks
+    ```bash
+   heroku buildpacks:add heroku/nodejs
+   heroku buildpacks:add heroku/go
+    ```
+1. Deploy
