@@ -9,6 +9,13 @@ type GrandTotal = {
   };
 };
 
+export const getDatasetDates = (appState: AppState) => {
+  const dates = Object.values(appState.covidTimeSeries.states)
+    .flat()
+    .map(state => state.Reported.toLocaleDateString());
+  return [...new Set(dates)];
+};
+
 export const getSelectedStateName = (state: AppState) => {
   if (state.selection.state === undefined) {
     return null;

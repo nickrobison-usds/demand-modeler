@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   BarChart,
   Bar,
@@ -8,9 +8,21 @@ import {
   Tooltip,
   Legend
 } from "recharts";
-import { CovidDateData, GraphMetaData, EXCLUDED_STATES } from "../../app/AppStore";
+import {
+  CovidDateData,
+  GraphMetaData,
+  EXCLUDED_STATES,
+  AppContext,
+  County,
+  State
+} from "../../app/AppStore";
 import { getYMaxFromMaxCases } from "../../utils/utils";
-import { monthDay } from "../../utils/DateUtils";
+import {
+  getSelectedStateName,
+  getTopCounties,
+  getTopStates,
+  getDatasetDates
+} from "../../utils/calculations";
 
 type Props = {
   state?: string;
@@ -23,119 +35,66 @@ type Props = {
   title?: string;
 };
 
-const colors = ["#E5A3A3", "#D05C5C", "#CB2727", "#C00000", "#900000", "#700000"];
+const colors = [
+  "#E5A3A3",
+  "#D05C5C",
+  "#CB2727",
+  "#C00000",
+  "#900000",
+  "#700000"
+];
 
 export const StateMixedBar = (props: Props) => {
+  const { state } = useContext(AppContext);
   if ((props.stateCount && props.state) || props.county) {
     return null;
   }
   let title: string;
   let maxCases: number | undefined;
-  let dates: string[];
-  let data;
+  const dates = getDatasetDates(state).reverse();
+  let counties: County[][] = [];
+  let states: State[][] = [];
   let stateName: string = "";
 
   // Top 10 Counties (total or in state)
   if (props.state || !props.stateCount) {
-    stateName =
-      Object.keys(props.timeSeries.states).flatMap(k => props.timeSeries.states[k]).find(state => state.ID === props.state)?.State ||
-      "";
+    stateName = getSelectedStateName(state) || "";
     if (stateName !== "") {
       title = `${stateName}`;
-
     } else {
       title = `Counties with the highest number of cases`;
-
     }
-    let countyData = Object.keys(props.timeSeries.counties).flatMap(k => props.timeSeries.counties[k]);
-    if (props.state) {
-      countyData = countyData.filter(({ State }) => State === stateName);
-    }
-    if (props.meta) {
-      maxCases = props.meta.maxConfirmedCounty;
-    }
-    dates = [
-      ...new Set(countyData.map(({ Reported }) => monthDay(Reported)))
-    ].sort();
-    const counties = countyData.reduce((acc, el) => {
-      if (!acc[el.County]) acc[el.County] = {};
-      acc[el.County][monthDay(el.Reported)] =
-        props.stat === "confirmed" ? el.Confirmed : el.Dead;
-      return acc;
-    }, {} as { [c: string]: { [d: string]: number } });
-    data = Object.entries(counties).reduce((acc, [Name, data]) => {
-      acc.push({
-        Name,
-        ...data
-      });
-      return acc;
-    }, [] as { [k: string]: string | number }[]);
+    counties = getTopCounties(state, props.stat);
   } else {
     // Top 10 states
     title = "States with the highest number of cases";
-    const stateData = Object.keys(props.timeSeries.states).flatMap(k => props.timeSeries.states[k]);
-    dates = [
-      ...new Set(stateData.map(({ Reported }) => monthDay(Reported)))
-    ].sort();
-    if (props.meta) {
-      maxCases = props.meta.maxConfirmedState;
-    }
-    const states = stateData.reduce((acc, el) => {
-      if (!acc[el.State]) acc[el.State] = {};
-      acc[el.State][monthDay(el.Reported)] =
-        props.stat === "confirmed" ? el.Confirmed : el.Dead;
-      return acc;
-    }, {} as { [c: string]: { [d: string]: number } });
-    data = Object.entries(states).reduce((acc, [Name, data]) => {
-      acc.push({
-        Name,
-        ...data
-      });
-      return acc;
-    }, [] as { [k: string]: string | number }[]);
+    states = getTopStates(state, props.stat);
   }
 
-  const dedupedData: any[] = [];
-  data.forEach(e => {
-    const dateSet = new Set();
-    const dedupede: any = {};
-    Object.keys(e).forEach((k) => {
-      if (k.toString().includes("|")) {
-        const day = k.toString().split("|")[0]
-        if (!dateSet.has(day)) {
-          dedupede[day] = e[k];
-          dateSet.add(day);
-        }
-      } else {
-        dedupede[k] = e[k];
-      }
-    })
-    dedupedData.push(dedupede)
-  });
-
-  const sortedData = dedupedData.sort((a, b) => {
-    const { Name: aName, ...aData } = a;
-    const { Name: bName, ...bData } = b;
-    const aSum = (Object.values(aData) as number[]).reduce(
-      (acc, el) => acc + el,
-      0
-    );
-    const bSum = (Object.values(bData) as number[]).reduce(
-      (acc, el) => acc + el,
-      0
-    );
-    return bSum - aSum;
-  });
-
-  const displayDates: string[] = []
-  const displayDateSet = new Set();
-  dates.forEach(d => {
-    const key = d.split("|")[0];
-    if (!displayDateSet.has(key)) {
-      displayDates.push(key)
-      displayDateSet.add(key);
-    }
-  });
+  let data;
+  if (counties.length) {
+    data = counties.map(county => {
+      return county.reduce((acc, el) => {
+        return {
+          Name: el.County,
+          [el.Reported.toLocaleDateString()]:
+            props.stat === "confirmed" ? el.Confirmed : el.Dead,
+          ...acc
+        };
+      }, {});
+    });
+  } else if (states.length) {
+    data = states.map(state => {
+      return state.reduce((acc, el) => {
+        return {
+          Name: el.State,
+          [el.Reported.toLocaleDateString()]:
+            props.stat === "confirmed" ? el.Confirmed : el.Dead,
+          ...acc
+        };
+      }, {});
+    });
+  }
 
   return (
     <>
@@ -144,7 +103,7 @@ export const StateMixedBar = (props: Props) => {
         barSize={10}
         width={window.innerWidth * 0.9}
         height={600}
-        data={sortedData.slice(0, 10)}
+        data={data}
         margin={{
           top: 0,
           right: 0,
@@ -160,11 +119,17 @@ export const StateMixedBar = (props: Props) => {
           height={100}
           dataKey="Name"
         />
-        <YAxis domain={maxCases && !EXCLUDED_STATES.includes(stateName as any) ? [0, getYMaxFromMaxCases(maxCases)]: undefined} />
+        <YAxis
+          domain={
+            maxCases && !EXCLUDED_STATES.includes(stateName as any)
+              ? [0, getYMaxFromMaxCases(maxCases)]
+              : undefined
+          }
+        />
         <Tooltip />
-        <div style={{padding: "10px"}}/>
+        <div style={{ padding: "10px" }} />
         <Legend />
-        {displayDates.map((date, i) => (
+        {dates.map((date, i) => (
           <Bar key={date} dataKey={date.split("|")[0]} fill={colors[i]} />
         ))}
       </BarChart>
