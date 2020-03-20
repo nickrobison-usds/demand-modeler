@@ -1379,3 +1379,9 @@ export const top10StatesConfirmed = [
     }
   ]
 ];
+
+export const countyGrandTotalForState = {
+  "3/17/2020": { Confirmed: 191, Dead: 24, NewConfirmed: 43, NewDead: 12 },
+  "3/18/2020": { Confirmed: 269, Dead: 42, NewConfirmed: 78, NewDead: 18 },
+  "3/19/2020": { Confirmed: 403, Dead: 51, NewConfirmed: 136, NewDead: 9 }
+};

@@ -1,5 +1,14 @@
 import { AppState, County, State } from "../app/AppStore";
 
+type GrandTotal = {
+  [d: string]: {
+    Confirmed: number;
+    NewConfirmed: number;
+    Dead: number;
+    NewDead: number;
+  };
+};
+
 const getSelectedStateName = (state: AppState) => {
   if (state.selection.state === undefined) {
     return null;
@@ -13,22 +22,22 @@ export const getTopCounties = (
   numberOfCounties = 10
 ): County[][] => {
   const stateName = getSelectedStateName(appState);
-  let countyData = Object.values(appState.covidTimeSeries.counties).reduce(
+  let counties = Object.values(appState.covidTimeSeries.counties).reduce(
     (acc, el) => [...acc, ...el],
     []
   );
   // If a state is selected, limit to that state
   if (stateName) {
-    countyData = countyData.filter(({ State }) => State === stateName);
+    counties = counties.filter(({ State }) => State === stateName);
   }
   // Get latest date for sorting purposes
-  const latestDate = countyData.reduce(
+  const latestDate = counties.reduce(
     (acc, el) => (el.Reported > acc ? el.Reported : acc),
-    countyData[0].Reported
+    counties[0].Reported
   );
   // Prevent possible duplicates and sort
   const seenCounties = new Set<string>();
-  const newestCountyData = countyData
+  const newestCounties = counties
     .filter(county => {
       if (
         county.Reported.toLocaleDateString() !==
@@ -44,7 +53,7 @@ export const getTopCounties = (
       const metric = stat === "confirmed" ? "Confirmed" : "Dead";
       return b[metric] > a[metric] ? 1 : -1;
     });
-  const topCounties = newestCountyData
+  const topCounties = newestCounties
     .slice(0, numberOfCounties)
     .map(county => appState.covidTimeSeries.counties[county.ID]);
 
@@ -56,18 +65,18 @@ export const getTopStates = (
   stat: "confirmed" | "dead",
   numberOfCounties = 10
 ): State[][] => {
-  let stateData = Object.values(appState.covidTimeSeries.states).reduce(
+  let states = Object.values(appState.covidTimeSeries.states).reduce(
     (acc, el) => [...acc, ...el],
     []
   );
   // Get latest date for sorting purposes
-  const latestDate = stateData.reduce(
+  const latestDate = states.reduce(
     (acc, el) => (el.Reported > acc ? el.Reported : acc),
-    stateData[0].Reported
+    states[0].Reported
   );
   // Prevent possible duplicates and sort
   const seenStates = new Set<string>();
-  const newestStateData = stateData
+  const newestStateData = states
     .filter(state => {
       if (
         state.Reported.toLocaleDateString() !==
@@ -88,4 +97,41 @@ export const getTopStates = (
     .map(state => appState.covidTimeSeries.states[state.ID]);
 
   return topStates;
+};
+
+export const getCountyGrandTotal = (appState: AppState): GrandTotal => {
+  let counties = Object.values(appState.covidTimeSeries.counties).reduce(
+    (acc, el) => [...acc, ...el],
+    []
+  );
+
+  if (appState.selection.county) {
+    counties = counties.filter(
+      county => county.ID === appState.selection.county
+    );
+  } else if (appState.selection.state) {
+    const selectedState = getSelectedStateName(appState);
+    counties = counties.filter(county => county.State === selectedState);
+  }
+
+  const byDate = counties.reduce((acc, el) => {
+    const key = el.Reported.toLocaleDateString();
+    if (!acc[key]) {
+      acc[key] = {
+        Confirmed: 0,
+        NewConfirmed: 0,
+        Dead: 0,
+        NewDead: 0
+      };
+    }
+    acc[key] = {
+      Confirmed: acc[key].Confirmed + el.Confirmed,
+      NewConfirmed: acc[key].NewConfirmed + el.NewConfirmed,
+      Dead: acc[key].Dead + el.Dead,
+      NewDead: acc[key].NewDead + el.NewDead
+    };
+    return acc;
+  }, {} as GrandTotal);
+
+  return byDate;
 };
