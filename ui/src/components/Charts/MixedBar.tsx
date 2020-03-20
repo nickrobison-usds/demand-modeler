@@ -9,7 +9,6 @@ import {
   Legend
 } from "recharts";
 import { CovidDateData, AppContext } from "../../app/AppStore";
-import { monthDay } from "../../utils/DateUtils";
 import { getGrandTotal } from "../../utils/calculations";
 
 type Props = {
