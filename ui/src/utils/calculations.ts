@@ -9,7 +9,7 @@ type GrandTotal = {
   };
 };
 
-const getSelectedStateName = (state: AppState) => {
+export const getSelectedStateName = (state: AppState) => {
   if (state.selection.state === undefined) {
     return null;
   }

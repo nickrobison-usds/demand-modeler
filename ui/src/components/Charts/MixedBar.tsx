@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   BarChart,
   Bar,
@@ -8,8 +8,9 @@ import {
   Tooltip,
   Legend
 } from "recharts";
-import { CovidDateData } from "../../app/AppStore";
+import { CovidDateData, AppContext } from "../../app/AppStore";
 import { monthDay } from "../../utils/DateUtils";
+import { getGrandTotal } from "../../utils/calculations";
 
 type Props = {
   state?: string;
@@ -20,67 +21,19 @@ type Props = {
 };
 
 export const MixedBar = (props: Props) => {
-  let title = "Grand Total";
+  const { state } = useContext(AppContext);
+  const title = "Grand Total";
+  const grandTotal = getGrandTotal(state);
 
-  let maxCasesByDate: { [d: string]: number } = {};
-
-  // const dates = Object.keys(props.timeSeries).sort();
-  const dates = [
-    ...new Set(
-      Object.keys(props.timeSeries.counties)
-        .flatMap(k => props.timeSeries.counties[k])
-        .map(({ Reported }) => monthDay(Reported))
-    )
-  ].sort();
-  const data = dates.map(date => {
-    let total = 0;
-    if (props.county) {
-      total = props.timeSeries.counties[props.county]
-        .filter(c => monthDay(c.Reported) === date)
-        .reduce((acc, el) => {
-          return acc + el[props.stat === "confirmed" ? "Confirmed" : "Dead"];
-        }, 0);
-      maxCasesByDate[date] = (maxCasesByDate[date] || 0) + total;
-    } else if (props.state) {
-      // We just need the first value in order to match the counties
-      const state = props.timeSeries.states[props.state][0].State;
-
-      const counties = Object.values(props.timeSeries.counties)
-        .flat()
-        .filter(({ State }) => State === state);
-
-      counties
-        .filter(({ Reported }) => monthDay(Reported) === date)
-        .forEach(s => {
-          const count = props.stat === "confirmed" ? s.Confirmed : s.Dead;
-          maxCasesByDate[date] = (maxCasesByDate[date] || 0) + s.Confirmed;
-          total += count;
-        });
-    } else {
-      Object.keys(props.timeSeries.states)
-        .flatMap(k => props.timeSeries.states[k])
-        .filter(({ Reported }) => monthDay(Reported) === date)
-        .forEach(s => {
-          const count = props.stat === "confirmed" ? s.Confirmed : s.Dead;
-          maxCasesByDate[date] = (maxCasesByDate[date] || 0) + s.Confirmed;
-          total += count;
-        });
-    }
-    return {
-      Name: date,
-      "Grand Total": total
-    };
-  });
-  const dedupedData: any[] = [];
-  const dateSet = new Set();
-  data.forEach(e => {
-    const day = e.Name.split("|")[0];
-    if (!dateSet.has(day)) {
-      e.Name = day;
-      dedupedData.push(e);
-      dateSet.add(day);
-    }
-  });
+  const data = Object.entries(grandTotal)
+    .reduce((acc, [date, stats]) => {
+      acc.push({
+        Name: date,
+        "Grand Total": props.stat === "confirmed" ? stats.Confirmed : stats.Dead
+      });
+      return acc;
+    }, [] as { Name: string; "Grand Total": number }[])
+    .reverse();
 
   return (
     <div>
@@ -89,7 +42,7 @@ export const MixedBar = (props: Props) => {
         barSize={50}
         width={window.innerWidth * 0.9}
         height={600}
-        data={dedupedData}
+        data={data}
         margin={{
           top: 0,
           right: 0,
