@@ -152,7 +152,7 @@ export const createMockState = ({
           NewConfirmed: 1,
           Dead: 2,
           NewDead: 1,
-          Reported: new Date("2020-03-18T19:43:00Z")
+          Reported: new Date("2020-03-19T19:43:00Z")
         }
       ],
       "01002": [
@@ -184,7 +184,7 @@ export const createMockState = ({
           NewConfirmed: 2,
           Dead: 4,
           NewDead: 2,
-          Reported: new Date("2020-03-18T19:43:00Z")
+          Reported: new Date("2020-03-19T19:43:00Z")
         }
       ],
       "01003": [
@@ -216,7 +216,7 @@ export const createMockState = ({
           NewConfirmed: 3,
           Dead: 4,
           NewDead: 0,
-          Reported: new Date("2020-03-18T19:43:00Z")
+          Reported: new Date("2020-03-19T19:43:00Z")
         }
       ],
       "02001": [
@@ -248,7 +248,7 @@ export const createMockState = ({
           NewConfirmed: 7,
           Dead: 4,
           NewDead: 3,
-          Reported: new Date("2020-03-18T19:43:00Z")
+          Reported: new Date("2020-03-19T19:43:00Z")
         }
       ],
       "02002": [
@@ -280,7 +280,7 @@ export const createMockState = ({
           NewConfirmed: 5,
           Dead: 2,
           NewDead: 1,
-          Reported: new Date("2020-03-18T19:43:00Z")
+          Reported: new Date("2020-03-19T19:43:00Z")
         }
       ],
       "02003": [
@@ -312,7 +312,7 @@ export const createMockState = ({
           NewConfirmed: 2,
           Dead: 5,
           NewDead: 1,
-          Reported: new Date("2020-03-18T19:43:00Z")
+          Reported: new Date("2020-03-19T19:43:00Z")
         }
       ],
       "03001": [
@@ -344,7 +344,7 @@ export const createMockState = ({
           NewConfirmed: 100,
           Dead: 12,
           NewDead: 1,
-          Reported: new Date("2020-03-18T19:43:00Z")
+          Reported: new Date("2020-03-19T19:43:00Z")
         }
       ],
       "03002": [
@@ -376,7 +376,7 @@ export const createMockState = ({
           NewConfirmed: 11,
           Dead: 9,
           NewDead: 3,
-          Reported: new Date("2020-03-18T19:43:00Z")
+          Reported: new Date("2020-03-19T19:43:00Z")
         }
       ],
       "03003": [
@@ -408,7 +408,7 @@ export const createMockState = ({
           NewConfirmed: 5,
           Dead: 8,
           NewDead: 2,
-          Reported: new Date("2020-03-18T19:43:00Z")
+          Reported: new Date("2020-03-19T19:43:00Z")
         }
       ],
       "03004": [
@@ -440,7 +440,7 @@ export const createMockState = ({
           NewConfirmed: 1,
           Dead: 2,
           NewDead: 0,
-          Reported: new Date("2020-03-18T19:43:00Z")
+          Reported: new Date("2020-03-19T19:43:00Z")
         }
       ],
       "03005": [
@@ -472,7 +472,7 @@ export const createMockState = ({
           NewConfirmed: 2,
           Dead: 2,
           NewDead: 0,
-          Reported: new Date("2020-03-18T19:43:00Z")
+          Reported: new Date("2020-03-19T19:43:00Z")
         }
       ],
       "03006": [
@@ -504,7 +504,7 @@ export const createMockState = ({
           NewConfirmed: 5,
           Dead: 3,
           NewDead: 2,
-          Reported: new Date("2020-03-18T19:43:00Z")
+          Reported: new Date("2020-03-19T19:43:00Z")
         }
       ],
       "03007": [
@@ -536,7 +536,7 @@ export const createMockState = ({
           NewConfirmed: 1,
           Dead: 3,
           NewDead: 0,
-          Reported: new Date("2020-03-18T19:43:00Z")
+          Reported: new Date("2020-03-19T19:43:00Z")
         }
       ],
       "03008": [
@@ -568,7 +568,7 @@ export const createMockState = ({
           NewConfirmed: 1,
           Dead: 1,
           NewDead: 0,
-          Reported: new Date("2020-03-18T19:43:00Z")
+          Reported: new Date("2020-03-19T19:43:00Z")
         }
       ],
       "03009": [
@@ -600,7 +600,7 @@ export const createMockState = ({
           NewConfirmed: 5,
           Dead: 6,
           NewDead: 1,
-          Reported: new Date("2020-03-18T19:43:00Z")
+          Reported: new Date("2020-03-19T19:43:00Z")
         }
       ],
       "03010": [
@@ -632,13 +632,13 @@ export const createMockState = ({
           NewConfirmed: 2,
           Dead: 2,
           NewDead: 0,
-          Reported: new Date("2020-03-18T19:43:00Z")
+          Reported: new Date("2020-03-19T19:43:00Z")
         }
       ],
       "03011": [
         {
-          ID: "Monterey",
-          County: "Butte",
+          ID: "03011",
+          County: "Monterey",
           State: "California",
           Confirmed: 14,
           NewConfirmed: 1,
@@ -647,8 +647,8 @@ export const createMockState = ({
           Reported: new Date("2020-03-17T19:43:00Z")
         },
         {
-          ID: "Monterey",
-          County: "Butte",
+          ID: "03011",
+          County: "Monterey",
           State: "California",
           Confirmed: 17,
           NewConfirmed: 3,
@@ -657,14 +657,14 @@ export const createMockState = ({
           Reported: new Date("2020-03-18T19:43:00Z")
         },
         {
-          ID: "Monterey",
-          County: "Butte",
+          ID: "03011",
+          County: "Monterey",
           State: "California",
           Confirmed: 20,
           NewConfirmed: 3,
           Dead: 3,
           NewDead: 0,
-          Reported: new Date("2020-03-18T19:43:00Z")
+          Reported: new Date("2020-03-19T19:43:00Z")
         }
       ]
     }
