@@ -10,7 +10,15 @@ type MockCountyID =
   | "02003"
   | "03001"
   | "03002"
-  | "03003";
+  | "03003"
+  | "03004"
+  | "03005"
+  | "03006"
+  | "03007"
+  | "03008"
+  | "03009"
+  | "03010"
+  | "03011";
 
 type MockStateInputs = {
   date: string;
@@ -400,6 +408,262 @@ export const createMockState = ({
           NewConfirmed: 5,
           Dead: 8,
           NewDead: 2,
+          Reported: new Date("2020-03-18T19:43:00Z")
+        }
+      ],
+      "03004": [
+        {
+          ID: "03004",
+          County: "Amadore",
+          State: "California",
+          Confirmed: 4,
+          NewConfirmed: 2,
+          Dead: 1,
+          NewDead: 1,
+          Reported: new Date("2020-03-17T19:43:00Z")
+        },
+        {
+          ID: "03004",
+          County: "Amadore",
+          State: "California",
+          Confirmed: 5,
+          NewConfirmed: 1,
+          Dead: 2,
+          NewDead: 1,
+          Reported: new Date("2020-03-18T19:43:00Z")
+        },
+        {
+          ID: "03004",
+          County: "Amadore",
+          State: "California",
+          Confirmed: 6,
+          NewConfirmed: 1,
+          Dead: 2,
+          NewDead: 0,
+          Reported: new Date("2020-03-18T19:43:00Z")
+        }
+      ],
+      "03005": [
+        {
+          ID: "03005",
+          County: "Fresno",
+          State: "California",
+          Confirmed: 5,
+          NewConfirmed: 1,
+          Dead: 2,
+          NewDead: 1,
+          Reported: new Date("2020-03-17T19:43:00Z")
+        },
+        {
+          ID: "03005",
+          County: "Fresno",
+          State: "California",
+          Confirmed: 7,
+          NewConfirmed: 2,
+          Dead: 2,
+          NewDead: 0,
+          Reported: new Date("2020-03-18T19:43:00Z")
+        },
+        {
+          ID: "03005",
+          County: "Fresno",
+          State: "California",
+          Confirmed: 7,
+          NewConfirmed: 2,
+          Dead: 2,
+          NewDead: 0,
+          Reported: new Date("2020-03-18T19:43:00Z")
+        }
+      ],
+      "03006": [
+        {
+          ID: "03006",
+          County: "Kern",
+          State: "California",
+          Confirmed: 12,
+          NewConfirmed: 1,
+          Dead: 1,
+          NewDead: 0,
+          Reported: new Date("2020-03-17T19:43:00Z")
+        },
+        {
+          ID: "03006",
+          County: "Kern",
+          State: "California",
+          Confirmed: 13,
+          NewConfirmed: 1,
+          Dead: 1,
+          NewDead: 0,
+          Reported: new Date("2020-03-18T19:43:00Z")
+        },
+        {
+          ID: "03006",
+          County: "Kern",
+          State: "California",
+          Confirmed: 18,
+          NewConfirmed: 5,
+          Dead: 3,
+          NewDead: 2,
+          Reported: new Date("2020-03-18T19:43:00Z")
+        }
+      ],
+      "03007": [
+        {
+          ID: "03007",
+          County: "Lake",
+          State: "California",
+          Confirmed: 22,
+          NewConfirmed: 2,
+          Dead: 0,
+          NewDead: 0,
+          Reported: new Date("2020-03-17T19:43:00Z")
+        },
+        {
+          ID: "03007",
+          County: "Lake",
+          State: "California",
+          Confirmed: 22,
+          NewConfirmed: 0,
+          Dead: 3,
+          NewDead: 3,
+          Reported: new Date("2020-03-18T19:43:00Z")
+        },
+        {
+          ID: "03007",
+          County: "Lake",
+          State: "California",
+          Confirmed: 23,
+          NewConfirmed: 1,
+          Dead: 3,
+          NewDead: 0,
+          Reported: new Date("2020-03-18T19:43:00Z")
+        }
+      ],
+      "03008": [
+        {
+          ID: "03008",
+          County: "Mariposa",
+          State: "California",
+          Confirmed: 3,
+          NewConfirmed: 3,
+          Dead: 0,
+          NewDead: 0,
+          Reported: new Date("2020-03-17T19:43:00Z")
+        },
+        {
+          ID: "03008",
+          County: "Mariposa",
+          State: "California",
+          Confirmed: 4,
+          NewConfirmed: 1,
+          Dead: 1,
+          NewDead: 1,
+          Reported: new Date("2020-03-18T19:43:00Z")
+        },
+        {
+          ID: "03008",
+          County: "Mariposa",
+          State: "California",
+          Confirmed: 5,
+          NewConfirmed: 1,
+          Dead: 1,
+          NewDead: 0,
+          Reported: new Date("2020-03-18T19:43:00Z")
+        }
+      ],
+      "03009": [
+        {
+          ID: "03009",
+          County: "Marin",
+          State: "California",
+          Confirmed: 33,
+          NewConfirmed: 12,
+          Dead: 2,
+          NewDead: 1,
+          Reported: new Date("2020-03-17T19:43:00Z")
+        },
+        {
+          ID: "03009",
+          County: "Marin",
+          State: "California",
+          Confirmed: 35,
+          NewConfirmed: 2,
+          Dead: 5,
+          NewDead: 3,
+          Reported: new Date("2020-03-18T19:43:00Z")
+        },
+        {
+          ID: "03009",
+          County: "Marin",
+          State: "California",
+          Confirmed: 40,
+          NewConfirmed: 5,
+          Dead: 6,
+          NewDead: 1,
+          Reported: new Date("2020-03-18T19:43:00Z")
+        }
+      ],
+      "03010": [
+        {
+          ID: "03010",
+          County: "Merced",
+          State: "California",
+          Confirmed: 11,
+          NewConfirmed: 4,
+          Dead: 1,
+          NewDead: 1,
+          Reported: new Date("2020-03-17T19:43:00Z")
+        },
+        {
+          ID: "03010",
+          County: "Merced",
+          State: "California",
+          Confirmed: 14,
+          NewConfirmed: 3,
+          Dead: 2,
+          NewDead: 1,
+          Reported: new Date("2020-03-18T19:43:00Z")
+        },
+        {
+          ID: "03010",
+          County: "Merced",
+          State: "California",
+          Confirmed: 16,
+          NewConfirmed: 2,
+          Dead: 2,
+          NewDead: 0,
+          Reported: new Date("2020-03-18T19:43:00Z")
+        }
+      ],
+      "03011": [
+        {
+          ID: "Monterey",
+          County: "Butte",
+          State: "California",
+          Confirmed: 14,
+          NewConfirmed: 1,
+          Dead: 1,
+          NewDead: 1,
+          Reported: new Date("2020-03-17T19:43:00Z")
+        },
+        {
+          ID: "Monterey",
+          County: "Butte",
+          State: "California",
+          Confirmed: 17,
+          NewConfirmed: 3,
+          Dead: 3,
+          NewDead: 2,
+          Reported: new Date("2020-03-18T19:43:00Z")
+        },
+        {
+          ID: "Monterey",
+          County: "Butte",
+          State: "California",
+          Confirmed: 20,
+          NewConfirmed: 3,
+          Dead: 3,
+          NewDead: 0,
           Reported: new Date("2020-03-18T19:43:00Z")
         }
       ]
