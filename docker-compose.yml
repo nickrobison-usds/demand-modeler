@@ -17,7 +17,7 @@ services:
       # dockerfile: api-dev.Dockerfile
     container_name: "api"
     environment:
-      - LOAD=1
+      - LOAD=0
       - DATABASE_URL=postgres://covid:goaway@postgres:5432/covid?sslmode=disable
     ports:
       # This is externalPort:internalPort, for the record
