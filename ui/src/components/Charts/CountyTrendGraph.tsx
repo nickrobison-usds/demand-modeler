@@ -12,29 +12,16 @@ interface DataPoint {
   Date: string; // Date string
   [countyName: string]: number | string;
 }
-const colors = [
-  "#E5A3A3",
-  "#D05C5C",
-  "#CB2727",
-  "#C00000",
-  "#900000",
-  "#700000"
-];
 
 const MIN_CASES = 20;
 
 export const CountyTrendGraph = (props: Props) => {
-  let title: string;
   let dates: string[];
   let data: DataPoint[] = [];
-  let stateName: string = "";
-
-  // Top 10 Counties (total or in state)
-  title = `Counties with the highest number of cases`;
 
   const countyData = Object.keys(props.timeSeries.counties).flatMap(
     k => props.timeSeries.counties[k]
-  ).filter(c => c.Confirmed >= 20);
+  ).filter(c => c.Confirmed >= MIN_CASES);
 
   dates = [
     ...new Set(countyData.map(({ Reported }) => monthDay(Reported)))
@@ -47,10 +34,6 @@ export const CountyTrendGraph = (props: Props) => {
     return acc;
   }, {} as { [c: string]: { [d: string]: number } });
 
-  console.log(counties)
-
-
-  // const data = [{name: 'Page A', uv: 400, pv: 2400, amt: 2400}, ...];
   dates.forEach((date) => {
     const dataPoint: DataPoint = {
       Date: date
@@ -60,49 +43,6 @@ export const CountyTrendGraph = (props: Props) => {
     });
     data.push(dataPoint);
   });
-  console.log(data)
-  // data = Object.entries(counties).reduce((acc, [Name, data]) => {
-  //   acc.push({
-  //     Name,
-  //     ...data
-  //   });
-  //   return acc;
-  // }, [] as { [k: string]: string | number }[]).sort(
-  //   (a, b) => {
-  //     const lastIndex = dates.length - 1;
-  //     return (b[dates[lastIndex]] as number || 0) - (a[dates[lastIndex]] as number || 0)
-  //   }
-  // );
-
-  // const dedupedData: any[] = [];
-  // data.forEach(e => {
-  //   const dedupedElement: any = {};
-  //   const d = Object.keys(e).sort();
-  //   for (let i = 0; i < d.length; i++) {
-  //     const key = d[i];
-  //     if (!key.toString().includes("|")) {
-  //       dedupedElement[key] = e[key];
-  //       continue;
-  //     }
-  //     if (d[i+1]) {
-  //       if (d[i].toString().split("|")[0] === d[i+1].toString().split("|")[0]) {
-  //         continue;
-  //       }
-  //     }
-  //     dedupedElement[d[i].toString().split("|")[0]] = e[key];
-  //   }
-  //   dedupedData.push(dedupedElement);
-  // });
-
-  // const displayDates: string[] = []
-  // const displayDateSet = new Set();
-  // dates.forEach(d => {
-  //   const key = d.split("|")[0];
-  //   if (!displayDateSet.has(key)) {
-  //     displayDates.push(key)
-  //     displayDateSet.add(key);
-  //   }
-  // });
 
   return (
     <>
