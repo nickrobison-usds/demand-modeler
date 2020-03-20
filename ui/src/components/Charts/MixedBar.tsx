@@ -5,8 +5,7 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip,
-  Legend
+  Tooltip
 } from "recharts";
 import { CovidDateData } from "../../app/AppStore";
 import { monthDay } from "../../utils/DateUtils";
@@ -84,11 +83,11 @@ export const MixedBar = (props: Props) => {
 
   return (
     <div>
-      <h3>{title}</h3>
+      <h3>Total Number of Confirmed Cases in the US</h3>
       <BarChart
         barSize={50}
         width={window.innerWidth * 0.9}
-        height={600}
+        height={880}
         data={dedupedData}
         margin={{
           top: 0,
@@ -101,7 +100,6 @@ export const MixedBar = (props: Props) => {
         <XAxis height={60} dataKey="Name" />
         <YAxis dataKey="Grand Total" />
         <Tooltip />
-        <Legend />
         <Bar dataKey="Grand Total" fill="#900000" />
       </BarChart>
     </div>
