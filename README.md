@@ -56,8 +56,8 @@ docker-compose up --build api
 1. Download the latest CSV file
 1. Copy into the `data/` directory with this name pattern: `covid19_county_2020_{month}_{day}-{time?}.csv
 1. Perform manual cleaning
-    - Rename 'Walton, FL' to 'Walton County, FL'
+    - Rename 'Walton, FL' to 'Walton County'
     - Remove 'Gloucester, NJ' duplicate
     - Remove duplicate 'Anderson, SC'
-    - Rename 'Dade, FL' to 'Miami-Dade, FL'
+    - Rename 'Dade' to 'Miami-Dade'
 1. Run the go application and see if it barfs on the new data. Rinse, repeat until it works.
