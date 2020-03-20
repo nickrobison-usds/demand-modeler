@@ -5,7 +5,7 @@ import { Top10Counties } from "./Top10Counties";
 import { StateBar } from "./StateBar";
 import { MixedBar } from "./MixedBar";
 import "./Report.scss";
-import { formatDate, dateTimeString } from "../../utils/DateUtils";
+import { dateTimeString } from "../../utils/DateUtils";
 
 export const Report: React.FC<{}> = () => {
   const pagebreak = (lastUpdated: Date | undefined) => {
