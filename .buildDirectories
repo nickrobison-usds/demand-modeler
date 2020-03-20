@@ -1,2 +1,0 @@
-root:https://github.com/heroku/heroku-buildpack-go.git
-ui:https://github.com/heroku/heroku-buildpack-nodejs.git
