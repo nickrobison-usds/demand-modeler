@@ -14,7 +14,6 @@ import { ApiContainer } from "./components/ApiContainer";
 function App() {
   const url = new URL(window.location.href);
   const report = url.searchParams.get("report");
-  console.log(report);
   if (report) {
     return (
       <AppStoreProvider>

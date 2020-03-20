@@ -13,8 +13,10 @@ import { getYMaxFromMaxCases } from "../../utils/utils";
 import { monthDay } from "../../utils/DateUtils";
 
 type Props = {
+  state: string;
   timeSeries: CovidDateData;
   stat: "confirmed" | "dead";
+  stateCount: boolean;
   reportView?: boolean;
   meta?: GraphMetaData;
   title?: string;
@@ -22,41 +24,49 @@ type Props = {
 
 const colors = ["#E5A3A3", "#D05C5C", "#CB2727", "#C00000", "#900000", "#700000"];
 
-export const Top10Counties = (props: Props) => {
+export const StateBar = (props: Props) => {
+  if ((props.stateCount && props.state)) {
+    return null;
+  }
   let title: string;
   let maxCases: number | undefined;
   let dates: string[];
   let data;
   let stateName: string = "";
 
-  // Top 10 Counties (total or in state)
-  title = `Counties with the highest number of cases`;
 
-  let countyData = Object.keys(props.timeSeries.counties).flatMap(k => props.timeSeries.counties[k]);
-  if (props.meta) {
-    maxCases = props.meta.maxConfirmedCounty;
-  }
-  dates = [
-    ...new Set(countyData.map(({ Reported }) => monthDay(Reported)))
-  ].sort();
-  const counties = countyData.reduce((acc, el) => {
-    if (!acc[el.County]) acc[el.County] = {};
-    acc[el.County][monthDay(el.Reported)] =
-      props.stat === "confirmed" ? el.Confirmed : el.Dead;
-    return acc;
-  }, {} as { [c: string]: { [d: string]: number } });
-  data = Object.entries(counties).reduce((acc, [Name, data]) => {
-    acc.push({
-      Name,
-      ...data
-    });
-    return acc;
-  }, [] as { [k: string]: string | number }[]).sort(
-    (a, b) => {
-      const lastIndex = dates.length - 1;
-      return (b[dates[lastIndex]] as number || 0) - (a[dates[lastIndex]] as number || 0)
+    stateName =
+      Object.keys(props.timeSeries.states).flatMap(k => props.timeSeries.states[k]).find(state => state.ID === props.state)?.State || "";
+    title = `${stateName}`;
+
+    let countyData = Object.keys(props.timeSeries.counties).flatMap(k => props.timeSeries.counties[k]);
+    if (props.state) {
+      countyData = countyData.filter(({ State }) => State === stateName);
     }
-  );
+    if (props.meta) {
+      maxCases = props.meta.maxConfirmedCounty;
+    }
+    dates = [
+      ...new Set(countyData.map(({ Reported }) => monthDay(Reported)))
+    ].sort();
+    const counties = countyData.reduce((acc, el) => {
+      if (!acc[el.County]) acc[el.County] = {};
+      acc[el.County][monthDay(el.Reported)] =
+        props.stat === "confirmed" ? el.Confirmed : el.Dead;
+      return acc;
+    }, {} as { [c: string]: { [d: string]: number } });
+    data = Object.entries(counties).reduce((acc, [Name, data]) => {
+      acc.push({
+        Name,
+        ...data
+      });
+      return acc;
+    }, [] as { [k: string]: string | number }[]).sort(
+      (a, b) => {
+        const lastIndex = dates.length - 1;
+        return (b[dates[lastIndex]] as number || 0) - (a[dates[lastIndex]] as number || 0)
+      }
+    );
 
   const dedupedData: any[] = [];
   data.forEach(e => {
@@ -77,20 +87,6 @@ export const Top10Counties = (props: Props) => {
     }
     dedupedData.push(dedupedElement);
   });
-
-  // const sortedData = dedupedData.sort((a, b) => {
-  //   const { Name: aName, ...aData } = a;
-  //   const { Name: bName, ...bData } = b;
-  //   const aSum = (Object.values(aData) as number[]).reduce(
-  //     (acc, el) => acc + el,
-  //     0
-  //   );
-  //   const bSum = (Object.values(bData) as number[]).reduce(
-  //     (acc, el) => acc + el,
-  //     0
-  //   );
-  //   return bSum - aSum;
-  // });
 
   const displayDates: string[] = []
   const displayDateSet = new Set();

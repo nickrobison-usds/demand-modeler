@@ -2,6 +2,7 @@ import React from "react";
 import { AppContext, State } from "../../app/AppStore";
 import { StateMixedBar } from "./StateMixedBar";
 import { Top10Counties } from "./Top10Counties";
+import { StateBar } from "./StateBar";
 import { MixedBar } from "./MixedBar";
 import "./Report.scss";
 import { formatDate, dateTimeString } from "../../utils/DateUtils";
@@ -69,9 +70,8 @@ export const Report: React.FC<{}> = () => {
             </div>
             {top10States.map(s => (
               <>
-                <StateMixedBar
+                <StateBar
                   state={s.ID}
-                  county={undefined}
                   timeSeries={state.covidTimeSeries}
                   stat="confirmed"
                   stateCount={false}
