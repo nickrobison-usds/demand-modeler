@@ -7,5 +7,8 @@
     "install": "yarn --cwd ui/ install",
     "build.react": "yarn --cwd ui/ run build",
     "build": "yarn run install && yarn run build.react"
+  },
+  "engines": {
+    "yarn": "1.22.x"
   }
 }
