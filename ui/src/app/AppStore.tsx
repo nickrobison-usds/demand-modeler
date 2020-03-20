@@ -136,25 +136,6 @@ const setCovidData = (state: AppState, { payload }: Action): AppState => {
       }
     });
 
-    // get State - ID map
-    let terrirtories = 0
-    payload.states["99"].forEach(s => {
-      const realID = realStateId[s.State];
-      const realStateData = payload.states[realID];
-      if (realID === undefined) {
-        // TODO: handle Territories
-        terrirtories += s.Confirmed;
-      } else {
-        const index = realStateData.findIndex(
-          realState => realState.Reported.toString() === s.Reported.toString()
-        );
-        realStateData[index].Confirmed += s.Confirmed
-      }
-    });
-    console.log(terrirtories)
-
-    delete payload.states["99"];
-
     return {
       ...state,
       covidTimeSeries: payload,

@@ -53,4 +53,8 @@ var StateFips = map[string]int{
 	"WEST VIRGINIA":        54,
 	"WISCONSIN":            55,
 	"WYOMING":              56,
+	"AMERICAN SAMOA":       60,
+	"GUAM":                 66,
+	"PUERTO RICO":          72,
+	"US VIRGIN ISLANDS":    78,
 }
