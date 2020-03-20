@@ -44,6 +44,7 @@ func getCountIDs(w http.ResponseWriter, r *http.Request) {
 }
 
 func getTopCounties(w http.ResponseWriter, r *http.Request) {
+	log.Println("Loading top counties")
 	ctx := r.Context()
 	conn, err := ctx.Value("db").(*pgxpool.Pool).Acquire(ctx)
 	if err != nil {
@@ -53,7 +54,7 @@ func getTopCounties(w http.ResponseWriter, r *http.Request) {
 	}
 	defer conn.Release()
 
-	innerQuery := "SELECT c.ID, c.County, c.State, a.update, a.confirmed, a.newconfirmed, a.dead, a.newdead, ST_AsGeoJSON(t.geom) as geom from counties as c " +
+	innerQuery := "SELECT DISTINCT c.id, c.county, c.state, a.update, a.confirmed from counties as c " +
 		"LEFT JOIN cases as a ON c.id = a.geoid " +
 		"ORDER BY a.update DESC, confirmed DESC "
 
@@ -62,7 +63,6 @@ func getTopCounties(w http.ResponseWriter, r *http.Request) {
 		innerQuery = fmt.Sprintf("%s LIMIT %s", innerQuery, limit[0])
 	}
 
-	// 							 SELECT c.ID, c.County, c.State, s.Update, s.Confirmed, s.NewConfirmed, s.Dead, s.NewDead, ST_AsGeoJSON(t.geom) as geom FROM counties as c
 	query := fmt.Sprintf("SELECT c.ID, c.County, c.State, a.update, a.confirmed, a.newconfirmed, a.dead, a.newdead, ST_AsGeoJSON(t.geom) as geom from counties as c "+
 		"LEFT JOIN cases as a "+
 		"ON c.id = a.geoid "+
@@ -132,6 +132,7 @@ func getCountyCases(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	log.Println("Ready to return")
 	err = json.NewEncoder(w).Encode(cases)
 	if err != nil {
 		log.Print(err)
@@ -148,7 +149,9 @@ func queryCountyCases(ctx context.Context, conn *pgxpool.Conn, sql string, args 
 		return cases, err
 	}
 
+	log.Println("Case counties are loaded")
 	for rows.Next() {
+		log.Println("Next")
 		var id string
 		var county string
 		var state string

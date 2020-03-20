@@ -16,11 +16,10 @@ import (
 	"sync/atomic"
 )
 
-const unknownState = "99"
-
 var unknownRegex = regexp.MustCompile("Waiting on information|Indeterminate|Unassigned|Unknown|Non-*")
 
-var countyIter int32 = 800
+// Unassigned values have to start higher than the largest FIPS code in the TIGER database (which is 840)
+var countyIter int32 = 850
 
 type DataLoader struct {
 	ctx     context.Context
@@ -146,11 +145,16 @@ func (d *DataLoader) createNewCounty(row []string) (string, error) {
 	var county string
 	var state string
 
+	stateFIPS, ok := StateFips[strings.ToUpper(row[1])]
+	if !ok {
+		log.Fatalf("Cannot find FIPS for state: %s", row[1])
+	}
+	state = fmt.Sprintf("%02d", stateFIPS)
+
 	// If the county name is unknown, unassigned, etc, then we create a fake geoid and move along.
 	if unknownRegex.MatchString(row[0]) {
-		state = unknownState
 		county = fmt.Sprintf("%03d", countyIter)
-		geoid = fmt.Sprintf("%s%s", unknownState, county)
+		geoid = fmt.Sprintf("%s%s", state, county)
 		atomic.AddInt32(&countyIter, 1)
 	} else {
 
@@ -161,10 +165,9 @@ func (d *DataLoader) createNewCounty(row []string) (string, error) {
 		err := d.conn.QueryRow(d.ctx, "SELECT t.countyfp FROM tiger as t where (t.name = $1 OR t.namelsad = $1) and t.statefp = $2", row[0], state).Scan(&county)
 		// More gross
 		if err != nil && err.Error() == "no rows in result set" {
-			// No rows means we have a non-spatial county, so create a fake fips
-			state = unknownState
+			// No rows means we have a non-spatial county, but still try to match up with an existing state
 			county = fmt.Sprintf("%03d", countyIter)
-			geoid = fmt.Sprintf("%s%s", unknownState, county)
+			geoid = fmt.Sprintf("%s%s", state, county)
 			atomic.AddInt32(&countyIter, 1)
 		} else if err != nil {
 			log.Printf("Unable to load %s, %s: %s\n", row[0], row[1], err.Error())
