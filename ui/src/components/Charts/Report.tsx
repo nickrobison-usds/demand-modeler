@@ -5,7 +5,7 @@ import { Top10Counties } from "./Top10Counties";
 import { StateBar } from "./StateBar";
 import { MixedBar } from "./MixedBar";
 import "./Report.scss";
-import { formatDate, dateTimeString } from "../../utils/DateUtils";
+import { dateTimeString } from "../../utils/DateUtils";
 
 export const Report: React.FC<{}> = () => {
   const pagebreak = (lastUpdated: Date | undefined) => {
@@ -45,10 +45,8 @@ export const Report: React.FC<{}> = () => {
           });
 
         const states = Object.keys(state.covidTimeSeries.states)
-          .flatMap(k => state.covidTimeSeries.states[k])
-          .filter(
-            ({ Reported }) => formatDate(Reported) === state.selection.date
-          );
+          .flatMap(k => state.covidTimeSeries.states[k]);
+          // .filter(({ Reported }) => formatDate(Reported) === state.selection.date);
         const stateIDs = new Set();
         const dedupedStates: State[] = [];
         states.forEach(s => {
