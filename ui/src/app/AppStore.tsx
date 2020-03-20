@@ -59,8 +59,8 @@ export interface State extends CovidStats {
 }
 
 export interface CovidDateData {
-  states: {[key:string]: State[]};
-  counties: {[key: string]: County[]};
+  states: { [key: string]: State[] };
+  counties: { [key: string]: County[] };
 }
 
 export interface GraphMetaData {
@@ -103,20 +103,61 @@ export const AppContext = createContext({} as AppContextType);
 export const EXCLUDED_STATES = ["New York"];
 const setCovidData = (state: AppState, { payload }: Action): AppState => {
   if (TypeGuards.isCovidData(payload)) {
-    const stateData = Object.keys(payload.states).flatMap(k => payload.states[k]);
-    const countyData = Object.keys(payload.counties).flatMap(k => payload.counties[k]);
+    const stateData = Object.keys(payload.states).flatMap(
+      k => payload.states[k]
+    );
+    const countyData = Object.keys(payload.counties).flatMap(
+      k => payload.counties[k]
+    );
     let maxConfirmedCounty = 0;
     let maxConfirmedState = 0;
-    countyData.forEach((e) => {
-      if (maxConfirmedCounty < e.Confirmed && !EXCLUDED_STATES.includes(e.State)) {
+    countyData.forEach(e => {
+      if (
+        maxConfirmedCounty < e.Confirmed &&
+        !EXCLUDED_STATES.includes(e.State)
+      ) {
         maxConfirmedCounty = e.Confirmed;
       }
     });
-    stateData.forEach((e) => {
-      if (maxConfirmedState < e.Confirmed && !EXCLUDED_STATES.includes(e.State)) {
+    stateData.forEach(e => {
+      if (
+        maxConfirmedState < e.Confirmed &&
+        !EXCLUDED_STATES.includes(e.State)
+      ) {
         maxConfirmedState = e.Confirmed;
       }
     });
+
+    // consolidate all states records with ID = 99
+    const realStateId: { [name: string]: string } = {};
+    stateData.forEach(e => {
+      if (e.ID !== "99") {
+        realStateId[e.State] = e.ID;
+      }
+    });
+
+    // get State - ID map
+    let terrirtories = 0
+    payload.states["99"].forEach(s => {
+      const realID = realStateId[s.State];
+      const realStateData = payload.states[realID];
+      if (realID === undefined) {
+        // TODO: handle Territories
+        terrirtories += s.Confirmed;
+      } else {
+        const index = realStateData.findIndex(
+          realState => realState.Reported.toString() === s.Reported.toString()
+        );
+        realStateData[index].Confirmed += s.Confirmed
+      }
+    });
+    console.log(terrirtories)
+    // if () {
+
+    // }
+    console.log(stateData);
+    delete payload.states["99"];
+
     return {
       ...state,
       covidTimeSeries: payload,
