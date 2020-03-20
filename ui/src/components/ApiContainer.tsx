@@ -2,14 +2,19 @@ import React, { useContext, useEffect, useState } from "react";
 import { AppContext, ActionType, CovidDateData } from "../app/AppStore";
 import {getTopCountyCases, getTopStateCases} from "../api";
 
+const NUMBER_OF_DAYS = 5;
+
 const loadData = async () => {
+  const start = new Date();
+  start.setDate(start.getDate() - NUMBER_OF_DAYS);
+
   const loadStateData = async () => {
-    const date = new Date("2020-03-15 16:23 EDT");
+    const date = new Date(start);
     const chunkedStateData = await getTopStateCases(date);
     return chunkedStateData;
   };
   const loadCountyData = async () => {
-    const date = new Date("2020-03-15 16:23 EDT");
+    const date = new Date(start);
     const chunkedCountyData = await getTopCountyCases(date);
     return chunkedCountyData;
   };
