@@ -1,9 +1,5 @@
 import { createMockState } from "../../app/mockState";
-import {
-  getTopCounties,
-  getTopStates,
-  getCountyGrandTotal
-} from "../calculations";
+import { getTopCounties, getTopStates, getGrandTotal } from "../calculations";
 import {
   top10ConfirmedByState,
   top10DeadByState,
@@ -11,7 +7,8 @@ import {
   top10DeadOverall,
   top10StatesConfirmed,
   countyGrandTotalForState,
-  countyGrandTotalForCounty
+  countyGrandTotalForCounty,
+  stateGrandTotal
 } from "./matchers";
 
 describe("calculations", () => {
@@ -66,7 +63,7 @@ describe("calculations", () => {
   describe("county grand totals", () => {
     it("calculates the county-based grand totals for a state", () => {
       const state = createMockState({ date: "2020-03-19", state: "03" });
-      const grandTotal = getCountyGrandTotal(state);
+      const grandTotal = getGrandTotal(state);
       expect(grandTotal).toEqual(countyGrandTotalForState);
     });
     it("calculates the county-based grand totals for a county", () => {
@@ -75,8 +72,15 @@ describe("calculations", () => {
         state: "03",
         county: "03002"
       });
-      const grandTotal = getCountyGrandTotal(state);
+      const grandTotal = getGrandTotal(state);
       expect(grandTotal).toEqual(countyGrandTotalForCounty);
+    });
+    it("calculated the state-based grand totals for everything", () => {
+      const state = createMockState({
+        date: "2020-03-19"
+      });
+      const grandTotal = getGrandTotal(state);
+      expect(grandTotal).toEqual(stateGrandTotal);
     });
   });
 });

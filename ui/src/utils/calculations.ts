@@ -99,22 +99,38 @@ export const getTopStates = (
   return topStates;
 };
 
-export const getCountyGrandTotal = (appState: AppState): GrandTotal => {
-  let counties = Object.values(appState.covidTimeSeries.counties).reduce(
-    (acc, el) => [...acc, ...el],
-    []
-  );
-
-  if (appState.selection.county) {
-    counties = counties.filter(
-      county => county.ID === appState.selection.county
+export const getGrandTotal = (appState: AppState): GrandTotal => {
+  let data: State[] | County[];
+  // Use county data for individual state or county grand totals
+  if (appState.selection.county || appState.selection.state) {
+    let counties = Object.values(appState.covidTimeSeries.counties).reduce(
+      (acc, el) => [...acc, ...el],
+      []
     );
-  } else if (appState.selection.state) {
-    const selectedState = getSelectedStateName(appState);
-    counties = counties.filter(county => county.State === selectedState);
+    if (appState.selection.county) {
+      counties = counties.filter(
+        county => county.ID === appState.selection.county
+      );
+    } else {
+      const selectedState = getSelectedStateName(appState);
+      counties = counties.filter(county => county.State === selectedState);
+    }
+    data = counties;
+  } else {
+    // Use state data for the entire country
+    data = Object.values(appState.covidTimeSeries.states).reduce(
+      (acc, el) => [...acc, ...el],
+      []
+    );
   }
 
-  const byDate = counties.reduce((acc, el) => {
+  const byDate = (data as {
+    Reported: Date;
+    Confirmed: number;
+    NewConfirmed: number;
+    Dead: number;
+    NewDead: number;
+  }[]).reduce((acc, el) => {
     const key = el.Reported.toLocaleDateString();
     if (!acc[key]) {
       acc[key] = {
