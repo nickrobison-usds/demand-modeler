@@ -50,3 +50,13 @@ docker-compose up --build api
    heroku buildpacks:add heroku/go
     ```
 1. Deploy
+
+## Loading new data
+
+1. Download the latest CSV file
+1. Copy into the `data/` directory with this name pattern: `covid19_county_2020_{month}_{day}-{time?}.csv
+1. Perform manual cleaning 
+    - Rename 'Walton, FL' to 'Walton County, FL'
+    - Remove 'Gloucester, NJ' duplicate
+    - Remove duplicate 'Anderson, SC'
+1. Run the go application and see if it barfs on the new data. Rinse, repeat until it works.
