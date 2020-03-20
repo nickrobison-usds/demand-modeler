@@ -1,1 +1,1 @@
-web: ./demand-modeling
+web: ./bin/demand-modeling
