@@ -9,7 +9,7 @@ interface Props {
 };
 
 interface DataPoint {
-  Name: string; // Date string
+  Date: string; // Date string
   [countyName: string]: number | string;
 }
 const colors = [
@@ -26,7 +26,7 @@ const MIN_CASES = 20;
 export const CountyTrendGraph = (props: Props) => {
   let title: string;
   let dates: string[];
-  let data;
+  let data: DataPoint[] = [];
   let stateName: string = "";
 
   // Top 10 Counties (total or in state)
@@ -39,7 +39,7 @@ export const CountyTrendGraph = (props: Props) => {
   dates = [
     ...new Set(countyData.map(({ Reported }) => monthDay(Reported)))
   ].sort();
-
+  console.log(dates)
   const counties = countyData.reduce((acc, el) => {
     const name = `${el.County}, ${stateAbbreviation[el.State]}`;
     if (!acc[name]) acc[name] = {};
@@ -49,21 +49,30 @@ export const CountyTrendGraph = (props: Props) => {
 
   console.log(counties)
 
-  dates.forEach((e) => {
 
-  });
-  data = Object.entries(counties).reduce((acc, [Name, data]) => {
-    acc.push({
-      Name,
-      ...data
+  // const data = [{name: 'Page A', uv: 400, pv: 2400, amt: 2400}, ...];
+  dates.forEach((date) => {
+    const dataPoint: DataPoint = {
+      Date: date
+    };
+    Object.keys(counties).forEach(key => {
+      dataPoint[key] = counties[key][date];
     });
-    return acc;
-  }, [] as { [k: string]: string | number }[]).sort(
-    (a, b) => {
-      const lastIndex = dates.length - 1;
-      return (b[dates[lastIndex]] as number || 0) - (a[dates[lastIndex]] as number || 0)
-    }
-  );
+    data.push(dataPoint);
+  });
+  console.log(data)
+  // data = Object.entries(counties).reduce((acc, [Name, data]) => {
+  //   acc.push({
+  //     Name,
+  //     ...data
+  //   });
+  //   return acc;
+  // }, [] as { [k: string]: string | number }[]).sort(
+  //   (a, b) => {
+  //     const lastIndex = dates.length - 1;
+  //     return (b[dates[lastIndex]] as number || 0) - (a[dates[lastIndex]] as number || 0)
+  //   }
+  // );
 
   // const dedupedData: any[] = [];
   // data.forEach(e => {
