@@ -10,6 +10,7 @@ import {
 } from "recharts";
 import { CovidDateData, GraphMetaData, EXCLUDED_STATES } from "../../app/AppStore";
 import { getYMaxFromMaxCases } from "../../utils/utils";
+import { stateAbbreviation } from "../../utils/stateAbbreviation";
 import { monthDay } from "../../utils/DateUtils";
 
 type Props = {
@@ -40,8 +41,9 @@ export const Top10Counties = (props: Props) => {
     ...new Set(countyData.map(({ Reported }) => monthDay(Reported)))
   ].sort();
   const counties = countyData.reduce((acc, el) => {
-    if (!acc[el.County]) acc[el.County] = {};
-    acc[el.County][monthDay(el.Reported)] =
+    const name = `${el.County}, ${stateAbbreviation[el.State]}`;
+    if (!acc[name]) acc[name] = {};
+    acc[name][monthDay(el.Reported)] =
       props.stat === "confirmed" ? el.Confirmed : el.Dead;
     return acc;
   }, {} as { [c: string]: { [d: string]: number } });
