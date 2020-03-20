@@ -1,0 +1,11 @@
+{
+  "name": "ui",
+  "version": "0.1.0",
+  "proxy": "http://localhost:8080",
+  "private": true,
+  "scripts": {
+    "install": "yarn --cwd ui/ install",
+    "build.react": "yarn --cwd ui/ run build",
+    "build": "yarn run install && yarn run build.react"
+  }
+}
