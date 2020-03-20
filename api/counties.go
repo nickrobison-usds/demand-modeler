@@ -3,7 +3,6 @@ package api
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/go-chi/chi"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/nickrobison-usds/demand-modeling/cmd"
@@ -54,30 +53,21 @@ func getTopCounties(w http.ResponseWriter, r *http.Request) {
 	}
 	defer conn.Release()
 
-	innerQuery := "SELECT DISTINCT c.id, c.county, c.state, a.update, a.confirmed from counties as c " +
-		"LEFT JOIN cases as a ON c.id = a.geoid " +
-		"ORDER BY a.update DESC, confirmed DESC "
+	log.Println("Returning case data")
 
-	limit, ok := r.URL.Query()["limit"]
-	if ok && len(limit) == 1 {
-		innerQuery = fmt.Sprintf("%s LIMIT %s", innerQuery, limit[0])
-	}
+	query := "SELECT c.ID, c.County, c.State, s.Update, s.Confirmed, s.NewConfirmed, s.Dead, s.NewDead FROM counties as c " +
+		"LEFT JOIN cases as s " +
+		"ON s.geoid = c.ID " +
+		"ORDER BY c.ID, s.update DESC, s.Confirmed DESC;"
 
-	query := fmt.Sprintf("SELECT c.ID, c.County, c.State, a.update, a.confirmed, a.newconfirmed, a.dead, a.newdead, ST_AsGeoJSON(t.geom) as geom from counties as c "+
-		"LEFT JOIN cases as a "+
-		"ON c.id = a.geoid "+
-		"LEFT JOIN tiger as t "+
-		"ON c.ID = t.geoid "+
-		"WHERE c.ID in (SELECT Z.ID from (%s) AS Z) "+
-		"ORDER BY c.ID, a.update DESC, confirmed DESC", innerQuery)
-
-	cases, err := queryCountyCases(ctx, conn, query)
+	cases, err := queryCountyCasesb(ctx, conn, query)
 	if err != nil {
 		log.Print(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
+	log.Println("Ready to return")
 	err = json.NewEncoder(w).Encode(cases)
 	if err != nil {
 		log.Print(err)
@@ -162,6 +152,49 @@ func queryCountyCases(ctx context.Context, conn *pgxpool.Conn, sql string, args 
 		var newDead int
 		geo := &json.RawMessage{}
 		err := rows.Scan(&id, &county, &state, &updated, &confirmed, &newConfirmed, &dead, &newDead, geo)
+		if err != nil {
+			return cases, err
+		}
+
+		caseCount := &cmd.CaseCount{
+			Confirmed:    confirmed,
+			NewConfirmed: newConfirmed,
+			Dead:         dead,
+			NewDead:      newDead,
+			Reported:     updated,
+		}
+
+		cases = append(cases, cmd.CountyCases{
+			ID:        id,
+			County:    county,
+			State:     state,
+			CaseCount: caseCount,
+		})
+	}
+
+	return cases, nil
+}
+
+func queryCountyCasesb(ctx context.Context, conn *pgxpool.Conn, sql string, args ...interface{}) ([]cmd.CountyCases, error) {
+	cases := make([]cmd.CountyCases, 0)
+
+	rows, err := conn.Query(ctx, sql, args...)
+	if err != nil {
+		return cases, err
+	}
+
+	log.Println("Case counties are loaded")
+	for rows.Next() {
+		log.Println("Next")
+		var id string
+		var county string
+		var state string
+		var updated time.Time
+		var confirmed int
+		var newConfirmed int
+		var dead int
+		var newDead int
+		err := rows.Scan(&id, &county, &state, &updated, &confirmed, &newConfirmed, &dead, &newDead)
 		if err != nil {
 			return cases, err
 		}
