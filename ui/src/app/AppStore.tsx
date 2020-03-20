@@ -152,10 +152,7 @@ const setCovidData = (state: AppState, { payload }: Action): AppState => {
       }
     });
     console.log(terrirtories)
-    // if () {
 
-    // }
-    console.log(stateData);
     delete payload.states["99"];
 
     return {
