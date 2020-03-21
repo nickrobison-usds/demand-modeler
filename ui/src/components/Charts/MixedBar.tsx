@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip
-} from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 import { CovidDateData } from "../../app/AppStore";
 import { monthDay } from "../../utils/DateUtils";
 
@@ -16,6 +9,7 @@ type Props = {
   timeSeries: CovidDateData;
   stat: "confirmed" | "dead";
   reportView?: boolean;
+  chartWidth?: number;
 };
 
 export const MixedBar = (props: Props) => {
@@ -70,8 +64,8 @@ export const MixedBar = (props: Props) => {
   });
   const dedupedData: any[] = [];
   for (let i = 0; i < data.length; i++) {
-    if (data[i+1]) {
-      if (data[i].Name.split("|")[0] === data[i+1].Name.split("|")[0]) {
+    if (data[i + 1]) {
+      if (data[i].Name.split("|")[0] === data[i + 1].Name.split("|")[0]) {
         continue;
       }
     }
@@ -84,7 +78,7 @@ export const MixedBar = (props: Props) => {
       <h3>Total Number of Confirmed Cases in the US</h3>
       <BarChart
         barSize={50}
-        width={window.innerWidth * 0.9}
+        width={props.chartWidth || window.innerWidth * 0.9}
         height={880}
         data={dedupedData}
         margin={{

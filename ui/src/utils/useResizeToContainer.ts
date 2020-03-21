@@ -19,6 +19,6 @@ export const useResizeToContainer = (
     return () => {
       window.removeEventListener("resize", resize);
     };
-  }, []);
+  }, [containerSelector]);
   return width;
 };

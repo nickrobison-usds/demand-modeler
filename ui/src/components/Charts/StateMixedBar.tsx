@@ -8,7 +8,11 @@ import {
   Tooltip,
   Legend
 } from "recharts";
-import { CovidDateData, GraphMetaData, EXCLUDED_STATES } from "../../app/AppStore";
+import {
+  CovidDateData,
+  GraphMetaData,
+  EXCLUDED_STATES
+} from "../../app/AppStore";
 import { getYMaxFromMaxCases } from "../../utils/utils";
 import { monthDay } from "../../utils/DateUtils";
 
@@ -21,9 +25,17 @@ type Props = {
   reportView?: boolean;
   meta?: GraphMetaData;
   title?: string;
+  chartWidth?: number;
 };
 
-const colors = ["#E5A3A3", "#D05C5C", "#CB2727", "#C00000", "#900000", "#700000"];
+const colors = [
+  "#E5A3A3",
+  "#D05C5C",
+  "#CB2727",
+  "#C00000",
+  "#900000",
+  "#700000"
+];
 
 export const StateMixedBar = (props: Props) => {
   if ((props.stateCount && props.state) || props.county) {
@@ -38,16 +50,17 @@ export const StateMixedBar = (props: Props) => {
   // Top 10 Counties (total or in state)
   if (props.state || !props.stateCount) {
     stateName =
-      Object.keys(props.timeSeries.states).flatMap(k => props.timeSeries.states[k]).find(state => state.ID === props.state)?.State ||
-      "";
+      Object.keys(props.timeSeries.states)
+        .flatMap(k => props.timeSeries.states[k])
+        .find(state => state.ID === props.state)?.State || "";
     if (stateName !== "") {
       title = `${stateName}`;
-
     } else {
       title = `Counties with the highest number of cases`;
-
     }
-    let countyData = Object.keys(props.timeSeries.counties).flatMap(k => props.timeSeries.counties[k]);
+    let countyData = Object.keys(props.timeSeries.counties).flatMap(
+      k => props.timeSeries.counties[k]
+    );
     if (props.state) {
       countyData = countyData.filter(({ State }) => State === stateName);
     }
@@ -73,7 +86,9 @@ export const StateMixedBar = (props: Props) => {
   } else {
     // Top 10 states
     title = "States with the highest number of cases";
-    const stateData = Object.keys(props.timeSeries.states).flatMap(k => props.timeSeries.states[k]);
+    const stateData = Object.keys(props.timeSeries.states).flatMap(
+      k => props.timeSeries.states[k]
+    );
     dates = [
       ...new Set(stateData.map(({ Reported }) => monthDay(Reported)))
     ].sort();
@@ -105,8 +120,10 @@ export const StateMixedBar = (props: Props) => {
         dedupedElement[key] = e[key];
         continue;
       }
-      if (d[i+1]) {
-        if (d[i].toString().split("|")[0] === d[i+1].toString().split("|")[0]) {
+      if (d[i + 1]) {
+        if (
+          d[i].toString().split("|")[0] === d[i + 1].toString().split("|")[0]
+        ) {
           continue;
         }
       }
@@ -129,12 +146,12 @@ export const StateMixedBar = (props: Props) => {
     return bSum - aSum;
   });
 
-  const displayDates: string[] = []
+  const displayDates: string[] = [];
   const displayDateSet = new Set();
   dates.forEach(d => {
     const key = d.split("|")[0];
     if (!displayDateSet.has(key)) {
-      displayDates.push(key)
+      displayDates.push(key);
       displayDateSet.add(key);
     }
   });
@@ -144,7 +161,7 @@ export const StateMixedBar = (props: Props) => {
       <h3>{props.title ? props.title : title}</h3>
       <BarChart
         barSize={10}
-        width={window.innerWidth * 0.9}
+        width={props.chartWidth || window.innerWidth * 0.9}
         height={880}
         data={sortedData.slice(0, 10)}
         margin={{
@@ -162,9 +179,15 @@ export const StateMixedBar = (props: Props) => {
           height={100}
           dataKey="Name"
         />
-        <YAxis domain={maxCases && !EXCLUDED_STATES.includes(stateName as any) ? [0, getYMaxFromMaxCases(maxCases)]: undefined} />
+        <YAxis
+          domain={
+            maxCases && !EXCLUDED_STATES.includes(stateName as any)
+              ? [0, getYMaxFromMaxCases(maxCases)]
+              : undefined
+          }
+        />
         <Tooltip />
-        <div style={{padding: "10px"}}/>
+        <div style={{ padding: "10px" }} />
         <Legend />
         {displayDates.map((date, i) => (
           <Bar key={date} dataKey={date.split("|")[0]} fill={colors[i]} />
