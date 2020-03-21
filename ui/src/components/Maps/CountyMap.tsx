@@ -141,7 +141,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
       features: AddStateData()
     });
     // eslint-disable-next-line
-  }, [covidTimeSeries]);
+  }, [covidTimeSeries, dateType]);
 
   // TODO: change width on window resize
   const width = window.innerWidth * 0.9;
