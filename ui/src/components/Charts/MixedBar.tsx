@@ -19,8 +19,6 @@ type Props = {
 };
 
 export const MixedBar = (props: Props) => {
-  let title = "Grand Total";
-
   let maxCasesByDate: { [d: string]: number } = {};
 
   // const dates = Object.keys(props.timeSeries).sort();
