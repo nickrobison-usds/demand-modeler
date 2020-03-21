@@ -4,8 +4,10 @@ import ReactMapGL, { Layer, Source } from "react-map-gl";
 import countyGeoData from "./geojson-counties-fips.json";
 import stateGeoData from "./state.geo.json";
 import { stateAbbreviation } from "../../utils/stateAbbreviation";
+import UsaSelect from "../Forms/USASelect";
 
 type Display = "state" | "county";
+type DataType = "Total" | "New" | "Increase";
 const SHOW_COUNTY_ON_ZOOM = 4;
 
 const legend = [
@@ -52,6 +54,8 @@ const CountyMap: React.FunctionComponent<Props> = props => {
     stateGeoData as any
   );
   const [display, setDisplay] = useState<Display>("state");
+  const [dateType, setDataType] = useState<DataType>("Total");
+
   const {
     dispatch,
     state,
@@ -67,11 +71,18 @@ const CountyMap: React.FunctionComponent<Props> = props => {
         const ID = parseInt(
           `${f.properties["STATE"]}${f.properties["COUNTY"]}`
         );
+
         if (typeof ID === "number") {
           const c = state.covidTimeSeries.counties[ID];
           if (c) {
             c.sort(compare);
-            Confirmed = c[0].Confirmed;
+            if (dateType === "Total") {
+              Confirmed = c[0].Confirmed;
+            } else if (dateType === "Increase" ) {
+              Confirmed = c[0].NewConfirmed;
+            } else {
+              Confirmed = c[0].NewConfirmed/ c[0].Confirmed % 100 ;
+            }
             Name = `${c[0].County}, ${stateAbbreviation[c[0].State]}`;
           }
         }
@@ -98,7 +109,13 @@ const CountyMap: React.FunctionComponent<Props> = props => {
           const s = state.covidTimeSeries.states[ID];
           if (s) {
             s.sort(compare);
-            Confirmed = s[0].Confirmed;
+            if (dateType === "Total") {
+              Confirmed = s[0].Confirmed;
+            } else if (dateType === "Increase" ) {
+              Confirmed = s[0].NewConfirmed;
+            } else {
+              Confirmed = s[0].NewConfirmed/ s[0].Confirmed % 100 ;
+            }
             Name = s[0].State;
           }
         }
@@ -130,6 +147,18 @@ const CountyMap: React.FunctionComponent<Props> = props => {
   const width = window.innerWidth * 0.9;
   return (
     <div style={{ margin: "0 auto", width: width }}>
+      <UsaSelect
+        options={[
+          {text: "Total", value: "Total"},
+          {text: "New", value: "New"},
+          {text: "Increase", value: "Increase"}
+        ]}
+        placeholder={"Total"}
+        name="selectDataType"
+        selected={dateType}
+        onChange={setDataType}
+        label="Map Data Type: "
+      />
       <ReactMapGL
         {...state.mapView}
         mapboxApiAccessToken={
