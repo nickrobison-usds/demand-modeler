@@ -55,6 +55,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
   );
   const [display, setDisplay] = useState<Display>("state");
   const [dateType, setDataType] = useState<DataType>("Total");
+  const [mapWidth, setMapWidth] = useState<number>(1000);
 
   const {
     dispatch,
@@ -79,7 +80,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
             } else if (dateType === "Increase") {
               Confirmed = c[0].NewConfirmed;
             } else {
-              Confirmed = (c[0].NewConfirmed / c[0].Confirmed) % 100;
+              Confirmed = (c[0].NewConfirmed / c[0].Confirmed) * 100;
             }
             Name = `${c[0].County}, ${stateAbbreviation[c[0].State]}`;
           }
@@ -113,7 +114,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
             } else if (dateType === "Increase") {
               Confirmed = s[0].NewConfirmed;
             } else {
-              Confirmed = (s[0].NewConfirmed / s[0].Confirmed) % 100;
+              Confirmed = (s[0].NewConfirmed / s[0].Confirmed) * 100;
             }
             Name = s[0].State;
           }
@@ -130,6 +131,23 @@ const CountyMap: React.FunctionComponent<Props> = props => {
     });
   };
 
+  // Resize map on window resize
+  useEffect(() => {
+    // TODO: should use react refs for this
+    const resizeMap = () => {
+      const container = document.querySelector("#map-container");
+      if (container) {
+        setMapWidth(container.clientWidth);
+      }
+    };
+    window.addEventListener("resize", resizeMap);
+    // Initial resize
+    resizeMap();
+    return () => {
+      window.removeEventListener("resize", resizeMap);
+    };
+  }, []);
+
   useEffect(() => {
     setCountyData({
       type: "FeatureCollection",
@@ -142,14 +160,12 @@ const CountyMap: React.FunctionComponent<Props> = props => {
     // eslint-disable-next-line
   }, [covidTimeSeries, dateType]);
 
-  // TODO: change width on window resize
-  const width = window.innerWidth * 0.9;
   return (
-    <div style={{ margin: "0 auto", width: width }}>
+    <div id="map-container" style={{ margin: "0 1em" }}>
       <UsaSelect
         options={[
           { text: "Total", value: "Total" },
-          { text: "New", value: "New" },
+          { text: "Percent Increase", value: "New" },
           { text: "Increase", value: "Increase" }
         ]}
         placeholder={"Total"}
@@ -160,12 +176,12 @@ const CountyMap: React.FunctionComponent<Props> = props => {
       />
       <ReactMapGL
         {...state.mapView}
+        width={mapWidth}
         mapboxApiAccessToken={
           "pk.eyJ1IjoidGltYmVzdHVzZHMiLCJhIjoiY2s4MWtuMXpxMHN3dDNsbnF4Y205eWN2MCJ9.kpKyCbPit97l0vIG1gz5wQ"
         }
         mapStyle="mapbox://styles/timbestusds/ck81pfrzj0t1d1ip5owm9rlu8"
         onViewportChange={v => {
-          v.width = window.innerWidth * 0.9;
           setDisplay(v.zoom > SHOW_COUNTY_ON_ZOOM ? "county" : "state");
           dispatch({ type: ActionType.UPDATE_MAPVIEW, payload: v });
         }}
