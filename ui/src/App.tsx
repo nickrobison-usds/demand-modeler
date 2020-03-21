@@ -1,9 +1,9 @@
 import React from "react";
 import "./App.scss";
 import { AppStoreProvider } from "./app/AppStore";
-// import EpiMap from "./components/EpiMap";
+import CountyMap from "./components/Maps/CountyMap";
 import Card from "./components/Card/Card";
-// import USATotals from "./components/USATotals";
+import USATotals from "./components/USATotals";
 import StateSelect from "./components/Forms/StateSelect";
 import CountySelect from "./components/Forms/CountySelect";
 import { ChartContainer } from "./components/Charts/ChartContainer";
@@ -48,16 +48,11 @@ function App() {
               </a>
             </div>
           </Card>
-          <div style={{ display: "flex" }}>
-            <Card>
-              {/* <EpiMap stat="confirmed" /> */}
-              {/* <USATotals stat="confirmed" /> */}
-              <ChartContainer2 stat="confirmed" />
-              <ChartContainer stat="confirmed" stateCount={true} />
-              <ChartContainer stat="confirmed" stateCount={false} />
-            </Card>
-          </div>
-          <div></div>
+          <CountyMap/>
+          <USATotals/>
+          <ChartContainer2 stat="confirmed" />
+          <ChartContainer stat="confirmed" stateCount={true} />
+          <ChartContainer stat="confirmed" stateCount={false} />
         </ApiContainer>
       </AppStoreProvider>
     );

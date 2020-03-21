@@ -7,8 +7,8 @@ import React, {
 } from "react";
 import * as TypeGuards from "../utils/guards";
 import * as DateUtils from "../utils/DateUtils";
-import L from "leaflet";
-import mapboxgl from "mapbox-gl";
+// import L from "leaflet";
+// import mapboxgl from "mapbox-gl";
 
 export interface CovidStats {
   NewConfirmed: number;
@@ -46,14 +46,12 @@ export interface County extends CovidStats {
   ID: string;
   County: string;
   State: string;
-  Geo?: GeoJSON.Polygon; //GeoJSON.MultiPolygon;
   Reported: Date;
 }
 
 export interface State extends CovidStats {
   ID: string;
   State: string;
-  Geo?: GeoJSON.Polygon; //GeoJSON.MultiPolygon;
   CountyIDs?: string[];
   Reported: Date;
 }
@@ -171,26 +169,26 @@ const updateSelectedState = (
   let zoom = DEFAULT_ZOOM;
   if (id !== undefined) {
     // It's fine to pull a single value out of the array because the boundary doesn't change
-    const s = state.covidTimeSeries.states[id][0];
-    if (s && s.Geo) {
-      var polygon = s.Geo.coordinates;
-      var fit = new L.Polygon(polygon as any).getBounds();
-      const southWest = new mapboxgl.LngLat(
-        fit.getSouthWest()["lat"],
-        fit.getSouthWest()["lng"]
-      );
-      const northEast = new mapboxgl.LngLat(
-        fit.getNorthEast()["lat"],
-        fit.getNorthEast()["lng"]
-      );
-      const center = new mapboxgl.LngLatBounds(
-        southWest,
-        northEast
-      ).getCenter();
-      lat = center.lat;
-      lng = center.lng;
-      zoom = 4;
-    }
+    // const s = state.covidTimeSeries.states[id][0];
+    // if (s && s.Geo) {
+    //   var polygon = s.Geo.coordinates;
+    //   var fit = new L.Polygon(polygon as any).getBounds();
+    //   const southWest = new mapboxgl.LngLat(
+    //     fit.getSouthWest()["lat"],
+    //     fit.getSouthWest()["lng"]
+    //   );
+    //   const northEast = new mapboxgl.LngLat(
+    //     fit.getNorthEast()["lat"],
+    //     fit.getNorthEast()["lng"]
+    //   );
+    //   const center = new mapboxgl.LngLatBounds(
+    //     southWest,
+    //     northEast
+    //   ).getCenter();
+    //   lat = center.lat;
+    //   lng = center.lng;
+    //   zoom = 4;
+    // }
   } else {
     selection.county = undefined;
   }
@@ -216,28 +214,28 @@ const updateSelectedCounty = (
   let lat = DEFAULT_LAT;
   let lng = DEFAULT_LNG;
   let zoom = DEFAULT_ZOOM;
-  if (id !== undefined) {
-    const c = state.covidTimeSeries.counties[id][0];
-    if (c && c.Geo) {
-      var polygon = c.Geo.coordinates;
-      var fit = new L.Polygon(polygon as any).getBounds();
-      const southWest = new mapboxgl.LngLat(
-        fit.getSouthWest()["lat"],
-        fit.getSouthWest()["lng"]
-      );
-      const northEast = new mapboxgl.LngLat(
-        fit.getNorthEast()["lat"],
-        fit.getNorthEast()["lng"]
-      );
-      const center = new mapboxgl.LngLatBounds(
-        southWest,
-        northEast
-      ).getCenter();
-      lat = center.lat;
-      lng = center.lng;
-      zoom = 6;
-    }
-  }
+  // if (id !== undefined) {
+  //   const c = state.covidTimeSeries.counties[id][0];
+  //   if (c && c.Geo) {
+  //     var polygon = c.Geo.coordinates;
+  //     var fit = new L.Polygon(polygon as any).getBounds();
+  //     const southWest = new mapboxgl.LngLat(
+  //       fit.getSouthWest()["lat"],
+  //       fit.getSouthWest()["lng"]
+  //     );
+  //     const northEast = new mapboxgl.LngLat(
+  //       fit.getNorthEast()["lat"],
+  //       fit.getNorthEast()["lng"]
+  //     );
+  //     const center = new mapboxgl.LngLatBounds(
+  //       southWest,
+  //       northEast
+  //     ).getCenter();
+  //     lat = center.lat;
+  //     lng = center.lng;
+  //     zoom = 6;
+  //   }
+  // }
   const mapView = Object.assign({}, state.mapView);
   mapView.latitude = lat;
   mapView.longitude = lng;

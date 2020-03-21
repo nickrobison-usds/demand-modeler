@@ -63,8 +63,7 @@ storiesOf("USA Totals", module)
           mapView: { width: 0, height: 0, latitude: 0, longitude: 0, zoom: 0 }
         }}
       >
-        <USATotals stat="dead" />
-        <USATotals stat="confirmed" />
+        <USATotals  />
       </AppStoreProvider>
     );
   })
@@ -77,8 +76,7 @@ storiesOf("USA Totals", module)
           mapView: { width: 0, height: 0, latitude: 0, longitude: 0, zoom: 0 }
         }}
       >
-        <USATotals stat="dead" />
-        <USATotals stat="confirmed" />
+        <USATotals />
       </AppStoreProvider>
     );
   })
@@ -91,8 +89,8 @@ storiesOf("USA Totals", module)
           mapView: { width: 0, height: 0, latitude: 0, longitude: 0, zoom: 0 }
         }}
       >
-        <USATotals stat="dead" />
-        <USATotals stat="confirmed" />
+        <USATotals />
+
       </AppStoreProvider>
     );
   });

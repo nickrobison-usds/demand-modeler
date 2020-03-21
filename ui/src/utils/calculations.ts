@@ -1,12 +1,14 @@
 import { AppState, County, State } from "../app/AppStore";
 
-type GrandTotal = {
-  [d: string]: {
-    Confirmed: number;
-    NewConfirmed: number;
-    Dead: number;
-    NewDead: number;
-  };
+export interface Stats {
+  Confirmed: number;
+  NewConfirmed: number;
+  Dead: number;
+  NewDead: number;
+}
+
+export type GrandTotal = {
+  [d: string]: Stats;
 };
 
 const getSelectedStateName = (state: AppState) => {
@@ -21,6 +23,7 @@ export const getTopCounties = (
   stat: "confirmed" | "dead",
   numberOfCounties = 10
 ): County[][] => {
+  // TODO: pass state in as a Parameter
   const stateName = getSelectedStateName(appState);
   let counties = Object.values(appState.covidTimeSeries.counties).reduce(
     (acc, el) => [...acc, ...el],

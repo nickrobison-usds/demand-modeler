@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AppContext, ActionType, CovidDateData } from "../app/AppStore";
-import {getTopCountyCases, getTopStateCases} from "../api";
+import {getCountyCases, getStateCases} from "../api";
 
 const NUMBER_OF_DAYS = 5;
 
@@ -10,12 +10,12 @@ const loadData = async () => {
 
   const loadStateData = async () => {
     const date = new Date(start);
-    const chunkedStateData = await getTopStateCases(date);
+    const chunkedStateData = await getStateCases(date);
     return chunkedStateData;
   };
   const loadCountyData = async () => {
     const date = new Date(start);
-    const chunkedCountyData = await getTopCountyCases(date);
+    const chunkedCountyData = await getCountyCases(date);
     return chunkedCountyData;
   };
   return await Promise.all([await loadStateData(), await loadCountyData()]);
