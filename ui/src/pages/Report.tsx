@@ -1,11 +1,11 @@
 import React from "react";
-import { AppContext, State } from "../../app/AppStore";
-import { StateMixedBar } from "./StateMixedBar";
-import { Top10Counties } from "./Top10Counties";
-import { StateBar } from "./StateBar";
-import { MixedBar } from "./MixedBar";
+import { AppContext, State } from "../app/AppStore";
+import { StateMixedBar } from "../components/Charts/StateMixedBar";
+import { Top10Counties } from "../components/Charts/Top10Counties";
+import { StateBar } from "../components/Charts/StateBar";
+import { MixedBar } from "../components/Charts/MixedBar";
 import "./Report.scss";
-import { dateTimeString } from "../../utils/DateUtils";
+import { dateTimeString } from "../utils/DateUtils";
 
 export const Report: React.FC<{}> = () => {
   const pagebreak = (lastUpdated: Date | undefined) => {
