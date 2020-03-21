@@ -3,6 +3,7 @@ import "./App.scss";
 import { AppStoreProvider } from "./app/AppStore";
 import { Report } from "./pages/Report";
 import { ApiContainer } from "./components/ApiContainer";
+import { Dashboard } from "./pages/Dashboard";
 
 function App() {
   const url = new URL(window.location.href);
@@ -19,7 +20,7 @@ function App() {
     return (
       <AppStoreProvider>
         <ApiContainer>
-
+          <Dashboard />
         </ApiContainer>
       </AppStoreProvider>
     );
