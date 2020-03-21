@@ -5,8 +5,19 @@ import countyGeoData from "./geojson-counties-fips.json";
 import stateGeoData from "./state.geo.json";
 import { stateAbbreviation } from "../../utils/stateAbbreviation";
 
-type Display = "state" | "county"
+type Display = "state" | "county";
 const SHOW_COUNTY_ON_ZOOM = 4;
+
+const legend = [
+  [0, "#FEEFB3"],
+  [1, "#F3CB7C"],
+  [6, "#ECAC53"],
+  [11, "#E58445"],
+  [51, "#E16742"],
+  [101, "#BC2D49"],
+  [201, "#8C114A"],
+  [501, "#650F56"]
+];
 
 const dataLayer = {
   id: "data",
@@ -14,37 +25,32 @@ const dataLayer = {
   paint: {
     "fill-color": {
       property: "confirmed",
-      stops: [
-        [0, "#FEEFB3"],
-        [1, "#F3CB7C"],
-        [6, "#ECAC53"],
-        [11, "#E58445"],
-        [51, "#E16742"],
-        [101, "#BC2D49"],
-        [201, "#8C114A"],
-        [501, "#650F56"],
-      ]
+      stops: legend
     },
     "fill-opacity": 0.8,
     "fill-outline-color": "white"
   }
 };
 
-const compare = ( a: County | State, b: County | State ) => {
-  if ( a.Reported > b.Reported ){
+const compare = (a: County | State, b: County | State) => {
+  if (a.Reported > b.Reported) {
     return -1;
   }
-  if ( a.Reported < b.Reported ){
+  if (a.Reported < b.Reported) {
     return 1;
   }
   return 0;
-}
+};
 
 interface Props {}
 
 const CountyMap: React.FunctionComponent<Props> = props => {
-  const [countyData, setCountyData] = useState<GeoJSON.FeatureCollection>(countyGeoData as any);
-  const [stateData, setStateData] = useState<GeoJSON.FeatureCollection>(stateGeoData as any);
+  const [countyData, setCountyData] = useState<GeoJSON.FeatureCollection>(
+    countyGeoData as any
+  );
+  const [stateData, setStateData] = useState<GeoJSON.FeatureCollection>(
+    stateGeoData as any
+  );
   const [display, setDisplay] = useState<Display>("state");
   const {
     dispatch,
@@ -56,18 +62,19 @@ const CountyMap: React.FunctionComponent<Props> = props => {
     return countyData.features.map(f => {
       let Confirmed = 0;
       let Name = "";
-      if(f.properties) {
+      if (f.properties) {
         Name = f.properties["NAME"];
-        const ID = parseInt(`${f.properties["STATE"]}${f.properties["COUNTY"]}`);
+        const ID = parseInt(
+          `${f.properties["STATE"]}${f.properties["COUNTY"]}`
+        );
         if (typeof ID === "number") {
           const c = state.covidTimeSeries.counties[ID];
           if (c) {
             c.sort(compare);
             Confirmed = c[0].Confirmed;
-            Name = `${c[0].County}, ${stateAbbreviation[c[0].State]}`
+            Name = `${c[0].County}, ${stateAbbreviation[c[0].State]}`;
           }
         }
-
       }
       return {
         ...f,
@@ -84,7 +91,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
     return stateData.features.map(f => {
       let Confirmed = 0;
       let Name = "";
-      if(f.properties) {
+      if (f.properties) {
         Name = f.properties["NAME10"];
         const ID = parseInt(`${f.properties["STATEFP10"]}`);
         if (typeof ID === "number") {
@@ -95,7 +102,6 @@ const CountyMap: React.FunctionComponent<Props> = props => {
             Name = s[0].State;
           }
         }
-
       }
       return {
         ...f,
@@ -116,17 +122,19 @@ const CountyMap: React.FunctionComponent<Props> = props => {
     setStateData({
       type: "FeatureCollection",
       features: AddStateData()
-    })
-  // eslint-disable-next-line
+    });
+    // eslint-disable-next-line
   }, [covidTimeSeries]);
 
   // TODO: change width on window resize
   const width = window.innerWidth * 0.9;
   return (
-    <div style={{margin: "0 auto", width: width}}>
+    <div style={{ margin: "0 auto", width: width }}>
       <ReactMapGL
         {...state.mapView}
-        mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
+        mapboxApiAccessToken={
+          "pk.eyJ1IjoidGltYmVzdHVzZHMiLCJhIjoiY2s4MWtuMXpxMHN3dDNsbnF4Y205eWN2MCJ9.kpKyCbPit97l0vIG1gz5wQ"
+        }
         onViewportChange={v => {
           v.width = window.innerWidth * 0.9;
           setDisplay(v.zoom > SHOW_COUNTY_ON_ZOOM ? "county" : "state");
@@ -147,13 +155,37 @@ const CountyMap: React.FunctionComponent<Props> = props => {
           }
         }}
       >
-        {state.mapView.zoom > 0 ?
-          <Source id="data" type="geojson" data={display === "state"? stateData : countyData}>
+        {state.mapView.zoom > 0 ? (
+          <Source
+            id="data"
+            type="geojson"
+            data={display === "state" ? stateData : countyData}
+          >
             <Layer {...dataLayer} />
-          </Source> : null
-        }
-
+          </Source>
+        ) : null}
       </ReactMapGL>
+      <div>
+        <p>Legend</p>
+        {legend.map(k => (
+          <span
+            style={{
+              marginRight: "5px"
+            }}
+          >
+            <span
+              style={{
+                display: "inline-block",
+                width: "10px",
+                height: "10px",
+                backgroundColor: String(k[1]) as string,
+                marginRight: "5px"
+              }}
+            ></span>
+            {k[0]}+
+          </span>
+        ))}
+      </div>
     </div>
   );
 };
