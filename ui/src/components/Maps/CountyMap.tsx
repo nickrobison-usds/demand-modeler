@@ -5,6 +5,7 @@ import countyGeoData from "./geojson-counties-fips.json";
 import stateGeoData from "./state.geo.json";
 import { stateAbbreviation } from "../../utils/stateAbbreviation";
 import UsaSelect from "../Forms/USASelect";
+import { useResizeToContainer } from "../../utils/useResizeToContainer";
 
 type Display = "state" | "county";
 type DataType = "Total" | "New" | "Increase";
@@ -55,7 +56,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
   );
   const [display, setDisplay] = useState<Display>("state");
   const [dateType, setDataType] = useState<DataType>("Total");
-  const [mapWidth, setMapWidth] = useState<number>(1000);
+  const mapWidth = useResizeToContainer("#map-container");
 
   const {
     dispatch,
@@ -130,23 +131,6 @@ const CountyMap: React.FunctionComponent<Props> = props => {
       };
     });
   };
-
-  // Resize map on window resize
-  useEffect(() => {
-    // TODO: should use react refs for this
-    const resizeMap = () => {
-      const container = document.querySelector("#map-container");
-      if (container) {
-        setMapWidth(container.clientWidth);
-      }
-    };
-    window.addEventListener("resize", resizeMap);
-    // Initial resize
-    resizeMap();
-    return () => {
-      window.removeEventListener("resize", resizeMap);
-    };
-  }, []);
 
   useEffect(() => {
     setCountyData({
