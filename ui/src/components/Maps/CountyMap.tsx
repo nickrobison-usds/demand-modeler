@@ -68,20 +68,18 @@ const CountyMap: React.FunctionComponent<Props> = props => {
       let Name = "";
       if (f.properties) {
         Name = f.properties["NAME"];
-        const ID = parseInt(
-          `${f.properties["STATE"]}${f.properties["COUNTY"]}`
-        );
-
-        if (typeof ID === "number") {
+        const ID = `${f.properties["STATE"]}${f.properties["COUNTY"]}`;
+        const parsedID = parseInt(`${ID}`);
+        if (typeof parsedID === "number") {
           const c = state.covidTimeSeries.counties[ID];
           if (c) {
             c.sort(compare);
             if (dateType === "Total") {
               Confirmed = c[0].Confirmed;
-            } else if (dateType === "Increase" ) {
+            } else if (dateType === "Increase") {
               Confirmed = c[0].NewConfirmed;
             } else {
-              Confirmed = c[0].NewConfirmed/ c[0].Confirmed % 100 ;
+              Confirmed = (c[0].NewConfirmed / c[0].Confirmed) % 100;
             }
             Name = `${c[0].County}, ${stateAbbreviation[c[0].State]}`;
           }
@@ -104,17 +102,18 @@ const CountyMap: React.FunctionComponent<Props> = props => {
       let Name = "";
       if (f.properties) {
         Name = f.properties["NAME10"];
-        const ID = parseInt(`${f.properties["STATEFP10"]}`);
-        if (typeof ID === "number") {
+        const ID = f.properties["STATEFP10"];
+        const parsedID = parseInt(`${ID}`);
+        if (typeof parsedID === "number") {
           const s = state.covidTimeSeries.states[ID];
           if (s) {
             s.sort(compare);
             if (dateType === "Total") {
               Confirmed = s[0].Confirmed;
-            } else if (dateType === "Increase" ) {
+            } else if (dateType === "Increase") {
               Confirmed = s[0].NewConfirmed;
             } else {
-              Confirmed = s[0].NewConfirmed/ s[0].Confirmed % 100 ;
+              Confirmed = (s[0].NewConfirmed / s[0].Confirmed) % 100;
             }
             Name = s[0].State;
           }
@@ -149,9 +148,9 @@ const CountyMap: React.FunctionComponent<Props> = props => {
     <div style={{ margin: "0 auto", width: width }}>
       <UsaSelect
         options={[
-          {text: "Total", value: "Total"},
-          {text: "New", value: "New"},
-          {text: "Increase", value: "Increase"}
+          { text: "Total", value: "Total" },
+          { text: "New", value: "New" },
+          { text: "Increase", value: "Increase" }
         ]}
         placeholder={"Total"}
         name="selectDataType"
@@ -198,6 +197,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
         <p>Legend</p>
         {legend.map(k => (
           <span
+            key={k[0]}
             style={{
               marginRight: "5px"
             }}
