@@ -164,6 +164,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
         mapboxApiAccessToken={
           "pk.eyJ1IjoidGltYmVzdHVzZHMiLCJhIjoiY2s4MWtuMXpxMHN3dDNsbnF4Y205eWN2MCJ9.kpKyCbPit97l0vIG1gz5wQ"
         }
+        mapStyle="mapbox://styles/timbestusds/ck81pfrzj0t1d1ip5owm9rlu8"
         onViewportChange={v => {
           v.width = window.innerWidth * 0.9;
           setDisplay(v.zoom > SHOW_COUNTY_ON_ZOOM ? "county" : "state");
