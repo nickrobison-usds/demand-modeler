@@ -44,9 +44,9 @@ export const Report: React.FC<{}> = () => {
             }
           });
 
-        const states = Object.keys(state.covidTimeSeries.states)
-          .flatMap(k => state.covidTimeSeries.states[k]);
-          // .filter(({ Reported }) => formatDate(Reported) === state.selection.date);
+        const states = Object.keys(state.covidTimeSeries.states).flatMap(
+          k => state.covidTimeSeries.states[k]
+        );
         const stateIDs = new Set();
         const dedupedStates: State[] = [];
         states.forEach(s => {

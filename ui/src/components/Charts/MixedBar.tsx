@@ -3,14 +3,14 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 import { CovidDateData } from "../../app/AppStore";
 import { monthDay } from "../../utils/DateUtils";
 
-type Props = {
+interface Props {
   state?: string;
   county?: string;
   timeSeries: CovidDateData;
   stat: "confirmed" | "dead";
   reportView?: boolean;
   chartWidth?: number;
-};
+}
 
 export const MixedBar = (props: Props) => {
   let maxCasesByDate: { [d: string]: number } = {};

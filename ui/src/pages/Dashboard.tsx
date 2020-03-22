@@ -8,6 +8,7 @@ import CountySelect from "../components/Forms/CountySelect";
 import { MixedBar } from "../components/Charts/MixedBar";
 import { StateMixedBar } from "../components/Charts/StateMixedBar";
 import { useResizeToContainer } from "../utils/useResizeToContainer";
+import { CountyTrendGraph } from "../components/Charts/CountyTrendGraph";
 
 export const Dashboard: React.FC<{}> = () => {
   const chartWidth = useResizeToContainer("#charts");
@@ -65,6 +66,10 @@ export const Dashboard: React.FC<{}> = () => {
                 stat="confirmed"
                 stateCount={false}
                 meta={state.graphMetaData}
+                chartWidth={chartWidth}
+              />
+              <CountyTrendGraph
+                timeSeries={state.covidTimeSeries}
                 chartWidth={chartWidth}
               />
             </div>
