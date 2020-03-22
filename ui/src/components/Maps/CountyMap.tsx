@@ -11,13 +11,17 @@ import ReactMapGL, {
   Source,
   ViewportProps,
   PointerEvent,
-  Popup
+  Popup,
+  WebMercatorViewport,
+  FlyToInterpolator
 } from "react-map-gl";
 import countyGeoData from "./geojson-counties-fips.json";
 import stateGeoData from "./state.geo.json";
 import { stateAbbreviation } from "../../utils/stateAbbreviation";
 import UsaSelect from "../Forms/USASelect";
 import { useResizeToContainer } from "../../utils/useResizeToContainer";
+import bbox from "@turf/bbox";
+import { easeCubic } from "d3";
 import "./CountyMap.css";
 
 type Display = "state" | "county";
@@ -70,7 +74,6 @@ const CountyMap: React.FunctionComponent<Props> = props => {
   const [stateData, setStateData] = useState<GeoJSON.FeatureCollection>(
     stateGeoData as any
   );
-  const [display, setDisplay] = useState<Display>("state");
   const [dateType, setDataType] = useState<DataType>("Total");
   const [viewport, setViewport] = useState(
     initialState.mapView as ViewportProps
@@ -187,7 +190,6 @@ const CountyMap: React.FunctionComponent<Props> = props => {
   const renderPopup = () => {
     if (hoverInfo) {
       let name = hoverInfo.feature.NAME;
-      console.log(hoverInfo.feature);
       if (hoverInfo.feature.COUNTY) {
         const stateName =
           state.covidTimeSeries.states[hoverInfo.feature.STATE][0].State;
@@ -219,6 +221,49 @@ const CountyMap: React.FunctionComponent<Props> = props => {
     return null;
   };
 
+  // Zoom to state on selection
+  useEffect(() => {
+    const selectedGeo = stateData.features.find(feature => {
+      return feature.properties?.STATE === state.selection.state;
+    });
+
+    setViewport(viewport => {
+      let newView = {
+        ...viewport,
+        ...initialState.mapView,
+        transitionInterpolator: new FlyToInterpolator(),
+        transitionDuration: 1000,
+        transitionEasing: easeCubic
+      };
+      if (selectedGeo) {
+        const [minLng, minLat, maxLng, maxLat] = bbox(selectedGeo);
+        const view = new WebMercatorViewport(viewport);
+        const { latitude, longitude, zoom } = view.fitBounds(
+          [
+            [minLng, minLat],
+            [maxLng, maxLat]
+          ],
+          {
+            padding: 20
+          }
+        );
+        newView.latitude = latitude;
+        newView.longitude = longitude;
+        newView.zoom = zoom;
+      }
+      return newView;
+    });
+  }, [state.selection.state, stateData.features]);
+
+  let filteredCountyData = { ...countyData };
+  if (state.selection.state) {
+    filteredCountyData.features = filteredCountyData.features.filter(
+      feature => {
+        return feature?.properties?.STATE === state.selection.state;
+      }
+    );
+  }
+
   return (
     <div id="map-container" style={{ margin: "0 1em" }}>
       <UsaSelect
@@ -235,37 +280,53 @@ const CountyMap: React.FunctionComponent<Props> = props => {
       />
       <ReactMapGL
         {...viewport}
+        minZoom={2}
         width={mapWidth}
         mapboxApiAccessToken={
           "pk.eyJ1IjoidGltYmVzdHVzZHMiLCJhIjoiY2s4MWtuMXpxMHN3dDNsbnF4Y205eWN2MCJ9.kpKyCbPit97l0vIG1gz5wQ"
         }
         mapStyle="mapbox://styles/timbestusds/ck81pfrzj0t1d1ip5owm9rlu8"
         onViewportChange={v => {
-          if (v.zoom > SHOW_COUNTY_ON_ZOOM && display === "state") {
-            setDisplay("county");
+          setViewport({ ...v, pitch: 0, bearing: 0 });
+        }}
+        onWheel={() => {
+          if (viewport.zoom < SHOW_COUNTY_ON_ZOOM && state.selection.state) {
+            dispatch({
+              type: ActionType.UPDATE_SELECTED_STATE,
+              payload: undefined
+            });
           }
-          if (v.zoom < SHOW_COUNTY_ON_ZOOM && display === "county") {
-            setDisplay("state");
-          }
-          setViewport(v);
         }}
         onHover={onHover}
         getCursor={({ isDragging }) => {
           if (isDragging) return "grabbing";
           return hoverInfo ? "pointer" : "grab";
         }}
-        onClick={e => {
-          const { features } = e;
-          const clickedState = (features || []).find(
-            feature => feature.properties?.id
-          );
-          if (clickedState) {
-            dispatch({
-              type: state.selection.state
-                ? ActionType.UPDATE_SELECTED_COUNTY
-                : ActionType.UPDATE_SELECTED_STATE,
-              payload: clickedState.properties.id
-            });
+        onClick={event => {
+          const feature = event.features && event.features[0];
+          if (feature) {
+            const state = feature.properties.STATE;
+            const county = feature.properties.COUNTY;
+            if (!state) {
+              // Reset selections
+              dispatch({
+                type: ActionType.UPDATE_SELECTED_STATE,
+                payload: undefined
+              });
+              dispatch({
+                type: ActionType.UPDATE_SELECTED_COUNTY,
+                payload: undefined
+              });
+            } else {
+              dispatch({
+                type: ActionType.UPDATE_SELECTED_STATE,
+                payload: state
+              });
+              dispatch({
+                type: ActionType.UPDATE_SELECTED_COUNTY,
+                payload: county ? state + county : undefined
+              });
+            }
           }
         }}
       >
@@ -274,7 +335,11 @@ const CountyMap: React.FunctionComponent<Props> = props => {
             <Source
               id="data"
               type="geojson"
-              data={display === "state" ? stateData : countyData}
+              data={
+                viewport.zoom < SHOW_COUNTY_ON_ZOOM
+                  ? stateData
+                  : filteredCountyData
+              }
             >
               <Layer {...dataLayer} />
             </Source>
