@@ -118,7 +118,7 @@ export const CountyTrendGraph = (props: Props) => {
             dot={false}
           />
         ))}
-        <Legend align="left" />
+        {/* <Legend align="left" /> */}
       </LineChart>
     </>
   );

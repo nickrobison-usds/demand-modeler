@@ -18,14 +18,13 @@ import ReactMapGL, {
 import countyGeoData from "./geojson-counties-fips.json";
 import stateGeoData from "./state.geo.json";
 import { stateAbbreviation } from "../../utils/stateAbbreviation";
-import UsaSelect from "../Forms/USASelect";
 import { useResizeToContainer } from "../../utils/useResizeToContainer";
 import bbox from "@turf/bbox";
 import { easeCubic } from "d3";
 import "./CountyMap.css";
 
 type DataType = "Total" | "New" | "Increase";
-const SHOW_COUNTY_ON_ZOOM = 4;
+const SHOW_COUNTY_ON_ZOOM = 2;
 const FILL_STATE_COUNTIES = 6;
 
 const ALASKA_COORDS = [
@@ -294,8 +293,8 @@ const CountyMap: React.FunctionComponent<Props> = props => {
   }
 
   return (
-    <div id="map-container" style={{ margin: "0 1em" }}>
-      <UsaSelect
+    <div id="map-container" style={{ margin: "2em 1em 0 1em" }}>
+      {/* <UsaSelect
         options={[
           { text: "Total", value: "Total" },
           { text: "Percent Increase", value: "New" },
@@ -306,7 +305,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
         selected={dateType}
         onChange={setDataType}
         label="Map Data Type: "
-      />
+      /> */}
       <ReactMapGL
         {...viewport}
         minZoom={2}

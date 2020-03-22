@@ -4,8 +4,10 @@ import { StateMixedBar } from "../components/Charts/StateMixedBar";
 import { Top10Counties } from "../components/Charts/Top10Counties";
 import { StateBar } from "../components/Charts/StateBar";
 import { MixedBar } from "../components/Charts/MixedBar";
+import CountyMap from "../components/Maps/CountyMap";
 import "./Report.scss";
 import { dateTimeString } from "../utils/DateUtils";
+import { CountyTrendGraph } from "../components/Charts/CountyTrendGraph";
 
 export const Report: React.FC<{}> = () => {
   const pagebreak = (lastUpdated: Date | undefined) => {
@@ -61,6 +63,8 @@ export const Report: React.FC<{}> = () => {
           .slice(0, 10);
         return (
           <div className="report grid-container" style={{ marginLeft: 0 }}>
+            <CountyMap />
+            {lastUpdated && pagebreak(lastUpdated)}
             {top10States.map(s => (
               <>
                 <StateBar
@@ -98,6 +102,11 @@ export const Report: React.FC<{}> = () => {
               stat="confirmed"
               reportView
             />
+            <CountyTrendGraph
+              timeSeries={state.covidTimeSeries}
+            />
+            {lastUpdated && pagebreak(lastUpdated)}
+
           </div>
         );
       }}
