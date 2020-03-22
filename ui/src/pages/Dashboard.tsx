@@ -9,7 +9,6 @@ import { MixedBar } from "../components/Charts/MixedBar";
 import { StateMixedBar } from "../components/Charts/StateMixedBar";
 import { useResizeToContainer } from "../utils/useResizeToContainer";
 import { CountyTrendGraph } from "../components/Charts/CountyTrendGraph";
-import { PieChartBreakdown } from "../components/Charts/PieChartBreakdown";
 
 export const Dashboard: React.FC<{}> = () => {
   const chartWidth = useResizeToContainer("#charts");
@@ -52,7 +51,7 @@ export const Dashboard: React.FC<{}> = () => {
                 width: "100%"
               }}
             >
-              <div style={{ width: "40%" }}>
+              <div style={{ width: "35%" }}>
                 <Card>
                   <CountyMap />
                   <div style={{ width: "100%" }}>
@@ -62,7 +61,7 @@ export const Dashboard: React.FC<{}> = () => {
               </div>
               <div
                 style={{
-                  width: "60%",
+                  width: "65%",
                   display: "flex",
                   flexDirection: "column",
                   flexFlow: "row wrap"
@@ -107,17 +106,6 @@ export const Dashboard: React.FC<{}> = () => {
                 </div>
               </div>
               <div style={{ margin: "0 1em" }} id="charts">
-                {/* <div>
-                  <Card>
-                    <PieChartBreakdown
-                      state={state.selection.state}
-                      county={state.selection.county}
-                      timeSeries={state.covidTimeSeries}
-                      stat="confirmed"
-                    />
-                  </Card>
-                </div> */}
-
                 <CountyTrendGraph
                   timeSeries={state.covidTimeSeries}
                   chartWidth={chartWidth}

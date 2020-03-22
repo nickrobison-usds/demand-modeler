@@ -79,7 +79,7 @@ export interface AppState {
 }
 const DEFAULT_LAT = 40.8136;
 const DEFAULT_LNG = -99.0762;
-const DEFAULT_ZOOM = 3;
+const DEFAULT_ZOOM = 2;
 export const initialState: AppState = {
   selection: {
     date: DateUtils.formatDate(new Date())
