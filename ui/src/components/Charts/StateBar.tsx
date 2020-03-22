@@ -123,7 +123,7 @@ export const StateBar = (props: Props) => {
       <h3>{props.title ? props.title : title}</h3>
       <BarChart
         barSize={10}
-        width={props.chartWidth || window.innerWidth * 0.9}
+        width={props.reportView ? window.innerWidth * 0.9 : undefined}
         height={880}
         data={dedupedData.slice(0, 10)}
         margin={{

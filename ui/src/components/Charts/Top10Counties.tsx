@@ -8,10 +8,15 @@ import {
   Tooltip,
   Legend
 } from "recharts";
-import { CovidDateData, GraphMetaData, EXCLUDED_STATES } from "../../app/AppStore";
+import {
+  CovidDateData,
+  GraphMetaData,
+  EXCLUDED_STATES
+} from "../../app/AppStore";
 import { getYMaxFromMaxCases } from "../../utils/utils";
 import { stateAbbreviation } from "../../utils/stateAbbreviation";
 import { monthDay } from "../../utils/DateUtils";
+import { RenderChart } from "./RenderChart";
 
 type Props = {
   timeSeries: CovidDateData;
@@ -21,7 +26,14 @@ type Props = {
   title?: string;
 };
 
-const colors = ["#E5A3A3", "#D05C5C", "#CB2727", "#C00000", "#900000", "#700000"];
+const colors = [
+  "#E5A3A3",
+  "#D05C5C",
+  "#CB2727",
+  "#C00000",
+  "#900000",
+  "#700000"
+];
 
 export const Top10Counties = (props: Props) => {
   let title: string;
@@ -33,7 +45,9 @@ export const Top10Counties = (props: Props) => {
   // Top 10 Counties (total or in state)
   title = `Counties with the highest number of cases`;
 
-  let countyData = Object.keys(props.timeSeries.counties).flatMap(k => props.timeSeries.counties[k]);
+  let countyData = Object.keys(props.timeSeries.counties).flatMap(
+    k => props.timeSeries.counties[k]
+  );
   if (props.meta) {
     maxCases = props.meta.maxConfirmedCounty;
   }
@@ -47,18 +61,21 @@ export const Top10Counties = (props: Props) => {
       props.stat === "confirmed" ? el.Confirmed : el.Dead;
     return acc;
   }, {} as { [c: string]: { [d: string]: number } });
-  data = Object.entries(counties).reduce((acc, [Name, data]) => {
-    acc.push({
-      Name,
-      ...data
-    });
-    return acc;
-  }, [] as { [k: string]: string | number }[]).sort(
-    (a, b) => {
+  data = Object.entries(counties)
+    .reduce((acc, [Name, data]) => {
+      acc.push({
+        Name,
+        ...data
+      });
+      return acc;
+    }, [] as { [k: string]: string | number }[])
+    .sort((a, b) => {
       const lastIndex = dates.length - 1;
-      return (b[dates[lastIndex]] as number || 0) - (a[dates[lastIndex]] as number || 0)
-    }
-  );
+      return (
+        ((b[dates[lastIndex]] as number) || 0) -
+        ((a[dates[lastIndex]] as number) || 0)
+      );
+    });
 
   const dedupedData: any[] = [];
   data.forEach(e => {
@@ -70,8 +87,10 @@ export const Top10Counties = (props: Props) => {
         dedupedElement[key] = e[key];
         continue;
       }
-      if (d[i+1]) {
-        if (d[i].toString().split("|")[0] === d[i+1].toString().split("|")[0]) {
+      if (d[i + 1]) {
+        if (
+          d[i].toString().split("|")[0] === d[i + 1].toString().split("|")[0]
+        ) {
           continue;
         }
       }
@@ -94,12 +113,12 @@ export const Top10Counties = (props: Props) => {
   //   return bSum - aSum;
   // });
 
-  const displayDates: string[] = []
+  const displayDates: string[] = [];
   const displayDateSet = new Set();
   dates.forEach(d => {
     const key = d.split("|")[0];
     if (!displayDateSet.has(key)) {
-      displayDates.push(key)
+      displayDates.push(key);
       displayDateSet.add(key);
     }
   });
@@ -107,34 +126,42 @@ export const Top10Counties = (props: Props) => {
   return (
     <>
       <h3>{props.title ? props.title : title}</h3>
-      <BarChart
-        barSize={10}
-        width={window.innerWidth * 0.9}
-        height={880}
-        data={dedupedData.slice(0, 10)}
-        margin={{
-          top: 0,
-          right: 0,
-          left: 0,
-          bottom: 0
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis
-          angle={-45}
-          interval={0}
-          textAnchor="end"
-          height={100}
-          dataKey="Name"
-        />
-        <YAxis domain={maxCases && !EXCLUDED_STATES.includes(stateName as any) ? [0, getYMaxFromMaxCases(maxCases)]: undefined} />
-        <Tooltip />
-        <div style={{padding: "10px"}}/>
-        <Legend />
-        {displayDates.map((date, i) => (
-          <Bar key={date} dataKey={date.split("|")[0]} fill={colors[i]} />
-        ))}
-      </BarChart>
+      <RenderChart reportView={props.reportView}>
+        <BarChart
+          barSize={10}
+          width={window.innerWidth * 0.9}
+          height={880}
+          data={dedupedData.slice(0, 10)}
+          margin={{
+            top: 0,
+            right: 0,
+            left: 0,
+            bottom: 0
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis
+            angle={-45}
+            interval={0}
+            textAnchor="end"
+            height={100}
+            dataKey="Name"
+          />
+          <YAxis
+            domain={
+              maxCases && !EXCLUDED_STATES.includes(stateName as any)
+                ? [0, getYMaxFromMaxCases(maxCases)]
+                : undefined
+            }
+          />
+          <Tooltip />
+          <div style={{ padding: "10px" }} />
+          <Legend />
+          {displayDates.map((date, i) => (
+            <Bar key={date} dataKey={date.split("|")[0]} fill={colors[i]} />
+          ))}
+        </BarChart>
+      </RenderChart>
     </>
   );
 };

@@ -295,7 +295,17 @@ const CountyMap: React.FunctionComponent<Props> = props => {
     );
   }
 
-  const mapHeight = props.reportView ? { height: 800 } : {};
+  // Special zoom for report
+  useEffect(() => {
+    if (props.reportView) {
+      setViewport(viewport => ({
+        ...viewport,
+        zoom: 3.5
+      }));
+    }
+  }, [props.reportView]);
+
+  const mapHeight = { height: props.reportView ? 800 : 350 };
 
   return (
     <div id="map-container" style={{ margin: "2em 1em 0 1em" }}>
