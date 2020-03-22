@@ -1,6 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
-import { ActionType, AppContext, County, State } from "../../app/AppStore";
-import ReactMapGL, { Layer, Source } from "react-map-gl";
+import {
+  ActionType,
+  AppContext,
+  County,
+  State,
+  initialState
+} from "../../app/AppStore";
+import ReactMapGL, { Layer, Source, ViewportProps } from "react-map-gl";
 import countyGeoData from "./geojson-counties-fips.json";
 import stateGeoData from "./state.geo.json";
 import { stateAbbreviation } from "../../utils/stateAbbreviation";
@@ -56,6 +62,10 @@ const CountyMap: React.FunctionComponent<Props> = props => {
   );
   const [display, setDisplay] = useState<Display>("state");
   const [dateType, setDataType] = useState<DataType>("Total");
+  const [viewport, setViewport] = useState(
+    initialState.mapView as ViewportProps
+  );
+
   const mapWidth = useResizeToContainer("#map-container");
 
   const {
@@ -159,15 +169,20 @@ const CountyMap: React.FunctionComponent<Props> = props => {
         label="Map Data Type: "
       />
       <ReactMapGL
-        {...state.mapView}
+        {...viewport}
         width={mapWidth}
         mapboxApiAccessToken={
           "pk.eyJ1IjoidGltYmVzdHVzZHMiLCJhIjoiY2s4MWtuMXpxMHN3dDNsbnF4Y205eWN2MCJ9.kpKyCbPit97l0vIG1gz5wQ"
         }
         mapStyle="mapbox://styles/timbestusds/ck81pfrzj0t1d1ip5owm9rlu8"
         onViewportChange={v => {
-          setDisplay(v.zoom > SHOW_COUNTY_ON_ZOOM ? "county" : "state");
-          dispatch({ type: ActionType.UPDATE_MAPVIEW, payload: v });
+          if (v.zoom > SHOW_COUNTY_ON_ZOOM && display === "state") {
+            setDisplay("county");
+          }
+          if (v.zoom < SHOW_COUNTY_ON_ZOOM && display === "county") {
+            setDisplay("state");
+          }
+          setViewport(v);
         }}
         onClick={e => {
           const { features } = e;
