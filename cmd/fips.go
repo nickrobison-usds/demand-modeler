@@ -58,3 +58,5 @@ var StateFips = map[string]int{
 	"PUERTO RICO":          72,
 	"US VIRGIN ISLANDS":    78,
 }
+
+
