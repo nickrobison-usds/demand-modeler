@@ -26,11 +26,16 @@ export const MixedBar = (props: Props) => {
   const data = dates.map(date => {
     let total = 0;
     if (props.county) {
-      total = props.timeSeries.counties[props.county]
-        .filter(c => monthDay(c.Reported) === date)
-        .reduce((acc, el) => {
-          return acc + el[props.stat === "confirmed" ? "Confirmed" : "Dead"];
-        }, 0);
+      const county = props.timeSeries.counties[props.county];
+      total = county
+        ? county
+            .filter(c => monthDay(c.Reported) === date)
+            .reduce((acc, el) => {
+              return (
+                acc + el[props.stat === "confirmed" ? "Confirmed" : "Dead"]
+              );
+            }, 0)
+        : 0;
       maxCasesByDate[date] = (maxCasesByDate[date] || 0) + total;
     } else if (props.state) {
       // We just need the first value in order to match the counties
