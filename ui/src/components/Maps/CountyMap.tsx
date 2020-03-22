@@ -26,6 +26,8 @@ import "./CountyMap.css";
 
 type DataType = "Total" | "New" | "Increase";
 const SHOW_COUNTY_ON_ZOOM = 4;
+const FILL_STATE_COUNTIES = 6;
+
 const ALASKA_COORDS = [
   -173.14944218750094,
   70.47019617187733,
@@ -228,9 +230,16 @@ const CountyMap: React.FunctionComponent<Props> = props => {
 
   // Zoom to state on selection
   useEffect(() => {
-    const selectedGeo = stateData.features.find(feature => {
-      return feature.properties?.STATE === state.selection.state;
-    });
+    const selectedGeo = state.selection.county
+      ? countyData.features.find(feature => {
+          return (
+            feature.properties?.STATE + feature.properties?.COUNTY ===
+            state.selection.county
+          );
+        })
+      : stateData.features.find(
+          feature => feature.properties?.STATE === state.selection.state
+        );
 
     setViewport(viewport => {
       let newView = {
@@ -261,12 +270,24 @@ const CountyMap: React.FunctionComponent<Props> = props => {
       }
       return newView;
     });
-  }, [state.selection.state, stateData.features]);
+  }, [
+    state.selection.state,
+    stateData.features,
+    countyData.features,
+    state.selection.county
+  ]);
 
   let filteredCountyData = { ...countyData };
   if (state.selection.state) {
     filteredCountyData.features = filteredCountyData.features.filter(
       feature => {
+        if (state.selection.county) {
+          return (
+            feature?.properties?.STATE + feature?.properties?.COUNTY ===
+            state.selection.county
+          );
+        }
+
         return feature?.properties?.STATE === state.selection.state;
       }
     );
@@ -304,6 +325,12 @@ const CountyMap: React.FunctionComponent<Props> = props => {
               payload: undefined
             });
           }
+          if (viewport.zoom < FILL_STATE_COUNTIES && state.selection.county) {
+            dispatch({
+              type: ActionType.UPDATE_SELECTED_COUNTY,
+              payload: undefined
+            });
+          }
         }}
         onHover={onHover}
         getCursor={({ isDragging }) => {
@@ -313,14 +340,16 @@ const CountyMap: React.FunctionComponent<Props> = props => {
         onClick={event => {
           const feature = event.features && event.features[0];
           if (feature) {
-            const state = feature.properties.STATE;
-            const county = feature.properties.COUNTY;
-            if (!state) {
+            const clickedState = feature.properties.STATE;
+            const clickedCounty = feature.properties.COUNTY;
+            if (!clickedState) {
               // Reset selections
-              dispatch({
-                type: ActionType.UPDATE_SELECTED_STATE,
-                payload: undefined
-              });
+              if (!state.selection.county) {
+                dispatch({
+                  type: ActionType.UPDATE_SELECTED_STATE,
+                  payload: undefined
+                });
+              }
               dispatch({
                 type: ActionType.UPDATE_SELECTED_COUNTY,
                 payload: undefined
@@ -328,11 +357,13 @@ const CountyMap: React.FunctionComponent<Props> = props => {
             } else {
               dispatch({
                 type: ActionType.UPDATE_SELECTED_STATE,
-                payload: state
+                payload: clickedState
               });
               dispatch({
                 type: ActionType.UPDATE_SELECTED_COUNTY,
-                payload: county ? state + county : undefined
+                payload: clickedCounty
+                  ? clickedState + clickedCounty
+                  : undefined
               });
             }
           }
