@@ -235,6 +235,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
       />
       <ReactMapGL
         {...viewport}
+        minZoom={2}
         width={mapWidth}
         mapboxApiAccessToken={
           "pk.eyJ1IjoidGltYmVzdHVzZHMiLCJhIjoiY2s4MWtuMXpxMHN3dDNsbnF4Y205eWN2MCJ9.kpKyCbPit97l0vIG1gz5wQ"
@@ -247,7 +248,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
           if (v.zoom < SHOW_COUNTY_ON_ZOOM && display === "county") {
             setDisplay("state");
           }
-          setViewport(v);
+          setViewport({ ...v, pitch: 0, bearing: 0 });
         }}
         onHover={onHover}
         getCursor={({ isDragging }) => {
