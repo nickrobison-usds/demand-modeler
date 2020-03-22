@@ -17,7 +17,7 @@ const USATotal: React.FunctionComponent<Props> = props => {
     .sort()
     .reverse();
 
-  const total = grandTotals[dates[0]].Confirmed;
+  const total = grandTotals[dates[0]]?.Confirmed;
 
   const renderChange = (current: number, previous: number) => {
     const change = current - previous;
@@ -31,7 +31,7 @@ const USATotal: React.FunctionComponent<Props> = props => {
     <div style={{ display: "flex", textAlign: "center" }}>
       <Card header="Total">{total}</Card>
       <Card header="24 hour Change">
-        {renderChange(total, grandTotals[dates[1]].Confirmed)}
+        {renderChange(total, grandTotals[dates[1]]?.Confirmed)}
       </Card>
       {/* <Card header="48 hour Change">
         {renderChange(total, grandTotals[dates[2]].Confirmed)}
