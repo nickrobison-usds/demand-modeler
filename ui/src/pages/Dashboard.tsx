@@ -107,7 +107,7 @@ export const Dashboard: React.FC<{}> = () => {
                 </div>
               </div>
               <div style={{ margin: "0 1em" }} id="charts">
-                <div>
+                {/* <div>
                   <Card>
                     <PieChartBreakdown
                       state={state.selection.state}
@@ -116,7 +116,7 @@ export const Dashboard: React.FC<{}> = () => {
                       stat="confirmed"
                     />
                   </Card>
-                </div>
+                </div> */}
 
                 <CountyTrendGraph
                   timeSeries={state.covidTimeSeries}
