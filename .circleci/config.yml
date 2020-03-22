@@ -32,6 +32,8 @@ jobs:
           root: ./
           paths:
             - ui/build
+            - manifest.yml
+            - Staticfile
   build-api:
     <<: *defaults
     docker:
@@ -45,10 +47,13 @@ jobs:
           root: ./
           paths:
             - demand-modeling
-            - manifest.yml
 workflows:
   version: 2
   deploy:
     jobs:
       - build-ui
       - build-api
+  - deploy:
+      # only on master
+      requires:
+        - build-ui

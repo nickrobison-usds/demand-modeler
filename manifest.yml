@@ -1,8 +1,4 @@
+
 ---
 applications:
-- name: FearlessDreamer2
-  docker:
-    image: nickrobisonusds/fearless-dreamer:latest
-  disk_quota: 2G
-  services:
-    - fearless-dreamer-psql
+- name: fearless-dreamer
