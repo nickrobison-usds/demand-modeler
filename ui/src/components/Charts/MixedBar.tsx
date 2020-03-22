@@ -2,6 +2,7 @@ import React from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 import { CovidDateData } from "../../app/AppStore";
 import { monthDay } from "../../utils/DateUtils";
+import { RenderChart } from "./RenderChart";
 
 interface Props {
   state?: string;
@@ -81,24 +82,26 @@ export const MixedBar = (props: Props) => {
   return (
     <div>
       <h3>Total Number of Confirmed Cases in the US</h3>
-      <BarChart
-        barSize={50}
-        width={props.chartWidth || window.innerWidth * 0.9}
-        height={880}
-        data={dedupedData}
-        margin={{
-          top: 0,
-          right: 0,
-          left: 0,
-          bottom: 0
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis height={60} dataKey="Name" />
-        <YAxis dataKey="Grand Total" />
-        <Tooltip />
-        <Bar dataKey="Grand Total" fill="#900000" />
-      </BarChart>
+      <RenderChart reportView={props.reportView}>
+        <BarChart
+          barSize={50}
+          width={props.reportView ? window.innerWidth * 0.9 : undefined}
+          height={880}
+          data={dedupedData}
+          margin={{
+            top: 0,
+            right: 0,
+            left: 0,
+            bottom: 0
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis height={60} dataKey="Name" />
+          <YAxis dataKey="Grand Total" />
+          <Tooltip />
+          <Bar dataKey="Grand Total" fill="#900000" />
+        </BarChart>
+      </RenderChart>
     </div>
   );
 };
