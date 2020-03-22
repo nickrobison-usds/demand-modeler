@@ -6,8 +6,7 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
-  ResponsiveContainer
+  Legend
 } from "recharts";
 import {
   CovidDateData,
@@ -16,6 +15,7 @@ import {
 } from "../../app/AppStore";
 import { getYMaxFromMaxCases } from "../../utils/utils";
 import { monthDay } from "../../utils/DateUtils";
+import { RenderChart } from "./RenderChart";
 
 type Props = {
   state?: string;
@@ -160,40 +160,42 @@ export const StateMixedBar = (props: Props) => {
   return (
     <>
       <h3>{props.title ? props.title : title}</h3>
-      <BarChart
-        barSize={10}
-        width={props.reportView ? window.innerWidth * 0.9 : undefined}
-        height={880}
-        data={sortedData.slice(0, 10)}
-        margin={{
-          top: 0,
-          right: 0,
-          left: 0,
-          bottom: 0
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis
-          angle={-45}
-          interval={0}
-          textAnchor="end"
-          height={100}
-          dataKey="Name"
-        />
-        <YAxis
-          domain={
-            maxCases && !EXCLUDED_STATES.includes(stateName as any)
-              ? [0, getYMaxFromMaxCases(maxCases)]
-              : undefined
-          }
-        />
-        <Tooltip />
-        <div style={{ padding: "10px" }} />
-        <Legend />
-        {displayDates.map((date, i) => (
-          <Bar key={date} dataKey={date.split("|")[0]} fill={colors[i]} />
-        ))}
-      </BarChart>
+      <RenderChart reportView={props.reportView}>
+        <BarChart
+          barSize={10}
+          width={props.reportView ? window.innerWidth * 0.9 : undefined}
+          height={880}
+          data={sortedData.slice(0, 10)}
+          margin={{
+            top: 0,
+            right: 0,
+            left: 0,
+            bottom: 0
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis
+            angle={-45}
+            interval={0}
+            textAnchor="end"
+            height={100}
+            dataKey="Name"
+          />
+          <YAxis
+            domain={
+              maxCases && !EXCLUDED_STATES.includes(stateName as any)
+                ? [0, getYMaxFromMaxCases(maxCases)]
+                : undefined
+            }
+          />
+          <Tooltip />
+          <div style={{ padding: "10px" }} />
+          <Legend />
+          {displayDates.map((date, i) => (
+            <Bar key={date} dataKey={date.split("|")[0]} fill={colors[i]} />
+          ))}
+        </BarChart>
+      </RenderChart>
     </>
   );
 };
