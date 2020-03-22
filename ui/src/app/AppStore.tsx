@@ -79,7 +79,7 @@ export interface AppState {
 }
 const DEFAULT_LAT = 40.8136;
 const DEFAULT_LNG = -99.0762;
-const DEFAULT_ZOOM = 2;
+const DEFAULT_ZOOM = 3;
 export const initialState: AppState = {
   selection: {
     date: DateUtils.formatDate(new Date())
@@ -90,7 +90,7 @@ export const initialState: AppState = {
   },
   mapView: {
     width: 400,
-    height: 400,
+    height: 600,
     latitude: DEFAULT_LAT,
     longitude: DEFAULT_LNG,
     zoom: DEFAULT_ZOOM

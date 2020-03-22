@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 export const useResizeToContainer = (
   containerSelector: string,
-  defaultWidth: number = 1000
+  defaultWidth: number = 1300
 ) => {
   const [width, setWidth] = useState(defaultWidth);
   useEffect(() => {
