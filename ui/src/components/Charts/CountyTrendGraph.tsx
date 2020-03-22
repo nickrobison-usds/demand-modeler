@@ -9,12 +9,13 @@ import {
   YAxis,
   Label
 } from "recharts";
-import { CovidDateData } from "../../app/AppStore";
+import { CovidDateData, AppState } from "../../app/AppStore";
 import { stateAbbreviation } from "../../utils/stateAbbreviation";
 import { monthDay } from "../../utils/DateUtils";
 import { interpolateRainbow } from "d3";
 
 interface Props {
+  selection: AppState["selection"];
   timeSeries: CovidDateData;
   chartWidth?: number;
 }
@@ -27,6 +28,10 @@ interface DataPoint {
 const MIN_CASES = 20;
 
 export const CountyTrendGraph = (props: Props) => {
+  if (props.selection.county) {
+    return null;
+  }
+
   let dates: string[];
   let data: DataPoint[] = [];
 
@@ -41,6 +46,11 @@ export const CountyTrendGraph = (props: Props) => {
   ].sort();
 
   const counties = countyData.reduce((acc, el) => {
+    // Filter if state is selected
+    if (props.selection.state && props.selection.state !== el.ID.substr(0, 2)) {
+      return acc;
+    }
+
     const name = `${el.County}, ${stateAbbreviation[el.State]}`;
     if (!acc[name]) acc[name] = {};
     acc[name][monthDay(el.Reported).split("|")[0]] = el.Confirmed;
