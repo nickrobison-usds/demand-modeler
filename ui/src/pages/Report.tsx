@@ -63,7 +63,7 @@ export const Report: React.FC<{}> = () => {
           .slice(0, 10);
         return (
           <div className="report grid-container" style={{ marginLeft: 0 }}>
-            <CountyMap />
+            <CountyMap reportView />
             {lastUpdated && pagebreak(lastUpdated)}
             {top10States.map(s => (
               <>
@@ -102,11 +102,12 @@ export const Report: React.FC<{}> = () => {
               stat="confirmed"
               reportView
             />
+            {lastUpdated && pagebreak(lastUpdated)}
             <CountyTrendGraph
               timeSeries={state.covidTimeSeries}
+              selection={state.selection}
             />
             {lastUpdated && pagebreak(lastUpdated)}
-
           </div>
         );
       }}

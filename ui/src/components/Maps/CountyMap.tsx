@@ -22,10 +22,9 @@ import { useResizeToContainer } from "../../utils/useResizeToContainer";
 import bbox from "@turf/bbox";
 import { easeCubic } from "d3";
 import "./CountyMap.css";
+import UsaSelect from "../Forms/USASelect";
 
 type DataType = "Total" | "New" | "Increase";
-const SHOW_COUNTY_ON_ZOOM = 2;
-const FILL_STATE_COUNTIES = 6;
 
 const ALASKA_COORDS = [
   -173.14944218750094,
@@ -71,9 +70,13 @@ const compare = (a: County | State, b: County | State) => {
 const round = (num: number, decimals: number = 1) =>
   Math.round(num * 10 ** decimals) / 10 ** decimals;
 
-interface Props {}
+interface Props {
+  reportView?: boolean;
+}
 
 const CountyMap: React.FunctionComponent<Props> = props => {
+  const SHOW_COUNTY_ON_ZOOM = props.reportView ? 2 : 4;
+  const FILL_STATE_COUNTIES = 6;
   const [countyData, setCountyData] = useState<GeoJSON.FeatureCollection>(
     countyGeoData as any
   );
@@ -292,24 +295,29 @@ const CountyMap: React.FunctionComponent<Props> = props => {
     );
   }
 
+  const mapHeight = props.reportView ? { height: 800 } : {};
+
   return (
     <div id="map-container" style={{ margin: "2em 1em 0 1em" }}>
-      {/* <UsaSelect
-        options={[
-          { text: "Total", value: "Total" },
-          { text: "Percent Increase", value: "New" },
-          { text: "Increase", value: "Increase" }
-        ]}
-        placeholder={"Total"}
-        name="selectDataType"
-        selected={dateType}
-        onChange={setDataType}
-        label="Map Data Type: "
-      /> */}
+      {!props.reportView && (
+        <UsaSelect
+          options={[
+            { text: "Total", value: "Total" },
+            { text: "Percent Increase", value: "New" },
+            { text: "Increase", value: "Increase" }
+          ]}
+          placeholder={"Total"}
+          name="selectDataType"
+          selected={dateType}
+          onChange={setDataType}
+          label="Map Data Type: "
+        />
+      )}
       <ReactMapGL
         {...viewport}
         minZoom={2}
-        width={mapWidth}
+        width={props.reportView ? window.innerWidth * 0.9 : mapWidth}
+        {...mapHeight}
         mapboxApiAccessToken={
           "pk.eyJ1IjoidGltYmVzdHVzZHMiLCJhIjoiY2s4MWtuMXpxMHN3dDNsbnF4Y205eWN2MCJ9.kpKyCbPit97l0vIG1gz5wQ"
         }
@@ -386,24 +394,26 @@ const CountyMap: React.FunctionComponent<Props> = props => {
         ) : null}
       </ReactMapGL>
       <div>
-        <p>Legend</p>
+        <p style={{ margin: "10px 0" }}>Legend</p>
         {legend.map(k => (
           <span
             key={k[0]}
             style={{
-              marginRight: "5px"
+              marginRight: props.reportView ? "10px" : "5px"
             }}
           >
             <span
               style={{
                 display: "inline-block",
-                width: "10px",
-                height: "10px",
+                width: props.reportView ? "20px" : "10px",
+                height: props.reportView ? "20px" : "10px",
                 backgroundColor: String(k[1]) as string,
                 marginRight: "5px"
               }}
             ></span>
-            {k[0]}+
+            <span style={{ fontSize: props.reportView ? "20px" : undefined }}>
+              {k[0]}+
+            </span>
           </span>
         ))}
       </div>
