@@ -103,8 +103,8 @@ const CountyMap: React.FunctionComponent<Props> = props => {
       let Confirmed = 0;
       let Name = "";
       if (f.properties) {
-        Name = f.properties["NAME10"];
-        const ID = f.properties["STATEFP10"];
+        Name = f.properties["NAME"];
+        const ID = f.properties["STATE"];
         const parsedID = parseInt(`${ID}`);
         if (typeof parsedID === "number") {
           const s = state.covidTimeSeries.states[ID];
