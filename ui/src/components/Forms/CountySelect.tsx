@@ -23,15 +23,16 @@ const USATotal: React.FunctionComponent<{}> = () => {
 
   const stateName = covidTimeSeries.states[state][0].State;
 
-  const options: Option[] = [
-    {
-      text: DEFAULT_TEXT,
-      value: undefined
-    }
-  ];
+  const defaultOption: Option = {
+    text: DEFAULT_TEXT,
+    value: undefined
+  };
+
+  const options: Option[] = [];
 
   const countyMap: { [ID: string]: Option } = {};
-  Object.keys(covidTimeSeries.counties).flatMap(k => covidTimeSeries.counties[k])
+  Object.keys(covidTimeSeries.counties)
+    .flatMap(k => covidTimeSeries.counties[k])
     .filter(c => c.State === stateName)
     .forEach(c => {
       countyMap[c.ID] = {
@@ -43,6 +44,9 @@ const USATotal: React.FunctionComponent<{}> = () => {
   const onUpdate = (countyID: string | undefined) => {
     dispatch({ type: ActionType.UPDATE_SELECTED_COUNTY, payload: countyID });
   };
+
+  options.sort((a, b) => (a.text > b.text ? 1 : -1));
+  options.unshift(defaultOption);
 
   return (
     <div
