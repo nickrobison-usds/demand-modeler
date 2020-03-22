@@ -71,6 +71,7 @@ export const Dashboard: React.FC<{}> = () => {
               <CountyTrendGraph
                 timeSeries={state.covidTimeSeries}
                 chartWidth={chartWidth}
+                selection={state.selection}
               />
             </div>
           </div>
