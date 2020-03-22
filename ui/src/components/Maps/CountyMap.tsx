@@ -24,9 +24,14 @@ import bbox from "@turf/bbox";
 import { easeCubic } from "d3";
 import "./CountyMap.css";
 
-type Display = "state" | "county";
 type DataType = "Total" | "New" | "Increase";
 const SHOW_COUNTY_ON_ZOOM = 4;
+const ALASKA_COORDS = [
+  -173.14944218750094,
+  70.47019617187733,
+  -136.10250208333454,
+  59.29933020239282
+];
 
 const legend = [
   [0, "#FEEFB3"],
@@ -236,7 +241,10 @@ const CountyMap: React.FunctionComponent<Props> = props => {
         transitionEasing: easeCubic
       };
       if (selectedGeo) {
-        const [minLng, minLat, maxLng, maxLat] = bbox(selectedGeo);
+        const [minLng, minLat, maxLng, maxLat] =
+          selectedGeo.properties?.NAME === "Alaska"
+            ? ALASKA_COORDS
+            : bbox(selectedGeo);
         const view = new WebMercatorViewport(viewport);
         const { latitude, longitude, zoom } = view.fitBounds(
           [
