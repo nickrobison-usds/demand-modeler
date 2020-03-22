@@ -70,8 +70,6 @@ export const CountyTrendGraph = (props: Props) => {
       return acc;
     }, {} as { [n: string]: string });
 
-  console.log(labelColors);
-
   const labelOrder = Object.entries(lastDay)
     .sort((a, b) => {
       if (a[1] === undefined || b[1] > a[1]) return 1;
