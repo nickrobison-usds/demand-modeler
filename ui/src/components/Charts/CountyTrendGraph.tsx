@@ -5,11 +5,14 @@ import {
   XAxis,
   CartesianGrid,
   Tooltip,
-  Legend
+  Legend,
+  YAxis,
+  Label
 } from "recharts";
 import { CovidDateData } from "../../app/AppStore";
 import { stateAbbreviation } from "../../utils/stateAbbreviation";
 import { monthDay } from "../../utils/DateUtils";
+import { interpolateRainbow } from "d3";
 
 interface Props {
   timeSeries: CovidDateData;
@@ -54,17 +57,32 @@ export const CountyTrendGraph = (props: Props) => {
     data.push(dataPoint);
   });
 
-  const randomColor = () => {
-    const generate = () => Math.floor(Math.random() * 205 + 50);
-    const [R, G, B] = [generate(), generate(), generate()];
-    return `rgb(${R},${G},${B})`;
-  };
+  // Label order based on most recent day
+  const lastDay = { ...data[data.length - 1] };
+  delete lastDay.Date;
+  const labelColors: { [n: string]: string } = Object.entries(lastDay)
+    .map(([name], i) => ({
+      name,
+      color: interpolateRainbow(i / Object.entries(lastDay).length)
+    }))
+    .reduce((acc, el) => {
+      acc[el.name] = el.color;
+      return acc;
+    }, {} as { [n: string]: string });
 
-  console.log(data);
+  console.log(labelColors);
+
+  const labelOrder = Object.entries(lastDay)
+    .sort((a, b) => {
+      if (a[1] === undefined || b[1] > a[1]) return 1;
+      if (b[1] === undefined || a[1] > b[1]) return -1;
+      return 0;
+    })
+    .map(el => el[0]);
 
   return (
     <>
-      <h3>Reported Cases in Counties with 20+ cases</h3>
+      <h3>Counties with 20+ reported cases</h3>
       <LineChart
         width={props.chartWidth || window.innerWidth * 0.9}
         height={800}
@@ -72,10 +90,25 @@ export const CountyTrendGraph = (props: Props) => {
         margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
       >
         <XAxis dataKey="Date" />
+        <YAxis type="number" scale="linear">
+          <Label
+            dx={-5}
+            angle={-90}
+            value="Confirmed cases"
+            position="insideLeft"
+            style={{ textAnchor: "middle" }}
+          />
+        </YAxis>
         <Tooltip />
         <CartesianGrid stroke="#f5f5f5" />
-        {Object.keys(counties).map(e => (
-          <Line key={e} dataKey={e} stroke={randomColor()} yAxisId={e} />
+        {labelOrder.map((e, i) => (
+          <Line
+            key={e}
+            dataKey={e}
+            stroke={labelColors ? labelColors[e as any] : "#000"}
+            strokeWidth={2}
+            dot={false}
+          />
         ))}
         <Legend align="left" />
       </LineChart>

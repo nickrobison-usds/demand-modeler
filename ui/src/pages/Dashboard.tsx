@@ -43,10 +43,6 @@ export const Dashboard: React.FC<{}> = () => {
             <CountyMap />
             <USATotals />
             <div style={{ margin: "0 1em" }} id="charts">
-              <CountyTrendGraph
-                timeSeries={state.covidTimeSeries}
-                chartWidth={chartWidth}
-              />
               <MixedBar
                 state={state.selection.state}
                 county={state.selection.county}
@@ -70,6 +66,10 @@ export const Dashboard: React.FC<{}> = () => {
                 stat="confirmed"
                 stateCount={false}
                 meta={state.graphMetaData}
+                chartWidth={chartWidth}
+              />
+              <CountyTrendGraph
+                timeSeries={state.covidTimeSeries}
                 chartWidth={chartWidth}
               />
             </div>

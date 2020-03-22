@@ -6,7 +6,6 @@ import { StateBar } from "../components/Charts/StateBar";
 import { MixedBar } from "../components/Charts/MixedBar";
 import "./Report.scss";
 import { dateTimeString } from "../utils/DateUtils";
-import { CountyTrendGraph } from "../components/Charts/CountyTrendGraph";
 
 export const Report: React.FC<{}> = () => {
   const pagebreak = (lastUpdated: Date | undefined) => {
@@ -75,7 +74,6 @@ export const Report: React.FC<{}> = () => {
                 {lastUpdated && pagebreak(lastUpdated)}
               </>
             ))}
-            <CountyTrendGraph timeSeries={state.covidTimeSeries} />
             <Top10Counties
               timeSeries={state.covidTimeSeries}
               stat="confirmed"
