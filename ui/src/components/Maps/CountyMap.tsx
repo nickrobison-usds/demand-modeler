@@ -6,12 +6,19 @@ import {
   State,
   initialState
 } from "../../app/AppStore";
-import ReactMapGL, { Layer, Source, ViewportProps } from "react-map-gl";
+import ReactMapGL, {
+  Layer,
+  Source,
+  ViewportProps,
+  PointerEvent,
+  Popup
+} from "react-map-gl";
 import countyGeoData from "./geojson-counties-fips.json";
 import stateGeoData from "./state.geo.json";
 import { stateAbbreviation } from "../../utils/stateAbbreviation";
 import UsaSelect from "../Forms/USASelect";
 import { useResizeToContainer } from "../../utils/useResizeToContainer";
+import "./CountyMap.css";
 
 type Display = "state" | "county";
 type DataType = "Total" | "New" | "Increase";
@@ -51,6 +58,9 @@ const compare = (a: County | State, b: County | State) => {
   return 0;
 };
 
+const round = (num: number, decimals: number = 1) =>
+  Math.round(num * 10 ** decimals) / 10 ** decimals;
+
 interface Props {}
 
 const CountyMap: React.FunctionComponent<Props> = props => {
@@ -65,6 +75,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
   const [viewport, setViewport] = useState(
     initialState.mapView as ViewportProps
   );
+  const [hoverInfo, setHoverInfo] = useState<{ [k: string]: any } | null>();
 
   const mapWidth = useResizeToContainer("#map-container");
 
@@ -91,7 +102,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
             } else if (dateType === "Increase") {
               Confirmed = c[0].NewConfirmed;
             } else {
-              Confirmed = (c[0].NewConfirmed / c[0].Confirmed) * 100;
+              Confirmed = round((c[0].NewConfirmed / c[0].Confirmed) * 100);
             }
             Name = `${c[0].County}, ${stateAbbreviation[c[0].State]}`;
           }
@@ -125,7 +136,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
             } else if (dateType === "Increase") {
               Confirmed = s[0].NewConfirmed;
             } else {
-              Confirmed = (s[0].NewConfirmed / s[0].Confirmed) * 100;
+              Confirmed = round((s[0].NewConfirmed / s[0].Confirmed) * 100);
             }
             Name = s[0].State;
           }
@@ -153,6 +164,60 @@ const CountyMap: React.FunctionComponent<Props> = props => {
     });
     // eslint-disable-next-line
   }, [covidTimeSeries, dateType]);
+
+  const onHover = (event: PointerEvent) => {
+    let name = "";
+    let hoverInfo = null;
+
+    const feature = event.features && event.features[0];
+    if (feature) {
+      hoverInfo = {
+        lngLat: event.lngLat,
+        feature: feature.properties
+      };
+      name = feature.properties.NAME;
+      if (!name) {
+        setHoverInfo(null);
+      } else {
+        setHoverInfo(hoverInfo);
+      }
+    }
+  };
+
+  const renderPopup = () => {
+    if (hoverInfo) {
+      let name = hoverInfo.feature.NAME;
+      console.log(hoverInfo.feature);
+      if (hoverInfo.feature.COUNTY) {
+        const stateName =
+          state.covidTimeSeries.states[hoverInfo.feature.STATE][0].State;
+        name = `${name}, ${stateAbbreviation[stateName]}`;
+      }
+
+      const label: { [d in DataType]: string } = {
+        Total: "Confirmed",
+        New: "Percent Increase",
+        Increase: "Increase"
+      };
+
+      return (
+        <Popup
+          longitude={hoverInfo.lngLat[0]}
+          latitude={hoverInfo.lngLat[1]}
+          closeButton={false}
+        >
+          <div className="hover-info">
+            <h5>{name}</h5>
+            <p>
+              {label[dateType]}: {hoverInfo.feature.confirmed}
+              {dateType === "New" && "%"}
+            </p>
+          </div>
+        </Popup>
+      );
+    }
+    return null;
+  };
 
   return (
     <div id="map-container" style={{ margin: "0 1em" }}>
@@ -184,6 +249,11 @@ const CountyMap: React.FunctionComponent<Props> = props => {
           }
           setViewport(v);
         }}
+        onHover={onHover}
+        getCursor={({ isDragging }) => {
+          if (isDragging) return "grabbing";
+          return hoverInfo ? "pointer" : "grab";
+        }}
         onClick={e => {
           const { features } = e;
           const clickedState = (features || []).find(
@@ -200,13 +270,16 @@ const CountyMap: React.FunctionComponent<Props> = props => {
         }}
       >
         {state.mapView.zoom > 0 ? (
-          <Source
-            id="data"
-            type="geojson"
-            data={display === "state" ? stateData : countyData}
-          >
-            <Layer {...dataLayer} />
-          </Source>
+          <>
+            <Source
+              id="data"
+              type="geojson"
+              data={display === "state" ? stateData : countyData}
+            >
+              <Layer {...dataLayer} />
+            </Source>
+            {hoverInfo && renderPopup()}
+          </>
         ) : null}
       </ReactMapGL>
       <div>
