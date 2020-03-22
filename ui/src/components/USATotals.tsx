@@ -20,6 +20,9 @@ const USATotal: React.FunctionComponent<Props> = props => {
   const total = grandTotals[dates[0]]?.Confirmed;
 
   const renderChange = (current: number, previous: number) => {
+    if (current === undefined || previous === undefined) {
+      return "N/A";
+    }
     const change = current - previous;
     return `${change >= 0 ? "+" : ""}${change} (${percentChange(
       current,
