@@ -80,11 +80,20 @@ export const MixedBar = (props: Props) => {
     dedupedData.push(data[i]);
   }
 
+  const locationName = getSelectedLocationName(
+    props.state,
+    props.county,
+    props.timeSeries
+  );
+
   return (
     <div>
       <h3>
-        Number of confirmed cases in{" "}
-        {getSelectedLocationName(props.state, props.county, props.timeSeries)}
+        {locationName ? (
+          <>Number of confirmed cases in {locationName}</>
+        ) : (
+          <>No data reported</>
+        )}
       </h3>
       <RenderChart reportView={props.reportView}>
         <BarChart
