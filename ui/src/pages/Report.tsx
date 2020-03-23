@@ -106,6 +106,7 @@ export const Report: React.FC<{}> = () => {
             <CountyTrendGraph
               timeSeries={state.covidTimeSeries}
               selection={state.selection}
+              reportView
             />
             {lastUpdated && pagebreak(lastUpdated)}
           </div>

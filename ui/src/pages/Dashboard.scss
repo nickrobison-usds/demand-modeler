@@ -1,0 +1,30 @@
+.dashboard-container {
+  display: grid;
+  grid-template-rows: 80px auto;
+}
+
+.dashboard {
+  margin-top: 100px;
+  display: grid;
+  width: 100%;
+}
+
+.dashboard-nav {
+  width: 100%;
+}
+
+@media screen and (min-width: 1024px) {
+  .dashboard-nav {
+    position: fixed;
+  }
+  .dashboard {
+    grid-template-columns: 33% 67%;
+    div {
+      margin-top: 0px;
+    }
+  }
+  .dashboard-scroll {
+    height: calc(100vh - 100px);
+    overflow-y: scroll;
+  }
+}

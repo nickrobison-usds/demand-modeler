@@ -3,6 +3,7 @@ import { ResponsiveContainer } from "recharts";
 
 type Props = {
   reportView?: boolean;
+  dashboardHeight?: number | string;
 };
 
 export const RenderChart: React.FC<Props> = props => {
@@ -10,7 +11,7 @@ export const RenderChart: React.FC<Props> = props => {
     return <>{props.children}</>;
   }
   return (
-    <ResponsiveContainer height={200} width={"100%"}>
+    <ResponsiveContainer height={props.dashboardHeight || 400} width="100%">
       {props.children}
     </ResponsiveContainer>
   );

@@ -8,9 +8,11 @@ interface Props {
 const Card: React.StatelessComponent<Props> = props => {
   return (
     <div className="card" style={{ minWidth: "100px" }}>
-      {props.header ?       <h6 className="usa-heading-alt" style={{ margin: "0 0 5px 0" }}>
-        {props.header}
-      </h6> :null}
+      {props.header ? (
+        <h6 className="usa-heading-alt" style={{ margin: "0 0 5px 0" }}>
+          {props.header}
+        </h6>
+      ) : null}
 
       {props.children}
     </div>
