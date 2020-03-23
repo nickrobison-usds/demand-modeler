@@ -134,12 +134,17 @@ func transformFact(fact *USAFacts) ([]*CountyCases, error) {
 			Reported:     observedTime,
 		}
 
+		state, county := splitFIPS(fact.CountyFIPS)
+		if county == "00" {
+			state = fact.StateFIPS
+		}
+
 		cases = append(cases, &CountyCases{
 			ID:         fact.CountyFIPS,
 			County:     fact.County,
 			State:      fact.StateAbbr,
-			StateFIPS:  fact.StateFIPS,
-			CountyFIPS: fact.CountyFIPS,
+			StateFIPS:  state,
+			CountyFIPS: county,
 			CaseCount:  c,
 		})
 	}
@@ -170,4 +175,14 @@ func makeFilename() string {
 	t := time.Now()
 	timestamp := fmt.Sprintf("%04d-%02d-%02d_%02d-%02d-%02d", t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second())
 	return fmt.Sprintf("usafacts_%s.csv", timestamp)
+}
+
+func splitFIPS(fipsCode string) (string, string) {
+	if len(fipsCode) < 5 {
+		return fipsCode, "00"
+	}
+	stateFips := fipsCode[0:2]
+	countyFips := fipsCode[2:]
+
+	return stateFips, countyFips
 }

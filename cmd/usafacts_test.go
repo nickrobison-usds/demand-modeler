@@ -73,10 +73,14 @@ func TestAssignedFacts(t *testing.T) {
 	assert.Equal(t, start, first.Reported, "Should have correct start date")
 	assert.Equal(t, "WA", first.State, "Should have correct abbreviation")
 	assert.Equal(t, 1, first.Confirmed, "Should have correct confirmed")
+	assert.Equal(t, "033", first.CountyFIPS, "Should have correct county fipscode")
+	assert.Equal(t, "53", first.StateFIPS, "Should have correct state fipscode")
 	last := f[len(f)-1]
 	assert.Equal(t, start.AddDate(0, 0, 60), last.Reported, "Should have correct start date")
 	assert.Equal(t, "WA", last.State, "Should have correct abbreviation")
 	assert.Equal(t, 1040, last.Confirmed, "Should have correct confirmed")
+	assert.Equal(t, "033", last.CountyFIPS, "Should have correct county fipscode")
+	assert.Equal(t, "53", last.StateFIPS, "Should have correct state fipscode")
 }
 
 func TestUSALoader(t *testing.T) {
