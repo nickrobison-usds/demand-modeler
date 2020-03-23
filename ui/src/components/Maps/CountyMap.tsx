@@ -437,7 +437,8 @@ const CountyMap: React.FunctionComponent<Props> = props => {
           <span
             key={k[0]}
             style={{
-              marginRight: props.reportView ? "10px" : "5px"
+              marginRight: props.reportView ? "10px" : "5px",
+              whiteSpace: "nowrap"
             }}
           >
             <span

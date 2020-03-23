@@ -159,8 +159,10 @@ export const StateMixedBar = (props: Props) => {
 
   return (
     <>
-      <h3>{props.title ? props.title : title}</h3>
-      <RenderChart reportView={props.reportView}>
+      <RenderChart
+        reportView={props.reportView}
+        title={props.title ? props.title : title}
+      >
         <BarChart
           barSize={10}
           width={props.reportView ? window.innerWidth * 0.9 : undefined}
