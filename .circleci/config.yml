@@ -40,7 +40,7 @@ jobs:
       - checkout
       - run:
           name: Test
-          command: go test -race .
+          command: go test -race ./...
       - persist_to_workspace:
           root: ./
           paths:
