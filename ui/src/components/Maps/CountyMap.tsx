@@ -26,6 +26,12 @@ import UsaSelect from "../Forms/USASelect";
 
 type DataType = "Total" | "New" | "Increase";
 
+const legendLookup: { [key in DataType]: string } = {
+  Total: "Confirmed Cases",
+  New: "Percent Increase in Confirmed Cases",
+  Increase: "Increase in Confirmed Cases"
+};
+
 const ALASKA_COORDS = [
   -173.14944218750094,
   70.47019617187733,
@@ -68,9 +74,7 @@ const getDateLayer = (l: any[]) => {
       "fill-outline-color": "white"
     }
   };
-}
-
-
+};
 
 const compare = (a: County | State, b: County | State) => {
   if (a.Reported > b.Reported) {
@@ -98,13 +102,15 @@ const CountyMap: React.FunctionComponent<Props> = props => {
   const [stateData, setStateData] = useState<GeoJSON.FeatureCollection>(
     stateGeoData as any
   );
-  const [dateType, setDataType] = useState<DataType>("Total");
+  const [dataType, setDataType] = useState<DataType>("Total");
   const [viewport, setViewport] = useState(
     initialState.mapView as ViewportProps
   );
   const [hoverInfo, setHoverInfo] = useState<{ [k: string]: any } | null>();
 
   const mapWidth = useResizeToContainer("#map-container");
+
+  console.log(mapWidth);
 
   const {
     dispatch,
@@ -124,12 +130,15 @@ const CountyMap: React.FunctionComponent<Props> = props => {
           const c = state.covidTimeSeries.counties[ID];
           if (c) {
             c.sort(compare);
-            if (dateType === "Total") {
+            if (dataType === "Total") {
               Confirmed = c[0].Confirmed;
-            } else if (dateType === "Increase") {
+            } else if (dataType === "Increase") {
               Confirmed = c.length > 1 ? c[1].Confirmed : 0;
             } else {
-              Confirmed = c.length > 1 ? round((c[1].Confirmed / c[0].Confirmed) * 100) : 0;
+              Confirmed =
+                c.length > 1
+                  ? round((c[1].Confirmed / c[0].Confirmed) * 100)
+                  : 0;
             }
             Name = `${c[0].County}, ${stateAbbreviation[c[0].State]}`;
           }
@@ -158,12 +167,15 @@ const CountyMap: React.FunctionComponent<Props> = props => {
           const s = state.covidTimeSeries.states[ID];
           if (s) {
             s.sort(compare);
-            if (dateType === "Total") {
+            if (dataType === "Total") {
               Confirmed = s[0].Confirmed;
-            } else if (dateType === "Increase") {
+            } else if (dataType === "Increase") {
               Confirmed = s.length > 1 ? s[1].Confirmed : 0;
             } else {
-              Confirmed = s.length > 1 ? round((s[1].Confirmed / s[0].Confirmed) * 100) : 0;
+              Confirmed =
+                s.length > 1
+                  ? round((s[1].Confirmed / s[0].Confirmed) * 100)
+                  : 0;
             }
             Name = s[0].State;
           }
@@ -190,7 +202,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
       features: AddStateData()
     });
     // eslint-disable-next-line
-  }, [covidTimeSeries, dateType]);
+  }, [covidTimeSeries, dataType]);
 
   const onHover = (event: PointerEvent) => {
     let name = "";
@@ -235,8 +247,8 @@ const CountyMap: React.FunctionComponent<Props> = props => {
           <div className="hover-info">
             <h5>{name}</h5>
             <p>
-              {label[dateType]}: {hoverInfo.feature.confirmed}
-              {dateType === "New" && "%"}
+              {label[dataType]}: {hoverInfo.feature.confirmed}
+              {dataType === "New" && "%"}
             </p>
           </div>
         </Popup>
@@ -321,7 +333,8 @@ const CountyMap: React.FunctionComponent<Props> = props => {
   }, [props.reportView]);
 
   const mapHeight = { height: props.reportView ? 800 : 350 };
-  const legend = viewport.zoom < SHOW_COUNTY_ON_ZOOM ? stateLegend : countyLegend;
+  const legend =
+    viewport.zoom < SHOW_COUNTY_ON_ZOOM ? stateLegend : countyLegend;
   return (
     <div id="map-container" style={{ margin: "2em 1em 0 1em" }}>
       {!props.reportView && (
@@ -333,7 +346,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
           ]}
           placeholder={"Total"}
           name="selectDataType"
-          selected={dateType}
+          selected={dataType}
           onChange={setDataType}
           label="Map Data Type: "
         />
@@ -419,7 +432,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
         ) : null}
       </ReactMapGL>
       <div>
-        <p style={{ margin: "10px 0" }}>Legend</p>
+        <p style={{ margin: "10px 0" }}>{legendLookup[dataType]}</p>
         {legend.map(k => (
           <span
             key={k[0]}

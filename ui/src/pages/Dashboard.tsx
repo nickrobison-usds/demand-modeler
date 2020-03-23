@@ -9,6 +9,7 @@ import { MixedBar } from "../components/Charts/MixedBar";
 import { StateMixedBar } from "../components/Charts/StateMixedBar";
 import { useResizeToContainer } from "../utils/useResizeToContainer";
 import { CountyTrendGraph } from "../components/Charts/CountyTrendGraph";
+import "./Dashboard.scss";
 
 export const Dashboard: React.FC<{}> = () => {
   const chartWidth = useResizeToContainer("#charts");
@@ -17,68 +18,53 @@ export const Dashboard: React.FC<{}> = () => {
     <AppContext.Consumer>
       {({ state }) => {
         return (
-          <div>
-            <Card>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  flexFlow: "row wrap"
-                }}
-              >
-                <div style={{ display: "flex" }}>
-                  <StateSelect />
-                  <CountySelect />
-                </div>
-                <a
-                  className="uas-button"
-                  href="?report=true"
-                  target="_blank"
-                  rel="noopener noreferrer"
+          <div className="dashboard-container">
+            <div className="dashboard-nav">
+              <Card>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between"
+                  }}
                 >
-                  View Report
-                </a>
-              </div>
-            </Card>
-            <div
-              className="dashboard"
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                margin: "auto",
-                flexFlow: "row wrap",
-                width: "100%"
-              }}
-            >
-              <div style={{ width: "35%" }}>
+                  <div style={{ display: "flex" }}>
+                    <StateSelect />
+                    <CountySelect />
+                  </div>
+                  <a
+                    className="uas-button"
+                    href="?report=true"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    View Report
+                  </a>
+                </div>
+              </Card>
+            </div>
+            <div className="dashboard">
+              <div>
                 <Card>
-                  <CountyMap />
-                  <div style={{ width: "100%" }}>
+                  <div>
+                    <CountyMap />
+                  </div>
+                  <div style={{ marginTop: "20px" }}>
                     <USATotals />
                   </div>
                 </Card>
               </div>
-              <div
-                style={{
-                  width: "65%",
-                  display: "flex",
-                  flexDirection: "column",
-                  flexFlow: "row wrap"
-                }}
-              >
-                <div style={{ width: "50%" }}>
-                  <Card>
-                    <MixedBar
-                      state={state.selection.state}
-                      county={state.selection.county}
-                      timeSeries={state.covidTimeSeries}
-                      stat="confirmed"
-                      chartWidth={chartWidth}
-                    />
-                  </Card>
-                </div>
-                <div style={{ width: "50%" }}>
+              <div className="dashboard-scroll">
+                <Card>
+                  <MixedBar
+                    state={state.selection.state}
+                    county={state.selection.county}
+                    timeSeries={state.covidTimeSeries}
+                    stat="confirmed"
+                    chartWidth={chartWidth}
+                  />
+                </Card>
+                {!state.selection.state && (
                   <Card>
                     <StateMixedBar
                       state={state.selection.state}
@@ -90,27 +76,29 @@ export const Dashboard: React.FC<{}> = () => {
                       chartWidth={chartWidth}
                     />
                   </Card>
-                </div>
-                <div style={{ width: "50%" }}>
-                  <Card>
-                    <StateMixedBar
-                      state={state.selection.state}
-                      county={state.selection.county}
-                      timeSeries={state.covidTimeSeries}
-                      stat="confirmed"
-                      stateCount={false}
-                      meta={state.graphMetaData}
-                      chartWidth={chartWidth}
-                    />
-                  </Card>
-                </div>
-              </div>
-              <div style={{ margin: "0 1em" }} id="charts">
-                <CountyTrendGraph
-                  timeSeries={state.covidTimeSeries}
-                  chartWidth={chartWidth}
-                  selection={state.selection}
-                />
+                )}
+                {!state.selection.county && (
+                  <>
+                    <Card>
+                      <StateMixedBar
+                        state={state.selection.state}
+                        county={state.selection.county}
+                        timeSeries={state.covidTimeSeries}
+                        stat="confirmed"
+                        stateCount={false}
+                        meta={state.graphMetaData}
+                        chartWidth={chartWidth}
+                      />
+                    </Card>
+                    <Card>
+                      <CountyTrendGraph
+                        timeSeries={state.covidTimeSeries}
+                        chartWidth={chartWidth}
+                        selection={state.selection}
+                      />
+                    </Card>
+                  </>
+                )}
               </div>
             </div>
           </div>

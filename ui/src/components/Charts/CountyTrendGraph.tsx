@@ -13,11 +13,13 @@ import { CovidDateData, AppState } from "../../app/AppStore";
 import { stateAbbreviation } from "../../utils/stateAbbreviation";
 import { monthDay } from "../../utils/DateUtils";
 import { interpolateRainbow } from "d3";
+import { RenderChart } from "./RenderChart";
 
 interface Props {
   selection: AppState["selection"];
   timeSeries: CovidDateData;
   chartWidth?: number;
+  reportView?: boolean;
 }
 
 interface DataPoint {
@@ -91,35 +93,37 @@ export const CountyTrendGraph = (props: Props) => {
   return (
     <>
       <h3>Counties with 20+ reported cases</h3>
-      <LineChart
-        width={props.chartWidth || window.innerWidth * 0.9}
-        height={800}
-        data={data}
-        margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
-      >
-        <XAxis dataKey="Date" />
-        <YAxis type="number" scale="linear">
-          <Label
-            dx={-5}
-            angle={-90}
-            value="Confirmed cases"
-            position="insideLeft"
-            style={{ textAnchor: "middle" }}
-          />
-        </YAxis>
-        <Tooltip />
-        <CartesianGrid stroke="#f5f5f5" />
-        {labelOrder.map((e, i) => (
-          <Line
-            key={e}
-            dataKey={e}
-            stroke={labelColors ? labelColors[e as any] : "#000"}
-            strokeWidth={2}
-            dot={false}
-          />
-        ))}
-        <Legend align="left" />
-      </LineChart>
+      <RenderChart reportView={props.reportView} dashboardHeight={800}>
+        <LineChart
+          width={props.reportView ? window.innerWidth * 0.9 : undefined}
+          height={600}
+          data={data}
+          margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
+        >
+          <XAxis dataKey="Date" />
+          <YAxis type="number" scale="linear">
+            <Label
+              dx={-5}
+              angle={-90}
+              value="Confirmed cases"
+              position="insideLeft"
+              style={{ textAnchor: "middle" }}
+            />
+          </YAxis>
+          <Tooltip />
+          <CartesianGrid stroke="#f5f5f5" />
+          {labelOrder.map((e, i) => (
+            <Line
+              key={e}
+              dataKey={e}
+              stroke={labelColors ? labelColors[e as any] : "#000"}
+              strokeWidth={2}
+              dot={false}
+            />
+          ))}
+          <Legend align="left" />
+        </LineChart>
+      </RenderChart>
     </>
   );
 };
