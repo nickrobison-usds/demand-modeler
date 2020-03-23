@@ -17,10 +17,8 @@ Data from the US and Canada
 
 [Dashboard](https://coronavirus.1point3acres.com/en)
 
-
 - Total Confirmed
 - Total Deaths
-
 
 ### University of Virginia
 
