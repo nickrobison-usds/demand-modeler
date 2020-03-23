@@ -9,7 +9,7 @@
 
 * [Setup](#Setup)
 * [Bootstrapping Heroku](#Bootstrapping-Heroku)
-* [Bootstrapping Heroku](#Bootstrapping Heroku)
+* [Loading new data](#Loading-new-data)
 
 ## Setup
 
