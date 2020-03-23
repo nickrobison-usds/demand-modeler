@@ -95,8 +95,10 @@ export const CountyTrendGraph = (props: Props) => {
 
   return (
     <>
-      <h3>Counties with 20+ reported cases</h3>
-      <RenderChart reportView={props.reportView} dashboardHeight={500}>
+      <RenderChart
+        reportView={props.reportView}
+        title="Counties with 20+ reported cases"
+      >
         <LineChart
           width={props.reportView ? window.innerWidth * 0.9 : undefined}
           height={600}
@@ -124,17 +126,19 @@ export const CountyTrendGraph = (props: Props) => {
               dot={false}
             />
           ))}
-          <Legend
-            content={
-              <>
-                <CustomLegend
-                  labelColors={labelColors}
-                  labels={labelOrder.slice(0, MAX_COUNTIES)}
-                />
-                {hiddenCounties > 0 && <div>+{hiddenCounties} more</div>}
-              </>
-            }
-          />
+          {props.reportView && (
+            <Legend
+              content={
+                <>
+                  <CustomLegend
+                    labelColors={labelColors}
+                    labels={labelOrder.slice(0, MAX_COUNTIES)}
+                  />
+                  {hiddenCounties > 0 && <div>+{hiddenCounties} more</div>}
+                </>
+              }
+            />
+          )}
         </LineChart>
       </RenderChart>
     </>

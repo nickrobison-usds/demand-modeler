@@ -106,18 +106,13 @@ export const MixedBar = (props: Props) => {
     };
   });
 
-  console.log(finalData);
+  const title = locationName
+    ? `Number of confirmed cases in ${locationName}`
+    : "No data reported";
 
   return (
     <div>
-      <h3>
-        {locationName ? (
-          <>Number of confirmed cases in {locationName}</>
-        ) : (
-          <>No data reported</>
-        )}
-      </h3>
-      <RenderChart reportView={props.reportView}>
+      <RenderChart reportView={props.reportView} title={title}>
         <BarChart
           barSize={50}
           width={props.reportView ? window.innerWidth * 0.9 : undefined}
