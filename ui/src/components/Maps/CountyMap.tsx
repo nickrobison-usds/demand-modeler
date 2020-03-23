@@ -34,7 +34,7 @@ const ALASKA_COORDS = [
 ];
 
 const legend = [
-  [0, "#FEEFB3"],
+  [0, "#DEE4E8"],
   [1, "#F3CB7C"],
   [6, "#ECAC53"],
   [11, "#E58445"],
