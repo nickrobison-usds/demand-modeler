@@ -5,13 +5,26 @@
 * [County Level](#county-level)
   * [USA Facts](#usaFacts)
   * [1point3acers](#1point3acres)
+  * [Johns Hopkins](#john-hopkins)
   * [University of Virginia](#university-of-virginia)
+  * [Covid Tracking](#covid-tracking)
 * [Other](#other)
   * [Demestic Epidemic](#demestic-epidemic)
   * [World Health Organization](#world-health-organization)
   * [dxy](#world-healthorganization)
 
 ## County Level
+
+### Johns Hopkins
+
+[Dashboard](https://systems.jhu.edu/research/public-health/2019-ncov-map-faqs/)
+[Data Dumps](https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data)
+
+Data:
+
+* Total Confirmed
+* Total Deaths
+* Total Recovered
 
 ### USA Facts
 
@@ -42,6 +55,13 @@ You can curate this into a csv format including counties by searching for "Unite
 
 [Dashboard](https://nssac.bii.virginia.edu/covid-19/dashboard/)
 [Export](https://docs.google.com/spreadsheets/d/1jLAjzYMcsPo71qu5uBxjT_dAzj8vxZfvnTMR-Xp3-v8/edit#gid=1076558078)
+
+### COVID Tracking
+
+links to state data
+
+[data](https://covidtracking.com/)
+[github](https://github.com/COVID19Tracking)
 
 ## Other
 
