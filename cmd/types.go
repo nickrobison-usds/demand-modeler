@@ -23,7 +23,7 @@ type CountyCases struct {
 }
 
 func (c *CountyCases) ToRow() []string {
-	return []string{c.County, c.State, strconv.Itoa(c.Confirmed), c.Reported.Format(time.RFC822Z), c.StateFIPS, c.CountyFIPS}
+	return []string{c.County, c.State, strconv.Itoa(c.Confirmed), strconv.Itoa(c.Dead), c.Reported.Format(time.RFC822Z), c.StateFIPS, c.CountyFIPS}
 }
 
 type StateCases struct {

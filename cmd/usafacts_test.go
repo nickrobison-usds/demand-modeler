@@ -125,8 +125,8 @@ func TestUSALoader(t *testing.T) {
 	assert.Equal(t, 62, len(rows), "Should have an equal number of rows, plus a header")
 	// Read the first non-header row and poke at some values
 	assert.Equal(t, "0", rows[1][2], "Should have confirmed cases")
-	assert.Equal(t, "22 Jan 20 00:00 +0000", rows[1][3], "Should have January report time")
-	assert.Equal(t, "01", rows[1][4], "Should have Alabama state fips")
+	assert.Equal(t, "22 Jan 20 00:00 +0000", rows[1][4], "Should have January report time")
+	assert.Equal(t, "01", rows[1][5], "Should have Alabama state fips")
 }
 
 func createTestServer(t *testing.T) *httptest.Server {

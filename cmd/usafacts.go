@@ -156,7 +156,7 @@ func writeToCSV(w io.Writer, cases []*CountyCases) error {
 	defer writer.Flush()
 
 	// Write header
-	header := []string{"countyName", "stateName", "confirmed", "lastUpdate", "stateFIPS", "countyFIPS"}
+	header := []string{"countyName", "stateName", "confirmed", "dead", "lastUpdate", "STATEFP", "COUNTYFP"}
 	err := writer.Write(header)
 	if err != nil {
 		return err
