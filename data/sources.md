@@ -3,12 +3,24 @@
 ## Table of Contents
 
 * [County Level](#county-level)
+  * [1point3acers](#1point3acres)
   * [University of Virginia](#university-of-virginia)
 * [Other](#other)
   * [World Health Organization](#world-healthorganization)
 
 
 ## County Level
+
+### 1point3acers
+
+Data from the US and Canada
+
+[Dashboard](https://coronavirus.1point3acres.com/en)
+
+
+- Total Confirmed
+- Total Deaths
+
 
 ### University of Virginia
 
@@ -30,6 +42,6 @@ Good source of global region and country level data
 
 updated daily
 
-  - Total Confirmed
-  - Total Deaths
-  - Days Since Last Reported Case
+- Total Confirmed
+- Total Deaths
+- Days Since Last Reported Case
