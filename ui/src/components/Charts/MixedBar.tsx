@@ -3,6 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 import { CovidDateData } from "../../app/AppStore";
 import { monthDay } from "../../utils/DateUtils";
 import { RenderChart } from "./RenderChart";
+import { getSelectedLocationName } from "../../utils/utils";
 
 interface Props {
   state?: string;
@@ -81,7 +82,10 @@ export const MixedBar = (props: Props) => {
 
   return (
     <div>
-      <h3>Total Number of Confirmed Cases in the US</h3>
+      <h3>
+        Number of confirmed cases in{" "}
+        {getSelectedLocationName(props.state, props.county, props.timeSeries)}
+      </h3>
       <RenderChart reportView={props.reportView}>
         <BarChart
           barSize={50}

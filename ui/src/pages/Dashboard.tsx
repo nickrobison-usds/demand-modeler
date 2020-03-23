@@ -47,7 +47,7 @@ export const Dashboard: React.FC<{}> = () => {
               <div className="map-container">
                 <Card>
                   <CountyMap />
-                  <div>
+                  <div style={{ marginTop: "20px" }}>
                     <USATotals />
                   </div>
                 </Card>
@@ -62,35 +62,41 @@ export const Dashboard: React.FC<{}> = () => {
                     chartWidth={chartWidth}
                   />
                 </Card>
-                <Card>
-                  <StateMixedBar
-                    state={state.selection.state}
-                    county={state.selection.county}
-                    timeSeries={state.covidTimeSeries}
-                    stat="confirmed"
-                    stateCount={true}
-                    meta={state.graphMetaData}
-                    chartWidth={chartWidth}
-                  />
-                </Card>
-                <Card>
-                  <StateMixedBar
-                    state={state.selection.state}
-                    county={state.selection.county}
-                    timeSeries={state.covidTimeSeries}
-                    stat="confirmed"
-                    stateCount={false}
-                    meta={state.graphMetaData}
-                    chartWidth={chartWidth}
-                  />
-                </Card>
-                <Card>
-                  <CountyTrendGraph
-                    timeSeries={state.covidTimeSeries}
-                    chartWidth={chartWidth}
-                    selection={state.selection}
-                  />
-                </Card>
+                {!state.selection.state && (
+                  <Card>
+                    <StateMixedBar
+                      state={state.selection.state}
+                      county={state.selection.county}
+                      timeSeries={state.covidTimeSeries}
+                      stat="confirmed"
+                      stateCount={true}
+                      meta={state.graphMetaData}
+                      chartWidth={chartWidth}
+                    />
+                  </Card>
+                )}
+                {!state.selection.county && (
+                  <>
+                    <Card>
+                      <StateMixedBar
+                        state={state.selection.state}
+                        county={state.selection.county}
+                        timeSeries={state.covidTimeSeries}
+                        stat="confirmed"
+                        stateCount={false}
+                        meta={state.graphMetaData}
+                        chartWidth={chartWidth}
+                      />
+                    </Card>
+                    <Card>
+                      <CountyTrendGraph
+                        timeSeries={state.covidTimeSeries}
+                        chartWidth={chartWidth}
+                        selection={state.selection}
+                      />
+                    </Card>
+                  </>
+                )}
               </div>
             </div>
           </div>

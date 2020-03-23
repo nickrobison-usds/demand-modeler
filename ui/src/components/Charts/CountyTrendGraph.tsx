@@ -96,7 +96,7 @@ export const CountyTrendGraph = (props: Props) => {
       <RenderChart reportView={props.reportView} dashboardHeight={800}>
         <LineChart
           width={props.reportView ? window.innerWidth * 0.9 : undefined}
-          height={800}
+          height={600}
           data={data}
           margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
         >
