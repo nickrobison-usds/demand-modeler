@@ -33,7 +33,7 @@ const ALASKA_COORDS = [
   59.29933020239282
 ];
 
-const legend = [
+const countyLegend = [
   [0, "#DEE4E8"],
   [1, "#F3CB7C"],
   [6, "#ECAC53"],
@@ -44,18 +44,33 @@ const legend = [
   [501, "#650F56"]
 ];
 
-const dataLayer = {
-  id: "data",
-  type: "fill",
-  paint: {
-    "fill-color": {
-      property: "confirmed",
-      stops: legend
-    },
-    "fill-opacity": 0.8,
-    "fill-outline-color": "white"
-  }
-};
+const stateLegend = [
+  [0, "#DEE4E8"],
+  [1, "#F3CB7C"],
+  [10, "#ECAC53"],
+  [50, "#E58445"],
+  [100, "#E16742"],
+  [1000, "#BC2D49"],
+  [5000, "#8C114A"],
+  [10000, "#650F56"]
+];
+
+const getDateLayer = (l: any[]) => {
+  return {
+    id: "data",
+    type: "fill",
+    paint: {
+      "fill-color": {
+        property: "confirmed",
+        stops: l
+      },
+      "fill-opacity": 0.8,
+      "fill-outline-color": "white"
+    }
+  };
+}
+
+
 
 const compare = (a: County | State, b: County | State) => {
   if (a.Reported > b.Reported) {
@@ -306,7 +321,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
   }, [props.reportView]);
 
   const mapHeight = { height: props.reportView ? 800 : 350 };
-
+  const legend = viewport.zoom < SHOW_COUNTY_ON_ZOOM ? stateLegend : countyLegend;
   return (
     <div id="map-container" style={{ margin: "2em 1em 0 1em" }}>
       {!props.reportView && (
@@ -397,7 +412,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
                   : filteredCountyData
               }
             >
-              <Layer {...dataLayer} />
+              <Layer {...getDateLayer(legend)} />
             </Source>
             {hoverInfo && renderPopup()}
           </>

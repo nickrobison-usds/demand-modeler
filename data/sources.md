@@ -15,7 +15,7 @@
 
 ### USA Facts
 
-really easy to pull all historical data for counties ❤
+Really easy to pull all historical data for counties ❤. good historical county data
 
 [confirmed.csv](https://static.usafacts.org/public/data/covid-19/covid_confirmed_usafacts.csv)
 [deaths.csv](https://static.usafacts.org/public/data/covid-19/covid_deaths_usafacts.csv)
