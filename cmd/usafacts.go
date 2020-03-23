@@ -35,8 +35,20 @@ func USALoaderCMD() *cli.Command {
 	return &cli.Command{
 		Name:  "usafacts",
 		Usage: "Download and export data from usafacts.org",
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:  "url",
+				Value: "https://usafactsstatic.blob.core.windows.net/public/2020/coronavirus-timeline/allData.json",
+				Usage: "Fact download location",
+			},
+			&cli.StringFlag{
+				Name:  "dir",
+				Value: "data/usafacts",
+				Usage: "Directory to output data",
+			},
+		},
 		Action: func(c *cli.Context) error {
-			loader, err := NewUSALoader(c.Context, "https://usafactsstatic.blob.core.windows.net/public/2020/coronavirus-timeline/allData.json", "data/usafacts")
+			loader, err := NewUSALoader(c.Context, c.String("url"), c.String("dir"))
 			if err != nil {
 				return err
 			}
