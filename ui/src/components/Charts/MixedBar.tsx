@@ -134,8 +134,8 @@ export const MixedBar = (props: Props) => {
           <XAxis height={60} dataKey="Name" />
           <YAxis dataKey="Grand Total" />
           <Tooltip />
-          <Bar dataKey="Existing" stackId="data" fill="#900000" />
           <Bar dataKey="New" stackId="data" fill="#CB2727" />
+          <Bar dataKey="Existing" stackId="data" fill="#900000" />
           <Legend />
         </BarChart>
       </RenderChart>
