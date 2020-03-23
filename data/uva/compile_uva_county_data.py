@@ -8,7 +8,7 @@ UVA_DATA_FILES_REGEX = r'^uva-county_[0-9]{4}-[0-9]{2}-[0-9]{2}.csv'
 
 def create_file(filename):
 	with open(filename, 'w') as f:
-		f.write('countyName, stateName, confirmed, lastUpdate')
+		f.write('countyName, stateName, confirmed, lastUpdate\n')
 
 def get_data_files():
 	files = [f for f in os.listdir('.') if re.match(UVA_DATA_FILES_REGEX, f)]
@@ -62,7 +62,7 @@ def parse_counties_data_by_state(state_row):
 
 
 def write_counties_data_to_file(filename, counties_data):
-	with open(filename, 'w') as csvfile:
+	with open(filename, 'a') as csvfile:
 		writer = csv.writer(csvfile, delimiter=",")
 		for county in counties_data:
 			writer.writerow(county)
