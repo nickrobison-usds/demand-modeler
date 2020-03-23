@@ -17,6 +17,9 @@
 
 really easy to pull all historical data for counties ❤
 
+[confirmed.csv](https://static.usafacts.org/public/data/covid-19/covid_confirmed_usafacts.csv)
+[deaths.csv](https://static.usafacts.org/public/data/covid-19/covid_deaths_usafacts.csv)
+
 [API](https://usafactsstatic.blob.core.windows.net/public/2020/coronavirus-timeline/allData.json)
 [Dashboard](https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/)
 
