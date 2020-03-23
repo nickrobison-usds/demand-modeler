@@ -34,22 +34,21 @@ func NewUSALoader(ctx context.Context, url string) (*USAFactsLoader, error) {
 func (f *USAFactsLoader) Load() ([]*CountyCases, error) {
 	// Download the file from
 
-	resp, err := http.Get("https://usafactsstatic.blob.core.windows.net/public/2020/coronavirus-timeline/allData.json")
+	// "https://usafactsstatic.blob.core.windows.net/public/2020/coronavirus-timeline/allData.json"
+	resp, err := http.Get(f.url)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
 
 	var facts []USAFacts
-	{
-	}
 
 	err = json.NewDecoder(resp.Body).Decode(&facts)
 	if err != nil {
 		return nil, err
 	}
 
-	var totalCases []*CountyCases
+	totalCases := make([]*CountyCases, 0)
 
 	// Transform the facts into something useful
 	for _, fact := range facts {

@@ -1,8 +1,12 @@
 package cmd
 
 import (
+	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/stretchr/testify/assert"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 	"time"
 )
@@ -32,4 +36,30 @@ func TestTransformFacts(t *testing.T) {
 	first := f[0]
 	assert.Equal(t, start, first.Reported, "Should have correct start date")
 	assert.Equal(t, "AL", first.State, "Should have correct abbreviation")
+}
+
+func TestUSALoader(t *testing.T) {
+	srv := createTestServer(t)
+	defer srv.Close()
+
+	loader, err := NewUSALoader(context.Background(), srv.URL)
+	if err != nil {
+		t.Error(err)
+	}
+
+	cases, err := loader.Load()
+	if err != nil {
+		t.Error(err)
+	}
+
+	assert.Equal(t, 61, len(cases), "Should have the correct number of cases")
+}
+
+func createTestServer(t *testing.T) *httptest.Server {
+	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_, err := fmt.Fprint(w, testCase)
+		if err != nil {
+			t.Error(err)
+		}
+	}))
 }
