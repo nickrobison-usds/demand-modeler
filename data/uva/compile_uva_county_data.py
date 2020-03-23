@@ -79,7 +79,12 @@ def parse_counties_data_by_state(state_row):
 	if len(last_update_tokens) != 2 or ":" not in last_update_tokens[1]:
 		#print(f"no county data detected: {state_name}")
 		county_placeholder_name = f"county-not-specified-{state_name}"
-		state_confirmed_cases = int(state_row[2])
+
+		state_confirmed_cases = state_row[2]
+		# remove "," from integers
+		state_confirmed_cases = state_confirmed_cases.replace(",", "")
+		state_confirmed_cases = int(state_confirmed_cases)
+		
 		confirmed_cases_by_county.append(
 			[county_placeholder_name, state_name, 
 			state_confirmed_cases, last_update_timestamp])
