@@ -9,10 +9,8 @@ interface StateResponse {
   ID: string;
   State: string;
   Reported: string;
-  NewConfirmed: number;
   Confirmed: number;
   Dead: number;
-  NewDead: number;
 }
 
 interface CountyResponse {
@@ -20,10 +18,8 @@ interface CountyResponse {
   County: string;
   State: string;
   Reported: string;
-  NewConfirmed: number;
   Confirmed: number;
   Dead: number;
-  NewDead: number;
 }
 
 export async function getCountyCases(

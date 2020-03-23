@@ -21,9 +21,7 @@ const makeStateData = (day: number): State[] => {
       ID: `${i}`,
       State: name,
       Confirmed: Math.round(Math.random() * 1000),
-      NewConfirmed: Math.round(Math.random() * 1000),
       Dead: Math.round(Math.random() * 100),
-      NewDead: Math.round(Math.random() * 100),
       CountyIDs: new Array(11).fill(1).map((_, j) => `${i}|${j}`),
       Reported: new Date(`3/${day}/2020`)
     };
@@ -39,9 +37,7 @@ const makeCountyData = (day: number): County[] => {
         County: `${state.slice(0, 2).toUpperCase()}-${j}`,
         State: `${state}`,
         Confirmed: Math.round(Math.random() * 400),
-        NewConfirmed: Math.round(Math.random() * 400),
         Dead: Math.round(Math.random() * 30),
-        NewDead: Math.round(Math.random() * 30),
         Reported: new Date(`3/${day}/2020`)
       });
     });
@@ -54,9 +50,7 @@ function buildStateMap(): { [key: string]: State[] } {
     {
       ID: "01",
       State: "New York",
-      NewConfirmed: 1204,
       Confirmed: 1204,
-      NewDead: 80,
       Dead: 80,
       CountyIDs: ["01|02"],
       // Geo: {
@@ -160,10 +154,8 @@ function buildCountyMap(): { [key: string]: County[] } {
       ID: "01|02",
       County: "Westchester",
       State: "New York",
-      NewConfirmed: 180,
       Confirmed: 180,
       Dead: 3,
-      NewDead: 3,
       // Geo: {
       //   type: "Polygon",
       //   coordinates: [
