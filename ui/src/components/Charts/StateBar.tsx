@@ -86,7 +86,7 @@ export const StateBar = (props: Props) => {
       );
     });
 
-  const dedupedData: any[] = [];
+  let dedupedData: { [k: string]: string | number }[] = [];
   data.forEach(e => {
     const dedupedElement: any = {};
     const d = Object.keys(e).sort();
@@ -118,6 +118,25 @@ export const StateBar = (props: Props) => {
     }
   });
 
+  dedupedData = dedupedData.slice(0, 10);
+
+  const finalData = dedupedData.map(data => {
+    const obj: { [k: string]: string | number } = {};
+    const entries = Object.entries(data);
+    entries.forEach(([key, value], i) => {
+      if (key !== "Name" && i > 0) {
+        const newCases = (value as number) - (entries[i - 1][1] as number);
+        obj[`${key} New`] = newCases;
+        obj[`${key} Existing`] = (value as number) - newCases;
+      } else if (key !== "Name" && i === 0) {
+        obj[`${key} Existing`] = value;
+        obj[`${key} New`] = 0;
+      }
+      obj[key] = value;
+    });
+    return obj;
+  });
+
   return (
     <>
       <h3>{props.title ? props.title : title}</h3>
@@ -125,7 +144,7 @@ export const StateBar = (props: Props) => {
         barSize={10}
         width={props.reportView ? window.innerWidth * 0.9 : undefined}
         height={880}
-        data={dedupedData.slice(0, 10)}
+        data={finalData}
         margin={{
           top: 0,
           right: 0,
@@ -151,9 +170,28 @@ export const StateBar = (props: Props) => {
         <Tooltip />
         <div style={{ padding: "10px" }} />
         <Legend />
-        {displayDates.map((date, i) => (
-          <Bar key={date} dataKey={date.split("|")[0]} fill={colors[i]} />
-        ))}
+        {displayDates.map((date, i) => {
+          return (
+            <Bar
+              id={`${date.split("|")[0]}`}
+              key={`${date.split("|")[0]} New`}
+              stackId={`${date.split("|")[0]}`}
+              dataKey={`${date.split("|")[0]} New`}
+              fill={colors[i]}
+            />
+          );
+        })}
+        {displayDates.map((date, i) => {
+          return (
+            <Bar
+              id={`${date.split("|")[0]}`}
+              key={`${date.split("|")[0]} Existing`}
+              stackId={`${date.split("|")[0]}`}
+              dataKey={`${date.split("|")[0]} Existing`}
+              fill={`#900000`}
+            />
+          );
+        })}
       </BarChart>
     </>
   );

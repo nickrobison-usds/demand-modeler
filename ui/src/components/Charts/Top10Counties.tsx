@@ -77,7 +77,7 @@ export const Top10Counties = (props: Props) => {
       );
     });
 
-  const dedupedData: any[] = [];
+  let dedupedData: { [k: string]: string | number }[] = [];
   data.forEach(e => {
     const dedupedElement: any = {};
     const d = Object.keys(e).sort();
@@ -123,6 +123,25 @@ export const Top10Counties = (props: Props) => {
     }
   });
 
+  dedupedData = dedupedData.slice(0, 10);
+
+  const finalData = dedupedData.map(data => {
+    const obj: { [k: string]: string | number } = {};
+    const entries = Object.entries(data);
+    entries.forEach(([key, value], i) => {
+      if (key !== "Name" && i > 0) {
+        const newCases = (value as number) - (entries[i - 1][1] as number);
+        obj[`${key} New`] = newCases;
+        obj[`${key} Existing`] = (value as number) - newCases;
+      } else if (key !== "Name" && i === 0) {
+        obj[`${key} Existing`] = value;
+        obj[`${key} New`] = 0;
+      }
+      obj[key] = value;
+    });
+    return obj;
+  });
+
   return (
     <>
       <RenderChart
@@ -133,7 +152,7 @@ export const Top10Counties = (props: Props) => {
           barSize={10}
           width={window.innerWidth * 0.9}
           height={880}
-          data={dedupedData.slice(0, 10)}
+          data={finalData}
           margin={{
             top: 0,
             right: 0,
@@ -160,7 +179,22 @@ export const Top10Counties = (props: Props) => {
           <div style={{ padding: "10px" }} />
           <Legend />
           {displayDates.map((date, i) => (
-            <Bar key={date} dataKey={date.split("|")[0]} fill={colors[i]} />
+            <Bar
+              key={`${date.split("|")[0]} New`}
+              id={`${date.split("|")[0]}`}
+              stackId={date.split("|")[0]}
+              dataKey={`${date.split("|")[0]} New`}
+              fill={colors[i]}
+            />
+          ))}
+          {displayDates.map(date => (
+            <Bar
+              key={`${date.split("|")[0]} Existing`}
+              id={`${date.split("|")[0]}`}
+              stackId={date.split("|")[0]}
+              dataKey={`${date.split("|")[0]} Existing`}
+              fill={"#900000"}
+            />
           ))}
         </BarChart>
       </RenderChart>
