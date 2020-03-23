@@ -89,11 +89,11 @@ const compare = (a: County | State, b: County | State) => {
 const round = (num: number, decimals: number = 1) =>
   Math.round(num * 10 ** decimals) / 10 ** decimals;
 
-interface Props {
+export interface CountyMapProps {
   reportView?: boolean;
 }
 
-const CountyMap: React.FunctionComponent<Props> = props => {
+const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
   const SHOW_COUNTY_ON_ZOOM = props.reportView ? 2 : 4;
   const FILL_STATE_COUNTIES = 6;
   const [countyData, setCountyData] = useState<GeoJSON.FeatureCollection>(
