@@ -1,5 +1,13 @@
 import React from "react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend
+} from "recharts";
 import { CovidDateData } from "../../app/AppStore";
 import { monthDay } from "../../utils/DateUtils";
 import { RenderChart } from "./RenderChart";
@@ -86,6 +94,20 @@ export const MixedBar = (props: Props) => {
     props.timeSeries
   );
 
+  const finalData = dedupedData.map((data, i) => {
+    if (!dedupedData[i - 1]) {
+      return { ...data, Existing: data["Grand Total"] };
+    }
+    const newCases = data["Grand Total"] - dedupedData[i - 1]["Grand Total"];
+    return {
+      ...data,
+      New: newCases,
+      Existing: data["Grand Total"] - newCases
+    };
+  });
+
+  console.log(finalData);
+
   return (
     <div>
       <h3>
@@ -100,7 +122,7 @@ export const MixedBar = (props: Props) => {
           barSize={50}
           width={props.reportView ? window.innerWidth * 0.9 : undefined}
           height={880}
-          data={dedupedData}
+          data={finalData}
           margin={{
             top: 0,
             right: 0,
@@ -112,7 +134,9 @@ export const MixedBar = (props: Props) => {
           <XAxis height={60} dataKey="Name" />
           <YAxis dataKey="Grand Total" />
           <Tooltip />
-          <Bar dataKey="Grand Total" fill="#900000" />
+          <Bar dataKey="Existing" stackId="data" fill="#900000" />
+          <Bar dataKey="New" stackId="data" fill="#CB2727" />
+          <Legend />
         </BarChart>
       </RenderChart>
     </div>
