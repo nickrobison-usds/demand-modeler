@@ -126,17 +126,17 @@ export const CountyTrendGraph = (props: Props) => {
           ))}
           <Legend
             content={
-              <CustomLegend
-                labelColors={labelColors}
-                labels={labelOrder.slice(0, MAX_COUNTIES)}
-              />
+              <>
+                <CustomLegend
+                  labelColors={labelColors}
+                  labels={labelOrder.slice(0, MAX_COUNTIES)}
+                />
+                {hiddenCounties > 0 && <div>+{hiddenCounties} more</div>}
+              </>
             }
           />
         </LineChart>
       </RenderChart>
-      {hiddenCounties > 0 && (
-        <div style={{ marginLeft: "20px" }}>+{hiddenCounties} more</div>
-      )}
     </>
   );
 };
@@ -156,6 +156,7 @@ const CustomLegend: React.FC<LegendProps> = ({ labelColors, labels }) => {
     acc[acc.length - 1].push(el);
     return acc;
   }, [] as string[][]);
+  let index = 1;
   return (
     <>
       <p>Counties</p>
@@ -174,7 +175,7 @@ const CustomLegend: React.FC<LegendProps> = ({ labelColors, labels }) => {
                       backgroundColor: labelColors[label]
                     }}
                   ></span>
-                  {label}
+                  {index++}. {label}
                 </li>
               ))}
             </ul>
