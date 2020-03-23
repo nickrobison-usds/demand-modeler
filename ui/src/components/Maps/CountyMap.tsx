@@ -110,6 +110,8 @@ const CountyMap: React.FunctionComponent<Props> = props => {
 
   const mapWidth = useResizeToContainer("#map-container");
 
+  console.log(mapWidth);
+
   const {
     dispatch,
     state,

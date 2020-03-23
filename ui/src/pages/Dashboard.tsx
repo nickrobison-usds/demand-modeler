@@ -44,9 +44,11 @@ export const Dashboard: React.FC<{}> = () => {
               </Card>
             </div>
             <div className="dashboard">
-              <div className="map-container">
+              <div>
                 <Card>
-                  <CountyMap />
+                  <div>
+                    <CountyMap />
+                  </div>
                   <div style={{ marginTop: "20px" }}>
                     <USATotals />
                   </div>

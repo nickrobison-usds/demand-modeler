@@ -4,20 +4,27 @@
 }
 
 .dashboard {
-  margin-top: 100px;
   display: grid;
-  width: 100%;
+  width: 100vw;
 }
 
 .dashboard-nav {
   width: 100%;
 }
-
+@media screen and (max-width: 1024px) {
+  .card {
+    max-width: calc(100vw - 45px);
+  }
+  #map-container {
+    width: calc(100% - 25px);
+  }
+}
 @media screen and (min-width: 1024px) {
   .dashboard-nav {
     position: fixed;
   }
   .dashboard {
+    margin-top: 100px;
     grid-template-columns: 40% 60%;
     div {
       margin-top: 0px;
