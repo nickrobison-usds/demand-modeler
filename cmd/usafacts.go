@@ -135,10 +135,12 @@ func transformFact(fact *USAFacts) ([]*CountyCases, error) {
 		}
 
 		cases = append(cases, &CountyCases{
-			ID:        fact.CountyFIPS,
-			County:    fact.County,
-			State:     fact.StateAbbr,
-			CaseCount: c,
+			ID:         fact.CountyFIPS,
+			County:     fact.County,
+			State:      fact.StateAbbr,
+			StateFIPS:  fact.StateFIPS,
+			CountyFIPS: fact.CountyFIPS,
+			CaseCount:  c,
 		})
 	}
 	return cases, nil

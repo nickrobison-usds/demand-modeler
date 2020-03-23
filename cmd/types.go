@@ -1,6 +1,9 @@
 package cmd
 
-import "time"
+import (
+	"strconv"
+	"time"
+)
 
 type CaseCount struct {
 	Confirmed    int
@@ -11,14 +14,16 @@ type CaseCount struct {
 }
 
 type CountyCases struct {
-	ID     string
-	County string
-	State  string
+	ID         string
+	County     string
+	State      string
+	StateFIPS  string
+	CountyFIPS string
 	*CaseCount
 }
 
 func (c *CountyCases) ToRow() []string {
-	return []string{c.County, c.State, string(c.Confirmed), c.Reported.Format(time.RFC822Z), "0", "0"}
+	return []string{c.County, c.State, strconv.Itoa(c.Confirmed), c.Reported.Format(time.RFC822Z), c.StateFIPS, c.CountyFIPS}
 }
 
 type StateCases struct {

@@ -2,11 +2,14 @@ package cmd
 
 import (
 	"context"
+	"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"github.com/stretchr/testify/assert"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 	"time"
 )
@@ -46,7 +49,12 @@ func TestUSALoader(t *testing.T) {
 	srv := createTestServer(t)
 	defer srv.Close()
 
-	loader, err := NewUSALoader(context.Background(), srv.URL)
+	dir, err := ioutil.TempDir("", "fearless-dreamer")
+	if err != nil {
+		t.Error(err)
+	}
+
+	loader, err := NewUSALoader(context.Background(), srv.URL, dir)
 	if err != nil {
 		t.Error(err)
 	}
@@ -57,6 +65,30 @@ func TestUSALoader(t *testing.T) {
 	}
 
 	assert.Equal(t, 61, len(cases), "Should have the correct number of cases")
+
+	// Write it to a CSV
+	csvFile, err := loader.writeCSV(cases)
+	if err != nil {
+		t.Error(err)
+	}
+
+	// Read it back from CSV
+	f, err := os.Open(csvFile)
+	if err != nil {
+		t.Error(err)
+	}
+	defer f.Close()
+
+	reader := csv.NewReader(f)
+	rows, err := reader.ReadAll()
+	if err != nil {
+		t.Error(err)
+	}
+	assert.Equal(t, 62, len(rows), "Should have an equal number of rows, plus a header")
+	// Read the first non-header row and poke at some values
+	assert.Equal(t, "0", rows[1][2], "Should have confirmed cases")
+	assert.Equal(t, "22 Jan 20 00:00 +0000", rows[1][3], "Should have January report time")
+	assert.Equal(t, "01", rows[1][4], "Should have Alabama state fips")
 }
 
 func createTestServer(t *testing.T) *httptest.Server {
