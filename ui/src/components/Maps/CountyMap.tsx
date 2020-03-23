@@ -127,9 +127,9 @@ const CountyMap: React.FunctionComponent<Props> = props => {
             if (dateType === "Total") {
               Confirmed = c[0].Confirmed;
             } else if (dateType === "Increase") {
-              Confirmed = c[0].NewConfirmed;
+              Confirmed = c.length > 1 ? c[1].Confirmed : 0;
             } else {
-              Confirmed = round((c[0].NewConfirmed / c[0].Confirmed) * 100);
+              Confirmed = c.length > 1 ? round((c[1].Confirmed / c[0].Confirmed) * 100) : 0;
             }
             Name = `${c[0].County}, ${stateAbbreviation[c[0].State]}`;
           }
@@ -161,9 +161,9 @@ const CountyMap: React.FunctionComponent<Props> = props => {
             if (dateType === "Total") {
               Confirmed = s[0].Confirmed;
             } else if (dateType === "Increase") {
-              Confirmed = s[0].NewConfirmed;
+              Confirmed = s.length > 1 ? s[1].Confirmed : 0;
             } else {
-              Confirmed = round((s[0].NewConfirmed / s[0].Confirmed) * 100);
+              Confirmed = s.length > 1 ? round((s[1].Confirmed / s[0].Confirmed) * 100) : 0;
             }
             Name = s[0].State;
           }

@@ -2,9 +2,7 @@ import { AppState, County, State } from "../app/AppStore";
 
 export interface Stats {
   Confirmed: number;
-  NewConfirmed: number;
   Dead: number;
-  NewDead: number;
 }
 
 export type GrandTotal = {
@@ -128,16 +126,12 @@ export const getCountyGrandTotal = (appState: AppState): GrandTotal => {
     if (!acc[key]) {
       acc[key] = {
         Confirmed: 0,
-        NewConfirmed: 0,
         Dead: 0,
-        NewDead: 0
       };
     }
     acc[key] = {
       Confirmed: acc[key].Confirmed + el.Confirmed,
-      NewConfirmed: acc[key].NewConfirmed + el.NewConfirmed,
       Dead: acc[key].Dead + el.Dead,
-      NewDead: acc[key].NewDead + el.NewDead
     };
     return acc;
   }, {} as GrandTotal);

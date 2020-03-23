@@ -11,10 +11,8 @@ import * as DateUtils from "../utils/DateUtils";
 // import mapboxgl from "mapbox-gl";
 
 export interface CovidStats {
-  NewConfirmed: number;
   Confirmed: number;
   Dead: number;
-  NewDead: number;
 }
 
 export enum ActionType {
