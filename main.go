@@ -26,14 +26,7 @@ func main() {
 	app := &cli.App{
 		Name: "Fearless Dreamer",
 		Commands: []*cli.Command{
-			{
-				Name:  "usafacts",
-				Usage: "Download and export data from usafacts.org",
-				Action: func(c *cli.Context) error {
-					fmt.Println("Running facts command")
-					return nil
-				},
-			},
+			cmd.USALoaderCMD(),
 		},
 		Action: runServer,
 	}

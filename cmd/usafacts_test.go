@@ -32,10 +32,14 @@ func TestTransformFacts(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+	start = start.AddDate(2020, 0, 0)
 
 	first := f[0]
 	assert.Equal(t, start, first.Reported, "Should have correct start date")
 	assert.Equal(t, "AL", first.State, "Should have correct abbreviation")
+	last := f[len(f)-1]
+	assert.Equal(t, start.AddDate(0, 0, 60), last.Reported, "Should have correct start date")
+	assert.Equal(t, "AL", last.State, "Should have correct abbreviation")
 }
 
 func TestUSALoader(t *testing.T) {

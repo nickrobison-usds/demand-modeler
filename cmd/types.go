@@ -17,6 +17,10 @@ type CountyCases struct {
 	*CaseCount
 }
 
+func (c *CountyCases) ToRow() []string {
+	return []string{c.County, c.State, string(c.Confirmed), c.Reported.Format(time.RFC822Z), "0", "0"}
+}
+
 type StateCases struct {
 	ID    string
 	State string
