@@ -166,8 +166,9 @@ export const StateMixedBar = (props: Props) => {
     const entries = Object.entries(data);
     entries.forEach(([key, value], i) => {
       if (key !== "Name" && i > 0) {
-        const newCases = (value as number) - (entries[i - 1][1] as number);
-        obj[`${key} New`] = newCases;
+        let newCases = (value as number) - (entries[i - 1][1] as number);
+        if (newCases < 0) newCases = 0;
+        obj[`${key} New`] = newCases > 0 ? newCases : 0;
         obj[`${key} Existing`] = (value as number) - newCases;
       } else if (key !== "Name" && i === 0) {
         obj[`${key} Existing`] = value;
