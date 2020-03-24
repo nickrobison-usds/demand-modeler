@@ -32,6 +32,7 @@ const legendLookup: { [key in DataType]: string } = {
   Increase: "Increase in Confirmed Cases"
 };
 
+const EXCLUDE_PERCENT_INCREASE_CASES_BELOW = 20;
 const ALASKA_COORDS = [
   -173.14944218750094,
   70.47019617187733,
@@ -120,7 +121,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
   const [stateData, setStateData] = useState<GeoJSON.FeatureCollection>(
     stateGeoData as any
   );
-  const [dataType, setDataType] = useState<DataType>("Total");
+  const [dataType, setDataType] = useState<DataType>("New");
   const [viewport, setViewport] = useState(
     initialState.mapView as ViewportProps
   );
@@ -138,14 +139,14 @@ const CountyMap: React.FunctionComponent<Props> = props => {
   const getDateLayer = (level: "state" | "county") => {
     const x = legendScales[dataType][level];
     return [
-      [x.scale[0] * x.end, "#DEE4E8"],
-      [x.scale[1] * x.end, "#F3CB7C"],
-      [x.scale[2] * x.end, "#ECAC53"],
-      [x.scale[3] * x.end, "#E58445"],
-      [x.scale[4] * x.end, "#E16742"],
-      [x.scale[5] * x.end, "#BC2D49"],
-      [x.scale[6] * x.end, "#8C114A"],
-      [x.scale[7] * x.end, "#650F56"]
+      [x.scale[0], "#DEE4E8"],
+      [x.scale[1], "#F3CB7C"],
+      [x.scale[2], "#ECAC53"],
+      [x.scale[3], "#E58445"],
+      [x.scale[4], "#E16742"],
+      [x.scale[5], "#BC2D49"],
+      [x.scale[6], "#8C114A"],
+      [x.scale[7], "#650F56"]
     ];
   };
 
@@ -171,10 +172,14 @@ const CountyMap: React.FunctionComponent<Props> = props => {
               Confirmed = region.length > 1 ? region[1].Confirmed : 0;
             } else {
               if (region.length > 1) {
-                const prev = region[1].Confirmed;
-                const now = region[0].Confirmed;
-                const change = now - prev;
-                Confirmed = round((change/ prev) * 100);
+                if (region[0].Confirmed < EXCLUDE_PERCENT_INCREASE_CASES_BELOW) {
+                  Confirmed = 0;
+                } else {
+                  const prev = region[1].Confirmed;
+                  const now = region[0].Confirmed;
+                  const change = now - prev;
+                  Confirmed = round((change/ prev) * 100);
+                }
               } else {
                 Confirmed = 0;
               }
@@ -185,8 +190,8 @@ const CountyMap: React.FunctionComponent<Props> = props => {
               max = Confirmed;
             }
             Name = level === "state" ? region[0].State : `${(region[0] as County).County}, ${stateAbbreviation[region[0].State]}`;
-            if (Confirmed > 100 && dataType === "New") {
-              console.log(Name, Confirmed);
+            if ((Confirmed > 100 || Confirmed < -100) && dataType === "New") {
+              console.log(Name, Confirmed, region[1].Confirmed, region[0].Confirmed, region[0].Confirmed - region[1].Confirmed);
             }
           }
         }
@@ -200,6 +205,27 @@ const CountyMap: React.FunctionComponent<Props> = props => {
         }
       };
     });
+
+
+    if (dataType === "Total") {
+      const newLegend = {...legendScales};
+      newLegend.Total[level].scale = Array.from(defaultScale, e => round(e * max));
+
+      setLegendScales(newLegend);
+    } else if (dataType === "Increase") {
+      const newLegend = {...legendScales};
+      newLegend.Increase[level].scale = Array.from(defaultScale, e => round(e * max));
+      console.log(level, "Increase", max, newLegend.Increase[level].scale)
+
+      setLegendScales(newLegend);
+    } else {
+      const newLegend = {...legendScales};
+      newLegend.New[level].scale = [0, 5, 10, 25, 50, 100, 200, 400];
+      console.log(level, "New", max, newLegend.New[level].scale)
+
+      setLegendScales(newLegend);
+    }
+
     console.log(min, max)
     return formatedGeoJSON;
   }
