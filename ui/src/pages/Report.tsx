@@ -74,7 +74,7 @@ export const Report: React.FC<{}> = () => {
           .slice(0, 10);
         return (
           <div className="report grid-container" style={{ marginLeft: 0 }}>
-            {/* <CountyMap
+            <CountyMap
               reportView
               dataType={"New"}
               title={"Percent Increase for Counties with 20+ reported cases"}
@@ -83,7 +83,7 @@ export const Report: React.FC<{}> = () => {
               reportView
               dataType={"Total"}
               title={"Total Confirmed Cases"}
-            /> */}
+            />
             <CountyMap
               reportView
               dataType={"New"}
