@@ -63,7 +63,42 @@ export const Report: React.FC<{}> = () => {
           .slice(0, 10);
         return (
           <div className="report grid-container" style={{ marginLeft: 0 }}>
-            <CountyMap reportView />
+            <CountyMap
+              reportView
+              dataType={"New"}
+              title={"Percent Increase for Counties with 20+ reported cases"}
+            />
+            <CountyMap
+              reportView
+              dataType={"Total"}
+              title={"Total Confirmed Cases"}
+            />
+            <CountyMap
+              reportView
+              dataType={"New"}
+              title={
+                "Percent Increase for Counties with 20+ reported cases near NYC"
+              }
+              viewport={{
+                width: 400,
+                height: 600,
+                latitude: 40.7709,
+                longitude: -73.9712,
+                zoom: 1
+              }}
+            />
+            <CountyMap
+              reportView
+              dataType={"Total"}
+              title={"Total Confirmed Cases near NYC"}
+              viewport={{
+                width: 400,
+                height: 600,
+                latitude: 40.7709,
+                longitude: -73.9712,
+                zoom: 4
+              }}
+            />
             {lastUpdated && pagebreak(lastUpdated)}
             {top10States.map(s => (
               <>

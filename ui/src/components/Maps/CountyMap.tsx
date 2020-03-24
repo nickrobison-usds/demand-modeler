@@ -5,7 +5,8 @@ import {
   County,
   State,
   initialState,
-  Metric
+  Metric,
+  MapView
 } from "../../app/AppStore";
 import ReactMapGL, {
   Layer,
@@ -112,6 +113,9 @@ const round = (num: number, decimals: number = 1) =>
 
 interface Props {
   reportView?: boolean;
+  dataType?: DataType;
+  title?: string;
+  viewport?:any;
 }
 
 const CountyMap: React.FunctionComponent<Props> = props => {
@@ -123,9 +127,9 @@ const CountyMap: React.FunctionComponent<Props> = props => {
   const [stateData, setStateData] = useState<GeoJSON.FeatureCollection>(
     stateGeoData as any
   );
-  const [dataType, setDataType] = useState<DataType>("New");
-  const [viewport, setViewport] = useState(
-    initialState.mapView as ViewportProps
+  const [dataType, setDataType] = useState<DataType>(props.dataType? props.dataType : "New");
+  const [viewport, setViewport] = useState((props.viewport? props.viewport :
+    initialState.mapView) as ViewportProps
   );
   const [hoverInfo, setHoverInfo] = useState<{ [k: string]: any } | null>();
   const [legendScales, setLegendScales] = useState<LegendScales>(defaultLegend);
@@ -236,6 +240,11 @@ const CountyMap: React.FunctionComponent<Props> = props => {
 
     if (dataType === "Total") {
       const newLegend = { ...legendScales };
+      if (level === "county") {
+        max = 2000;
+      } else {
+        max = 6000;
+      }
       newLegend.Total[level].scale = Array.from(defaultScale, e =>
         round(e * max)
       );
@@ -516,7 +525,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
       </ReactMapGL>
       <div>
         <p style={{ margin: "10px 0" }}>
-          {legendLookup(state.selection.metric)[dataType]}
+          {props.title ? props.title: legendLookup(state.selection.metric)[dataType]}
         </p>
         {legend.map(k => (
           <span
