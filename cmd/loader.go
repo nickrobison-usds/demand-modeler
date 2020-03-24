@@ -131,7 +131,7 @@ func (d *DataLoader) loadCaseFile(file string) error {
 			"Dead, NewDead, Update) VALUES($1, $2, $3, $4, $5, $6)", geoid, row[2], row[3], dead, newDead, row[8])
 		if err != nil {
 			log.Printf("Error inserting county: %s, %s. %s %s\n", row[0], row[1], geoid, row[8])
-			return err
+			// return err
 		}
 
 	}
@@ -183,7 +183,8 @@ func (d *DataLoader) createNewCounty(row []string) (string, error) {
 	_, err := d.conn.Exec(d.ctx, "INSERT INTO Counties(County, State, "+
 		"StateFP, CountyFP, ID) VALUES($1, $2, $3, $4, $5)", row[0], row[1], state, county, geoid)
 	if err != nil {
-		return "", err
+		log.Printf("Error inserting county: %s, %s. %s %s\n", row[0], row[1], geoid, row[8])
+		// return "", err
 	}
 
 	return geoid, nil

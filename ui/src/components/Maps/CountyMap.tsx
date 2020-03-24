@@ -147,9 +147,13 @@ const CountyMap: React.FunctionComponent<Props> = props => {
   const [stateData, setStateData] = useState<GeoJSON.FeatureCollection>(
     stateGeoData as any
   );
+<<<<<<< HEAD
   const [dataType, setDataType] = useState<DataType>(
     props.dataType ? props.dataType : "New"
   );
+=======
+  const [dataType, setDataType] = useState<DataType>(props.dataType ? props.dataType : "New");
+>>>>>>> WIP
   const [viewport, setViewport] = useState(
     initialState.mapView as ViewportProps
   );
@@ -238,7 +242,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
                 : `${(region[0] as County).County}, ${
                     stateAbbreviation[region[0].State]
                   }`;
-            if ((metric > 100 || metric < -100) && dataType === "New") {
+            if ((metric > 400 || metric < -400) && dataType === "New") {
               console.log(
                 Name,
                 metric,
