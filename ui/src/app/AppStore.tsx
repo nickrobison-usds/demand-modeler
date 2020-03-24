@@ -18,6 +18,7 @@ export interface CovidStats {
 export enum ActionType {
   UPDATE_SELECTED_STATE = "UPDATE_SELECTED_STATE",
   UPDATE_SELECTED_COUNTY = "UPDATE_SELECTED_COUNTY",
+  UPDATE_SELECTED_METRIC = "UPDATE_SELECTED_METRIC",
   UPDATE_MAPVIEW = "UPDATE_MAP",
   LOAD_DATA = "LOAD_DATA"
 }
@@ -64,12 +65,15 @@ export interface GraphMetaData {
   maxConfirmedState: number;
 }
 
+export type Metric = "confirmed" | "dead";
+
 // TODO: seperate Geo data from time series data
 export interface AppState {
   selection: {
     date: string;
     state?: string;
     county?: string;
+    metric: Metric;
   };
   graphMetaData?: GraphMetaData;
   covidTimeSeries: CovidDateData;
@@ -80,7 +84,8 @@ const DEFAULT_LNG = -99.0762;
 const DEFAULT_ZOOM = 2;
 export const initialState: AppState = {
   selection: {
-    date: DateUtils.formatDate(new Date())
+    date: DateUtils.formatDate(new Date()),
+    metric: "confirmed"
   },
   covidTimeSeries: {
     states: {},
@@ -246,12 +251,25 @@ const updateSelectedCounty = (
   };
 };
 
+const updateSelectedMetric = (
+  state: AppState,
+  { payload }: Action
+): AppState => {
+  const metric = payload as Metric;
+  return {
+    ...state,
+    selection: { ...state.selection, metric }
+  };
+};
+
 const reducer: Reducer<AppState, Action> = (state, action) => {
   switch (action.type) {
     case ActionType.UPDATE_SELECTED_STATE:
       return updateSelectedState(state, action);
     case ActionType.UPDATE_SELECTED_COUNTY:
       return updateSelectedCounty(state, action);
+    case ActionType.UPDATE_SELECTED_METRIC:
+      return updateSelectedMetric(state, action);
     case ActionType.UPDATE_MAPVIEW:
       return updateMapView(state, action);
     case ActionType.LOAD_DATA:
