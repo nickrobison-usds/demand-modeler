@@ -46,8 +46,8 @@ const countyLegend = [
   [11, "#E58445"],
   [51, "#E16742"],
   [101, "#BC2D49"],
-  [201, "#8C114A"],
-  [501, "#650F56"]
+  [501, "#8C114A"],
+  [1001, "#650F56"]
 ];
 
 const stateLegend = [
@@ -437,7 +437,8 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
           <span
             key={k[0]}
             style={{
-              marginRight: props.reportView ? "10px" : "5px"
+              marginRight: props.reportView ? "10px" : "5px",
+              whiteSpace: "nowrap"
             }}
           >
             <span

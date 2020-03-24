@@ -15,16 +15,12 @@
 
 ## County Level
 
-### Johns Hopkins
+### COVID Tracking
 
-[Dashboard](https://systems.jhu.edu/research/public-health/2019-ncov-map-faqs/)
-[Data Dumps](https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data)
+links to state data
 
-Data:
-
-* Total Confirmed
-* Total Deaths
-* Total Recovered
+[data](https://covidtracking.com/)
+[github](https://github.com/COVID19Tracking)
 
 ### USA Facts
 
@@ -56,12 +52,16 @@ You can curate this into a csv format including counties by searching for "Unite
 [Dashboard](https://nssac.bii.virginia.edu/covid-19/dashboard/)
 [Export](https://docs.google.com/spreadsheets/d/1jLAjzYMcsPo71qu5uBxjT_dAzj8vxZfvnTMR-Xp3-v8/edit#gid=1076558078)
 
-### COVID Tracking
+### Johns Hopkins
 
-links to state data
+[Dashboard](https://systems.jhu.edu/research/public-health/2019-ncov-map-faqs/)
+[Data Dumps](https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data)
 
-[data](https://covidtracking.com/)
-[github](https://github.com/COVID19Tracking)
+Data:
+
+* Total Confirmed
+* Total Deaths
+* Total Recovered
 
 ## Other
 
