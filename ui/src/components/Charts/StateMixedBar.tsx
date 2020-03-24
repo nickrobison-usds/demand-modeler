@@ -57,7 +57,9 @@ export const StateMixedBar = (props: Props) => {
     if (stateName !== "") {
       title = `${stateName}`;
     } else {
-      title = `Counties with the highest number of cases`;
+      title = `Counties with the highest number of ${
+        props.stat === "confirmed" ? "cases" : "deaths"
+      }`;
     }
     let countyData = Object.keys(props.timeSeries.counties).flatMap(
       k => props.timeSeries.counties[k]
@@ -66,7 +68,10 @@ export const StateMixedBar = (props: Props) => {
       countyData = countyData.filter(({ State }) => State === stateName);
     }
     if (props.meta) {
-      maxCases = props.meta.maxConfirmedCounty;
+      maxCases =
+        props.stat === "confirmed"
+          ? props.meta.maxConfirmedCounty
+          : props.meta.maxDeadCounty;
     }
     dates = [
       ...new Set(countyData.map(({ Reported }) => monthDay(Reported)))
@@ -86,7 +91,9 @@ export const StateMixedBar = (props: Props) => {
     }, [] as { [k: string]: string | number }[]);
   } else {
     // Top 10 states
-    title = "States with the highest number of cases";
+    title = `States with the highest number of ${
+      props.stat === "confirmed" ? "cases" : "deaths"
+    }`;
     const stateData = Object.keys(props.timeSeries.states).flatMap(
       k => props.timeSeries.states[k]
     );
@@ -94,7 +101,10 @@ export const StateMixedBar = (props: Props) => {
       ...new Set(stateData.map(({ Reported }) => monthDay(Reported)))
     ].sort();
     if (props.meta) {
-      maxCases = props.meta.maxConfirmedState;
+      maxCases =
+        props.stat === "confirmed"
+          ? props.meta.maxConfirmedState
+          : props.meta.maxDeadState;
     }
     const states = stateData.reduce((acc, el) => {
       if (!acc[el.State]) acc[el.State] = {};

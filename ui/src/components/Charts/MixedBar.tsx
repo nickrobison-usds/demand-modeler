@@ -108,7 +108,9 @@ export const MixedBar = (props: Props) => {
   });
 
   const title = locationName
-    ? `Number of confirmed cases in ${locationName}`
+    ? `Number of ${
+        props.stat === "confirmed" ? "confirmed cases" : "deaths"
+      } in ${locationName}`
     : "No data reported";
 
   return (

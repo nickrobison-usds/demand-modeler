@@ -63,6 +63,8 @@ export interface CovidDateData {
 export interface GraphMetaData {
   maxConfirmedCounty: number;
   maxConfirmedState: number;
+  maxDeadCounty: number;
+  maxDeadState: number;
 }
 
 export type Metric = "confirmed" | "dead";
@@ -112,12 +114,17 @@ const setCovidData = (state: AppState, { payload }: Action): AppState => {
     );
     let maxConfirmedCounty = 0;
     let maxConfirmedState = 0;
+    let maxDeadCounty = 0;
+    let maxDeadState = 0;
     countyData.forEach(e => {
       if (
         maxConfirmedCounty < e.Confirmed &&
         !EXCLUDED_STATES.includes(e.State)
       ) {
         maxConfirmedCounty = e.Confirmed;
+      }
+      if (maxDeadCounty < e.Dead && !EXCLUDED_STATES.includes(e.State)) {
+        maxDeadCounty = e.Dead;
       }
     });
     stateData.forEach(e => {
@@ -126,6 +133,9 @@ const setCovidData = (state: AppState, { payload }: Action): AppState => {
         !EXCLUDED_STATES.includes(e.State)
       ) {
         maxConfirmedState = e.Confirmed;
+      }
+      if (maxDeadState < e.Dead && !EXCLUDED_STATES.includes(e.State)) {
+        maxDeadState = e.Dead;
       }
     });
 
@@ -142,7 +152,9 @@ const setCovidData = (state: AppState, { payload }: Action): AppState => {
       covidTimeSeries: payload,
       graphMetaData: {
         maxConfirmedCounty,
-        maxConfirmedState
+        maxConfirmedState,
+        maxDeadCounty,
+        maxDeadState
       }
     };
   }

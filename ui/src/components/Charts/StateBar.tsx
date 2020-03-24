@@ -59,7 +59,10 @@ export const StateBar = (props: Props) => {
     countyData = countyData.filter(({ State }) => State === stateName);
   }
   if (props.meta) {
-    maxCases = props.meta.maxConfirmedCounty;
+    maxCases =
+      props.stat === "confirmed"
+        ? props.meta.maxConfirmedCounty
+        : props.meta.maxDeadCounty;
   }
   dates = [
     ...new Set(countyData.map(({ Reported }) => monthDay(Reported)))

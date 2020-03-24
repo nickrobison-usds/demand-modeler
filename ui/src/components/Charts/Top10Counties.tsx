@@ -43,13 +43,18 @@ export const Top10Counties = (props: Props) => {
   let stateName: string = "";
 
   // Top 10 Counties (total or in state)
-  title = `Counties with the highest number of cases`;
+  title = `Counties with the highest number of ${
+    props.stat === "confirmed" ? "cases" : "deaths"
+  }`;
 
   let countyData = Object.keys(props.timeSeries.counties).flatMap(
     k => props.timeSeries.counties[k]
   );
   if (props.meta) {
-    maxCases = props.meta.maxConfirmedCounty;
+    maxCases =
+      props.stat === "confirmed"
+        ? props.meta.maxConfirmedCounty
+        : props.meta.maxDeadCounty;
   }
   dates = [
     ...new Set(countyData.map(({ Reported }) => monthDay(Reported)))
