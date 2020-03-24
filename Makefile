@@ -2,7 +2,7 @@ DATA_DIR := data
 FILES := tl_2019_us_state tl_2019_us_county
 
 $(DATA_DIR)/tl_2019_us_%.shp: $(DATA_DIR)/tl_2019_us_%.zip
-	@unzip $(basename $@).zip -d $(DATA_DIR)
+	@unzip -o $(basename $@).zip -d $(DATA_DIR)
 
 $(DATA_DIR)/tl_2019_us_county.zip:
 	@wget https://www2.census.gov/geo/tiger/TIGER2019/COUNTY/tl_2019_us_county.zip -O $@

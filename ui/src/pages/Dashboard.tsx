@@ -6,6 +6,7 @@ import USATotals from "../components/USATotals";
 import StateSelect from "../components/Forms/StateSelect";
 import CountySelect from "../components/Forms/CountySelect";
 import { MixedBar } from "../components/Charts/MixedBar";
+import { StackedArea } from "../components/Charts/StackedArea";
 import { StateMixedBar } from "../components/Charts/StateMixedBar";
 import { useResizeToContainer } from "../utils/useResizeToContainer";
 import { CountyTrendGraph } from "../components/Charts/CountyTrendGraph";
@@ -55,6 +56,15 @@ export const Dashboard: React.FC<{}> = () => {
                 </Card>
               </div>
               <div className="dashboard-scroll">
+                <Card>
+                  <StackedArea
+                    state={state.selection.state}
+                    county={state.selection.county}
+                    timeSeries={state.covidTimeSeries}
+                    stat="confirmed"
+                    chartWidth={chartWidth}
+                  />
+                </Card>
                 <Card>
                   <MixedBar
                     state={state.selection.state}
