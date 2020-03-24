@@ -4,43 +4,6 @@ import domtoimage from "dom-to-image";
 
 export const ReportContainer: React.FC = props => {
 
-    const exportToSVG = (element: Node): string => {
-        const serializer = new XMLSerializer();
-        let source = serializer.serializeToString(element);
-
-        //add name spaces.
-        if (!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
-            source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
-        }
-        if (!source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)) {
-            source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
-        }
-
-        //add xml declaration
-        source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
-
-        //convert svg source to URI data scheme.
-        return "data:image/svg+xml;base64," + window.btoa(source);
-
-    };
-
-    // const setupCanvas = () => {
-    //
-    //     // Get the device pixel ratio, falling back to 1.
-    //     var dpr = window.devicePixelRatio || 1;
-    //     // Get the size of the canvas in CSS pixels.
-    //     var rect = canvas.getBoundingClientRect();
-    //     // Give the canvas pixel dimensions of their CSS
-    //     // size * the device pixel ratio.
-    //     canvas.width = rect.width * dpr;
-    //     canvas.height = rect.height * dpr;
-    //     var ctx = canvas.getContext('2d');
-    //     // Scale all drawing operations by the dpr, so you
-    //     // don't have to worry about the difference.
-    //     ctx.scale(dpr, dpr);
-    //     return ctx;
-    // };
-
     const exportPowerPoint = async () => {
 
         // noinspection JSPotentiallyInvalidConstructorUsage
@@ -50,10 +13,13 @@ export const ReportContainer: React.FC = props => {
         const slide = ppt.addSlide();
         slide.addText("Hello, from PowerPoint");
 
-        const svgElements = document.getElementsByClassName("recharts-wrapper");
+        const svgElements = document.getElementsByClassName("report-chart");
         for (let element of svgElements[Symbol.iterator]()) {
 
-            const url = await domtoimage.toPng(element);
+            const url = await domtoimage.toPng(element, {
+                // height: 880,
+                // width: 1242
+            });
             const s = ppt.addSlide();
             s.addImage({
                 data: url,

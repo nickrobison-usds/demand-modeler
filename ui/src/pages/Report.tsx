@@ -69,7 +69,7 @@ export const Report: React.FC<{}> = () => {
                             <CountyMap reportView/>
                             {lastUpdated && pagebreak(lastUpdated)}
                             {top10States.map(s => (
-                                <>
+                                <div className="report-chart">
                                     <StateBar
                                         state={s.ID}
                                         timeSeries={state.covidTimeSeries}
@@ -79,39 +79,48 @@ export const Report: React.FC<{}> = () => {
                                         meta={state.graphMetaData}
                                     />
                                     {lastUpdated && pagebreak(lastUpdated)}
-                                </>
+                                </div>
                             ))}
-                            <Top10Counties
-                                timeSeries={state.covidTimeSeries}
-                                stat="confirmed"
-                                reportView
-                                meta={state.graphMetaData}
-                            />
-                            {pagebreak(lastUpdated)}
-                            <StateMixedBar
-                                state={undefined}
-                                county={undefined}
-                                timeSeries={state.covidTimeSeries}
-                                stat="confirmed"
-                                stateCount={true}
-                                reportView
-                                meta={state.graphMetaData}
-                            />
-                            {lastUpdated && pagebreak(lastUpdated)}
-                            <MixedBar
-                                state={undefined}
-                                county={undefined}
-                                timeSeries={state.covidTimeSeries}
-                                stat="confirmed"
-                                reportView
-                            />
-                            {lastUpdated && pagebreak(lastUpdated)}
-                            <CountyTrendGraph
-                                timeSeries={state.covidTimeSeries}
-                                selection={state.selection}
-                                reportView
-                            />
-                            {lastUpdated && pagebreak(lastUpdated)}
+                            <div className="report-chart">
+                                <Top10Counties
+                                    timeSeries={state.covidTimeSeries}
+                                    stat="confirmed"
+                                    reportView
+                                    meta={state.graphMetaData}
+                                />
+
+                                {pagebreak(lastUpdated)}
+                            </div>
+                            <div className="report-chart">
+                                <StateMixedBar
+                                    state={undefined}
+                                    county={undefined}
+                                    timeSeries={state.covidTimeSeries}
+                                    stat="confirmed"
+                                    stateCount={true}
+                                    reportView
+                                    meta={state.graphMetaData}
+                                />
+                                {lastUpdated && pagebreak(lastUpdated)}
+                            </div>
+                            <div className="report-chart">
+                                <MixedBar
+                                    state={undefined}
+                                    county={undefined}
+                                    timeSeries={state.covidTimeSeries}
+                                    stat="confirmed"
+                                    reportView
+                                />
+                                {lastUpdated && pagebreak(lastUpdated)}
+                            </div>
+                            <div className="report-chart">
+                                <CountyTrendGraph
+                                    timeSeries={state.covidTimeSeries}
+                                    selection={state.selection}
+                                    reportView
+                                />
+                                {lastUpdated && pagebreak(lastUpdated)}
+                            </div>
                         </ReportContainer>
                     </div>
 
