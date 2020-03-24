@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import {
   ActionType,
   AppContext,
-  AppState,
   County,
   State,
   initialState,
@@ -139,6 +138,9 @@ const CountyMap: React.FunctionComponent<Props> = props => {
     state: { covidTimeSeries }
   } = useContext(AppContext);
 
+  const selectedMetric =
+    state.selection.metric === "confirmed" ? "Confirmed" : "Dead";
+
   const getDateLayer = (level: "state" | "county") => {
     const x = legendScales[dataType][level];
     return [
@@ -162,7 +164,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
     let min = 0;
     let max = 0;
     const formatedGeoJSON = geoData.features.map(f => {
-      let Confirmed = 0;
+      let metric = 0;
       let Name = "";
       if (f.properties) {
         Name = f.properties["NAME"];
@@ -176,29 +178,33 @@ const CountyMap: React.FunctionComponent<Props> = props => {
           if (region) {
             region.sort(compare);
             if (dataType === "Total") {
-              Confirmed = region[0].Confirmed;
+              metric = region[0][selectedMetric];
             } else if (dataType === "Increase") {
-              Confirmed = region.length > 1 ? region[1].Confirmed : 0;
+              metric =
+                region.length > 1
+                  ? region[0][selectedMetric] - region[1][selectedMetric]
+                  : 0;
             } else {
               if (region.length > 1) {
                 if (
-                  region[0].Confirmed < EXCLUDE_PERCENT_INCREASE_CASES_BELOW
+                  region[0][selectedMetric] <
+                  EXCLUDE_PERCENT_INCREASE_CASES_BELOW
                 ) {
-                  Confirmed = 0;
+                  metric = 0;
                 } else {
-                  const prev = region[1].Confirmed;
-                  const now = region[0].Confirmed;
+                  const prev = region[1][selectedMetric];
+                  const now = region[0][selectedMetric];
                   const change = now - prev;
-                  Confirmed = round((change / prev) * 100);
+                  metric = round((change / prev) * 100);
                 }
               } else {
-                Confirmed = 0;
+                metric = 0;
               }
             }
-            if (Confirmed < min) {
-              min = Confirmed;
-            } else if (Confirmed > max) {
-              max = Confirmed;
+            if (metric < min) {
+              min = metric;
+            } else if (metric > max) {
+              max = metric;
             }
             Name =
               level === "state"
@@ -206,13 +212,13 @@ const CountyMap: React.FunctionComponent<Props> = props => {
                 : `${(region[0] as County).County}, ${
                     stateAbbreviation[region[0].State]
                   }`;
-            if ((Confirmed > 100 || Confirmed < -100) && dataType === "New") {
+            if ((metric > 100 || metric < -100) && dataType === "New") {
               console.log(
                 Name,
-                Confirmed,
-                region[1].Confirmed,
-                region[0].Confirmed,
-                region[0].Confirmed - region[1].Confirmed
+                metric,
+                region[1][selectedMetric],
+                region[0][selectedMetric],
+                region[0][selectedMetric] - region[1][selectedMetric]
               );
             }
           }
@@ -222,7 +228,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
         ...f,
         properties: {
           ...f.properties,
-          metric,
+          metric: metric || 0,
           name: Name
         }
       };
@@ -495,7 +501,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
                   type: "fill",
                   paint: {
                     "fill-color": {
-                      property: "confirmed",
+                      property: "metric",
                       stops: legend
                     } as any,
                     "fill-opacity": 0.8,
@@ -509,7 +515,9 @@ const CountyMap: React.FunctionComponent<Props> = props => {
         ) : null}
       </ReactMapGL>
       <div>
-        <p style={{ margin: "10px 0" }}>{legendLookup[dataType]}</p>
+        <p style={{ margin: "10px 0" }}>
+          {legendLookup(state.selection.metric)[dataType]}
+        </p>
         {legend.map(k => (
           <span
             key={k[0]}
