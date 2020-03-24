@@ -28,6 +28,7 @@ interface DataPoint {
 }
 
 const MIN_CASES = 20;
+const MAX_COUNTIES = 20;
 
 export const CountyTrendGraph = (props: Props) => {
   if (props.selection.county) {
@@ -75,7 +76,7 @@ export const CountyTrendGraph = (props: Props) => {
   const labelColors: { [n: string]: string } = Object.entries(lastDay)
     .map(([name], i) => ({
       name,
-      color: interpolateRainbow(i / Object.entries(lastDay).length)
+      color: interpolateRainbow(i / MAX_COUNTIES)
     }))
     .reduce((acc, el) => {
       acc[el.name] = el.color;
@@ -90,10 +91,14 @@ export const CountyTrendGraph = (props: Props) => {
     })
     .map(el => el[0]);
 
+  const hiddenCounties = Math.max(labelOrder.length - MAX_COUNTIES, 0);
+
   return (
     <>
-      <h3>Counties with 20+ reported cases</h3>
-      <RenderChart reportView={props.reportView} dashboardHeight={800}>
+      <RenderChart
+        reportView={props.reportView}
+        title="Counties with 20+ reported cases"
+      >
         <LineChart
           width={props.reportView ? window.innerWidth * 0.9 : undefined}
           height={600}
@@ -112,7 +117,7 @@ export const CountyTrendGraph = (props: Props) => {
           </YAxis>
           <Tooltip />
           <CartesianGrid stroke="#f5f5f5" />
-          {labelOrder.map((e, i) => (
+          {labelOrder.slice(0, MAX_COUNTIES).map((e, i) => (
             <Line
               key={e}
               dataKey={e}
@@ -121,9 +126,66 @@ export const CountyTrendGraph = (props: Props) => {
               dot={false}
             />
           ))}
-          <Legend align="left" />
+          {props.reportView && (
+            <Legend
+              content={
+                <>
+                  <CustomLegend
+                    labelColors={labelColors}
+                    labels={labelOrder.slice(0, MAX_COUNTIES)}
+                  />
+                  {hiddenCounties > 0 && <div>+{hiddenCounties} more</div>}
+                </>
+              }
+            />
+          )}
         </LineChart>
       </RenderChart>
+    </>
+  );
+};
+
+type LegendProps = {
+  labelColors: { [n: string]: string };
+  labels: string[];
+};
+
+const CustomLegend: React.FC<LegendProps> = ({ labelColors, labels }) => {
+  const LABEL_COLUMNS = 4;
+  const labelsPerColumn = Math.ceil(labels.length / LABEL_COLUMNS);
+  const labelGroups = labels.reduce((acc, el, i) => {
+    if (i % labelsPerColumn === 0) {
+      acc.push([]);
+    }
+    acc[acc.length - 1].push(el);
+    return acc;
+  }, [] as string[][]);
+  let index = 1;
+  return (
+    <>
+      <p>Counties</p>
+      <div style={{ display: "flex", marginTop: "5px" }}>
+        {labelGroups.map(group => (
+          <div key={group[0][0]} style={{ flex: "1 1 0px" }}>
+            <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+              {group.map(label => (
+                <li key={label} style={{ marginBottom: "5px" }}>
+                  <span
+                    style={{
+                      display: "inline-block",
+                      height: "10px",
+                      width: "10px",
+                      marginRight: "5px",
+                      backgroundColor: labelColors[label]
+                    }}
+                  ></span>
+                  {index++}. {label}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
     </>
   );
 };

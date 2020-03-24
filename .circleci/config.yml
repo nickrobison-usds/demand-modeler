@@ -39,8 +39,8 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Build
-          command: go build .
+          name: Test
+          command: go test -race ./...
       - persist_to_workspace:
           root: ./
           paths:

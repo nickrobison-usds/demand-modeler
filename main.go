@@ -17,9 +17,27 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/urfave/cli/v2"
 )
 
 func main() {
+
+	app := &cli.App{
+		Name: "Fearless Dreamer",
+		Commands: []*cli.Command{
+			cmd.USALoaderCMD(),
+		},
+		Action: runServer,
+	}
+
+	err := app.Run(os.Args)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func runServer(c *cli.Context) error {
 	workDir, err := os.Getwd()
 	if err != nil {
 		log.Fatal(err)
@@ -51,10 +69,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err = serve(pool, filesDir)
-	if err != nil {
-		log.Fatal(err)
-	}
+	return serve(pool, filesDir)
 }
 
 func rootHandler() http.HandlerFunc {

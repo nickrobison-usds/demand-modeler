@@ -8,38 +8,40 @@
 ## Table of Contents
 
 * [Setup](#Setup)
-* [Bootstrapping Heroku](#Bootstrapping-Heroku)
-* [Loading new data](#Loading-new-data)
+* [Bootstrapping Heroku](#bootstrapping-heroku)
+* [Loading new data](#loading-new-data)
+  * [csbs](#csbs)
+  * [USA Facts](#usa-facts)
 
 ## Setup
 
 1. Download the TIGER files:
 
-    ```bash
-    wget https://www2.census.gov/geo/tiger/TIGER2019/STATE/tl_2019_us_state.zip -O data/tl_2019_us_state.zip
-    wget https://www2.census.gov/geo/tiger/TIGER2019/COUNTY/tl_2019_us_county.zip -O data/tl_2019_us_county.zip
-    ```
+  ```bash
+  wget https://www2.census.gov/geo/tiger/TIGER2019/STATE/tl_2019_us_state.zip -O data/tl_2019_us_state.zip
+  wget https://www2.census.gov/geo/tiger/TIGER2019/COUNTY/tl_2019_us_county.zip -O data/tl_2019_us_county.zip
+  ```
 
 1. Unzip the files (there should be a .shp, .shx, .dbf, .prj file for each)
 1. install [Docker](https://docs.docker.com/install/)
 
-    ```bash
-    docker-compose up --build postgres
-    ```
+  ```bash
+  docker-compose up --build postgres
+  ```
 
 1. load tiger files into the database
 
-    ```bash
-    docker build -f loader.Dockerfile -t loader . && docker run -it --network=demand-modeler_default loader
-    ```
+  ```bash
+  docker build -f loader.Dockerfile -t loader . && docker run -it --network=demand-modeler_default loader
+  ```
 
-    * if the network is not correct double check it with `docker network ls`
+  \* if the network is not correct double check it with `docker network ls`
 
 1. start the API
 
-    ```bash
-    ddocker-compose up --build api
-    ```
+  ```bash
+  ddocker-compose up --build api
+  ```
 
 ## Bootstrapping Heroku
 
@@ -68,6 +70,8 @@ heroku buildpacks:add heroku/go
 
 ## Loading new data
 
+### csbs
+
 1. Download the latest CSV file
 1. Copy into the `data/` directory with this name pattern: `covid19_county_2020_{month}_{day}-{time?}.csv
 1. Perform manual cleaning
@@ -78,3 +82,9 @@ heroku buildpacks:add heroku/go
 * Rename 'Dade' to 'Miami-Dade'
 
 1. Run the go application and see if it barfs on the new data. Rinse, repeat until it works.
+
+### USA Facts
+
+```bash
+docker build -f usafacts_loader.Dockerfile -t usafacts . && docker run -it --network=demand-modeler_default usafacts
+```
