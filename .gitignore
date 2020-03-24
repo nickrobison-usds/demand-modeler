@@ -1,6 +1,8 @@
 .idea/
 data/tl_*
 *.iml
+node_modules
+package-lock.json
 ui/node_modules
 ui/build
 ui/.env.local
