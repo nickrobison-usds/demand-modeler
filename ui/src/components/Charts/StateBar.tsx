@@ -204,6 +204,20 @@ type LegendProps = {
 
 export const CustomLegend: React.FC<LegendProps> = ({ displayDates }) => (
   <div style={{ textAlign: "center" }}>
+    {displayDates.map((date, i) => (
+      <React.Fragment key={date}>
+        <span
+          style={{
+            display: "inline-block",
+            height: "10px",
+            width: "10px",
+            backgroundColor: colors[i],
+            margin: "0 5px 0 10px"
+          }}
+        ></span>
+        {date}
+      </React.Fragment>
+    ))}
     <span
       style={{
         display: "inline-block",
@@ -216,23 +230,9 @@ export const CustomLegend: React.FC<LegendProps> = ({ displayDates }) => (
                       #FFFFFF 2px,
                       #FFFFFF 4px
                     )`,
-        marginRight: "5px"
+        margin: "0 5px 0 10px"
       }}
     ></span>
     New Cases
-    {displayDates.map((date, i) => (
-      <React.Fragment key={date}>
-        <span
-          style={{
-            display: "inline-block",
-            height: "10px",
-            width: "10px",
-            backgroundColor: colors[i],
-            margin: "0 5px 0 10px"
-          }}
-        ></span>
-        {date} Existing Cases
-      </React.Fragment>
-    ))}
   </div>
 );
