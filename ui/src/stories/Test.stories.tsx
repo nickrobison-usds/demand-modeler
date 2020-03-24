@@ -59,11 +59,11 @@ storiesOf("USA Totals", module)
       <AppStoreProvider
         initialState={{
           covidTimeSeries: mockCovidTimeSeries,
-          selection: { date: "2020-3-16" },
+          selection: { date: "2020-3-16", metric: "confirmed" },
           mapView: { width: 0, height: 0, latitude: 0, longitude: 0, zoom: 0 }
         }}
       >
-        <USATotals  />
+        <USATotals />
       </AppStoreProvider>
     );
   })
@@ -72,7 +72,7 @@ storiesOf("USA Totals", module)
       <AppStoreProvider
         initialState={{
           covidTimeSeries: mockCovidTimeSeries,
-          selection: { date: "2020-3-15", state: "1" },
+          selection: { date: "2020-3-15", state: "1", metric: "confirmed" },
           mapView: { width: 0, height: 0, latitude: 0, longitude: 0, zoom: 0 }
         }}
       >
@@ -85,12 +85,16 @@ storiesOf("USA Totals", module)
       <AppStoreProvider
         initialState={{
           covidTimeSeries: mockCovidTimeSeries,
-          selection: { date: "2020-3-15", state: "1", county: "1|1" },
+          selection: {
+            date: "2020-3-15",
+            state: "1",
+            county: "1|1",
+            metric: "confirmed"
+          },
           mapView: { width: 0, height: 0, latitude: 0, longitude: 0, zoom: 0 }
         }}
       >
         <USATotals />
-
       </AppStoreProvider>
     );
   });

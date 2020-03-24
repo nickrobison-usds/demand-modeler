@@ -12,6 +12,7 @@ import { CovidDateData } from "../../app/AppStore";
 import { monthDay } from "../../utils/DateUtils";
 import { RenderChart } from "./RenderChart";
 import { getSelectedLocationName } from "../../utils/utils";
+import { StripedFill } from "./StripedFill";
 
 interface Props {
   state?: string;
@@ -106,18 +107,13 @@ export const MixedBar = (props: Props) => {
     };
   });
 
-  console.log(finalData);
+  const title = locationName
+    ? `Number of confirmed cases in ${locationName}`
+    : "No data reported";
 
   return (
     <div>
-      <h3>
-        {locationName ? (
-          <>Number of confirmed cases in {locationName}</>
-        ) : (
-          <>No data reported</>
-        )}
-      </h3>
-      <RenderChart reportView={props.reportView}>
+      <RenderChart reportView={props.reportView} title={title}>
         <BarChart
           barSize={50}
           width={props.reportView ? window.innerWidth * 0.9 : undefined}
@@ -134,11 +130,46 @@ export const MixedBar = (props: Props) => {
           <XAxis height={60} dataKey="Name" />
           <YAxis dataKey="Grand Total" />
           <Tooltip />
-          <Bar dataKey="New" stackId="data" fill="#CB2727" />
+          <Bar
+            dataKey="New"
+            stackId="data"
+            shape={<StripedFill fill="#CB2727" />}
+          />
           <Bar dataKey="Existing" stackId="data" fill="#900000" />
-          <Legend />
+          <Legend content={<CustomLegend />} />
         </BarChart>
       </RenderChart>
     </div>
   );
 };
+
+const CustomLegend = () => (
+  <div style={{ textAlign: "center" }}>
+    <span
+      style={{
+        display: "inline-block",
+        height: "10px",
+        width: "10px",
+        backgroundColor: "#900000",
+        margin: "0 5px 0 10px"
+      }}
+    ></span>
+    Existing Cases
+    <span
+      style={{
+        display: "inline-block",
+        height: "10px",
+        width: "10px",
+        background: `repeating-linear-gradient(
+                      135deg,
+                      #CB2727,
+                      #CB2727 2px,
+                      #FFFFFF 2px,
+                      #FFFFFF 4px
+                    )`,
+        margin: "0 5px 0 10px"
+      }}
+    ></span>
+    New Cases
+  </div>
+);

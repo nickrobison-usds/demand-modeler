@@ -5,6 +5,7 @@ import Card from "../components/Card/Card";
 import USATotals from "../components/USATotals";
 import StateSelect from "../components/Forms/StateSelect";
 import CountySelect from "../components/Forms/CountySelect";
+import { MetricSelect } from "../components/Forms/MetricSelect";
 import { MixedBar } from "../components/Charts/MixedBar";
 import { StackedArea } from "../components/Charts/StackedArea";
 import { StateMixedBar } from "../components/Charts/StateMixedBar";
@@ -32,6 +33,7 @@ export const Dashboard: React.FC<{}> = () => {
                   <div style={{ display: "flex" }}>
                     <StateSelect />
                     <CountySelect />
+                    <MetricSelect />
                   </div>
                   <a
                     className="uas-button"
