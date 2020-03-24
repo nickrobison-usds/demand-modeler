@@ -99,7 +99,8 @@ export const MixedBar = (props: Props) => {
     if (!dedupedData[i - 1]) {
       return { ...data, Existing: data["Grand Total"] };
     }
-    const newCases = data["Grand Total"] - dedupedData[i - 1]["Grand Total"];
+    let newCases = data["Grand Total"] - dedupedData[i - 1]["Grand Total"];
+    if (newCases < 0) newCases = 0;
     return {
       ...data,
       New: newCases,
