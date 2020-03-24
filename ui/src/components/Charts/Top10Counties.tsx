@@ -137,7 +137,8 @@ export const Top10Counties = (props: Props) => {
     const entries = Object.entries(data);
     entries.forEach(([key, value], i) => {
       if (key !== "Name" && i > 0) {
-        const newCases = (value as number) - (entries[i - 1][1] as number);
+        let newCases = (value as number) - (entries[i - 1][1] as number);
+        if (newCases < 0) newCases = 0;
         obj[`${key} New`] = newCases;
         obj[`${key} Existing`] = (value as number) - newCases;
       } else if (key !== "Name" && i === 0) {
