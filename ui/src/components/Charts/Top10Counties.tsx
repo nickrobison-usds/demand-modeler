@@ -17,8 +17,6 @@ import { getYMaxFromMaxCases } from "../../utils/utils";
 import { stateAbbreviation } from "../../utils/stateAbbreviation";
 import { monthDay } from "../../utils/DateUtils";
 import { RenderChart } from "./RenderChart";
-import { StripedFill } from "./StripedFill";
-import { CustomLegend } from "./StateBar";
 
 type Props = {
   timeSeries: CovidDateData;
@@ -79,7 +77,7 @@ export const Top10Counties = (props: Props) => {
       );
     });
 
-  let dedupedData: { [k: string]: string | number }[] = [];
+  const dedupedData: any[] = [];
   data.forEach(e => {
     const dedupedElement: any = {};
     const d = Object.keys(e).sort();
@@ -125,25 +123,6 @@ export const Top10Counties = (props: Props) => {
     }
   });
 
-  dedupedData = dedupedData.slice(0, 10);
-
-  const finalData = dedupedData.map(data => {
-    const obj: { [k: string]: string | number } = {};
-    const entries = Object.entries(data);
-    entries.forEach(([key, value], i) => {
-      if (key !== "Name" && i > 0) {
-        const newCases = (value as number) - (entries[i - 1][1] as number);
-        obj[`${key} New`] = newCases;
-        obj[`${key} Existing`] = (value as number) - newCases;
-      } else if (key !== "Name" && i === 0) {
-        obj[`${key} Existing`] = value;
-        obj[`${key} New`] = 0;
-      }
-      obj[key] = value;
-    });
-    return obj;
-  });
-
   return (
     <>
       <RenderChart
@@ -154,7 +133,7 @@ export const Top10Counties = (props: Props) => {
           barSize={10}
           width={window.innerWidth * 0.9}
           height={880}
-          data={finalData}
+          data={dedupedData.slice(0, 10)}
           margin={{
             top: 0,
             right: 0,
@@ -179,24 +158,9 @@ export const Top10Counties = (props: Props) => {
           />
           <Tooltip />
           <div style={{ padding: "10px" }} />
-          <Legend content={<CustomLegend displayDates={displayDates} />} />
+          <Legend />
           {displayDates.map((date, i) => (
-            <Bar
-              key={`${date.split("|")[0]} New`}
-              id={`${date.split("|")[0]}`}
-              stackId={date.split("|")[0]}
-              dataKey={`${date.split("|")[0]} New`}
-              shape={<StripedFill fill={colors[i]} />}
-            />
-          ))}
-          {displayDates.map((date, i) => (
-            <Bar
-              key={`${date.split("|")[0]} Existing`}
-              id={`${date.split("|")[0]}`}
-              stackId={date.split("|")[0]}
-              dataKey={`${date.split("|")[0]} Existing`}
-              fill={colors[i]}
-            />
+            <Bar key={date} dataKey={date.split("|")[0]} fill={colors[i]} />
           ))}
         </BarChart>
       </RenderChart>

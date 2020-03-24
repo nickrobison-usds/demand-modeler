@@ -16,8 +16,6 @@ import {
 import { getYMaxFromMaxCases } from "../../utils/utils";
 import { monthDay } from "../../utils/DateUtils";
 import { RenderChart } from "./RenderChart";
-import { StripedFill } from "./StripedFill";
-import { CustomLegend } from "./StateBar";
 
 type Props = {
   state?: string;
@@ -113,7 +111,7 @@ export const StateMixedBar = (props: Props) => {
     }, [] as { [k: string]: string | number }[]);
   }
 
-  const dedupedData: { [k: string]: string | number }[] = [];
+  const dedupedData: any[] = [];
   data.forEach(e => {
     const dedupedElement: any = {};
     const d = Object.keys(e).sort();
@@ -135,21 +133,19 @@ export const StateMixedBar = (props: Props) => {
     dedupedData.push(dedupedElement);
   });
 
-  const sortedData = dedupedData
-    .sort((a, b) => {
-      const { Name: aName, ...aData } = a;
-      const { Name: bName, ...bData } = b;
-      const aSum = (Object.values(aData) as number[]).reduce(
-        (acc, el) => acc + el,
-        0
-      );
-      const bSum = (Object.values(bData) as number[]).reduce(
-        (acc, el) => acc + el,
-        0
-      );
-      return bSum - aSum;
-    })
-    .slice(0, 10);
+  const sortedData = dedupedData.sort((a, b) => {
+    const { Name: aName, ...aData } = a;
+    const { Name: bName, ...bData } = b;
+    const aSum = (Object.values(aData) as number[]).reduce(
+      (acc, el) => acc + el,
+      0
+    );
+    const bSum = (Object.values(bData) as number[]).reduce(
+      (acc, el) => acc + el,
+      0
+    );
+    return bSum - aSum;
+  });
 
   const displayDates: string[] = [];
   const displayDateSet = new Set();
@@ -159,23 +155,6 @@ export const StateMixedBar = (props: Props) => {
       displayDates.push(key);
       displayDateSet.add(key);
     }
-  });
-
-  const finalData = sortedData.map(data => {
-    const obj: { [k: string]: string | number } = {};
-    const entries = Object.entries(data);
-    entries.forEach(([key, value], i) => {
-      if (key !== "Name" && i > 0) {
-        const newCases = (value as number) - (entries[i - 1][1] as number);
-        obj[`${key} New`] = newCases;
-        obj[`${key} Existing`] = (value as number) - newCases;
-      } else if (key !== "Name" && i === 0) {
-        obj[`${key} Existing`] = value;
-        obj[`${key} New`] = 0;
-      }
-      obj[key] = value;
-    });
-    return obj;
   });
 
   return (
@@ -188,7 +167,7 @@ export const StateMixedBar = (props: Props) => {
           barSize={10}
           width={props.reportView ? window.innerWidth * 0.9 : undefined}
           height={880}
-          data={finalData}
+          data={sortedData.slice(0, 10)}
           margin={{
             top: 0,
             right: 0,
@@ -213,29 +192,10 @@ export const StateMixedBar = (props: Props) => {
           />
           <Tooltip />
           <div style={{ padding: "10px" }} />
-          <Legend content={<CustomLegend displayDates={displayDates} />} />
-          {displayDates.map((date, i) => {
-            return (
-              <Bar
-                id={`${date.split("|")[0]}`}
-                key={`${date.split("|")[0]} New`}
-                stackId={`${date.split("|")[0]}`}
-                dataKey={`${date.split("|")[0]} New`}
-                shape={<StripedFill fill={colors[i]} />}
-              />
-            );
-          })}
-          {displayDates.map((date, i) => {
-            return (
-              <Bar
-                id={`${date.split("|")[0]}`}
-                key={`${date.split("|")[0]} Existing`}
-                stackId={`${date.split("|")[0]}`}
-                dataKey={`${date.split("|")[0]} Existing`}
-                fill={colors[i]}
-              />
-            );
-          })}
+          <Legend />
+          {displayDates.map((date, i) => (
+            <Bar key={date} dataKey={date.split("|")[0]} fill={colors[i]} />
+          ))}
         </BarChart>
       </RenderChart>
     </>
