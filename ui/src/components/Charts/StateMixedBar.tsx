@@ -16,6 +16,8 @@ import {
 import { getYMaxFromMaxCases } from "../../utils/utils";
 import { monthDay } from "../../utils/DateUtils";
 import { RenderChart } from "./RenderChart";
+import { StripedFill } from "./StripedFill";
+import { CustomLegend } from "./StateBar";
 
 type Props = {
   state?: string;
@@ -211,7 +213,7 @@ export const StateMixedBar = (props: Props) => {
           />
           <Tooltip />
           <div style={{ padding: "10px" }} />
-          <Legend />
+          <Legend content={<CustomLegend displayDates={displayDates} />} />
           {displayDates.map((date, i) => {
             return (
               <Bar
@@ -219,7 +221,7 @@ export const StateMixedBar = (props: Props) => {
                 key={`${date.split("|")[0]} New`}
                 stackId={`${date.split("|")[0]}`}
                 dataKey={`${date.split("|")[0]} New`}
-                fill={colors[i]}
+                shape={<StripedFill fill={colors[i]} />}
               />
             );
           })}
@@ -230,7 +232,7 @@ export const StateMixedBar = (props: Props) => {
                 key={`${date.split("|")[0]} Existing`}
                 stackId={`${date.split("|")[0]}`}
                 dataKey={`${date.split("|")[0]} Existing`}
-                fill={`#900000`}
+                fill={colors[i]}
               />
             );
           })}

@@ -15,6 +15,7 @@ import {
 } from "../../app/AppStore";
 import { getYMaxFromMaxCases } from "../../utils/utils";
 import { monthDay } from "../../utils/DateUtils";
+import { StripedFill } from "./StripedFill";
 
 type Props = {
   state: string;
@@ -169,7 +170,7 @@ export const StateBar = (props: Props) => {
         />
         <Tooltip />
         <div style={{ padding: "10px" }} />
-        <Legend />
+        <Legend content={<CustomLegend displayDates={displayDates} />} />
         {displayDates.map((date, i) => {
           return (
             <Bar
@@ -177,7 +178,7 @@ export const StateBar = (props: Props) => {
               key={`${date.split("|")[0]} New`}
               stackId={`${date.split("|")[0]}`}
               dataKey={`${date.split("|")[0]} New`}
-              fill={colors[i]}
+              shape={<StripedFill fill={colors[i]} />}
             />
           );
         })}
@@ -188,7 +189,7 @@ export const StateBar = (props: Props) => {
               key={`${date.split("|")[0]} Existing`}
               stackId={`${date.split("|")[0]}`}
               dataKey={`${date.split("|")[0]} Existing`}
-              fill={`#900000`}
+              fill={colors[i]}
             />
           );
         })}
@@ -196,3 +197,42 @@ export const StateBar = (props: Props) => {
     </>
   );
 };
+
+type LegendProps = {
+  displayDates: string[];
+};
+
+export const CustomLegend: React.FC<LegendProps> = ({ displayDates }) => (
+  <div style={{ textAlign: "center" }}>
+    <span
+      style={{
+        display: "inline-block",
+        height: "10px",
+        width: "10px",
+        background: `repeating-linear-gradient(
+                      135deg,
+                      #000000,
+                      #000000 2px,
+                      #FFFFFF 2px,
+                      #FFFFFF 4px
+                    )`,
+        marginRight: "5px"
+      }}
+    ></span>
+    New Cases
+    {displayDates.map((date, i) => (
+      <React.Fragment key={date}>
+        <span
+          style={{
+            display: "inline-block",
+            height: "10px",
+            width: "10px",
+            backgroundColor: colors[i],
+            margin: "0 5px 0 10px"
+          }}
+        ></span>
+        {date} Existing Cases
+      </React.Fragment>
+    ))}
+  </div>
+);
