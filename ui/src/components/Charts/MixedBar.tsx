@@ -12,6 +12,7 @@ import { CovidDateData } from "../../app/AppStore";
 import { monthDay } from "../../utils/DateUtils";
 import { RenderChart } from "./RenderChart";
 import { getSelectedLocationName } from "../../utils/utils";
+import { StripedFill } from "./StripedFill";
 
 interface Props {
   state?: string;
@@ -129,11 +130,46 @@ export const MixedBar = (props: Props) => {
           <XAxis height={60} dataKey="Name" />
           <YAxis dataKey="Grand Total" />
           <Tooltip />
-          <Bar dataKey="New" stackId="data" fill="#CB2727" />
+          <Bar
+            dataKey="New"
+            stackId="data"
+            shape={<StripedFill fill="#CB2727" />}
+          />
           <Bar dataKey="Existing" stackId="data" fill="#900000" />
-          <Legend />
+          <Legend content={<CustomLegend />} />
         </BarChart>
       </RenderChart>
     </div>
   );
 };
+
+const CustomLegend = () => (
+  <div style={{ textAlign: "center" }}>
+    <span
+      style={{
+        display: "inline-block",
+        height: "10px",
+        width: "10px",
+        background: `repeating-linear-gradient(
+                      135deg,
+                      #CB2727,
+                      #CB2727 2px,
+                      #FFFFFF 2px,
+                      #FFFFFF 4px
+                    )`,
+        marginRight: "5px"
+      }}
+    ></span>
+    New Cases
+    <span
+      style={{
+        display: "inline-block",
+        height: "10px",
+        width: "10px",
+        backgroundColor: "#900000",
+        margin: "0 5px 0 10px"
+      }}
+    ></span>
+    Existing Cases
+  </div>
+);
