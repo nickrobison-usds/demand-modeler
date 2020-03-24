@@ -43,28 +43,28 @@ export const ReportContainer: React.FC = props => {
 
     const exportPowerPoint = async () => {
 
-        const pptx = new pptxgen();
-        pptx.layout = "LAYOUT_16x9";
-        pptx.company = "United States Digital Service";
-        const slide = pptx.addSlide();
+        // noinspection JSPotentiallyInvalidConstructorUsage
+        const ppt = new pptxgen();
+        ppt.layout = "LAYOUT_16x9";
+        ppt.company = "United States Digital Service";
+        const slide = ppt.addSlide();
         slide.addText("Hello, from PowerPoint");
 
         const svgElements = document.getElementsByClassName("recharts-wrapper");
         for (let element of svgElements[Symbol.iterator]()) {
 
-            const url = await domtoimage.toPng(element, {
-                height: 800,
-                width: 800
-            });
-            const s = pptx.addSlide();
+            const url = await domtoimage.toPng(element);
+            const s = ppt.addSlide();
             s.addImage({
                 data: url,
-                w: 10,
-                h: 5.625
+                // These positioning values are hard coded based on manual viewing and aligning of the graphs.
+                h: 5.6,
+                w: 5.6,
+                x: 1.9
             });
         }
         console.debug("Writing PPTX");
-        const done = await pptx.writeFile("Sample Presentation.pptx");
+        const done = await ppt.writeFile("Sample Presentation.pptx");
         console.debug("Finished exporting: ", done);
     };
     return (
