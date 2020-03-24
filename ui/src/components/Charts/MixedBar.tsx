@@ -150,6 +150,16 @@ const CustomLegend = () => (
         display: "inline-block",
         height: "10px",
         width: "10px",
+        backgroundColor: "#900000",
+        margin: "0 5px 0 10px"
+      }}
+    ></span>
+    Existing Cases
+    <span
+      style={{
+        display: "inline-block",
+        height: "10px",
+        width: "10px",
         background: `repeating-linear-gradient(
                       135deg,
                       #CB2727,
@@ -157,19 +167,9 @@ const CustomLegend = () => (
                       #FFFFFF 2px,
                       #FFFFFF 4px
                     )`,
-        marginRight: "5px"
-      }}
-    ></span>
-    New Cases
-    <span
-      style={{
-        display: "inline-block",
-        height: "10px",
-        width: "10px",
-        backgroundColor: "#900000",
         margin: "0 5px 0 10px"
       }}
     ></span>
-    Existing Cases
+    New Cases
   </div>
 );
