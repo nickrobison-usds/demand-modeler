@@ -169,7 +169,7 @@ export const StateBar = (props: Props) => {
         />
         <Tooltip />
         <div style={{ padding: "10px" }} />
-        <Legend content={<CustomLegend displayDates={displayDates} colors={colors} />} />
+        <Legend content={<CustomLegend displayDates={displayDates} colors={colors} stat={props.stat} />} />
         {displayDates.map((date, i) => {
           return (
             <Bar
@@ -200,9 +200,21 @@ export const StateBar = (props: Props) => {
 type LegendProps = {
   displayDates: string[];
   colors: string[];
+  stat: Stat;
 };
 
-export const CustomLegend: React.FC<LegendProps> = ({ displayDates, colors }) => (
+const label = (stat: Stat) => {
+  switch (stat) {
+    case "dead":
+      return "New Deaths";
+    case "confirmed":
+        return "New Cases";
+    case "mortalityRate":
+        return "Change in mortality rate";
+  }
+}
+
+export const CustomLegend: React.FC<LegendProps> = ({ displayDates, colors, stat }) => (
   <div style={{ textAlign: "center" }}>
     {displayDates.map((date, i) => (
       <React.Fragment key={date}>
@@ -225,14 +237,14 @@ export const CustomLegend: React.FC<LegendProps> = ({ displayDates, colors }) =>
         width: "10px",
         background: `repeating-linear-gradient(
                       135deg,
-                      #000000,
-                      #000000 2px,
+                      ${stat === "dead" ? "#111" : "#CB2727"},
+                      ${stat === "dead" ? "#111" : "#CB2727"} 2px,
                       #FFFFFF 2px,
                       #FFFFFF 4px
                     )`,
         margin: "0 5px 0 10px"
       }}
     ></span>
-    New Cases
+     {label(stat)}
   </div>
 );

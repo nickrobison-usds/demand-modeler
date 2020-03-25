@@ -32,7 +32,7 @@ export const createMockState = ({
   state,
   county,
   metric = "confirmed"
-}: MockStateInputs): AppState => ({
+}: MockStateInputs): any => ({
   selection: { date, state, county, metric },
   covidTimeSeries: {
     states: {
@@ -550,6 +550,6 @@ export const createMockState = ({
         }
       ]
     }
-  },
+  } as any,
   mapView: { width: 0, height: 0, latitude: 0, longitude: 0, zoom: 0 }
 });

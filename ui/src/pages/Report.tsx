@@ -168,6 +168,13 @@ export const Report: React.FC<{}> = () => {
               meta={state.graphMetaData}
             />
             {pagebreak(lastUpdated)}
+            <Top10Counties
+              timeSeries={state.covidTimeSeries}
+              stat="mortalityRate"
+              reportView
+              meta={state.graphMetaData}
+            />
+            {pagebreak(lastUpdated)}
             <StateMixedBar
               state={undefined}
               county={undefined}
