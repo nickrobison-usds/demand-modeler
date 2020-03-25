@@ -37,7 +37,7 @@ export const Top10Counties = (props: Props) => {
   const colors =
   props.stat === "confirmed"
     ? ["#E5A3A3", "#D05C5C", "#CB2727", "#C00000", "#900000", "#700000"]
-    : ["#eee", "#aaa", "#999", "#777", "#444", "#0000"];
+    : ["#a9a9a9", "#888", "#666", "#333", "#111"];
   // Top 10 Counties (total or in state)
   title = `Counties with the highest number of ${
     props.stat === "confirmed" ? "cases" : "deaths"
