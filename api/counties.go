@@ -4,21 +4,28 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"time"
+
 	"github.com/go-chi/chi"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/nickrobison-usds/demand-modeling/cmd"
-	"log"
-	"net/http"
-	"time"
+	"github.com/rs/zerolog/log"
 )
 
 func getCountIDs(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	conn := ctx.Value("db").(*pgxpool.Pool)
+	conn, err := ctx.Value("db").(*pgxpool.Pool).Acquire(ctx)
+	if err != nil {
+		log.Error().Err(err).Msg("Get DB from context")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer conn.Release()
 
 	rows, err := conn.Query(ctx, "SELECT county || ', ' || state as name, id from counties")
 	if err != nil {
-		log.Print(err)
+		log.Error().Err(err).Msg("Cannot execute County ID query")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -29,7 +36,7 @@ func getCountIDs(w http.ResponseWriter, r *http.Request) {
 		var id string
 		err = rows.Scan(&name, &id)
 		if err != nil {
-			log.Print(err)
+			log.Error().Err(err).Msg("Cannot read row from database")
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
@@ -38,23 +45,23 @@ func getCountIDs(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewEncoder(w).Encode(ids)
 	if err != nil {
-		log.Print(err)
+		log.Error().Err(err).Msg("Cannot write to json")
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 }
 
 func getTopCounties(w http.ResponseWriter, r *http.Request) {
-	log.Println("Loading top counties")
+	log.Debug().Msg("Loading top counties")
 	ctx := r.Context()
 	conn, err := ctx.Value("db").(*pgxpool.Pool).Acquire(ctx)
 	if err != nil {
-		log.Print(err)
+		log.Error().Err(err).Msg("Get DB from context")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	defer conn.Release()
 
-	log.Println("Returning case data")
+	log.Debug().Msg("Returning case data")
 
 	query := "SELECT c.ID, c.County, c.State, s.Update, s.Confirmed, s.NewConfirmed, s.Dead, s.NewDead FROM counties as c " +
 		"LEFT JOIN cases as s " +
@@ -64,7 +71,7 @@ func getTopCounties(w http.ResponseWriter, r *http.Request) {
 	if ok && len(start) == 1 {
 		startTime, err := time.Parse(time.RFC3339, start[0])
 		if err != nil {
-			log.Print(err)
+			log.Error().Err(err).Msg("Cannot parse start query param")
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
@@ -75,15 +82,15 @@ func getTopCounties(w http.ResponseWriter, r *http.Request) {
 
 	cases, err := queryCountyCasesb(ctx, conn, query)
 	if err != nil {
-		log.Print(err)
+		log.Error().Err(err).Msg("Cannot execute county queries")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	log.Println("Ready to return")
+	log.Debug().Msg("Ready to return")
 	err = json.NewEncoder(w).Encode(cases)
 	if err != nil {
-		log.Print(err)
+		log.Error().Err(err).Msg("Cannot write to json")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -92,20 +99,30 @@ func getTopCounties(w http.ResponseWriter, r *http.Request) {
 func getCountyGeo(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	countyID := ctx.Value("countyID").(string)
-	conn := ctx.Value("db").(*pgxpool.Pool)
+	conn, err := ctx.Value("db").(*pgxpool.Pool).Acquire(ctx)
+	if err != nil {
+		log.Error().Err(err).Msg("Get DB from context")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer conn.Release()
 
 	geo := &json.RawMessage{}
-	err := conn.QueryRow(ctx, "SELECT ST_AsGeoJSON(t.geom) as geom FROM counties as c "+
+	err = conn.QueryRow(ctx, "SELECT ST_AsGeoJSON(t.geom) as geom FROM counties as c "+
 		"LEFT JOIN tiger as t "+
 		"ON c.ID = t.geoid "+
 		"WHERE c.id = $1;", countyID).Scan(geo)
 	if err != nil {
-		log.Print(err)
+		log.Error().Err(err).Msg("Cannot execute geo query")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	err = json.NewEncoder(w).Encode(geo)
+	if err != nil {
+		log.Error().Err(err).Msg("Cannot write to json")
+		w.WriteHeader(http.StatusInternalServerError)
+	}
 }
 
 func getCountyCases(w http.ResponseWriter, r *http.Request) {
@@ -113,13 +130,13 @@ func getCountyCases(w http.ResponseWriter, r *http.Request) {
 	countyID := ctx.Value("countyID").(string)
 	conn, err := ctx.Value("db").(*pgxpool.Pool).Acquire(ctx)
 	if err != nil {
-		log.Print(err)
+		log.Error().Err(err).Msg("Get DB from context")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	defer conn.Release()
 
-	log.Println("Returning case data for county: " + countyID)
+	log.Debug().Msgf("Returning case data for county: %s\n" + countyID)
 
 	query := "SELECT c.ID, c.County, c.State, s.Update, s.Confirmed, s.NewConfirmed, s.Dead, s.NewDead, ST_AsGeoJSON(t.geom) as geom FROM counties as c " +
 		"LEFT JOIN tiger as t " +
@@ -130,15 +147,15 @@ func getCountyCases(w http.ResponseWriter, r *http.Request) {
 
 	cases, err := queryCountyCases(ctx, conn, query, countyID)
 	if err != nil {
-		log.Print(err)
+		log.Error().Err(err).Msg("Cannot execute county cases query")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	log.Println("Ready to return")
+	log.Debug().Msg("Ready to return")
 	err = json.NewEncoder(w).Encode(cases)
 	if err != nil {
-		log.Print(err)
+		log.Error().Err(err).Msg("Cannot write to json")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -152,9 +169,8 @@ func queryCountyCases(ctx context.Context, conn *pgxpool.Conn, sql string, args 
 		return cases, err
 	}
 
-	log.Println("Case counties are loaded")
+	log.Debug().Msg("Case counties are loaded")
 	for rows.Next() {
-		log.Println("Next")
 		var id string
 		var county string
 		var state string
@@ -196,9 +212,8 @@ func queryCountyCasesb(ctx context.Context, conn *pgxpool.Conn, sql string, args
 		return cases, err
 	}
 
-	log.Println("Case counties are loaded")
+	log.Debug().Msg("Case counties are loaded")
 	for rows.Next() {
-		log.Println("Next")
 		var id string
 		var county string
 		var state string
@@ -234,7 +249,7 @@ func queryCountyCasesb(ctx context.Context, conn *pgxpool.Conn, sql string, args
 func countyCTX(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		countyID := chi.URLParam(r, "countyID")
-		log.Println("ID from param: " + countyID)
+		log.Debug().Msgf("ID from param: %s\n", countyID)
 		ctx := context.WithValue(r.Context(), "countyID", countyID)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
