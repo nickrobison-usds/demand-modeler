@@ -136,7 +136,7 @@ export const MixedBar = (props: Props) => {
           <Bar
             dataKey="New"
             stackId="data"
-            shape={<StripedFill fill="#CB2727" />}
+            shape={<StripedFill fill={props.stat === "dead" ? "#000" : "#CB2727"} />}
           />
           <Bar dataKey="Existing" stackId="data" fill="#900000" />
           <Legend content={<CustomLegend />} />
