@@ -5,13 +5,14 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
-	"github.com/urfave/cli/v2"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/rs/zerolog/log"
+	"github.com/urfave/cli/v2"
 )
 
 const startDate string = "Jan 22 00:00:00"
@@ -62,7 +63,7 @@ func USALoaderCMD() *cli.Command {
 				return err
 			}
 
-			log.Println("Wrote CSV: " + filename)
+			log.Info().Msgf("Wrote CSV: " + filename)
 			return nil
 		},
 	}
