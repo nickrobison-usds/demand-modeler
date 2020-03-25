@@ -16,6 +16,7 @@ import {
 import { getYMaxFromMaxCases } from "../../utils/utils";
 import { monthDay } from "../../utils/DateUtils";
 import { StripedFill } from "./StripedFill";
+import { population } from "./population";
 
 type Props = {
   state: string;
@@ -72,7 +73,7 @@ export const StateBar = (props: Props) => {
   data = Object.entries(counties)
     .reduce((acc, [Name, data]) => {
       acc.push({
-        Name,
+        Name: Name,
         ...data
       });
       return acc;
@@ -215,7 +216,7 @@ const label = (stat: Stat) => {
 }
 
 export const CustomLegend: React.FC<LegendProps> = ({ displayDates, colors, stat }) => (
-  <div style={{ textAlign: "center" }}>
+  <div style={{ textAlign: "center", margin: "40px 0 0 0" }}>
     {displayDates.map((date, i) => (
       <React.Fragment key={date}>
         <span
@@ -237,8 +238,8 @@ export const CustomLegend: React.FC<LegendProps> = ({ displayDates, colors, stat
         width: "10px",
         background: `repeating-linear-gradient(
                       135deg,
-                      ${stat === "dead" ? "#111" : "#CB2727"},
-                      ${stat === "dead" ? "#111" : "#CB2727"} 2px,
+                      ${stat === "confirmed" ? "#CB2727" : "#111"},
+                      ${stat === "confirmed" ? "#CB2727" : "#111"} 2px,
                       #FFFFFF 2px,
                       #FFFFFF 4px
                     )`,

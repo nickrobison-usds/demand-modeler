@@ -16,6 +16,7 @@ import {
 import { getYMaxFromMaxCases } from "../../utils/utils";
 import { stateAbbreviation } from "../../utils/stateAbbreviation";
 import { monthDay } from "../../utils/DateUtils";
+import { formatNum } from "../../utils/utils";
 import { RenderChart } from "./RenderChart";
 import { StripedFill } from "./StripedFill";
 import { CustomLegend } from "./StateBar";
@@ -74,7 +75,8 @@ export const Top10Counties = (props: Props) => {
     ...new Set(countyData.map(({ Reported }) => monthDay(Reported)))
   ].sort();
   const counties = countyData.reduce((acc, el) => {
-    const name = `${el.County}, ${stateAbbreviation[el.State]}`;
+    const p = population[el.ID];
+    const name = `${el.County}, ${stateAbbreviation[el.State]}${p ? ` (${formatNum(p)})` : ""}`;
     if (population[el.ID] === undefined) {
       console.log("yo yo ", el.ID, name, population[el.ID])
     }
