@@ -17,6 +17,7 @@ import { getYMaxFromMaxCases } from "../../utils/utils";
 import { monthDay } from "../../utils/DateUtils";
 import { StripedFill } from "./StripedFill";
 import { population } from "./population";
+import { formatNum } from "../../utils/utils";
 
 type Props = {
   state: string;
@@ -64,7 +65,9 @@ export const StateBar = (props: Props) => {
   dates = [
     ...new Set(countyData.map(({ Reported }) => monthDay(Reported)))
   ].sort();
+  const popMap: {[Name: string]: number} = {}
   const counties = countyData.reduce((acc, el) => {
+    popMap[el.County] = population[el.ID];
     if (!acc[el.County]) acc[el.County] = {};
     acc[el.County][monthDay(el.Reported)] =
       props.stat === "confirmed" ? el.Confirmed : el.Dead;
@@ -73,7 +76,7 @@ export const StateBar = (props: Props) => {
   data = Object.entries(counties)
     .reduce((acc, [Name, data]) => {
       acc.push({
-        Name: Name,
+        Name: `${Name}${popMap[Name] ? ` (${formatNum(popMap[Name])})` : ""}`,
         ...data
       });
       return acc;
