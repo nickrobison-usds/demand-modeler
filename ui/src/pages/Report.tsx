@@ -26,6 +26,17 @@ export const Report: React.FC<{}> = () => {
           {/* 12 states with highest case count as of 3/17 shown. */}
         </div>
         <div>
+          The top 10 counties for the top ten states has been verified with
+          numbers from{" "}
+          <a
+            href="https://covidtracking.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            The COVID Tracking Project
+          </a>
+        </div>
+        <div>
           Data sourced from state health department websites; reporting may be
           incomplete or delayed
         </div>
@@ -132,11 +143,27 @@ export const Report: React.FC<{}> = () => {
                   meta={state.graphMetaData}
                 />
                 {lastUpdated && pagebreak(lastUpdated)}
+                <StateBar
+                  state={s.ID}
+                  timeSeries={state.covidTimeSeries}
+                  stat="dead"
+                  stateCount={false}
+                  reportView
+                  meta={state.graphMetaData}
+                />
+                {lastUpdated && pagebreak(lastUpdated)}
               </>
             ))}
             <Top10Counties
               timeSeries={state.covidTimeSeries}
               stat="confirmed"
+              reportView
+              meta={state.graphMetaData}
+            />
+            {pagebreak(lastUpdated)}
+            <Top10Counties
+              timeSeries={state.covidTimeSeries}
+              stat="dead"
               reportView
               meta={state.graphMetaData}
             />
@@ -151,11 +178,29 @@ export const Report: React.FC<{}> = () => {
               meta={state.graphMetaData}
             />
             {lastUpdated && pagebreak(lastUpdated)}
+            <StateMixedBar
+              state={undefined}
+              county={undefined}
+              timeSeries={state.covidTimeSeries}
+              stat="dead"
+              stateCount={true}
+              reportView
+              meta={state.graphMetaData}
+            />
+            {lastUpdated && pagebreak(lastUpdated)}
             <MixedBar
               state={undefined}
               county={undefined}
               timeSeries={state.covidTimeSeries}
               stat="confirmed"
+              reportView
+            />
+            {lastUpdated && pagebreak(lastUpdated)}
+            <MixedBar
+              state={undefined}
+              county={undefined}
+              timeSeries={state.covidTimeSeries}
+              stat="dead"
               reportView
             />
             {lastUpdated && pagebreak(lastUpdated)}
