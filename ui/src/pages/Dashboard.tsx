@@ -1,6 +1,7 @@
 import React from "react";
 import { AppContext } from "../app/AppStore";
 import CountyMap from "../components/Maps/CountyMap";
+import Navigation from "../components/Navigation/Navigation";
 import Card from "../components/Card/Card";
 import USATotals from "../components/USATotals";
 import StateSelect from "../components/Forms/StateSelect";
@@ -22,7 +23,7 @@ export const Dashboard: React.FC<{}> = () => {
         return (
           <div className="dashboard-container">
             <div className="dashboard-nav">
-              <Card>
+              <Navigation>
                 <div
                   style={{
                     display: "flex",
@@ -36,7 +37,7 @@ export const Dashboard: React.FC<{}> = () => {
                     <MetricSelect />
                   </div>
                   <a
-                    className="uas-button"
+                    className="usa-button"
                     href="?report=true"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -44,7 +45,7 @@ export const Dashboard: React.FC<{}> = () => {
                     View Report
                   </a>
                 </div>
-              </Card>
+              </Navigation>
             </div>
             <div className="dashboard">
               <div>
