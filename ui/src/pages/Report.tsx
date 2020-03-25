@@ -26,6 +26,17 @@ export const Report: React.FC<{}> = () => {
           {/* 12 states with highest case count as of 3/17 shown. */}
         </div>
         <div>
+          The top 10 counties for the top ten states has been verified with
+          numbers from{" "}
+          <a
+            href="https://covidtracking.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            The COVID Tracking Project
+          </a>
+        </div>
+        <div>
           Data sourced from state health department websites; reporting may be
           incomplete or delayed
         </div>
