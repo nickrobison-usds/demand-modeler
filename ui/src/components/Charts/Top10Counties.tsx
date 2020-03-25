@@ -28,6 +28,7 @@ type Props = {
   reportView?: boolean;
   meta?: GraphMetaData;
   title?: string;
+  new?: boolean;
 };
 
 const getColors = (stat: Stat) => {
@@ -35,22 +36,22 @@ const getColors = (stat: Stat) => {
     case "dead":
       return ["#a9a9a9", "#888", "#666", "#333", "#111"];
     case "confirmed":
-        return ["#E5A3A3", "#D05C5C", "#CB2727", "#C00000", "#900000", "#700000"];
+      return ["#E5A3A3", "#D05C5C", "#CB2727", "#C00000", "#900000", "#700000"];
     case "mortalityRate":
-        return ["#a9a9a9", "#888", "#666", "#333", "#111"];
+      return ["#a9a9a9", "#888", "#666", "#333", "#111"];
   }
-}
+};
 
-const getTitle = (stat: Stat) => {
+const getTitle = (stat: Stat, n?: boolean) => {
   switch (stat) {
     case "dead":
-      return "Counties with the highest number of deaths";
+      return `Counties with the highest number of deaths${n ? " (24 hours change)" : ""}`;
     case "confirmed":
-        return "Counties with the highest number of cases";
+      return `Counties with the highest number of cases${n ? " (24 hours change)" : ""}`;
     case "mortalityRate":
-        return "Counties with the highest change in moratility rate";
+      return `Counties with the highest change in moratility rate`;
   }
-}
+};
 
 export const Top10Counties = (props: Props) => {
   let title: string;
@@ -60,7 +61,7 @@ export const Top10Counties = (props: Props) => {
   let stateName: string = "";
   const colors = getColors(props.stat);
   // Top 10 Counties (total or in state)
-  title = getTitle(props.stat);
+  title = getTitle(props.stat, props.new);
 
   let countyData = Object.keys(props.timeSeries.counties).flatMap(
     k => props.timeSeries.counties[k]
@@ -76,7 +77,9 @@ export const Top10Counties = (props: Props) => {
   ].sort();
   const counties = countyData.reduce((acc, el) => {
     const p = population[el.ID];
-    const name = `${el.County}, ${stateAbbreviation[el.State]}${p ? ` (${formatNum(p)})` : ""}`;
+    const name = `${el.County}, ${stateAbbreviation[el.State]}${
+      p ? ` (${formatNum(p)})` : ""
+    }`;
     if (!acc[name]) acc[name] = {};
     acc[name][monthDay(el.Reported)] =
       props.stat === "confirmed" ? el.Confirmed : el.Dead;
@@ -185,7 +188,15 @@ export const Top10Counties = (props: Props) => {
           />
           <Tooltip />
           <div style={{ padding: "10px" }} />
-          <Legend content={<CustomLegend displayDates={displayDates} colors={colors} stat={props.stat}/>} />
+          <Legend
+            content={
+              <CustomLegend
+                displayDates={displayDates}
+                colors={colors}
+                stat={props.stat}
+              />
+            }
+          />
           {displayDates.map((date, i) => (
             <Bar
               key={`${date.split("|")[0]} New`}
@@ -195,15 +206,17 @@ export const Top10Counties = (props: Props) => {
               shape={<StripedFill fill={colors[i]} />}
             />
           ))}
-          {displayDates.map((date, i) => (
-            <Bar
-              key={`${date.split("|")[0]} Existing`}
-              id={`${date.split("|")[0]}`}
-              stackId={date.split("|")[0]}
-              dataKey={`${date.split("|")[0]} Existing`}
-              fill={colors[i]}
-            />
-          ))}
+          {displayDates.map((date, i) => {
+            return props.new ? (
+              null
+            ) :       <Bar
+            key={`${date.split("|")[0]} Existing`}
+            id={`${date.split("|")[0]}`}
+            stackId={date.split("|")[0]}
+            dataKey={`${date.split("|")[0]} Existing`}
+            fill={colors[i]}
+          />;
+          })}
         </BarChart>
       </RenderChart>
     </>

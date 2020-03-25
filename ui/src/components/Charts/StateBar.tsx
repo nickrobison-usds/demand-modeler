@@ -28,6 +28,7 @@ type Props = {
   meta?: GraphMetaData;
   title?: string;
   chartWidth?: number;
+  new?: boolean;
 };
 
 export const StateBar = (props: Props) => {
@@ -48,7 +49,7 @@ export const StateBar = (props: Props) => {
     Object.keys(props.timeSeries.states)
       .flatMap(k => props.timeSeries.states[k])
       .find(state => state.ID === props.state)?.State || "";
-  title = `${stateName}`;
+  title = `${stateName} ${props.stat === "dead" ? "dead": "confirmed"}`;
 
   let countyData = Object.keys(props.timeSeries.counties).flatMap(
     k => props.timeSeries.counties[k]
@@ -186,16 +187,16 @@ export const StateBar = (props: Props) => {
           );
         })}
         {displayDates.map((date, i) => {
-          return (
-            <Bar
-              id={`${date.split("|")[0]}`}
-              key={`${date.split("|")[0]} Existing`}
-              stackId={`${date.split("|")[0]}`}
-              dataKey={`${date.split("|")[0]} Existing`}
-              fill={colors[i]}
-            />
-          );
-        })}
+            return props.new ? (
+              null
+            ) : <Bar
+            key={`${date.split("|")[0]} Existing`}
+            id={`${date.split("|")[0]}`}
+            stackId={date.split("|")[0]}
+            dataKey={`${date.split("|")[0]} Existing`}
+            fill={colors[i]}
+          />;
+          })}
       </BarChart>
     </>
   );

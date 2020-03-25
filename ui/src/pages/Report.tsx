@@ -34,6 +34,122 @@ export const Report: React.FC<{}> = () => {
     );
   };
 
+  const maps = (lastUpdated: any) => {
+    return (
+      <>
+      <CountyMap
+      reportView
+      dataType={"New"}
+      title={"Percent Increase for Counties with 20+ reported cases"}
+    />
+    <CountyMap
+      reportView
+      dataType={"Total"}
+      title={"Total Confirmed Cases"}
+    />
+    <CountyMap
+      reportView
+      dataType={"New"}
+      title={
+        "Percent Increase for Counties with 20+ reported cases near NYC"
+      }
+      presetCoordinates="New York Area"
+    />
+    {lastUpdated && pagebreak(lastUpdated)}
+    <CountyMap
+      reportView
+      dataType={"Total"}
+      title={"Total Confirmed Cases near NYC"}
+      presetCoordinates="New York Area"
+    />
+    {lastUpdated && pagebreak(lastUpdated)}
+    <CountyMap
+      reportView
+      dataType={"New"}
+      title={
+        "Percent Increase for Counties with 20+ reported cases in Southern California"
+      }
+      presetCoordinates="Southern California"
+    />
+    {lastUpdated && pagebreak(lastUpdated)}
+    <CountyMap
+      reportView
+      dataType={"Total"}
+      title={"Total Confirmed Cases in Southern California"}
+      presetCoordinates="Southern California"
+    />
+    {lastUpdated && pagebreak(lastUpdated)}
+
+    <CountyMap
+      reportView
+      dataType={"New"}
+      title={
+        "Percent Increase for Counties with 20+ reported cases near Washington State"
+      }
+      presetCoordinates="Washington State"
+    />
+    {lastUpdated && pagebreak(lastUpdated)}
+    <CountyMap
+      reportView
+      dataType={"Total"}
+      title={"Total Confirmed Cases near Washington State"}
+      presetCoordinates="Washington State"
+    />
+    {lastUpdated && pagebreak(lastUpdated)}
+
+    <CountyMap
+      reportView
+      dataType={"New"}
+      title={
+        "Percent Increase for Counties with 20+ reported cases near the Atlanta Area"
+      }
+      presetCoordinates="Atlanta Area"
+    />
+    {lastUpdated && pagebreak(lastUpdated)}
+    <CountyMap
+      reportView
+      dataType={"Total"}
+      title={"Total Confirmed Cases near Atlanta Area"}
+      presetCoordinates="Atlanta Area"
+    />
+    {lastUpdated && pagebreak(lastUpdated)}
+
+    <CountyMap
+      reportView
+      dataType={"New"}
+      title={
+        "Percent Increase for Counties with 20+ reported cases near the New Orleans Area"
+      }
+      presetCoordinates="New Orleans Area"
+    />
+    {lastUpdated && pagebreak(lastUpdated)}
+    <CountyMap
+      reportView
+      dataType={"Total"}
+      title={"Total Confirmed Cases near New Orleans Area"}
+      presetCoordinates="New Orleans Area"
+    />
+    {lastUpdated && pagebreak(lastUpdated)}
+
+    <CountyMap
+      reportView
+      dataType={"New"}
+      title={
+        "Percent Increase for Counties with 20+ reported cases near the Miami Area"
+      }
+      presetCoordinates="Miami Area"
+    />
+    {lastUpdated && pagebreak(lastUpdated)}
+    <CountyMap
+      reportView
+      dataType={"Total"}
+      title={"Total Confirmed Cases near Miami Area"}
+      presetCoordinates="Miami Area"
+    />
+    </>
+    )
+  }
+
   return (
     <AppContext.Consumer>
       {({ state }) => {
@@ -63,115 +179,7 @@ export const Report: React.FC<{}> = () => {
           .slice(0, 10);
         return (
           <div className="report grid-container" style={{ marginLeft: 0 }}>
-            <CountyMap
-              reportView
-              dataType={"New"}
-              title={"Percent Increase for Counties with 20+ reported cases"}
-            />
-            <CountyMap
-              reportView
-              dataType={"Total"}
-              title={"Total Confirmed Cases"}
-            />
-            <CountyMap
-              reportView
-              dataType={"New"}
-              title={
-                "Percent Increase for Counties with 20+ reported cases near NYC"
-              }
-              presetCoordinates="New York Area"
-            />
-            {lastUpdated && pagebreak(lastUpdated)}
-            <CountyMap
-              reportView
-              dataType={"Total"}
-              title={"Total Confirmed Cases near NYC"}
-              presetCoordinates="New York Area"
-            />
-            {lastUpdated && pagebreak(lastUpdated)}
-            <CountyMap
-              reportView
-              dataType={"New"}
-              title={
-                "Percent Increase for Counties with 20+ reported cases in Southern California"
-              }
-              presetCoordinates="Southern California"
-            />
-            {lastUpdated && pagebreak(lastUpdated)}
-            <CountyMap
-              reportView
-              dataType={"Total"}
-              title={"Total Confirmed Cases in Southern California"}
-              presetCoordinates="Southern California"
-            />
-            {lastUpdated && pagebreak(lastUpdated)}
-
-            <CountyMap
-              reportView
-              dataType={"New"}
-              title={
-                "Percent Increase for Counties with 20+ reported cases near Washington State"
-              }
-              presetCoordinates="Washington State"
-            />
-            {lastUpdated && pagebreak(lastUpdated)}
-            <CountyMap
-              reportView
-              dataType={"Total"}
-              title={"Total Confirmed Cases near Washington State"}
-              presetCoordinates="Washington State"
-            />
-            {lastUpdated && pagebreak(lastUpdated)}
-
-            <CountyMap
-              reportView
-              dataType={"New"}
-              title={
-                "Percent Increase for Counties with 20+ reported cases near the Atlanta Area"
-              }
-              presetCoordinates="Atlanta Area"
-            />
-            {lastUpdated && pagebreak(lastUpdated)}
-            <CountyMap
-              reportView
-              dataType={"Total"}
-              title={"Total Confirmed Cases near Atlanta Area"}
-              presetCoordinates="Atlanta Area"
-            />
-            {lastUpdated && pagebreak(lastUpdated)}
-
-            <CountyMap
-              reportView
-              dataType={"New"}
-              title={
-                "Percent Increase for Counties with 20+ reported cases near the New Orleans Area"
-              }
-              presetCoordinates="New Orleans Area"
-            />
-            {lastUpdated && pagebreak(lastUpdated)}
-            <CountyMap
-              reportView
-              dataType={"Total"}
-              title={"Total Confirmed Cases near New Orleans Area"}
-              presetCoordinates="New Orleans Area"
-            />
-            {lastUpdated && pagebreak(lastUpdated)}
-
-            <CountyMap
-              reportView
-              dataType={"New"}
-              title={
-                "Percent Increase for Counties with 20+ reported cases near the Miami Area"
-              }
-              presetCoordinates="Miami Area"
-            />
-            {lastUpdated && pagebreak(lastUpdated)}
-            <CountyMap
-              reportView
-              dataType={"Total"}
-              title={"Total Confirmed Cases near Miami Area"}
-              presetCoordinates="Miami Area"
-            />
+            {maps(lastUpdated)}
             {lastUpdated && pagebreak(lastUpdated)}
             {top10States.map(s => (
               <>
@@ -187,10 +195,30 @@ export const Report: React.FC<{}> = () => {
                 <StateBar
                   state={s.ID}
                   timeSeries={state.covidTimeSeries}
+                  stat="confirmed"
+                  stateCount={false}
+                  reportView
+                  meta={state.graphMetaData}
+                  new={true}
+                />
+                {lastUpdated && pagebreak(lastUpdated)}
+                <StateBar
+                  state={s.ID}
+                  timeSeries={state.covidTimeSeries}
                   stat="dead"
                   stateCount={false}
                   reportView
                   meta={state.graphMetaData}
+                />
+                {lastUpdated && pagebreak(lastUpdated)}
+                <StateBar
+                  state={s.ID}
+                  timeSeries={state.covidTimeSeries}
+                  stat="dead"
+                  stateCount={false}
+                  reportView
+                  meta={state.graphMetaData}
+                  new={true}
                 />
                 {lastUpdated && pagebreak(lastUpdated)}
               </>
@@ -204,7 +232,30 @@ export const Report: React.FC<{}> = () => {
             {pagebreak(lastUpdated)}
             <Top10Counties
               timeSeries={state.covidTimeSeries}
+              stat="confirmed"
+              reportView
+              meta={state.graphMetaData}
+              new={true}
+            />
+            {pagebreak(lastUpdated)}
+            <Top10Counties
+              timeSeries={state.covidTimeSeries}
               stat="dead"
+              reportView
+              meta={state.graphMetaData}
+            />
+            {pagebreak(lastUpdated)}
+            <Top10Counties
+              timeSeries={state.covidTimeSeries}
+              stat="dead"
+              reportView
+              meta={state.graphMetaData}
+              new={true}
+            />
+            {pagebreak(lastUpdated)}
+            <Top10Counties
+              timeSeries={state.covidTimeSeries}
+              stat="mortalityRate"
               reportView
               meta={state.graphMetaData}
             />
@@ -214,6 +265,7 @@ export const Report: React.FC<{}> = () => {
               stat="mortalityRate"
               reportView
               meta={state.graphMetaData}
+              new={true}
             />
             {pagebreak(lastUpdated)}
             <StateMixedBar
