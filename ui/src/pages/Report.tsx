@@ -37,118 +37,118 @@ export const Report: React.FC<{}> = () => {
   const maps = (lastUpdated: any) => {
     return (
       <>
-      <CountyMap
-      reportView
-      dataType={"New"}
-      title={"Percent Increase for Counties with 20+ reported cases"}
-    />
-    <CountyMap
-      reportView
-      dataType={"Total"}
-      title={"Total Confirmed Cases"}
-    />
-    <CountyMap
-      reportView
-      dataType={"New"}
-      title={
-        "Percent Increase for Counties with 20+ reported cases near NYC"
-      }
-      presetCoordinates="New York Area"
-    />
-    {lastUpdated && pagebreak(lastUpdated)}
-    <CountyMap
-      reportView
-      dataType={"Total"}
-      title={"Total Confirmed Cases near NYC"}
-      presetCoordinates="New York Area"
-    />
-    {lastUpdated && pagebreak(lastUpdated)}
-    <CountyMap
-      reportView
-      dataType={"New"}
-      title={
-        "Percent Increase for Counties with 20+ reported cases in Southern California"
-      }
-      presetCoordinates="Southern California"
-    />
-    {lastUpdated && pagebreak(lastUpdated)}
-    <CountyMap
-      reportView
-      dataType={"Total"}
-      title={"Total Confirmed Cases in Southern California"}
-      presetCoordinates="Southern California"
-    />
-    {lastUpdated && pagebreak(lastUpdated)}
+        <CountyMap
+          reportView
+          dataType={"New"}
+          title={"Percent Increase for Counties with 20+ reported cases"}
+        />
+        <CountyMap
+          reportView
+          dataType={"Total"}
+          title={"Total Confirmed Cases"}
+        />
+        <CountyMap
+          reportView
+          dataType={"New"}
+          title={
+            "Percent Increase for Counties with 20+ reported cases near NYC"
+          }
+          presetCoordinates="New York Area"
+        />
+        {lastUpdated && pagebreak(lastUpdated)}
+        <CountyMap
+          reportView
+          dataType={"Total"}
+          title={"Total Confirmed Cases near NYC"}
+          presetCoordinates="New York Area"
+        />
+        {lastUpdated && pagebreak(lastUpdated)}
+        <CountyMap
+          reportView
+          dataType={"New"}
+          title={
+            "Percent Increase for Counties with 20+ reported cases in Southern California"
+          }
+          presetCoordinates="Southern California"
+        />
+        {lastUpdated && pagebreak(lastUpdated)}
+        <CountyMap
+          reportView
+          dataType={"Total"}
+          title={"Total Confirmed Cases in Southern California"}
+          presetCoordinates="Southern California"
+        />
+        {lastUpdated && pagebreak(lastUpdated)}
 
-    <CountyMap
-      reportView
-      dataType={"New"}
-      title={
-        "Percent Increase for Counties with 20+ reported cases near Washington State"
-      }
-      presetCoordinates="Washington State"
-    />
-    {lastUpdated && pagebreak(lastUpdated)}
-    <CountyMap
-      reportView
-      dataType={"Total"}
-      title={"Total Confirmed Cases near Washington State"}
-      presetCoordinates="Washington State"
-    />
-    {lastUpdated && pagebreak(lastUpdated)}
+        <CountyMap
+          reportView
+          dataType={"New"}
+          title={
+            "Percent Increase for Counties with 20+ reported cases near Washington State"
+          }
+          presetCoordinates="Washington State"
+        />
+        {lastUpdated && pagebreak(lastUpdated)}
+        <CountyMap
+          reportView
+          dataType={"Total"}
+          title={"Total Confirmed Cases near Washington State"}
+          presetCoordinates="Washington State"
+        />
+        {lastUpdated && pagebreak(lastUpdated)}
 
-    <CountyMap
-      reportView
-      dataType={"New"}
-      title={
-        "Percent Increase for Counties with 20+ reported cases near the Atlanta Area"
-      }
-      presetCoordinates="Atlanta Area"
-    />
-    {lastUpdated && pagebreak(lastUpdated)}
-    <CountyMap
-      reportView
-      dataType={"Total"}
-      title={"Total Confirmed Cases near Atlanta Area"}
-      presetCoordinates="Atlanta Area"
-    />
-    {lastUpdated && pagebreak(lastUpdated)}
+        <CountyMap
+          reportView
+          dataType={"New"}
+          title={
+            "Percent Increase for Counties with 20+ reported cases near the Atlanta Area"
+          }
+          presetCoordinates="Atlanta Area"
+        />
+        {lastUpdated && pagebreak(lastUpdated)}
+        <CountyMap
+          reportView
+          dataType={"Total"}
+          title={"Total Confirmed Cases near Atlanta Area"}
+          presetCoordinates="Atlanta Area"
+        />
+        {lastUpdated && pagebreak(lastUpdated)}
 
-    <CountyMap
-      reportView
-      dataType={"New"}
-      title={
-        "Percent Increase for Counties with 20+ reported cases near the New Orleans Area"
-      }
-      presetCoordinates="New Orleans Area"
-    />
-    {lastUpdated && pagebreak(lastUpdated)}
-    <CountyMap
-      reportView
-      dataType={"Total"}
-      title={"Total Confirmed Cases near New Orleans Area"}
-      presetCoordinates="New Orleans Area"
-    />
-    {lastUpdated && pagebreak(lastUpdated)}
+        <CountyMap
+          reportView
+          dataType={"New"}
+          title={
+            "Percent Increase for Counties with 20+ reported cases near the New Orleans Area"
+          }
+          presetCoordinates="New Orleans Area"
+        />
+        {lastUpdated && pagebreak(lastUpdated)}
+        <CountyMap
+          reportView
+          dataType={"Total"}
+          title={"Total Confirmed Cases near New Orleans Area"}
+          presetCoordinates="New Orleans Area"
+        />
+        {lastUpdated && pagebreak(lastUpdated)}
 
-    <CountyMap
-      reportView
-      dataType={"New"}
-      title={
-        "Percent Increase for Counties with 20+ reported cases near the Miami Area"
-      }
-      presetCoordinates="Miami Area"
-    />
-    {lastUpdated && pagebreak(lastUpdated)}
-    <CountyMap
-      reportView
-      dataType={"Total"}
-      title={"Total Confirmed Cases near Miami Area"}
-      presetCoordinates="Miami Area"
-    />
-    </>
-    )
-  }
+        <CountyMap
+          reportView
+          dataType={"New"}
+          title={
+            "Percent Increase for Counties with 20+ reported cases near the Miami Area"
+          }
+          presetCoordinates="Miami Area"
+        />
+        {lastUpdated && pagebreak(lastUpdated)}
+        <CountyMap
+          reportView
+          dataType={"Total"}
+          title={"Total Confirmed Cases near Miami Area"}
+          presetCoordinates="Miami Area"
+        />
+      </>
+    );
+  };
 
   return (
     <AppContext.Consumer>
@@ -194,7 +194,7 @@ export const Report: React.FC<{}> = () => {
                 />
                 {lastUpdated && pagebreak(lastUpdated)}
                 <StateBar
-                  dataMode="top10"
+                  dataMode="over20Cases"
                   state={s.ID}
                   timeSeries={state.covidTimeSeries}
                   stat="confirmed"
@@ -205,6 +205,7 @@ export const Report: React.FC<{}> = () => {
                 />
                 {lastUpdated && pagebreak(lastUpdated)}
                 <StateBar
+                  dataMode="top10"
                   state={s.ID}
                   timeSeries={state.covidTimeSeries}
                   stat="dead"
@@ -214,6 +215,7 @@ export const Report: React.FC<{}> = () => {
                 />
                 {lastUpdated && pagebreak(lastUpdated)}
                 <StateBar
+                  dataMode="top10"
                   state={s.ID}
                   timeSeries={state.covidTimeSeries}
                   stat="dead"
