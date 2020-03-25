@@ -81,11 +81,44 @@ export const Report: React.FC<{}> = () => {
               }
               presetCoordinates="New York Area"
             />
+            {lastUpdated && pagebreak(lastUpdated)}
             <CountyMap
               reportView
               dataType={"Total"}
               title={"Total Confirmed Cases near NYC"}
               presetCoordinates="New York Area"
+            />
+            {lastUpdated && pagebreak(lastUpdated)}
+            <CountyMap
+              reportView
+              dataType={"New"}
+              title={
+                "Percent Increase for Counties with 20+ reported cases in Southern California"
+              }
+              presetCoordinates="Southern California"
+            />
+            {lastUpdated && pagebreak(lastUpdated)}
+            <CountyMap
+              reportView
+              dataType={"Total"}
+              title={"Total Confirmed Cases in Southern California"}
+              presetCoordinates="Southern California"
+            />
+            {lastUpdated && pagebreak(lastUpdated)}
+            <CountyMap
+              reportView
+              dataType={"New"}
+              title={
+                "Percent Increase for Counties with 20+ reported cases near Washington State"
+              }
+              presetCoordinates="Washington State"
+            />
+            {lastUpdated && pagebreak(lastUpdated)}
+            <CountyMap
+              reportView
+              dataType={"Total"}
+              title={"Total Confirmed Cases near Washington State"}
+              presetCoordinates="Washington State"
             />
             {lastUpdated && pagebreak(lastUpdated)}
             {top10States.map(s => (
