@@ -219,7 +219,7 @@ export const StateMixedBar = (props: Props) => {
           />
           <Tooltip />
           <div style={{ padding: "10px" }} />
-          <Legend content={<CustomLegend displayDates={displayDates} colors={colors} />}/>
+          <Legend content={<CustomLegend displayDates={displayDates} colors={colors} stat={props.stat}/>}/>
           {displayDates.map((date, i) => {
             return (
               <Bar

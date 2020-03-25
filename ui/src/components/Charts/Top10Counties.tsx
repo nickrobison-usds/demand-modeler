@@ -22,11 +22,34 @@ import { CustomLegend } from "./StateBar";
 
 type Props = {
   timeSeries: CovidDateData;
-  stat: "confirmed" | "dead";
+  stat: Stat;
   reportView?: boolean;
   meta?: GraphMetaData;
   title?: string;
 };
+
+const getColors = (stat: Stat) => {
+  switch (stat) {
+    case "dead":
+      return ["#a9a9a9", "#888", "#666", "#333", "#111"];
+    case "confirmed":
+        return ["#E5A3A3", "#D05C5C", "#CB2727", "#C00000", "#900000", "#700000"];
+    case "mortalityRate":
+        return ["#a9a9a9", "#888", "#666", "#333", "#111"];
+  }
+}
+
+const getTitls = (stat: Stat) => {
+  switch (stat) {
+    case "dead":
+      return "Counties with the highest number of deaths";
+    case "confirmed":
+        return "Counties with the highest number of cases";
+    case "mortalityRate":
+        return "Counties with the highest change in moratility rate";
+  }
+}
+
 
 export const Top10Counties = (props: Props) => {
   let title: string;
@@ -34,10 +57,7 @@ export const Top10Counties = (props: Props) => {
   let dates: string[];
   let data;
   let stateName: string = "";
-  const colors =
-  props.stat === "confirmed"
-    ? ["#E5A3A3", "#D05C5C", "#CB2727", "#C00000", "#900000", "#700000"]
-    : ["#a9a9a9", "#888", "#666", "#333", "#111"];
+  const colors = getColors(props.stat);
   // Top 10 Counties (total or in state)
   title = `Counties with the highest number of ${
     props.stat === "confirmed" ? "cases" : "deaths"
@@ -99,20 +119,6 @@ export const Top10Counties = (props: Props) => {
     }
     dedupedData.push(dedupedElement);
   });
-
-  // const sortedData = dedupedData.sort((a, b) => {
-  //   const { Name: aName, ...aData } = a;
-  //   const { Name: bName, ...bData } = b;
-  //   const aSum = (Object.values(aData) as number[]).reduce(
-  //     (acc, el) => acc + el,
-  //     0
-  //   );
-  //   const bSum = (Object.values(bData) as number[]).reduce(
-  //     (acc, el) => acc + el,
-  //     0
-  //   );
-  //   return bSum - aSum;
-  // });
 
   const displayDates: string[] = [];
   const displayDateSet = new Set();
@@ -179,7 +185,7 @@ export const Top10Counties = (props: Props) => {
           />
           <Tooltip />
           <div style={{ padding: "10px" }} />
-          <Legend content={<CustomLegend displayDates={displayDates} colors={colors}/>} />
+          <Legend content={<CustomLegend displayDates={displayDates} colors={colors} stat={props.stat}/>} />
           {displayDates.map((date, i) => (
             <Bar
               key={`${date.split("|")[0]} New`}
