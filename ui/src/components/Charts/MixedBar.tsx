@@ -138,22 +138,22 @@ export const MixedBar = (props: Props) => {
             stackId="data"
             shape={<StripedFill fill={props.stat === "dead" ? "#000" : "#CB2727"} />}
           />
-          <Bar dataKey="Existing" stackId="data" fill="#900000" />
-          <Legend content={<CustomLegend />} />
+          <Bar dataKey="Existing" stackId="data" fill={props.stat === "dead" ? "#000" : "#900000"} />
+          <Legend content={<CustomLegend stat={props.stat}/>} />
         </BarChart>
       </RenderChart>
     </div>
   );
 };
 
-const CustomLegend = () => (
+const CustomLegend = (props: any) => (
   <div style={{ textAlign: "center" }}>
     <span
       style={{
         display: "inline-block",
         height: "10px",
         width: "10px",
-        backgroundColor: "#900000",
+        backgroundColor: props.stat === "dead" ? "#000" : "#900000",
         margin: "0 5px 0 10px"
       }}
     ></span>
@@ -165,8 +165,8 @@ const CustomLegend = () => (
         width: "10px",
         background: `repeating-linear-gradient(
                       135deg,
-                      #CB2727,
-                      #CB2727 2px,
+                      ${props.stat === "dead" ? "#000" : "#CB2727"},
+                      ${props.stat === "dead" ? "#000" : "#CB2727"} 2px,
                       #FFFFFF 2px,
                       #FFFFFF 4px
                     )`,
