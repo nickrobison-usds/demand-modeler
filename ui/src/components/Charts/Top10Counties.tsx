@@ -40,7 +40,7 @@ const getColors = (stat: Stat) => {
   }
 }
 
-const getTitls = (stat: Stat) => {
+const getTitle = (stat: Stat) => {
   switch (stat) {
     case "dead":
       return "Counties with the highest number of deaths";
@@ -59,9 +59,7 @@ export const Top10Counties = (props: Props) => {
   let stateName: string = "";
   const colors = getColors(props.stat);
   // Top 10 Counties (total or in state)
-  title = `Counties with the highest number of ${
-    props.stat === "confirmed" ? "cases" : "deaths"
-  }`;
+  title = getTitle(props.stat);
 
   let countyData = Object.keys(props.timeSeries.counties).flatMap(
     k => props.timeSeries.counties[k]
