@@ -116,6 +116,7 @@ export const Report: React.FC<{}> = () => {
               presetCoordinates="Southern California"
             />
             {lastUpdated && pagebreak(lastUpdated)}
+
             <CountyMap
               reportView
               dataType={"New"}
@@ -130,6 +131,57 @@ export const Report: React.FC<{}> = () => {
               dataType={"Total"}
               title={"Total Confirmed Cases near Washington State"}
               presetCoordinates="Washington State"
+            />
+            {lastUpdated && pagebreak(lastUpdated)}
+
+            <CountyMap
+              reportView
+              dataType={"New"}
+              title={
+                "Percent Increase for Counties with 20+ reported cases near the Atlanta Area"
+              }
+              presetCoordinates="Atlanta Area"
+            />
+            {lastUpdated && pagebreak(lastUpdated)}
+            <CountyMap
+              reportView
+              dataType={"Total"}
+              title={"Total Confirmed Cases near Atlanta Area"}
+              presetCoordinates="Atlanta Area"
+            />
+            {lastUpdated && pagebreak(lastUpdated)}
+
+            <CountyMap
+              reportView
+              dataType={"New"}
+              title={
+                "Percent Increase for Counties with 20+ reported cases near the New Orleans Area"
+              }
+              presetCoordinates="New Orleans Area"
+            />
+            {lastUpdated && pagebreak(lastUpdated)}
+            <CountyMap
+              reportView
+              dataType={"Total"}
+              title={"Total Confirmed Cases near New Orleans Area"}
+              presetCoordinates="New Orleans Area"
+            />
+            {lastUpdated && pagebreak(lastUpdated)}
+
+            <CountyMap
+              reportView
+              dataType={"New"}
+              title={
+                "Percent Increase for Counties with 20+ reported cases near the Miami Area"
+              }
+              presetCoordinates="Miami Area"
+            />
+            {lastUpdated && pagebreak(lastUpdated)}
+            <CountyMap
+              reportView
+              dataType={"Total"}
+              title={"Total Confirmed Cases near Miami Area"}
+              presetCoordinates="Miami Area"
             />
             {lastUpdated && pagebreak(lastUpdated)}
             {top10States.map(s => (
