@@ -28,19 +28,14 @@ type Props = {
   chartWidth?: number;
 };
 
-const colors = [
-  "#E5A3A3",
-  "#D05C5C",
-  "#CB2727",
-  "#C00000",
-  "#900000",
-  "#700000"
-];
-
 export const StateBar = (props: Props) => {
   if (props.stateCount && props.state) {
     return null;
   }
+  const colors =
+    props.stat === "confirmed"
+      ? ["#E5A3A3", "#D05C5C", "#CB2727", "#C00000", "#900000", "#700000"]
+      : ["#bbb", "#a9a9a9", "#888", "#666", "#333", "#0000"];
   let title: string;
   let maxCases: number | undefined;
   let dates: string[];
@@ -174,7 +169,7 @@ export const StateBar = (props: Props) => {
         />
         <Tooltip />
         <div style={{ padding: "10px" }} />
-        <Legend content={<CustomLegend displayDates={displayDates} />} />
+        <Legend content={<CustomLegend displayDates={displayDates} colors={colors} />} />
         {displayDates.map((date, i) => {
           return (
             <Bar
@@ -204,9 +199,10 @@ export const StateBar = (props: Props) => {
 
 type LegendProps = {
   displayDates: string[];
+  colors: string[];
 };
 
-export const CustomLegend: React.FC<LegendProps> = ({ displayDates }) => (
+export const CustomLegend: React.FC<LegendProps> = ({ displayDates, colors }) => (
   <div style={{ textAlign: "center" }}>
     {displayDates.map((date, i) => (
       <React.Fragment key={date}>

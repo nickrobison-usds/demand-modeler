@@ -31,19 +31,14 @@ type Props = {
   chartWidth?: number;
 };
 
-const colors = [
-  "#E5A3A3",
-  "#D05C5C",
-  "#CB2727",
-  "#C00000",
-  "#900000",
-  "#700000"
-];
-
 export const StateMixedBar = (props: Props) => {
   if ((props.stateCount && props.state) || props.county) {
     return null;
   }
+  const colors =
+  props.stat === "confirmed"
+    ? ["#E5A3A3", "#D05C5C", "#CB2727", "#C00000", "#900000", "#700000"]
+    : ["#e5e5e5", "#d1d1d1", "#cccccc", "#bfbfbf", "#8e8e8e", "#707070"];
   let title: string;
   let maxCases: number | undefined;
   let dates: string[];
@@ -224,7 +219,7 @@ export const StateMixedBar = (props: Props) => {
           />
           <Tooltip />
           <div style={{ padding: "10px" }} />
-          <Legend content={<CustomLegend displayDates={displayDates} />} />
+          <Legend content={<CustomLegend displayDates={displayDates} colors={colors} />}/>
           {displayDates.map((date, i) => {
             return (
               <Bar
