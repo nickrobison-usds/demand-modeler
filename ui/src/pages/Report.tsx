@@ -184,6 +184,7 @@ export const Report: React.FC<{}> = () => {
             {top10States.map(s => (
               <>
                 <StateBar
+                  dataMode="over20Cases"
                   state={s.ID}
                   timeSeries={state.covidTimeSeries}
                   stat="confirmed"
@@ -193,6 +194,7 @@ export const Report: React.FC<{}> = () => {
                 />
                 {lastUpdated && pagebreak(lastUpdated)}
                 <StateBar
+                  dataMode="top10"
                   state={s.ID}
                   timeSeries={state.covidTimeSeries}
                   stat="confirmed"
