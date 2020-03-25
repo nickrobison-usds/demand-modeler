@@ -1,9 +1,9 @@
 import React from "react";
 import { AppContext } from "../app/AppStore";
 import CountyMap from "../components/Maps/CountyMap";
-import Navigation from "../components/Navigation/Navigation";
 import Card from "../components/Card/Card";
 import USATotals from "../components/USATotals";
+import USATotalsNav from "../components/USATotalsNav";
 import StateSelect from "../components/Forms/StateSelect";
 import CountySelect from "../components/Forms/CountySelect";
 import { MetricSelect } from "../components/Forms/MetricSelect";
@@ -23,30 +23,33 @@ export const Dashboard: React.FC<{}> = () => {
         return (
           <div className="dashboard-container">
             <div className="dashboard-nav">
-              <Navigation>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between"
-                  }}
-                >
-                  <div style={{ display: "flex" }}>
-                    <StateSelect />
-                    <CountySelect />
-                    <MetricSelect />
-                  </div>
-                  <a
-                    className="usa-button"
-                    href="?report=true"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    View Report
-                  </a>
+              <div className="nav-title">
+                <strong className="margin-right-1">COVID-19 in the United States</strong>
+                <span className="text-right font-sans-xs text-gray-40">Updated: [[03/23/20 04:59 PM EST]]</span>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between"
+                }}
+              >
+                <div style={{ display: "flex" }}>
+                  <MetricSelect />
+                  <StateSelect />
+                  <CountySelect />
                 </div>
-              </Navigation>
+                <USATotalsNav />
+                <a
+                  className="usa-button"
+                  href="?report=true"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  View Report
+                </a>
             </div>
+          </div>
             <div className="dashboard">
               <div>
                 <Card>

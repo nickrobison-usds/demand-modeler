@@ -29,13 +29,7 @@ export const MetricSelect: React.FunctionComponent<{}> = props => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center"
-      }}
-    >
+    <div className="navigation-select">
       <UsaSelect
         options={options}
         placeholder={DEFAULT_TEXT}

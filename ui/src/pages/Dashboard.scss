@@ -1,3 +1,5 @@
+@import '../App.scss';
+
 .dashboard-container {
   display: grid;
   grid-template-rows: 80px auto;
@@ -10,7 +12,24 @@
 
 .dashboard-nav {
   width: 100%;
+  padding: 1rem 3rem 2rem 3rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #c9c9c9;
+  background-color: #ffffff;
+  width: 100%;
+  position: flex;
 }
+
+.nav-title{
+  width: 100%;
+  @include u-margin-bottom(2);
+  @include u-margin-right(2);
+}
+
+.navigation-select{
+  @include u-margin-right(2);
+}
+
 @media screen and (max-width: 1024px) {
   .card {
     max-width: calc(100vw - 45px);
@@ -22,9 +41,12 @@
 @media screen and (min-width: 1024px) {
   .dashboard-nav {
     position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
   }
   .dashboard {
-    margin-top: 100px;
+    margin-top: 10rem;
     grid-template-columns: 35% 65%;
     div {
       margin-top: 0px;

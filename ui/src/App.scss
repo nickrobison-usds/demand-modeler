@@ -1,3 +1,15 @@
+$theme-font-path: "~uswds/dist/fonts";
+$theme-image-path: "~uswds/dist/img";
+@import "~uswds/dist/scss/uswds.scss";
+
 body {
-  background-color: #ffffff;
+  background-color: #fff;
+  margin: 0;
+  @include u-font-family('sans');
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  @include u-font-family('mono')
 }
