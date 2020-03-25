@@ -130,9 +130,9 @@ export const Report: React.FC<{}> = () => {
               dataType={"Total"}
               title={"Total Confirmed Cases near Washington State"}
               presetCoordinates="Washington State"
-            />
+            /> */}
             {lastUpdated && pagebreak(lastUpdated)}
-            {top10States.map(s => (
+            {/* {top10States.map(s => (
               <>
                 <StateBar
                   state={s.ID}
@@ -153,7 +153,7 @@ export const Report: React.FC<{}> = () => {
                 />
                 {lastUpdated && pagebreak(lastUpdated)}
               </>
-            ))}
+            ))} */}
             <Top10Counties
               timeSeries={state.covidTimeSeries}
               stat="confirmed"

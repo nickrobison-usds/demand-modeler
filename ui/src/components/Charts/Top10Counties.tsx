@@ -19,6 +19,7 @@ import { monthDay } from "../../utils/DateUtils";
 import { RenderChart } from "./RenderChart";
 import { StripedFill } from "./StripedFill";
 import { CustomLegend } from "./StateBar";
+import { population } from "./population";
 
 type Props = {
   timeSeries: CovidDateData;
@@ -50,7 +51,6 @@ const getTitls = (stat: Stat) => {
   }
 }
 
-
 export const Top10Counties = (props: Props) => {
   let title: string;
   let maxCases: number | undefined;
@@ -77,6 +77,9 @@ export const Top10Counties = (props: Props) => {
   ].sort();
   const counties = countyData.reduce((acc, el) => {
     const name = `${el.County}, ${stateAbbreviation[el.State]}`;
+    if (population[el.ID] === undefined) {
+      console.log("yo yo ", el.ID, name, population[el.ID])
+    }
     if (!acc[name]) acc[name] = {};
     acc[name][monthDay(el.Reported)] =
       props.stat === "confirmed" ? el.Confirmed : el.Dead;
