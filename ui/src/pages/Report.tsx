@@ -79,25 +79,13 @@ export const Report: React.FC<{}> = () => {
               title={
                 "Percent Increase for Counties with 20+ reported cases near NYC"
               }
-              viewport={{
-                width: 400,
-                height: 600,
-                latitude: 40.7709,
-                longitude: -73.9712,
-                zoom: 10
-              }}
+              presetCoordinates="New York Area"
             />
             <CountyMap
               reportView
               dataType={"Total"}
               title={"Total Confirmed Cases near NYC"}
-              viewport={{
-                width: 400,
-                height: 600,
-                latitude: 40.7709,
-                longitude: -73.9712,
-                zoom: 4
-              }}
+              presetCoordinates="New York Area"
             />
             {lastUpdated && pagebreak(lastUpdated)}
             {top10States.map(s => (

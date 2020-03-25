@@ -5,8 +5,7 @@ import {
   County,
   State,
   initialState,
-  Metric,
-  MapView
+  Metric
 } from "../../app/AppStore";
 import ReactMapGL, {
   Layer,
@@ -44,6 +43,15 @@ const ALASKA_COORDS = [
   -136.10250208333454,
   59.29933020239282
 ];
+
+const PRESET_COORDINATES = {
+  "New York Area": [
+    -79.71795557211779,
+    44.07230181608911,
+    -70.02386439122805,
+    38.52193337282572
+  ]
+} as const;
 
 interface LegendRegion {
   state: {
@@ -115,7 +123,7 @@ interface Props {
   reportView?: boolean;
   dataType?: DataType;
   title?: string;
-  viewport?:any;
+  presetCoordinates?: keyof typeof PRESET_COORDINATES;
 }
 
 const CountyMap: React.FunctionComponent<Props> = props => {
@@ -127,9 +135,11 @@ const CountyMap: React.FunctionComponent<Props> = props => {
   const [stateData, setStateData] = useState<GeoJSON.FeatureCollection>(
     stateGeoData as any
   );
-  const [dataType, setDataType] = useState<DataType>(props.dataType? props.dataType : "New");
-  const [viewport, setViewport] = useState((props.viewport? props.viewport :
-    initialState.mapView) as ViewportProps
+  const [dataType, setDataType] = useState<DataType>(
+    props.dataType ? props.dataType : "New"
+  );
+  const [viewport, setViewport] = useState(
+    initialState.mapView as ViewportProps
   );
   const [hoverInfo, setHoverInfo] = useState<{ [k: string]: any } | null>();
   const [legendScales, setLegendScales] = useState<LegendScales>(defaultLegend);
@@ -356,11 +366,18 @@ const CountyMap: React.FunctionComponent<Props> = props => {
         transitionDuration: 1000,
         transitionEasing: easeCubic
       };
-      if (selectedGeo) {
-        const [minLng, minLat, maxLng, maxLat] =
-          selectedGeo.properties?.NAME === "Alaska"
-            ? ALASKA_COORDS
-            : bbox(selectedGeo);
+      if (selectedGeo || props.presetCoordinates) {
+        let coords;
+        if (selectedGeo) {
+          coords =
+            selectedGeo.properties?.NAME === "Alaska"
+              ? ALASKA_COORDS
+              : bbox(selectedGeo);
+        }
+        if (props.presetCoordinates) {
+          coords = PRESET_COORDINATES[props.presetCoordinates];
+        }
+        const [minLng, minLat, maxLng, maxLat] = coords;
         const view = new WebMercatorViewport(viewport);
         const { latitude, longitude, zoom } = view.fitBounds(
           [
@@ -381,7 +398,8 @@ const CountyMap: React.FunctionComponent<Props> = props => {
     state.selection.state,
     stateData.features,
     countyData.features,
-    state.selection.county
+    state.selection.county,
+    props.presetCoordinates
   ]);
 
   let filteredCountyData = { ...countyData };
@@ -462,6 +480,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
           return hoverInfo ? "pointer" : "grab";
         }}
         onClick={event => {
+          console.log(event.lngLat);
           const feature = event.features && event.features[0];
           if (feature) {
             const clickedState = feature.properties.STATE;
@@ -525,7 +544,9 @@ const CountyMap: React.FunctionComponent<Props> = props => {
       </ReactMapGL>
       <div>
         <p style={{ margin: "10px 0" }}>
-          {props.title ? props.title: legendLookup(state.selection.metric)[dataType]}
+          {props.title
+            ? props.title
+            : legendLookup(state.selection.metric)[dataType]}
         </p>
         {legend.map(k => (
           <span
