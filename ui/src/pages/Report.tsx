@@ -74,7 +74,7 @@ export const Report: React.FC<{}> = () => {
           .slice(0, 10);
         return (
           <div className="report grid-container" style={{ marginLeft: 0 }}>
-            <CountyMap
+            {/* <CountyMap
               reportView
               dataType={"New"}
               title={"Percent Increase for Counties with 20+ reported cases"}
@@ -130,9 +130,9 @@ export const Report: React.FC<{}> = () => {
               dataType={"Total"}
               title={"Total Confirmed Cases near Washington State"}
               presetCoordinates="Washington State"
-            />
+            /> */}
             {lastUpdated && pagebreak(lastUpdated)}
-            {top10States.map(s => (
+            {/* {top10States.map(s => (
               <>
                 <StateBar
                   state={s.ID}
@@ -153,7 +153,7 @@ export const Report: React.FC<{}> = () => {
                 />
                 {lastUpdated && pagebreak(lastUpdated)}
               </>
-            ))}
+            ))} */}
             <Top10Counties
               timeSeries={state.covidTimeSeries}
               stat="confirmed"
