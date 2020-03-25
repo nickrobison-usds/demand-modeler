@@ -63,7 +63,63 @@ export const Report: React.FC<{}> = () => {
           .slice(0, 10);
         return (
           <div className="report grid-container" style={{ marginLeft: 0 }}>
-            <CountyMap reportView />
+            {/* <CountyMap
+              reportView
+              dataType={"New"}
+              title={"Percent Increase for Counties with 20+ reported cases"}
+            />
+            <CountyMap
+              reportView
+              dataType={"Total"}
+              title={"Total Confirmed Cases"}
+            /> */}
+            <CountyMap
+              reportView
+              dataType={"New"}
+              title={
+                "Percent Increase for Counties with 20+ reported cases near NYC"
+              }
+              presetCoordinates="New York Area"
+            />
+            {lastUpdated && pagebreak(lastUpdated)}
+            <CountyMap
+              reportView
+              dataType={"Total"}
+              title={"Total Confirmed Cases near NYC"}
+              presetCoordinates="New York Area"
+            />
+            {lastUpdated && pagebreak(lastUpdated)}
+            <CountyMap
+              reportView
+              dataType={"New"}
+              title={
+                "Percent Increase for Counties with 20+ reported cases in Southern California"
+              }
+              presetCoordinates="Southern California"
+            />
+            {lastUpdated && pagebreak(lastUpdated)}
+            <CountyMap
+              reportView
+              dataType={"Total"}
+              title={"Total Confirmed Cases in Southern California"}
+              presetCoordinates="Southern California"
+            />
+            {lastUpdated && pagebreak(lastUpdated)}
+            <CountyMap
+              reportView
+              dataType={"New"}
+              title={
+                "Percent Increase for Counties with 20+ reported cases near Washington State"
+              }
+              presetCoordinates="Washington State"
+            />
+            {lastUpdated && pagebreak(lastUpdated)}
+            <CountyMap
+              reportView
+              dataType={"Total"}
+              title={"Total Confirmed Cases near Washington State"}
+              presetCoordinates="Washington State"
+            />
             {lastUpdated && pagebreak(lastUpdated)}
             {top10States.map(s => (
               <>

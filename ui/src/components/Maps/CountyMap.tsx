@@ -44,6 +44,27 @@ const ALASKA_COORDS = [
   59.29933020239282
 ];
 
+const PRESET_COORDINATES = {
+  "New York Area": [
+    -79.71795557211779,
+    44.07230181608911,
+    -70.02386439122805,
+    38.52193337282572
+  ],
+  "Southern California": [
+    -125.8900564950757,
+    40.13543344053817,
+    -109.6595370450612,
+    31.801948669038634
+  ],
+  "Washington State": [
+    -125.31842231224825,
+    49.20099357272757,
+    -113.89959291496478,
+    44.18402705083673
+  ]
+} as const;
+
 interface LegendRegion {
   state: {
     end: number;
@@ -112,6 +133,9 @@ const round = (num: number, decimals: number = 1) =>
 
 interface Props {
   reportView?: boolean;
+  dataType?: DataType;
+  title?: string;
+  presetCoordinates?: keyof typeof PRESET_COORDINATES;
 }
 
 const CountyMap: React.FunctionComponent<Props> = props => {
@@ -123,7 +147,9 @@ const CountyMap: React.FunctionComponent<Props> = props => {
   const [stateData, setStateData] = useState<GeoJSON.FeatureCollection>(
     stateGeoData as any
   );
-  const [dataType, setDataType] = useState<DataType>("New");
+  const [dataType, setDataType] = useState<DataType>(
+    props.dataType ? props.dataType : "New"
+  );
   const [viewport, setViewport] = useState(
     initialState.mapView as ViewportProps
   );
@@ -236,6 +262,11 @@ const CountyMap: React.FunctionComponent<Props> = props => {
 
     if (dataType === "Total") {
       const newLegend = { ...legendScales };
+      if (level === "county") {
+        max = 2000;
+      } else {
+        max = 6000;
+      }
       newLegend.Total[level].scale = Array.from(defaultScale, e =>
         round(e * max)
       );
@@ -347,11 +378,18 @@ const CountyMap: React.FunctionComponent<Props> = props => {
         transitionDuration: 1000,
         transitionEasing: easeCubic
       };
-      if (selectedGeo) {
-        const [minLng, minLat, maxLng, maxLat] =
-          selectedGeo.properties?.NAME === "Alaska"
-            ? ALASKA_COORDS
-            : bbox(selectedGeo);
+      if (selectedGeo || props.presetCoordinates) {
+        let coords;
+        if (selectedGeo) {
+          coords =
+            selectedGeo.properties?.NAME === "Alaska"
+              ? ALASKA_COORDS
+              : bbox(selectedGeo);
+        }
+        if (props.presetCoordinates) {
+          coords = PRESET_COORDINATES[props.presetCoordinates];
+        }
+        const [minLng, minLat, maxLng, maxLat] = coords;
         const view = new WebMercatorViewport(viewport);
         const { latitude, longitude, zoom } = view.fitBounds(
           [
@@ -372,7 +410,8 @@ const CountyMap: React.FunctionComponent<Props> = props => {
     state.selection.state,
     stateData.features,
     countyData.features,
-    state.selection.county
+    state.selection.county,
+    props.presetCoordinates
   ]);
 
   let filteredCountyData = { ...countyData };
@@ -453,6 +492,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
           return hoverInfo ? "pointer" : "grab";
         }}
         onClick={event => {
+          console.log(event.lngLat);
           const feature = event.features && event.features[0];
           if (feature) {
             const clickedState = feature.properties.STATE;
@@ -516,7 +556,9 @@ const CountyMap: React.FunctionComponent<Props> = props => {
       </ReactMapGL>
       <div>
         <p style={{ margin: "10px 0" }}>
-          {legendLookup(state.selection.metric)[dataType]}
+          {props.title
+            ? props.title
+            : legendLookup(state.selection.metric)[dataType]}
         </p>
         {legend.map(k => (
           <span
