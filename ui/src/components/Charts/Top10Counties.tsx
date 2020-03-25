@@ -77,9 +77,6 @@ export const Top10Counties = (props: Props) => {
   const counties = countyData.reduce((acc, el) => {
     const p = population[el.ID];
     const name = `${el.County}, ${stateAbbreviation[el.State]}${p ? ` (${formatNum(p)})` : ""}`;
-    if (population[el.ID] === undefined) {
-      console.log("yo yo ", el.ID, name, population[el.ID])
-    }
     if (!acc[name]) acc[name] = {};
     acc[name][monthDay(el.Reported)] =
       props.stat === "confirmed" ? el.Confirmed : el.Dead;

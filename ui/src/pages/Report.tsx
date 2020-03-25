@@ -26,7 +26,6 @@ export const Report: React.FC<{}> = () => {
           {/* 12 states with highest case count as of 3/17 shown. */}
         </div>
         <div>
-        <div>
           Data sourced from state health department websites; reporting may be
           incomplete or delayed
         </div>
