@@ -58,4 +58,9 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
   }
+  .map-wrapper{
+    position: fixed;
+    top: 8rem;
+    left: 2rem;
+  }
 }
