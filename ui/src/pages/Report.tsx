@@ -26,6 +26,17 @@ export const Report: React.FC<{}> = () => {
           {/* 12 states with highest case count as of 3/17 shown. */}
         </div>
         <div>
+          The top 10 counties for the top ten states has been verified with
+          numbers from{" "}
+          <a
+            href="https://covidtracking.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            The COVID Tracking Project
+          </a>
+        </div>
+        <div>
           Data sourced from state health department websites; reporting may be
           incomplete or delayed
         </div>
@@ -63,7 +74,63 @@ export const Report: React.FC<{}> = () => {
           .slice(0, 10);
         return (
           <div className="report grid-container" style={{ marginLeft: 0 }}>
-            <CountyMap reportView />
+            {/* <CountyMap
+              reportView
+              dataType={"New"}
+              title={"Percent Increase for Counties with 20+ reported cases"}
+            />
+            <CountyMap
+              reportView
+              dataType={"Total"}
+              title={"Total Confirmed Cases"}
+            /> */}
+            <CountyMap
+              reportView
+              dataType={"New"}
+              title={
+                "Percent Increase for Counties with 20+ reported cases near NYC"
+              }
+              presetCoordinates="New York Area"
+            />
+            {lastUpdated && pagebreak(lastUpdated)}
+            <CountyMap
+              reportView
+              dataType={"Total"}
+              title={"Total Confirmed Cases near NYC"}
+              presetCoordinates="New York Area"
+            />
+            {lastUpdated && pagebreak(lastUpdated)}
+            <CountyMap
+              reportView
+              dataType={"New"}
+              title={
+                "Percent Increase for Counties with 20+ reported cases in Southern California"
+              }
+              presetCoordinates="Southern California"
+            />
+            {lastUpdated && pagebreak(lastUpdated)}
+            <CountyMap
+              reportView
+              dataType={"Total"}
+              title={"Total Confirmed Cases in Southern California"}
+              presetCoordinates="Southern California"
+            />
+            {lastUpdated && pagebreak(lastUpdated)}
+            <CountyMap
+              reportView
+              dataType={"New"}
+              title={
+                "Percent Increase for Counties with 20+ reported cases near Washington State"
+              }
+              presetCoordinates="Washington State"
+            />
+            {lastUpdated && pagebreak(lastUpdated)}
+            <CountyMap
+              reportView
+              dataType={"Total"}
+              title={"Total Confirmed Cases near Washington State"}
+              presetCoordinates="Washington State"
+            />
             {lastUpdated && pagebreak(lastUpdated)}
             {top10States.map(s => (
               <>
@@ -71,6 +138,15 @@ export const Report: React.FC<{}> = () => {
                   state={s.ID}
                   timeSeries={state.covidTimeSeries}
                   stat="confirmed"
+                  stateCount={false}
+                  reportView
+                  meta={state.graphMetaData}
+                />
+                {lastUpdated && pagebreak(lastUpdated)}
+                <StateBar
+                  state={s.ID}
+                  timeSeries={state.covidTimeSeries}
+                  stat="dead"
                   stateCount={false}
                   reportView
                   meta={state.graphMetaData}
@@ -85,6 +161,13 @@ export const Report: React.FC<{}> = () => {
               meta={state.graphMetaData}
             />
             {pagebreak(lastUpdated)}
+            <Top10Counties
+              timeSeries={state.covidTimeSeries}
+              stat="dead"
+              reportView
+              meta={state.graphMetaData}
+            />
+            {pagebreak(lastUpdated)}
             <StateMixedBar
               state={undefined}
               county={undefined}
@@ -95,11 +178,29 @@ export const Report: React.FC<{}> = () => {
               meta={state.graphMetaData}
             />
             {lastUpdated && pagebreak(lastUpdated)}
+            <StateMixedBar
+              state={undefined}
+              county={undefined}
+              timeSeries={state.covidTimeSeries}
+              stat="dead"
+              stateCount={true}
+              reportView
+              meta={state.graphMetaData}
+            />
+            {lastUpdated && pagebreak(lastUpdated)}
             <MixedBar
               state={undefined}
               county={undefined}
               timeSeries={state.covidTimeSeries}
               stat="confirmed"
+              reportView
+            />
+            {lastUpdated && pagebreak(lastUpdated)}
+            <MixedBar
+              state={undefined}
+              county={undefined}
+              timeSeries={state.covidTimeSeries}
+              stat="dead"
               reportView
             />
             {lastUpdated && pagebreak(lastUpdated)}

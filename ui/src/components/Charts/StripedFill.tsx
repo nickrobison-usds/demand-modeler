@@ -1,9 +1,11 @@
 import React from "react";
+import { useUniqueId } from "../../utils/useUniqueId";
 
 type Props = any;
 
 export const StripedFill: React.FC<Props> = props => {
   const { x: oX, y: oY, width: oWidth, height: oHeight, fill } = props;
+  const id = useUniqueId("mask-stripe");
 
   let x = oX;
   let y = oHeight < 0 ? oY + oHeight : oY;
@@ -26,7 +28,7 @@ export const StripedFill: React.FC<Props> = props => {
           fill="white"
         ></rect>
       </pattern>
-      <mask id="mask-stripe">
+      <mask id={id}>
         <rect
           x="0"
           y="0"
@@ -37,7 +39,7 @@ export const StripedFill: React.FC<Props> = props => {
       </mask>
       <rect
         fill={fill}
-        mask="url(#mask-stripe)"
+        mask={`url(#${id})`}
         x={x}
         y={y}
         width={width}

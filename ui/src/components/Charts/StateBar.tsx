@@ -15,6 +15,7 @@ import {
 } from "../../app/AppStore";
 import { getYMaxFromMaxCases } from "../../utils/utils";
 import { monthDay } from "../../utils/DateUtils";
+import { StripedFill } from "./StripedFill";
 
 type Props = {
   state: string;
@@ -27,19 +28,14 @@ type Props = {
   chartWidth?: number;
 };
 
-const colors = [
-  "#E5A3A3",
-  "#D05C5C",
-  "#CB2727",
-  "#C00000",
-  "#900000",
-  "#700000"
-];
-
 export const StateBar = (props: Props) => {
   if (props.stateCount && props.state) {
     return null;
   }
+  const colors =
+    props.stat === "confirmed"
+      ? ["#E5A3A3", "#D05C5C", "#CB2727", "#C00000", "#900000", "#700000"]
+      : ["#a9a9a9", "#888", "#666", "#333", "#111"];
   let title: string;
   let maxCases: number | undefined;
   let dates: string[];
@@ -59,7 +55,10 @@ export const StateBar = (props: Props) => {
     countyData = countyData.filter(({ State }) => State === stateName);
   }
   if (props.meta) {
-    maxCases = props.meta.maxConfirmedCounty;
+    maxCases =
+      props.stat === "confirmed"
+        ? props.meta.maxConfirmedCounty
+        : props.meta.maxDeadCounty;
   }
   dates = [
     ...new Set(countyData.map(({ Reported }) => monthDay(Reported)))
@@ -86,7 +85,7 @@ export const StateBar = (props: Props) => {
       );
     });
 
-  const dedupedData: any[] = [];
+  let dedupedData: { [k: string]: string | number }[] = [];
   data.forEach(e => {
     const dedupedElement: any = {};
     const d = Object.keys(e).sort();
@@ -118,6 +117,26 @@ export const StateBar = (props: Props) => {
     }
   });
 
+  dedupedData = dedupedData.slice(0, 10);
+
+  const finalData = dedupedData.map(data => {
+    const obj: { [k: string]: string | number } = {};
+    const entries = Object.entries(data);
+    entries.forEach(([key, value], i) => {
+      if (key !== "Name" && i > 0) {
+        let newCases = (value as number) - (entries[i - 1][1] as number);
+        if (newCases < 0) newCases = 0;
+        obj[`${key} New`] = newCases;
+        obj[`${key} Existing`] = (value as number) - newCases;
+      } else if (key !== "Name" && i === 0) {
+        obj[`${key} Existing`] = value;
+        obj[`${key} New`] = 0;
+      }
+      obj[key] = value;
+    });
+    return obj;
+  });
+
   return (
     <>
       <h3>{props.title ? props.title : title}</h3>
@@ -125,7 +144,7 @@ export const StateBar = (props: Props) => {
         barSize={10}
         width={props.reportView ? window.innerWidth * 0.9 : undefined}
         height={880}
-        data={dedupedData.slice(0, 10)}
+        data={finalData}
         margin={{
           top: 0,
           right: 0,
@@ -150,11 +169,70 @@ export const StateBar = (props: Props) => {
         />
         <Tooltip />
         <div style={{ padding: "10px" }} />
-        <Legend />
-        {displayDates.map((date, i) => (
-          <Bar key={date} dataKey={date.split("|")[0]} fill={colors[i]} />
-        ))}
+        <Legend content={<CustomLegend displayDates={displayDates} colors={colors} />} />
+        {displayDates.map((date, i) => {
+          return (
+            <Bar
+              id={`${date.split("|")[0]}`}
+              key={`${date.split("|")[0]} New`}
+              stackId={`${date.split("|")[0]}`}
+              dataKey={`${date.split("|")[0]} New`}
+              shape={<StripedFill fill={colors[i]} />}
+            />
+          );
+        })}
+        {displayDates.map((date, i) => {
+          return (
+            <Bar
+              id={`${date.split("|")[0]}`}
+              key={`${date.split("|")[0]} Existing`}
+              stackId={`${date.split("|")[0]}`}
+              dataKey={`${date.split("|")[0]} Existing`}
+              fill={colors[i]}
+            />
+          );
+        })}
       </BarChart>
     </>
   );
 };
+
+type LegendProps = {
+  displayDates: string[];
+  colors: string[];
+};
+
+export const CustomLegend: React.FC<LegendProps> = ({ displayDates, colors }) => (
+  <div style={{ textAlign: "center" }}>
+    {displayDates.map((date, i) => (
+      <React.Fragment key={date}>
+        <span
+          style={{
+            display: "inline-block",
+            height: "10px",
+            width: "10px",
+            backgroundColor: colors[i],
+            margin: "0 5px 0 10px"
+          }}
+        ></span>
+        {date}
+      </React.Fragment>
+    ))}
+    <span
+      style={{
+        display: "inline-block",
+        height: "10px",
+        width: "10px",
+        background: `repeating-linear-gradient(
+                      135deg,
+                      #000000,
+                      #000000 2px,
+                      #FFFFFF 2px,
+                      #FFFFFF 4px
+                    )`,
+        margin: "0 5px 0 10px"
+      }}
+    ></span>
+    New Cases
+  </div>
+);

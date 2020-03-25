@@ -73,7 +73,7 @@ export const Dashboard: React.FC<{}> = () => {
                     state={state.selection.state}
                     county={state.selection.county}
                     timeSeries={state.covidTimeSeries}
-                    stat="confirmed"
+                    stat={state.selection.metric}
                     chartWidth={chartWidth}
                   />
                 </Card>
@@ -83,7 +83,7 @@ export const Dashboard: React.FC<{}> = () => {
                       state={state.selection.state}
                       county={state.selection.county}
                       timeSeries={state.covidTimeSeries}
-                      stat="confirmed"
+                      stat={state.selection.metric}
                       stateCount={true}
                       meta={state.graphMetaData}
                       chartWidth={chartWidth}
@@ -97,7 +97,7 @@ export const Dashboard: React.FC<{}> = () => {
                         state={state.selection.state}
                         county={state.selection.county}
                         timeSeries={state.covidTimeSeries}
-                        stat="confirmed"
+                        stat={state.selection.metric}
                         stateCount={false}
                         meta={state.graphMetaData}
                         chartWidth={chartWidth}

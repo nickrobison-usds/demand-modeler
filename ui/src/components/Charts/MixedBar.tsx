@@ -99,7 +99,8 @@ export const MixedBar = (props: Props) => {
     if (!dedupedData[i - 1]) {
       return { ...data, Existing: data["Grand Total"] };
     }
-    const newCases = data["Grand Total"] - dedupedData[i - 1]["Grand Total"];
+    let newCases = data["Grand Total"] - dedupedData[i - 1]["Grand Total"];
+    if (newCases < 0) newCases = 0;
     return {
       ...data,
       New: newCases,
@@ -108,7 +109,9 @@ export const MixedBar = (props: Props) => {
   });
 
   const title = locationName
-    ? `Number of confirmed cases in ${locationName}`
+    ? `Number of ${
+        props.stat === "confirmed" ? "confirmed cases" : "deaths"
+      } in ${locationName}`
     : "No data reported";
 
   return (
@@ -133,24 +136,24 @@ export const MixedBar = (props: Props) => {
           <Bar
             dataKey="New"
             stackId="data"
-            shape={<StripedFill fill="#CB2727" />}
+            shape={<StripedFill fill={props.stat === "dead" ? "#111" : "#CB2727"} />}
           />
-          <Bar dataKey="Existing" stackId="data" fill="#900000" />
-          <Legend content={<CustomLegend />} />
+          <Bar dataKey="Existing" stackId="data" fill={props.stat === "dead" ? "#111" : "#900000"} />
+          <Legend content={<CustomLegend stat={props.stat}/>} />
         </BarChart>
       </RenderChart>
     </div>
   );
 };
 
-const CustomLegend = () => (
+const CustomLegend = (props: any) => (
   <div style={{ textAlign: "center" }}>
     <span
       style={{
         display: "inline-block",
         height: "10px",
         width: "10px",
-        backgroundColor: "#900000",
+        backgroundColor: props.stat === "dead" ? "#111" : "#900000",
         margin: "0 5px 0 10px"
       }}
     ></span>
@@ -162,8 +165,8 @@ const CustomLegend = () => (
         width: "10px",
         background: `repeating-linear-gradient(
                       135deg,
-                      #CB2727,
-                      #CB2727 2px,
+                      ${props.stat === "dead" ? "#111" : "#CB2727"},
+                      ${props.stat === "dead" ? "#111" : "#CB2727"} 2px,
                       #FFFFFF 2px,
                       #FFFFFF 4px
                     )`,

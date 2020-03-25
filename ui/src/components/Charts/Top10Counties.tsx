@@ -17,6 +17,8 @@ import { getYMaxFromMaxCases } from "../../utils/utils";
 import { stateAbbreviation } from "../../utils/stateAbbreviation";
 import { monthDay } from "../../utils/DateUtils";
 import { RenderChart } from "./RenderChart";
+import { StripedFill } from "./StripedFill";
+import { CustomLegend } from "./StateBar";
 
 type Props = {
   timeSeries: CovidDateData;
@@ -26,30 +28,29 @@ type Props = {
   title?: string;
 };
 
-const colors = [
-  "#E5A3A3",
-  "#D05C5C",
-  "#CB2727",
-  "#C00000",
-  "#900000",
-  "#700000"
-];
-
 export const Top10Counties = (props: Props) => {
   let title: string;
   let maxCases: number | undefined;
   let dates: string[];
   let data;
   let stateName: string = "";
-
+  const colors =
+  props.stat === "confirmed"
+    ? ["#E5A3A3", "#D05C5C", "#CB2727", "#C00000", "#900000", "#700000"]
+    : ["#a9a9a9", "#888", "#666", "#333", "#111"];
   // Top 10 Counties (total or in state)
-  title = `Counties with the highest number of cases`;
+  title = `Counties with the highest number of ${
+    props.stat === "confirmed" ? "cases" : "deaths"
+  }`;
 
   let countyData = Object.keys(props.timeSeries.counties).flatMap(
     k => props.timeSeries.counties[k]
   );
   if (props.meta) {
-    maxCases = props.meta.maxConfirmedCounty;
+    maxCases =
+      props.stat === "confirmed"
+        ? props.meta.maxConfirmedCounty
+        : props.meta.maxDeadCounty;
   }
   dates = [
     ...new Set(countyData.map(({ Reported }) => monthDay(Reported)))
@@ -77,7 +78,7 @@ export const Top10Counties = (props: Props) => {
       );
     });
 
-  const dedupedData: any[] = [];
+  let dedupedData: { [k: string]: string | number }[] = [];
   data.forEach(e => {
     const dedupedElement: any = {};
     const d = Object.keys(e).sort();
@@ -123,6 +124,26 @@ export const Top10Counties = (props: Props) => {
     }
   });
 
+  dedupedData = dedupedData.slice(0, 10);
+
+  const finalData = dedupedData.map(data => {
+    const obj: { [k: string]: string | number } = {};
+    const entries = Object.entries(data);
+    entries.forEach(([key, value], i) => {
+      if (key !== "Name" && i > 0) {
+        let newCases = (value as number) - (entries[i - 1][1] as number);
+        if (newCases < 0) newCases = 0;
+        obj[`${key} New`] = newCases;
+        obj[`${key} Existing`] = (value as number) - newCases;
+      } else if (key !== "Name" && i === 0) {
+        obj[`${key} Existing`] = value;
+        obj[`${key} New`] = 0;
+      }
+      obj[key] = value;
+    });
+    return obj;
+  });
+
   return (
     <>
       <RenderChart
@@ -133,7 +154,7 @@ export const Top10Counties = (props: Props) => {
           barSize={10}
           width={window.innerWidth * 0.9}
           height={880}
-          data={dedupedData.slice(0, 10)}
+          data={finalData}
           margin={{
             top: 0,
             right: 0,
@@ -158,9 +179,24 @@ export const Top10Counties = (props: Props) => {
           />
           <Tooltip />
           <div style={{ padding: "10px" }} />
-          <Legend />
+          <Legend content={<CustomLegend displayDates={displayDates} colors={colors}/>} />
           {displayDates.map((date, i) => (
-            <Bar key={date} dataKey={date.split("|")[0]} fill={colors[i]} />
+            <Bar
+              key={`${date.split("|")[0]} New`}
+              id={`${date.split("|")[0]}`}
+              stackId={date.split("|")[0]}
+              dataKey={`${date.split("|")[0]} New`}
+              shape={<StripedFill fill={colors[i]} />}
+            />
+          ))}
+          {displayDates.map((date, i) => (
+            <Bar
+              key={`${date.split("|")[0]} Existing`}
+              id={`${date.split("|")[0]}`}
+              stackId={date.split("|")[0]}
+              dataKey={`${date.split("|")[0]} Existing`}
+              fill={colors[i]}
+            />
           ))}
         </BarChart>
       </RenderChart>
