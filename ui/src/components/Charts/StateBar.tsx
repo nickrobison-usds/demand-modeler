@@ -16,6 +16,7 @@ import {
 import { getYMaxFromMaxCases } from "../../utils/utils";
 import { monthDay } from "../../utils/DateUtils";
 import { StripedFill } from "./StripedFill";
+import { population } from "./population";
 
 type Props = {
   state: string;
@@ -72,7 +73,7 @@ export const StateBar = (props: Props) => {
   data = Object.entries(counties)
     .reduce((acc, [Name, data]) => {
       acc.push({
-        Name,
+        Name: Name,
         ...data
       });
       return acc;
@@ -169,7 +170,7 @@ export const StateBar = (props: Props) => {
         />
         <Tooltip />
         <div style={{ padding: "10px" }} />
-        <Legend content={<CustomLegend displayDates={displayDates} colors={colors} />} />
+        <Legend content={<CustomLegend displayDates={displayDates} colors={colors} stat={props.stat} />} />
         {displayDates.map((date, i) => {
           return (
             <Bar
@@ -200,10 +201,22 @@ export const StateBar = (props: Props) => {
 type LegendProps = {
   displayDates: string[];
   colors: string[];
+  stat: Stat;
 };
 
-export const CustomLegend: React.FC<LegendProps> = ({ displayDates, colors }) => (
-  <div style={{ textAlign: "center" }}>
+const label = (stat: Stat) => {
+  switch (stat) {
+    case "dead":
+      return "New Deaths";
+    case "confirmed":
+        return "New Cases";
+    case "mortalityRate":
+        return "Change in mortality rate";
+  }
+}
+
+export const CustomLegend: React.FC<LegendProps> = ({ displayDates, colors, stat }) => (
+  <div style={{ textAlign: "center", margin: "40px 0 0 0" }}>
     {displayDates.map((date, i) => (
       <React.Fragment key={date}>
         <span
@@ -225,14 +238,14 @@ export const CustomLegend: React.FC<LegendProps> = ({ displayDates, colors }) =>
         width: "10px",
         background: `repeating-linear-gradient(
                       135deg,
-                      #000000,
-                      #000000 2px,
+                      ${stat === "confirmed" ? "#CB2727" : "#111"},
+                      ${stat === "confirmed" ? "#CB2727" : "#111"} 2px,
                       #FFFFFF 2px,
                       #FFFFFF 4px
                     )`,
         margin: "0 5px 0 10px"
       }}
     ></span>
-    New Cases
+     {label(stat)}
   </div>
 );

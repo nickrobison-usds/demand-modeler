@@ -26,17 +26,6 @@ export const Report: React.FC<{}> = () => {
           {/* 12 states with highest case count as of 3/17 shown. */}
         </div>
         <div>
-          The top 10 counties for the top ten states has been verified with
-          numbers from{" "}
-          <a
-            href="https://covidtracking.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            The COVID Tracking Project
-          </a>
-        </div>
-        <div>
           Data sourced from state health department websites; reporting may be
           incomplete or delayed
         </div>
@@ -74,7 +63,7 @@ export const Report: React.FC<{}> = () => {
           .slice(0, 10);
         return (
           <div className="report grid-container" style={{ marginLeft: 0 }}>
-            {/* <CountyMap
+            <CountyMap
               reportView
               dataType={"New"}
               title={"Percent Increase for Counties with 20+ reported cases"}
@@ -83,7 +72,7 @@ export const Report: React.FC<{}> = () => {
               reportView
               dataType={"Total"}
               title={"Total Confirmed Cases"}
-            /> */}
+            />
             <CountyMap
               reportView
               dataType={"New"}
@@ -216,6 +205,13 @@ export const Report: React.FC<{}> = () => {
             <Top10Counties
               timeSeries={state.covidTimeSeries}
               stat="dead"
+              reportView
+              meta={state.graphMetaData}
+            />
+            {pagebreak(lastUpdated)}
+            <Top10Counties
+              timeSeries={state.covidTimeSeries}
+              stat="mortalityRate"
               reportView
               meta={state.graphMetaData}
             />
