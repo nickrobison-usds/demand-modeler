@@ -174,10 +174,12 @@ export const Report: React.FC<{}> = () => {
             stateIDs.add(key);
           }
         });
-        const top10States = [...dedupedStates]
-          .sort((s1, s2) => s2.Confirmed - s1.Confirmed)
-          .slice(0, 10);
-        return (
+        const top10States = [...dedupedStates].filter((s) => ["New York", "New Jersey", "Washington", "California", "Michigan", "Illinois", "Florida", "Louisiana", "Massachusetts", "Texas"].includes(s.State))
+            .sort((s1, s2) => s2.Confirmed - s1.Confirmed)
+          // .slice(0, 10);
+          console.log(top10States)
+
+          return (
           <div className="report grid-container" style={{ marginLeft: 0 }}>
             {maps(lastUpdated)}
             {lastUpdated && pagebreak(lastUpdated)}
