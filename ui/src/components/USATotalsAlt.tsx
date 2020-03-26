@@ -1,11 +1,15 @@
 import React, { useContext } from "react";
-import "../App.scss";
+import "../pages/Dashboard.scss";
 import { AppContext } from "../app/AppStore";
+import { CovidDateData } from "../app/AppStore";
 import { getCountyGrandTotal, GrandTotal } from "../utils/calculations";
+import { getSelectedLocationName } from "../utils/utils";
 
-interface Props {}
+interface Props {
 
-const USATotalsNav: React.FunctionComponent<Props> = props => {
+};
+
+const USATotalsAlt: React.FunctionComponent<Props> = props => {
   const { state } = useContext(AppContext);
 
   const percentChange = (total: number, change: number): number => {
@@ -31,20 +35,22 @@ const USATotalsNav: React.FunctionComponent<Props> = props => {
   };
 
   return (
-    <div style={{ display: "flex" }}>
-      <span>
-        Confirmed cases<br />
-        {total}
-      </span>
-      <span>
-        24 hour change<br />
-        {renderChange(total, grandTotals[dates[1]]?.Confirmed)}
-      </span>
-      {/* <Card header="48 hour Change">
-        {renderChange(total, grandTotals[dates[2]].Confirmed)}
-      </Card> */}
+    <div className="total-wrap">
+      <h1>locationName</h1>
+      <div className="total-item">
+        <label className="usa-label">Confirmed cases</label>
+        <span>{total}</span>
+      </div>
+      <div className="total-item">
+        <label className="usa-label">24-hour change</label>
+        <span>{renderChange(total, grandTotals[dates[1]]?.Confirmed)}
+        </span>
+        {/* <Card header="48 hour Change">
+          {renderChange(total, grandTotals[dates[2]].Confirmed)}
+        </Card> */}
+      </div>
     </div>
   );
 };
 
-export default USATotalsNav;
+export default USATotalsAlt;

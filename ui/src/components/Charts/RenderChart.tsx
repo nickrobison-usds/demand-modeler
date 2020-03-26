@@ -24,7 +24,7 @@ export const RenderChart: React.FC<Props> = props => {
   const Container = open ? Modal : React.Fragment;
 
   return (
-    <Container isOpen={open}>
+    <Container isOpen={open} className="chart-modal">
       <h3>{props.title}</h3>
       <ResponsiveContainer height={open ? 500 : 200} width="100%">
         {props.children}

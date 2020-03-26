@@ -12,7 +12,7 @@
 
 .dashboard-nav {
   width: 100%;
-  padding: 1rem 3rem 2rem 3rem;
+  padding: 0.5rem 2rem 1rem 2rem;
   margin-bottom: 2rem;
   border-bottom: 1px solid #c9c9c9;
   background-color: #ffffff;
@@ -20,10 +20,11 @@
   position: flex;
 }
 
-.nav-title{
-  width: 100%;
+.updated-at{
+  display: block;
   @include u-margin-bottom(2);
-  @include u-margin-right(2);
+  @include u-font('sans', 'xs');
+  @include u-text('gray-40');
 }
 
 .navigation-select{
@@ -43,11 +44,14 @@
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 1000;
+    z-index: 900;
+    grid-template-columns: 100% 33% 33% 33%;
   }
   .dashboard {
-    margin-top: 10rem;
-    grid-template-columns: 35% 65%;
+    margin-top: 6rem;
+    padding: 0 2rem;
+    grid-template-columns: 33% 66%;
+    grid-gap: 2rem;
     div {
       margin-top: 0px;
     }
@@ -57,10 +61,46 @@
     overflow-y: scroll;
     display: grid;
     grid-template-columns: 1fr 1fr;
+    grid-gap: 2rem;
   }
-  .map-wrapper{
-    position: fixed;
-    top: 8rem;
-    left: 2rem;
+}
+// Total case navigation numbers
+.total-wrap{
+  margin-bottom: 2rem;
+}
+.total-item{
+  display: inline-block;
+  @include u-margin-right(4);
+
+  .usa-label{
+    margin: 0;
   }
+  span{
+    @include u-font('sans', 'lg');
+    @include u-font-weight('bold');
+  }
+  span.increase{
+    @include u-text('red-50v');
+  }
+  span.decrease{
+    @include u-text('mint-30v');
+  }
+}
+// Charts
+.ReactModal__Overlay--after-open{
+  z-index: 1000;
+}
+.chart-modal{
+  position: absolute;
+  z-index: 1000;
+  top: 4rem;
+  left: 4rem;
+  right: 4rem;
+  bottom: 4rem;
+  background: #fff;
+  overflow: auto;
+  WebkitOverflowScrolling: touch;
+  borderRadius: 1rem;
+  outline: none;
+  padding: 2rem;
 }

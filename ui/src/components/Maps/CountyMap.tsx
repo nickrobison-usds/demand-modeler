@@ -445,21 +445,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
     viewport.zoom < SHOW_COUNTY_ON_ZOOM ? "state" : "county"
   );
   return (
-    <div id="map-container" style={{ margin: "2em 1em 0 1em" }}>
-      {!props.reportView && (
-        <UsaSelect
-          options={[
-            { text: "Total", value: "Total" },
-            { text: "Percent Increase", value: "New" },
-            { text: "Increase", value: "Increase" }
-          ]}
-          placeholder={"Total"}
-          name="selectDataType"
-          selected={dataType}
-          onChange={setDataType}
-          label="Map Data Type: "
-        />
-      )}
+    <div id="map-container">
       <ReactMapGL
         {...viewport}
         minZoom={2}
@@ -583,6 +569,20 @@ const CountyMap: React.FunctionComponent<Props> = props => {
           </span>
         ))}
       </div>
+      {!props.reportView && (
+        <UsaSelect
+          options={[
+            { text: "Total", value: "Total" },
+            { text: "Percent Increase", value: "New" },
+            { text: "Increase", value: "Increase" }
+          ]}
+          placeholder={"Total"}
+          name="selectDataType"
+          selected={dataType}
+          onChange={setDataType}
+          label="Map Data Type: "
+        />
+      )}
     </div>
   );
 };

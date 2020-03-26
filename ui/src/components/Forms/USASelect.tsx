@@ -61,7 +61,6 @@ export default function UsaSelect<T>(props: Props<T>) {
         className="usa-select"
         name={props.name}
         id={selectId}
-        style={{margin: "0 10px 0 0"}}
       >
         {placeholder}
         {props.options.map(renderOption)}
