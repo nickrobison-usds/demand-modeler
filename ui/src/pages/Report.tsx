@@ -42,11 +42,15 @@ export const Report: React.FC<{}> = () => {
           dataType={"New"}
           title={"Percent Increase for Counties with 20+ reported cases"}
         />
+        {lastUpdated && pagebreak(lastUpdated)}
+
         <CountyMap
           reportView
           dataType={"Total"}
           title={"Total Confirmed Cases"}
         />
+                {lastUpdated && pagebreak(lastUpdated)}
+
         <CountyMap
           reportView
           dataType={"New"}
@@ -146,6 +150,7 @@ export const Report: React.FC<{}> = () => {
           title={"Total Confirmed Cases near Miami Area"}
           presetCoordinates="Miami Area"
         />
+        {lastUpdated && pagebreak(lastUpdated)}
       </>
     );
   };
@@ -182,7 +187,6 @@ export const Report: React.FC<{}> = () => {
           return (
           <div className="report grid-container" style={{ marginLeft: 0 }}>
             {maps(lastUpdated)}
-            {lastUpdated && pagebreak(lastUpdated)}
             {top10States.map(s => (
               <>
                 <StateBar
