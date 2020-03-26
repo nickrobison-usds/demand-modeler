@@ -23,7 +23,7 @@ func subHandler() http.HandlerFunc {
 func BackendContext(backend DataBackend) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			ctx := context.WithValue(r.Context(), "db", backend)
+			ctx := context.WithValue(r.Context(), BackendKey, backend)
 			next.ServeHTTP(w, r.WithContext(ctx))
 		})
 	}
