@@ -3,25 +3,29 @@ package main
 import (
 	"context"
 	"fmt"
+	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
+
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
-	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/nickrobison-usds/demand-modeling/api"
 	"github.com/nickrobison-usds/demand-modeling/cmd"
-	"log"
-	"net/http"
-	"os"
-	"path/filepath"
-	"strings"
-
+	"github.com/nickrobison-usds/demand-modeling/dbbackend"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
 )
 
 func main() {
+
+	// Initialize logger
+	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 
 	app := &cli.App{
 		Name: "Fearless Dreamer",
@@ -33,43 +37,42 @@ func main() {
 
 	err := app.Run(os.Args)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err).Send()
 	}
 }
 
 func runServer(c *cli.Context) error {
 	workDir, err := os.Getwd()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err).Send()
 	}
 	filesDir := filepath.Join(workDir, "ui/build")
 
 	url := getDBURL()
 	// Do the migration
 	err = migrateDatabase(url, workDir)
-	if err != nil {
-		log.Fatal(err)
-	}
 
 	// Load it up
 	ctx := context.Background()
-	pool, err := pgxpool.Connect(ctx, url)
+	backend, err := dbbackend.NewBackend(ctx, url)
 	if err != nil {
-		log.Fatal(err)
+		if err != nil {
+			log.Fatal().Err(err).Send()
+		}
 	}
-	defer pool.Close()
+	defer backend.Shutdown()
 	loader, err := cmd.NewLoader(ctx, url, filepath.Join(workDir, "data"))
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err).Send()
 	}
 	defer loader.Close()
 
 	err = loader.Load()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err).Send()
 	}
 
-	return serve(pool, filesDir)
+	return serve(backend, filesDir)
 }
 
 func rootHandler() http.HandlerFunc {
@@ -78,9 +81,9 @@ func rootHandler() http.HandlerFunc {
 	}
 }
 
-func serve(db *pgxpool.Pool, filesDir string) error {
+func serve(backend api.DataBackend, filesDir string) error {
 	r := chi.NewRouter()
-	r.Use(api.DBContext(db))
+	r.Use(api.BackendContext(backend))
 
 	// A good base middleware stack
 	r.Use(middleware.RequestID)

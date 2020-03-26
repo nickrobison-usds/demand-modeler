@@ -13,6 +13,7 @@ import * as DateUtils from "../utils/DateUtils";
 export interface CovidStats {
   Confirmed: number;
   Dead: number;
+  mortalityRate: number;
 }
 
 export enum ActionType {

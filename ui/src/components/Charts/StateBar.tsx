@@ -16,6 +16,8 @@ import {
 import { getYMaxFromMaxCases } from "../../utils/utils";
 import { monthDay } from "../../utils/DateUtils";
 import { StripedFill } from "./StripedFill";
+import { population } from "./population";
+import { formatNum } from "../../utils/utils";
 
 type Props = {
   state: string;
@@ -26,12 +28,16 @@ type Props = {
   meta?: GraphMetaData;
   title?: string;
   chartWidth?: number;
+  new?: boolean;
+  dataMode?: "top10" | "over20Cases";
 };
 
 export const StateBar = (props: Props) => {
   if (props.stateCount && props.state) {
     return null;
   }
+  const dataMode = props.dataMode || "top10";
+
   const colors =
     props.stat === "confirmed"
       ? ["#E5A3A3", "#D05C5C", "#CB2727", "#C00000", "#900000", "#700000"]
@@ -46,7 +52,14 @@ export const StateBar = (props: Props) => {
     Object.keys(props.timeSeries.states)
       .flatMap(k => props.timeSeries.states[k])
       .find(state => state.ID === props.state)?.State || "";
-  title = `${stateName}`;
+  title =
+    dataMode === "top10"
+      ? `${stateName} top 10 counties with the most ${
+          props.stat === "confirmed" ? "confirmed cases" : "deaths"
+        }`
+      : `${stateName} counties with 20+ ${
+          props.stat === "confirmed" ? "confirmed cases" : "deaths"
+        }`;
 
   let countyData = Object.keys(props.timeSeries.counties).flatMap(
     k => props.timeSeries.counties[k]
@@ -63,7 +76,9 @@ export const StateBar = (props: Props) => {
   dates = [
     ...new Set(countyData.map(({ Reported }) => monthDay(Reported)))
   ].sort();
+  const popMap: { [Name: string]: number } = {};
   const counties = countyData.reduce((acc, el) => {
+    popMap[el.County] = population[el.ID];
     if (!acc[el.County]) acc[el.County] = {};
     acc[el.County][monthDay(el.Reported)] =
       props.stat === "confirmed" ? el.Confirmed : el.Dead;
@@ -72,7 +87,7 @@ export const StateBar = (props: Props) => {
   data = Object.entries(counties)
     .reduce((acc, [Name, data]) => {
       acc.push({
-        Name,
+        Name: `${Name}${popMap[Name] ? ` (${formatNum(popMap[Name])})` : ""}`,
         ...data
       });
       return acc;
@@ -84,6 +99,10 @@ export const StateBar = (props: Props) => {
         ((a[dates[lastIndex]] as number) || 0)
       );
     });
+
+  if (dataMode === "over20Cases") {
+    data = data.filter(el => el[dates[dates.length - 1]] >= 20);
+  }
 
   let dedupedData: { [k: string]: string | number }[] = [];
   data.forEach(e => {
@@ -117,7 +136,9 @@ export const StateBar = (props: Props) => {
     }
   });
 
-  dedupedData = dedupedData.slice(0, 10);
+  if (dataMode === "top10") {
+    dedupedData = dedupedData.slice(0, 10);
+  }
 
   const finalData = dedupedData.map(data => {
     const obj: { [k: string]: string | number } = {};
@@ -169,7 +190,15 @@ export const StateBar = (props: Props) => {
         />
         <Tooltip />
         <div style={{ padding: "10px" }} />
-        <Legend content={<CustomLegend displayDates={displayDates} colors={colors} />} />
+        <Legend
+          content={
+            <CustomLegend
+              displayDates={displayDates}
+              colors={colors}
+              stat={props.stat}
+            />
+          }
+        />
         {displayDates.map((date, i) => {
           return (
             <Bar
@@ -182,11 +211,11 @@ export const StateBar = (props: Props) => {
           );
         })}
         {displayDates.map((date, i) => {
-          return (
+          return props.new ? null : (
             <Bar
-              id={`${date.split("|")[0]}`}
               key={`${date.split("|")[0]} Existing`}
-              stackId={`${date.split("|")[0]}`}
+              id={`${date.split("|")[0]}`}
+              stackId={date.split("|")[0]}
               dataKey={`${date.split("|")[0]} Existing`}
               fill={colors[i]}
             />
@@ -200,10 +229,26 @@ export const StateBar = (props: Props) => {
 type LegendProps = {
   displayDates: string[];
   colors: string[];
+  stat: Stat;
 };
 
-export const CustomLegend: React.FC<LegendProps> = ({ displayDates, colors }) => (
-  <div style={{ textAlign: "center" }}>
+const label = (stat: Stat) => {
+  switch (stat) {
+    case "dead":
+      return "New Deaths";
+    case "confirmed":
+      return "New Cases";
+    case "mortalityRate":
+      return "Change in mortality rate";
+  }
+};
+
+export const CustomLegend: React.FC<LegendProps> = ({
+  displayDates,
+  colors,
+  stat
+}) => (
+  <div style={{ textAlign: "center", margin: "40px 0 0 0" }}>
     {displayDates.map((date, i) => (
       <React.Fragment key={date}>
         <span
@@ -225,14 +270,14 @@ export const CustomLegend: React.FC<LegendProps> = ({ displayDates, colors }) =>
         width: "10px",
         background: `repeating-linear-gradient(
                       135deg,
-                      #000000,
-                      #000000 2px,
+                      ${stat === "confirmed" ? "#CB2727" : "#111"},
+                      ${stat === "confirmed" ? "#CB2727" : "#111"} 2px,
                       #FFFFFF 2px,
                       #FFFFFF 4px
                     )`,
         margin: "0 5px 0 10px"
       }}
     ></span>
-    New Cases
+    {label(stat)}
   </div>
 );

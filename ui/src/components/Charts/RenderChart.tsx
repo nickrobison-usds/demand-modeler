@@ -21,23 +21,33 @@ export const RenderChart: React.FC<Props> = props => {
     );
   }
 
-  const Container = open ? Modal : React.Fragment;
+  const button = (
+    <button
+      className="usa-button usa-button--outline"
+      style={{ float: "right" }}
+      onClick={() => {
+        setOpen(!open);
+      }}
+    >
+      {open ? "Collapse" : "Expand"}
+    </button>
+  );
 
-  return (
-    <Container isOpen={open} className="chart-modal">
+  return open ? (
+    <Modal isOpen={open}>
       <h3>{props.title}</h3>
       <ResponsiveContainer height={open ? 500 : 200} width="100%">
         {props.children}
       </ResponsiveContainer>
-      <button
-        className="usa-button usa-button--outline"
-        style={{ float: "right" }}
-        onClick={() => {
-          setOpen(!open);
-        }}
-      >
-        {open ? "Collapse" : "Expand"}
-      </button>
-    </Container>
+      {button}
+    </Modal>
+  ) : (
+    <>
+      <h3>{props.title}</h3>
+      <ResponsiveContainer height={open ? 500 : 200} width="100%">
+        {props.children}
+      </ResponsiveContainer>
+      {button}
+    </>
   );
 };
