@@ -2,7 +2,6 @@ package dbbackend
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"time"
 
@@ -181,8 +180,7 @@ func queryCountyCases(ctx context.Context, conn *pgxpool.Conn, sql string, args 
 		var newConfirmed int
 		var dead int
 		var newDead int
-		geo := &json.RawMessage{}
-		err := rows.Scan(&id, &county, &state, &updated, &confirmed, &newConfirmed, &dead, &newDead, geo)
+		err := rows.Scan(&id, &county, &state, &updated, &confirmed, &newConfirmed, &dead, &newDead)
 		if err != nil {
 			return cases, err
 		}
