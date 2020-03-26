@@ -2,9 +2,9 @@ package api
 
 import (
 	"context"
-	"github.com/go-chi/chi"
-	"github.com/jackc/pgx/v4/pgxpool"
 	"net/http"
+
+	"github.com/go-chi/chi"
 )
 
 func rootHandler() http.HandlerFunc {
@@ -19,15 +19,17 @@ func subHandler() http.HandlerFunc {
 	}
 }
 
-func DBContext(conn *pgxpool.Pool) func(next http.Handler) http.Handler {
+// BackendContext injects the DataBackend into the http handler
+func BackendContext(backend DataBackend) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			ctx := context.WithValue(r.Context(), "db", conn)
+			ctx := context.WithValue(r.Context(), "db", backend)
 			next.ServeHTTP(w, r.WithContext(ctx))
 		})
 	}
 }
 
+// MakeRouter creates and returns the API routes
 func MakeRouter(r chi.Router) {
 	r.Get("/", rootHandler())
 	r.Get("/sub", subHandler())

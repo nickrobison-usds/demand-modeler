@@ -3,7 +3,6 @@ package api
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -15,32 +14,38 @@ import (
 
 func getCountIDs(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	conn, err := ctx.Value("db").(*pgxpool.Pool).Acquire(ctx)
-	if err != nil {
-		log.Error().Err(err).Msg("Get DB from context")
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	defer conn.Release()
+	backend := ctx.Value("db").(DataBackend)
+	// conn, err := ctx.Value("db").(*pgxpool.Pool).Acquire(ctx)
+	// if err != nil {
+	// 	log.Error().Err(err).Msg("Get DB from context")
+	// 	w.WriteHeader(http.StatusInternalServerError)
+	// 	return
+	// }
+	// defer conn.Release()
 
-	rows, err := conn.Query(ctx, "SELECT county || ', ' || state as name, id from counties")
-	if err != nil {
-		log.Error().Err(err).Msg("Cannot execute County ID query")
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
+	// rows, err := conn.Query(ctx, "SELECT county || ', ' || state as name, id from counties")
+	// if err != nil {
+	// 	log.Error().Err(err).Msg("Cannot execute County ID query")
+	// 	w.WriteHeader(http.StatusInternalServerError)
+	// 	return
+	// }
 
-	ids := make(map[string]string, 0)
-	for rows.Next() {
-		var name string
-		var id string
-		err = rows.Scan(&name, &id)
-		if err != nil {
-			log.Error().Err(err).Msg("Cannot read row from database")
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		ids[name] = id
+	// ids := make(map[string]string, 0)
+	// for rows.Next() {
+	// 	var name string
+	// 	var id string
+	// 	err = rows.Scan(&name, &id)
+	// 	if err != nil {
+	// 		log.Error().Err(err).Msg("Cannot read row from database")
+	// 		w.WriteHeader(http.StatusInternalServerError)
+	// 		return
+	// 	}
+	// 	ids[name] = id
+	// }
+	ids, err := backend.GetCountyIDs(ctx)
+	if err != nil {
+		log.Error().Err(err).Msg("Cannot write to json")
+		w.WriteHeader(http.StatusInternalServerError)
 	}
 
 	err = json.NewEncoder(w).Encode(ids)
@@ -53,41 +58,50 @@ func getCountIDs(w http.ResponseWriter, r *http.Request) {
 func getTopCounties(w http.ResponseWriter, r *http.Request) {
 	log.Debug().Msg("Loading top counties")
 	ctx := r.Context()
-	conn, err := ctx.Value("db").(*pgxpool.Pool).Acquire(ctx)
-	if err != nil {
-		log.Error().Err(err).Msg("Get DB from context")
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	defer conn.Release()
+	backend := ctx.Value("db").(DataBackend)
+	// if err != nil {
+	// 	log.Error().Err(err).Msg("Get DB from context")
+	// 	w.WriteHeader(http.StatusInternalServerError)
+	// 	return
+	// }
+	// defer conn.Release()
 
-	log.Debug().Msg("Returning case data")
+	// log.Debug().Msg("Returning case data")
 
-	query := "SELECT c.ID, c.County, c.State, s.Update, s.Confirmed, s.NewConfirmed, s.Dead, s.NewDead FROM counties as c " +
-		"LEFT JOIN cases as s " +
-		"ON s.geoid = c.ID "
+	// query := "SELECT c.ID, c.County, c.State, s.Update, s.Confirmed, s.NewConfirmed, s.Dead, s.NewDead FROM counties as c " +
+	// 	"LEFT JOIN cases as s " +
+	// 	"ON s.geoid = c.ID "
 
+	var startTime *time.Time = nil
 	start, ok := r.URL.Query()["start"]
 	if ok && len(start) == 1 {
-		startTime, err := time.Parse(time.RFC3339, start[0])
+		t, err := time.Parse(time.RFC3339, start[0])
 		if err != nil {
 			log.Error().Err(err).Msg("Cannot parse start query param")
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		query = fmt.Sprintf("%s WHERE s.update > '%s' ", query, startTime.Format(time.RFC3339))
+		startTime = &t
 	}
+	// 	query = fmt.Sprintf("%s WHERE s.update > '%s' ", query, startTime.Format(time.RFC3339))
+	// }
 
-	query = query + "ORDER BY c.ID, s.update DESC, s.Confirmed DESC;"
+	// query = query + "ORDER BY c.ID, s.update DESC, s.Confirmed DESC;"
 
-	cases, err := queryCountyCasesb(ctx, conn, query)
+	// cases, err := queryCountyCases(ctx, conn, query)
+	// if err != nil {
+	// 	log.Error().Err(err).Msg("Cannot execute county queries")
+	// 	w.WriteHeader(http.StatusInternalServerError)
+	// 	return
+	// }
+
+	cases, err := backend.GetTopCounties(ctx, startTime)
 	if err != nil {
-		log.Error().Err(err).Msg("Cannot execute county queries")
+		log.Error().Err(err).Msg("Cannot get top queries")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	log.Debug().Msg("Ready to return")
 	err = json.NewEncoder(w).Encode(cases)
 	if err != nil {
 		log.Error().Err(err).Msg("Cannot write to json")
@@ -128,26 +142,33 @@ func getCountyGeo(w http.ResponseWriter, r *http.Request) {
 func getCountyCases(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	countyID := ctx.Value("countyID").(string)
-	conn, err := ctx.Value("db").(*pgxpool.Pool).Acquire(ctx)
+	backend := ctx.Value("db").(DataBackend)
+	// if err != nil {
+	// 	log.Error().Err(err).Msg("Get DB from context")
+	// 	w.WriteHeader(http.StatusInternalServerError)
+	// 	return
+	// }
+	// defer conn.Release()
+
+	// // log.Debug().Msgf("Returning case data for county: %s\n" + countyID)
+
+	// // query := "SELECT c.ID, c.County, c.State, s.Update, s.Confirmed, s.NewConfirmed, s.Dead, s.NewDead, ST_AsGeoJSON(t.geom) as geom FROM counties as c " +
+	// // 	"LEFT JOIN tiger as t " +
+	// // 	"ON c.ID = t.geoid " +
+	// // 	"LEFT JOIN cases as s " +
+	// // 	"ON s.geoid = c.ID WHERE c.id = $1 " +
+	// // 	"ORDER BY update DESC;"
+
+	// // cases, err := queryCountyCases(ctx, conn, query, countyID)
+	// // if err != nil {
+	// // 	log.Error().Err(err).Msg("Cannot execute county cases query")
+	// // 	w.WriteHeader(http.StatusInternalServerError)
+	// // 	return
+	// // }
+
+	cases, err := backend.GetCountyCases(ctx, countyID)
 	if err != nil {
-		log.Error().Err(err).Msg("Get DB from context")
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	defer conn.Release()
-
-	log.Debug().Msgf("Returning case data for county: %s\n" + countyID)
-
-	query := "SELECT c.ID, c.County, c.State, s.Update, s.Confirmed, s.NewConfirmed, s.Dead, s.NewDead, ST_AsGeoJSON(t.geom) as geom FROM counties as c " +
-		"LEFT JOIN tiger as t " +
-		"ON c.ID = t.geoid " +
-		"LEFT JOIN cases as s " +
-		"ON s.geoid = c.ID WHERE c.id = $1 " +
-		"ORDER BY update DESC;"
-
-	cases, err := queryCountyCases(ctx, conn, query, countyID)
-	if err != nil {
-		log.Error().Err(err).Msg("Cannot execute county cases query")
+		log.Error().Err(err).Msg("Cannot get county cases")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -181,48 +202,6 @@ func queryCountyCases(ctx context.Context, conn *pgxpool.Conn, sql string, args 
 		var newDead int
 		geo := &json.RawMessage{}
 		err := rows.Scan(&id, &county, &state, &updated, &confirmed, &newConfirmed, &dead, &newDead, geo)
-		if err != nil {
-			return cases, err
-		}
-
-		caseCount := &cmd.CaseCount{
-			Confirmed:    confirmed,
-			NewConfirmed: newConfirmed,
-			Dead:         dead,
-			NewDead:      newDead,
-			Reported:     updated,
-		}
-
-		cases = append(cases, cmd.CountyCases{
-			ID:        id,
-			County:    county,
-			State:     state,
-			CaseCount: caseCount,
-		})
-	}
-
-	return cases, nil
-}
-
-func queryCountyCasesb(ctx context.Context, conn *pgxpool.Conn, sql string, args ...interface{}) ([]cmd.CountyCases, error) {
-	cases := make([]cmd.CountyCases, 0)
-
-	rows, err := conn.Query(ctx, sql, args...)
-	if err != nil {
-		return cases, err
-	}
-
-	log.Debug().Msg("Case counties are loaded")
-	for rows.Next() {
-		var id string
-		var county string
-		var state string
-		var updated time.Time
-		var confirmed int
-		var newConfirmed int
-		var dead int
-		var newDead int
-		err := rows.Scan(&id, &county, &state, &updated, &confirmed, &newConfirmed, &dead, &newDead)
 		if err != nil {
 			return cases, err
 		}

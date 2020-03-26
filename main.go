@@ -14,9 +14,9 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
-	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/nickrobison-usds/demand-modeling/api"
 	"github.com/nickrobison-usds/demand-modeling/cmd"
+	"github.com/nickrobison-usds/demand-modeling/dbbackend"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
@@ -51,17 +51,16 @@ func runServer(c *cli.Context) error {
 	url := getDBURL()
 	// Do the migration
 	err = migrateDatabase(url, workDir)
-	if err != nil {
-		log.Fatal().Err(err).Send()
-	}
 
 	// Load it up
 	ctx := context.Background()
-	pool, err := pgxpool.Connect(ctx, url)
+	backend, err := dbbackend.NewBackend(ctx, url)
 	if err != nil {
-		log.Fatal().Err(err).Send()
+		if err != nil {
+			log.Fatal().Err(err).Send()
+		}
 	}
-	defer pool.Close()
+	defer backend.Shutdown()
 	loader, err := cmd.NewLoader(ctx, url, filepath.Join(workDir, "data"))
 	if err != nil {
 		log.Fatal().Err(err).Send()
@@ -73,7 +72,7 @@ func runServer(c *cli.Context) error {
 		log.Fatal().Err(err).Send()
 	}
 
-	return serve(pool, filesDir)
+	return serve(backend, filesDir)
 }
 
 func rootHandler() http.HandlerFunc {
@@ -82,9 +81,9 @@ func rootHandler() http.HandlerFunc {
 	}
 }
 
-func serve(db *pgxpool.Pool, filesDir string) error {
+func serve(backend api.DataBackend, filesDir string) error {
 	r := chi.NewRouter()
-	r.Use(api.DBContext(db))
+	r.Use(api.BackendContext(backend))
 
 	// A good base middleware stack
 	r.Use(middleware.RequestID)
