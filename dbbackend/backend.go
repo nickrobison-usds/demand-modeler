@@ -55,6 +55,7 @@ func (d *DBBackend) GetCountyIDs(ctx context.Context) (map[string]string, error)
 	return ids, nil
 }
 
+//GetTopCounties fetches the counties with the highest number of confirmed cases
 func (d *DBBackend) GetTopCounties(ctx context.Context, start *time.Time) ([]cmd.CountyCases, error) {
 	log.Debug().Msg("Loading top counties")
 	var cases []cmd.CountyCases = []cmd.CountyCases{}
@@ -66,7 +67,7 @@ func (d *DBBackend) GetTopCounties(ctx context.Context, start *time.Time) ([]cmd
 
 	log.Debug().Msg("Returning case data")
 
-	query := "SELECT c.ID, c.County, c.State, s.Update, s.Confirmed, s.NewConfirmed, s.Dead, s.NewDead FROM counties as c " +
+	query := "SELECT c.ID, c.County, c.State, s.Update, s.Confirmed, COALESCE(s.confirmed - lag(s.confirmed) over (partition by s.geoid order by s.Update), 0) as new, s.Dead, s.NewDead FROM counties as c " +
 		"LEFT JOIN cases as s " +
 		"ON s.geoid = c.ID "
 
@@ -84,6 +85,7 @@ func (d *DBBackend) GetTopCounties(ctx context.Context, start *time.Time) ([]cmd
 	return cases, nil
 }
 
+//GetCountyCases returns the case count for the given County
 func (d *DBBackend) GetCountyCases(ctx context.Context, countyID string) ([]cmd.CountyCases, error) {
 	var cases []cmd.CountyCases = []cmd.CountyCases{}
 	conn, err := d.pool.Acquire(ctx)
@@ -94,7 +96,7 @@ func (d *DBBackend) GetCountyCases(ctx context.Context, countyID string) ([]cmd.
 
 	log.Debug().Msgf("Returning case data for county: %s\n" + countyID)
 
-	query := "SELECT c.ID, c.County, c.State, s.Update, s.Confirmed, s.NewConfirmed, s.Dead, s.NewDead, ST_AsGeoJSON(t.geom) as geom FROM counties as c " +
+	query := "SELECT c.ID, c.County, c.State, s.Update, s.Confirmed, COALESCE(s.confirmed - lag(s.confirmed) over (partition by geoid order by update), 0) as new, s.Dead, s.NewDead, ST_AsGeoJSON(t.geom) as geom FROM counties as c " +
 		"LEFT JOIN tiger as t " +
 		"ON c.ID = t.geoid " +
 		"LEFT JOIN cases as s " +
