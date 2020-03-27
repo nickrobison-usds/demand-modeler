@@ -22,7 +22,7 @@ var unknownRegex = regexp.MustCompile("Waiting on information|Indeterminate|Unas
 // Unassigned values have to start higher than the largest FIPS code in the TIGER database (which is 840)
 var countyIter int32 = 850
 
-var usaFactsTime string = "1/2/06"
+var usaFactsTime string = "1/2/06 MST"
 
 type DataLoader struct {
 	ctx     context.Context
@@ -69,7 +69,7 @@ func (d *DataLoader) LoadUSAFacts() error {
 	dates := make([]time.Time, len(header)-4)
 
 	for idx, h := range header[4:] {
-		t, err := time.Parse(usaFactsTime, h)
+		t, err := time.Parse(usaFactsTime, h+" EST")
 		if err != nil {
 			return err
 		}
@@ -84,11 +84,6 @@ func (d *DataLoader) LoadUSAFacts() error {
 	var cases []*CountyCases
 
 	for _, row := range rows {
-		// Skip the first record, as it's the US
-		if row[0] == "0" {
-			continue
-		}
-
 		c, err := CountyCasesFromUSAFacts(row, dates)
 		if err != nil {
 			return err

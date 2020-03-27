@@ -86,9 +86,15 @@ func CountyCaseFromCSBS(row []string) (*CountyCases, error) {
 func CountyCasesFromUSAFacts(row []string, times []time.Time) ([]*CountyCases, error) {
 	// Each row is a single county, with all observations
 
-	countyfp := row[0][len(row[0])-3:]
-	statefp := row[0][:len(row[0])-3]
+	statefp := fmt.Sprintf("%02s", row[3])
 
+	// If the CountyFIPS is 0, then it's unallocated, so set it as county 999
+	var countyfp string
+	if row[0] == "0" {
+		countyfp = "999"
+	} else {
+		countyfp = row[0][len(row[0])-3:]
+	}
 	// Iterate through all the remaining rows and build cases
 	var cases []*CountyCases
 
@@ -106,10 +112,10 @@ func CountyCasesFromUSAFacts(row []string, times []time.Time) ([]*CountyCases, e
 		}
 
 		cases = append(cases, &CountyCases{
-			ID:         fmt.Sprintf("%05s", row[0]),
+			ID:         countyfp + statefp,
 			County:     row[1],
 			CountyFIPS: countyfp,
-			StateFIPS:  fmt.Sprintf("%02s", statefp),
+			StateFIPS:  statefp,
 			State:      state,
 			CaseCount: &CaseCount{
 				Confirmed:    confirmed,
