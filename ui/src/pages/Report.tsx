@@ -7,7 +7,6 @@ import { MixedBar } from "../components/Charts/MixedBar";
 import CountyMap from "../components/Maps/CountyMap";
 import "./Report.scss";
 import { dateTimeString } from "../utils/DateUtils";
-import { CountyTrendGraph } from "../components/Charts/CountyTrendGraph";
 
 export const Report: React.FC<{}> = () => {
   const pagebreak = (lastUpdated: Date | undefined) => {
@@ -27,7 +26,7 @@ export const Report: React.FC<{}> = () => {
         </div>
         <div>
           Data sourced from state health department websites; reporting may be
-          incomplete or delayed
+          incomplete or delayed. Death data is inconsistent and delayed in reporting
         </div>
         <div className="pagebreak" />
       </div>
@@ -306,12 +305,6 @@ export const Report: React.FC<{}> = () => {
               county={undefined}
               timeSeries={state.covidTimeSeries}
               stat="dead"
-              reportView
-            />
-            {lastUpdated && pagebreak(lastUpdated)}
-            <CountyTrendGraph
-              timeSeries={state.covidTimeSeries}
-              selection={state.selection}
               reportView
             />
             {lastUpdated && pagebreak(lastUpdated)}

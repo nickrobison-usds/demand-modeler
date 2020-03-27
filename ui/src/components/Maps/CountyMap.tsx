@@ -458,7 +458,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
     }
   }, [props.reportView]);
 
-  const mapHeight = { height: props.reportView ? 800 : 350 };
+  const mapHeight = { height: props.reportView ? 760 : 350 };
   const legend = getDateLayer(
     viewport.zoom < SHOW_COUNTY_ON_ZOOM ? "state" : "county"
   );
