@@ -9,7 +9,6 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
-	"strconv"
 	"strings"
 	"sync/atomic"
 
@@ -43,15 +42,19 @@ func NewLoader(ctx context.Context, url string, dataDir string) (*DataLoader, er
 	}, nil
 }
 
-func (d *DataLoader) Load() error {
-	return d.loadCases()
+func (d *DataLoader) LoadUSAFacts() {
+
+}
+
+func (d *DataLoader) LoadCSBS() error {
+	return d.loadCSBSCases()
 }
 
 func (d *DataLoader) Close() error {
 	return d.conn.Close(d.ctx)
 }
 
-func (d *DataLoader) loadCases() error {
+func (d *DataLoader) loadCSBSCases() error {
 	log.Debug().Msgf("Loading Case data from: %s\n", d.dataDir)
 
 	// Truncate the database
@@ -99,17 +102,20 @@ func (d *DataLoader) loadCaseFile(file string) error {
 	if err != nil {
 		return err
 	}
-
 	for _, row := range rows {
 
-		// Determine if we've seen this county before, if not, create a new row in the table
+		c, err := CountyCaseFromCSBS(row)
+		if err != nil {
+			return err
+		}
+		// We should be able to remove this in the future, once we move fully to the USAFacts dataset
 		var geoid string
-		err = d.conn.QueryRow(d.ctx, "SELECT id from Counties WHERE County=$1 AND State=$2", row[0], row[1]).Scan(&geoid)
+		err = d.conn.QueryRow(d.ctx, "SELECT id from Counties WHERE County=$1 AND State=$2", c.County, c.State).Scan(&geoid)
 		// No rows means we need to create a new one
 		if err != nil {
 			// Yes, this is terrible, but it works for now.
 			if err.Error() == "no rows in result set" {
-				geoid, err = d.createNewCounty(row)
+				err = d.createNewCounty(c)
 				if err != nil {
 					return err
 				}
@@ -117,21 +123,12 @@ func (d *DataLoader) loadCaseFile(file string) error {
 				return err
 			}
 		} else {
-			log.Debug().Msgf("Loading existing county: %s, %s. %s\n", row[0], row[1], geoid)
-		}
-
-		// Split the dead column into
-		dead, newDead, err := splitDead(row[4])
-		if err != nil {
-			return err
+			log.Debug().Msgf("Loading existing county: %s, %s. %s", c.County, c.State, c.ID)
 		}
 
 		// Now insert into the Cases table
-		_, err = d.conn.Exec(d.ctx, "INSERT INTO Cases(Geoid, "+
-			"Confirmed, NewConfirmed, "+
-			"Dead, NewDead, Update) VALUES($1, $2, $3, $4, $5, $6)", geoid, row[2], row[3], dead, newDead, row[8])
+		err = d.insertCase(c)
 		if err != nil {
-			log.Printf("Error inserting county: %s, %s. %s %s\n", row[0], row[1], geoid, row[8])
 			return err
 		}
 
@@ -139,70 +136,69 @@ func (d *DataLoader) loadCaseFile(file string) error {
 	return nil
 }
 
-func (d *DataLoader) createNewCounty(row []string) (string, error) {
-	log.Debug().Msgf("No matching geography for %s, %s", row[0], row[1])
+func (d *DataLoader) createNewCounty(county *CountyCases) error {
+	log.Debug().Msgf("No matching geography for %s, %s", county.County, county.State)
 
 	// See if the county intersects with anything
 	var geoid string
-	var county string
-	var state string
+	var countyFIPS string
+	var stateFIPS string
 
-	stateFIPS, ok := StateFips[strings.ToUpper(row[1])]
+	stateF, ok := StateFips[strings.ToUpper(county.State)]
 	if !ok {
-		log.Error().Msgf("Cannot find FIPS for state: %s", row[1])
+		log.Error().Msgf("Cannot find FIPS for state: %s", county.State)
 	}
-	state = fmt.Sprintf("%02d", stateFIPS)
+	stateFIPS = fmt.Sprintf("%02d", stateF)
 
 	// If the county name is unknown, unassigned, etc, then we create a fake geoid and move along.
-	if unknownRegex.MatchString(row[0]) {
-		county = fmt.Sprintf("%03d", countyIter)
-		geoid = fmt.Sprintf("%s%s", state, county)
+	if unknownRegex.MatchString(county.County) {
+		countyFIPS = fmt.Sprintf("%03d", countyIter)
+		geoid = fmt.Sprintf("%s%s", stateFIPS, countyFIPS)
 		atomic.AddInt32(&countyIter, 1)
 	} else {
 
 		// Get the state fips code
-		state = fmt.Sprintf("%02d", StateFips[strings.ToUpper(row[1])])
+		stateFIPS = fmt.Sprintf("%02d", StateFips[strings.ToUpper(county.State)])
 
 		// We need the fips information from the Shapefile database, so query for it
-		err := d.conn.QueryRow(d.ctx, "SELECT t.countyfp FROM tiger as t where (t.name = $1 OR t.namelsad = $1) and t.statefp = $2", row[0], state).Scan(&county)
+		err := d.conn.QueryRow(d.ctx, "SELECT t.countyfp FROM tiger as t where (t.name = $1 OR t.namelsad = $1) and t.statefp = $2", county.County, stateFIPS).Scan(&countyFIPS)
 		// More gross
 		if err != nil && err.Error() == "no rows in result set" {
 			// No rows means we have a non-spatial county, but still try to match up with an existing state
-			county = fmt.Sprintf("%03d", countyIter)
-			geoid = fmt.Sprintf("%s%s", state, county)
+			countyFIPS = fmt.Sprintf("%03d", countyIter)
+			geoid = fmt.Sprintf("%s%s", stateFIPS, countyFIPS)
 			atomic.AddInt32(&countyIter, 1)
 		} else if err != nil {
-			log.Error().Msgf("Unable to load %s, %s: %s\n", row[0], row[1], err.Error())
-			return "", err
+			log.Error().Msgf("Unable to load %s, %s: %s", county.County, county.State, err.Error())
+			return err
 		} else {
-			geoid = fmt.Sprintf("%s%s", state, county)
+			geoid = fmt.Sprintf("%s%s", stateFIPS, countyFIPS)
 		}
 	}
 
 	// Load the new county
-	log.Debug().Msgf("Loading new county: %s, %s. %s\n", row[0], row[1], geoid)
+	log.Debug().Msgf("Loading new county: %s, %s. %s", county.County, county.State, geoid)
 	_, err := d.conn.Exec(d.ctx, "INSERT INTO Counties(County, State, "+
-		"StateFP, CountyFP, ID) VALUES($1, $2, $3, $4, $5)", row[0], row[1], state, county, geoid)
+		"StateFP, CountyFP, ID) VALUES($1, $2, $3, $4, $5)", county.County, county.State, county.StateFIPS, county.CountyFIPS, geoid)
 	if err != nil {
-		return "", err
+		return err
 	}
 
-	return geoid, nil
+	county.CountyFIPS = countyFIPS
+	county.StateFIPS = stateFIPS
+	county.ID = geoid
+
+	return nil
 }
 
-func splitDead(dead string) (int, int, error) {
-	strs := strings.Split(dead, "+")
-	d, err := strconv.Atoi(strs[0])
+func (d *DataLoader) insertCase(c *CountyCases) error {
+	_, err := d.conn.Exec(d.ctx, "INSERT INTO Cases(Geoid, "+
+		"Confirmed, NewConfirmed, "+
+		"Dead, NewDead, Update) VALUES($1, $2, $3, $4, $5, $6)", c.ID, c.Confirmed, c.NewConfirmed, c.Dead, c.NewDead, c.Reported)
 	if err != nil {
-		return 0, 0, err
-	}
-	if len(strs) == 1 {
-		return d, 0, nil
+		log.Printf("Error inserting county: %s, %s. %s %s\n", c.County, c.State, c.ID, c.Reported)
+		return err
 	}
 
-	n, err := strconv.Atoi(strs[1])
-	if err != nil {
-		return 0, 0, err
-	}
-	return d, n, err
+	return nil
 }
