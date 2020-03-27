@@ -46,12 +46,17 @@ func CountyCaseFromCSBS(row []string) (*CountyCases, error) {
 		return nil, err
 	}
 
-	confirmed, err := strconv.Atoi(row[0])
+	confirmed, err := strconv.Atoi(row[2])
 	if err != nil {
 		return nil, err
 	}
 
 	reported, err := time.Parse(csbsFormatter, row[8])
+	if err != nil {
+		return nil, err
+	}
+
+	new, err := strconv.Atoi(row[3])
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +67,7 @@ func CountyCaseFromCSBS(row []string) (*CountyCases, error) {
 		CaseCount: &CaseCount{
 			Confirmed:    confirmed,
 			Dead:         dead,
-			NewConfirmed: 0,
+			NewConfirmed: new,
 			NewDead:      newDead,
 			Reported:     reported,
 		},

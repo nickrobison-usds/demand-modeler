@@ -55,7 +55,7 @@ func (d *DataLoader) Close() error {
 }
 
 func (d *DataLoader) loadCSBSCases() error {
-	log.Debug().Msgf("Loading Case data from: %s\n", d.dataDir)
+	log.Debug().Msgf("Loading Case data from: %s", d.dataDir)
 
 	// Truncate the database
 	log.Warn().Msg("Truncating database")
@@ -79,7 +79,7 @@ func (d *DataLoader) loadCSBSCases() error {
 }
 
 func (d *DataLoader) loadCaseFile(file string) error {
-	log.Debug().Msgf("Loading file: %s\n", file)
+	log.Debug().Msgf("Loading file: %s", file)
 	f, err := os.Open(file)
 	if err != nil {
 		return err
@@ -123,6 +123,7 @@ func (d *DataLoader) loadCaseFile(file string) error {
 				return err
 			}
 		} else {
+			c.ID = geoid
 			log.Debug().Msgf("Loading existing county: %s, %s. %s", c.County, c.State, c.ID)
 		}
 
@@ -196,7 +197,7 @@ func (d *DataLoader) insertCase(c *CountyCases) error {
 		"Confirmed, NewConfirmed, "+
 		"Dead, NewDead, Update) VALUES($1, $2, $3, $4, $5, $6)", c.ID, c.Confirmed, c.NewConfirmed, c.Dead, c.NewDead, c.Reported)
 	if err != nil {
-		log.Printf("Error inserting county: %s, %s. %s %s\n", c.County, c.State, c.ID, c.Reported)
+		log.Printf("Error inserting county: %s, %s. %s %s", c.County, c.State, c.ID, c.Reported)
 		return err
 	}
 
