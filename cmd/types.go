@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -72,6 +73,48 @@ func CountyCaseFromCSBS(row []string) (*CountyCases, error) {
 			Reported:     reported,
 		},
 	}, nil
+}
+
+// CountyCasesFromUSAFacts splits a USAFact row into multiple cases
+func CountyCasesFromUSAFacts(row []string, times []time.Time) ([]*CountyCases, error) {
+	// Each row is a single county, with all observations
+
+	countyfp := row[0][len(row[0])-3:]
+	statefp := row[0][:len(row[0])-3]
+
+	// Iterate through all the remaining rows and build cases
+	var cases []*CountyCases
+
+	for idx, val := range row[4:] {
+
+		reported := times[idx]
+		confirmed, err := strconv.Atoi(val)
+		if err != nil {
+			return nil, err
+		}
+
+		state, ok := StateAbr[row[2]]
+		if !ok {
+			return nil, fmt.Errorf("Cannot find state name for %s", row[2])
+		}
+
+		cases = append(cases, &CountyCases{
+			ID:         fmt.Sprintf("%05s", row[0]),
+			County:     row[1],
+			CountyFIPS: countyfp,
+			StateFIPS:  fmt.Sprintf("%02s", statefp),
+			State:      state,
+			CaseCount: &CaseCount{
+				Confirmed:    confirmed,
+				Dead:         0,
+				NewConfirmed: 0,
+				NewDead:      0,
+				Reported:     reported,
+			},
+		})
+	}
+
+	return cases, nil
 }
 
 func splitDead(dead string) (int, int, error) {

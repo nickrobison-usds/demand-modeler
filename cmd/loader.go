@@ -11,6 +11,7 @@ import (
 	"regexp"
 	"strings"
 	"sync/atomic"
+	"time"
 
 	"github.com/jackc/pgx/v4"
 	"github.com/rs/zerolog/log"
@@ -20,6 +21,8 @@ var unknownRegex = regexp.MustCompile("Waiting on information|Indeterminate|Unas
 
 // Unassigned values have to start higher than the largest FIPS code in the TIGER database (which is 840)
 var countyIter int32 = 850
+
+var usaFactsTime string = "1/2/06"
 
 type DataLoader struct {
 	ctx     context.Context
@@ -42,8 +45,77 @@ func NewLoader(ctx context.Context, url string, dataDir string) (*DataLoader, er
 	}, nil
 }
 
-func (d *DataLoader) LoadUSAFacts() {
+// LoadUSAFacts imports the USAFacts JSON file and loads it into the database
+func (d *DataLoader) LoadUSAFacts() error {
 
+	// Truncate the database
+	log.Warn().Msg("Truncating database")
+	_, err := d.conn.Exec(d.ctx, "TRUNCATE TABLE Counties CASCADE; TRUNCATE TABLE Cases CASCADE;")
+	if err != nil {
+		return err
+	}
+
+	// ul, err := NewUSALoader(d.ctx, "https://usafactsstatic.blob.core.windows.net/public/2020/coronavirus-timeline/allData.json", "")
+	// if err != nil {
+	// 	return err
+	// }
+
+	file := filepath.Join(d.dataDir, "covid_confirmed_usafacts.csv")
+
+	log.Debug().Msgf("Loading file: %s", file)
+	f, err := os.Open(file)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	// Read remaining rows
+	r := csv.NewReader(f)
+
+	// Transform the header rows into dates
+	header, err := r.Read()
+	if err != nil {
+		return nil
+	}
+
+	dates := make([]time.Time, len(header)-4)
+
+	for idx, h := range header[4:] {
+		t, err := time.Parse(usaFactsTime, h)
+		if err != nil {
+			return err
+		}
+		dates[idx] = t
+	}
+
+	rows, err := r.ReadAll()
+	if err != nil {
+		return err
+	}
+
+	var cases []*CountyCases
+
+	for _, row := range rows {
+		// Skip the first record, as it's the US
+		if row[0] == "0" {
+			continue
+		}
+
+		c, err := CountyCasesFromUSAFacts(row, dates)
+		if err != nil {
+			return err
+		}
+
+		cases = append(cases, c...)
+	}
+
+	for _, c := range cases {
+		err := d.loadUSACase(c)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (d *DataLoader) LoadCSBS() error {
@@ -137,12 +209,30 @@ func (d *DataLoader) loadCaseFile(file string) error {
 	return nil
 }
 
+func (d *DataLoader) loadUSACase(c *CountyCases) error {
+
+	// For each case, see if we already have a county
+	// Otherwise, load a new county and move on
+	var geoid string
+	err := d.conn.QueryRow(d.ctx, "SELECT id from Counties WHERE ID=$1", c.ID).Scan(&geoid)
+	if err != nil {
+		// Yes, this is terrible, but it works for now.
+		// This means we need to create a new county
+		if err.Error() == "no rows in result set" {
+			err = d.createNewCounty(c)
+			if err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+	}
+
+	return d.insertCase(c)
+}
+
 func (d *DataLoader) createNewCounty(county *CountyCases) error {
 	log.Debug().Msgf("No matching geography for %s, %s", county.County, county.State)
-
-	// See if the county intersects with anything
-	var geoid string
-	var countyFIPS string
 	var stateFIPS string
 
 	stateF, ok := StateFips[strings.ToUpper(county.State)]
@@ -153,41 +243,42 @@ func (d *DataLoader) createNewCounty(county *CountyCases) error {
 
 	// If the county name is unknown, unassigned, etc, then we create a fake geoid and move along.
 	if unknownRegex.MatchString(county.County) {
-		countyFIPS = fmt.Sprintf("%03d", countyIter)
-		geoid = fmt.Sprintf("%s%s", stateFIPS, countyFIPS)
+		county.CountyFIPS = fmt.Sprintf("%03d", countyIter)
+		county.ID = fmt.Sprintf("%s%s", stateFIPS, county.CountyFIPS)
 		atomic.AddInt32(&countyIter, 1)
 	} else {
 
-		// Get the state fips code
-		stateFIPS = fmt.Sprintf("%02d", StateFips[strings.ToUpper(county.State)])
+		// 	// Get the state fips code
+		// 	stateFIPS = fmt.Sprintf("%02d", StateFips[strings.ToUpper(county.State)])
 
-		// We need the fips information from the Shapefile database, so query for it
-		err := d.conn.QueryRow(d.ctx, "SELECT t.countyfp FROM tiger as t where (t.name = $1 OR t.namelsad = $1) and t.statefp = $2", county.County, stateFIPS).Scan(&countyFIPS)
-		// More gross
-		if err != nil && err.Error() == "no rows in result set" {
-			// No rows means we have a non-spatial county, but still try to match up with an existing state
-			countyFIPS = fmt.Sprintf("%03d", countyIter)
-			geoid = fmt.Sprintf("%s%s", stateFIPS, countyFIPS)
-			atomic.AddInt32(&countyIter, 1)
-		} else if err != nil {
-			log.Error().Msgf("Unable to load %s, %s: %s", county.County, county.State, err.Error())
-			return err
-		} else {
-			geoid = fmt.Sprintf("%s%s", stateFIPS, countyFIPS)
-		}
+		// 	// We need the fips information from the Shapefile database, so query for it
+		// 	err := d.conn.QueryRow(d.ctx, "SELECT t.countyfp FROM tiger as t where (t.name = $1 OR t.namelsad = $1) and t.statefp = $2", county.County, stateFIPS).Scan(&countyFIPS)
+		// 	// More gross
+		// 	if err != nil && err.Error() == "no rows in result set" {
+		// 		// No rows means we have a non-spatial county, but still try to match up with an existing state
+		// 		countyFIPS = fmt.Sprintf("%03d", countyIter)
+		// 		geoid = fmt.Sprintf("%s%s", stateFIPS, countyFIPS)
+		// 		atomic.AddInt32(&countyIter, 1)
+		// 	} else if err != nil {
+		// 		log.Error().Msgf("Unable to load %s, %s: %s", county.County, county.State, err.Error())
+		// 		return err
+		// 	} else {
+		// 		geoid = fmt.Sprintf("%s%s", stateFIPS, countyFIPS)
+		// 	}
+		// }
 	}
 
+	// county.CountyFIPS = countyFIPS
+	// county.StateFIPS = stateFIPS
+	// county.ID = geoid
+
 	// Load the new county
-	log.Debug().Msgf("Loading new county: %s, %s. %s", county.County, county.State, geoid)
+	log.Debug().Msgf("Loading new county: %s, %s. %s", county.County, county.State, county.ID)
 	_, err := d.conn.Exec(d.ctx, "INSERT INTO Counties(County, State, "+
-		"StateFP, CountyFP, ID) VALUES($1, $2, $3, $4, $5)", county.County, county.State, county.StateFIPS, county.CountyFIPS, geoid)
+		"StateFP, CountyFP, ID) VALUES($1, $2, $3, $4, $5)", county.County, county.State, county.StateFIPS, county.CountyFIPS, county.ID)
 	if err != nil {
 		return err
 	}
-
-	county.CountyFIPS = countyFIPS
-	county.StateFIPS = stateFIPS
-	county.ID = geoid
 
 	return nil
 }

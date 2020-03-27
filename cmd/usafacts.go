@@ -95,7 +95,7 @@ func (f *USAFactsLoader) Load() ([]*CountyCases, error) {
 		return nil, err
 	}
 
-	totalCases := make([]*CountyCases, 0)
+	var totalCases []*CountyCases = []*CountyCases{}
 
 	// Transform the facts into something useful
 	for _, fact := range facts {

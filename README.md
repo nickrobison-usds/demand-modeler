@@ -88,3 +88,8 @@ heroku buildpacks:add heroku/go
 ```bash
 docker build -f usafacts_loader.Dockerfile -t usafacts . && docker run -it --network=demand-modeler_default usafacts
 ```
+
+The following steps need to be taken to manually clean the data:
+
+1. Remove 1st `Wayne County` record, as it's a duplicate but has no values recorded
+1. Shorten Jackson County, MO name
