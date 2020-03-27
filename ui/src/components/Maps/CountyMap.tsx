@@ -16,7 +16,7 @@ import ReactMapGL, {
   WebMercatorViewport,
   FlyToInterpolator
 } from "react-map-gl";
-import countyGeoData from "./geojson-counties-fips.json";
+import rawCountyGeoData from "./geojson-counties-fips.json";
 import stateGeoData from "./state.geo.json";
 import { stateAbbreviation } from "../../utils/stateAbbreviation";
 import { useResizeToContainer } from "../../utils/useResizeToContainer";
@@ -24,6 +24,11 @@ import bbox from "@turf/bbox";
 import { easeCubic } from "d3";
 import "./CountyMap.css";
 import UsaSelect from "../Forms/USASelect";
+import { transformCountyGeoData } from "./transformCountyGeoData";
+
+const countyGeoData = transformCountyGeoData(
+  rawCountyGeoData as GeoJSON.FeatureCollection
+);
 
 type DataType = "Total" | "New" | "Increase";
 
@@ -256,15 +261,6 @@ const CountyMap: React.FunctionComponent<Props> = props => {
                 : `${(region[0] as County).County}, ${
                     stateAbbreviation[region[0].State]
                   }`;
-            if ((metric > 100 || metric < -100) && dataType === "New") {
-              console.log(
-                Name,
-                metric,
-                region[1][selectedMetric],
-                region[0][selectedMetric],
-                region[0][selectedMetric] - region[1][selectedMetric]
-              );
-            }
           }
         }
       }
@@ -295,18 +291,12 @@ const CountyMap: React.FunctionComponent<Props> = props => {
       newLegend.Increase[level].scale = Array.from(defaultScale, e =>
         round(e * max)
       );
-      console.log(level, "Increase", max, newLegend.Increase[level].scale);
-
       setLegendScales(newLegend);
     } else {
       const newLegend = { ...legendScales };
       newLegend.New[level].scale = [0, 5, 10, 25, 50, 100, 200, 400];
-      console.log(level, "New", max, newLegend.New[level].scale);
-
       setLegendScales(newLegend);
     }
-
-    console.log(min, max);
     return formatedGeoJSON;
   };
 
@@ -510,7 +500,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
           return hoverInfo ? "pointer" : "grab";
         }}
         onClick={event => {
-          console.log(event.lngLat);
+          console.log(event);
           const feature = event.features && event.features[0];
           if (feature) {
             const clickedState = feature.properties.STATE;
