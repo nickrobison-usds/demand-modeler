@@ -62,6 +62,10 @@ func CountyCaseFromCSBS(row []string) (*CountyCases, error) {
 		return nil, err
 	}
 
+	statefps := fmt.Sprintf("%02s", row[9])
+	countyfps := fmt.Sprintf("%03s", row[10])
+	id := statefps + countyfps
+
 	return &CountyCases{
 		County: row[0],
 		State:  row[1],
@@ -72,6 +76,9 @@ func CountyCaseFromCSBS(row []string) (*CountyCases, error) {
 			NewDead:      newDead,
 			Reported:     reported,
 		},
+		StateFIPS:  statefps,
+		CountyFIPS: countyfps,
+		ID:         id,
 	}, nil
 }
 

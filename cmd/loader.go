@@ -48,18 +48,6 @@ func NewLoader(ctx context.Context, url string, dataDir string) (*DataLoader, er
 // LoadUSAFacts imports the USAFacts JSON file and loads it into the database
 func (d *DataLoader) LoadUSAFacts() error {
 
-	// Truncate the database
-	log.Warn().Msg("Truncating database")
-	_, err := d.conn.Exec(d.ctx, "TRUNCATE TABLE Counties CASCADE; TRUNCATE TABLE Cases CASCADE;")
-	if err != nil {
-		return err
-	}
-
-	// ul, err := NewUSALoader(d.ctx, "https://usafactsstatic.blob.core.windows.net/public/2020/coronavirus-timeline/allData.json", "")
-	// if err != nil {
-	// 	return err
-	// }
-
 	file := filepath.Join(d.dataDir, "covid_confirmed_usafacts.csv")
 
 	log.Debug().Msgf("Loading file: %s", file)
@@ -118,23 +106,29 @@ func (d *DataLoader) LoadUSAFacts() error {
 	return nil
 }
 
+//LoadCSBS loads the CSBS CSV files
 func (d *DataLoader) LoadCSBS() error {
 	return d.loadCSBSCases()
 }
 
-func (d *DataLoader) Close() error {
-	return d.conn.Close(d.ctx)
-}
-
-func (d *DataLoader) loadCSBSCases() error {
-	log.Debug().Msgf("Loading Case data from: %s", d.dataDir)
-
+//Truncate removes all data from the Counties and Cases tables
+func (d *DataLoader) Truncate() error {
 	// Truncate the database
 	log.Warn().Msg("Truncating database")
 	_, err := d.conn.Exec(d.ctx, "TRUNCATE TABLE Counties CASCADE; TRUNCATE TABLE Cases CASCADE;")
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+//Close shutdowns the loader and closes the connection
+func (d *DataLoader) Close() error {
+	return d.conn.Close(d.ctx)
+}
+
+func (d *DataLoader) loadCSBSCases() error {
+	log.Debug().Msgf("Loading Case data from: %s", d.dataDir)
 	// Find all the temporal data files
 	files, err := filepath.Glob(filepath.Join(d.dataDir, "covid19_county_*.csv"))
 	if err != nil {
@@ -182,7 +176,7 @@ func (d *DataLoader) loadCaseFile(file string) error {
 		}
 		// We should be able to remove this in the future, once we move fully to the USAFacts dataset
 		var geoid string
-		err = d.conn.QueryRow(d.ctx, "SELECT id from Counties WHERE County=$1 AND State=$2", c.County, c.State).Scan(&geoid)
+		err = d.conn.QueryRow(d.ctx, "SELECT id from Counties WHERE ID=$1", c.ID).Scan(&geoid)
 		// No rows means we need to create a new one
 		if err != nil {
 			// Yes, this is terrible, but it works for now.
