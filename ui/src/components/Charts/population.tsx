@@ -3194,13 +3194,3 @@ export const population: { [fipsKey: string]: number } = {
   "56043": 8328,
   "56045": 7234
 };
-
-// Consolidate NY Counties
-const nyFips = "36061";
-const otherNyFips = ["36085", "36047", "36081", "36005"];
-otherNyFips.forEach(county => {
-  if (population[county]) {
-    population[nyFips] += population[county];
-    delete population[county];
-  }
-});
