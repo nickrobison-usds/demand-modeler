@@ -45,7 +45,7 @@ const USATotal: React.FunctionComponent<{}> = props => {
         name="stateSelect"
         selected={state.selection.state}
         onChange={onUpdate}
-        label="State: "
+        label="State"
       />
     </div>
   );

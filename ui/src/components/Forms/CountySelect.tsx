@@ -56,7 +56,7 @@ const USATotal: React.FunctionComponent<{}> = () => {
         name="countySelect"
         selected={county}
         onChange={onUpdate}
-        label="County: "
+        label="County"
       />
     </div>
   );

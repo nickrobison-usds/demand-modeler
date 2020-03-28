@@ -598,7 +598,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
           name="selectDataType"
           selected={dataType}
           onChange={setDataType}
-          label="Map Data Type: "
+          label="Map Data Type "
         />
       )}
     </div>

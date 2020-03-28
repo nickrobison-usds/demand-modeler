@@ -36,7 +36,7 @@ export const MetricSelect: React.FunctionComponent<{}> = props => {
         name="metricSelect"
         selected={state.selection.metric}
         onChange={onUpdate}
-        label="Metric: "
+        label="Metric"
       />
     </div>
   );
