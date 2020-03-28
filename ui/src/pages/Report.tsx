@@ -7,7 +7,6 @@ import { MixedBar } from "../components/Charts/MixedBar";
 import CountyMap from "../components/Maps/CountyMap";
 import "./Report.scss";
 import { dateTimeString } from "../utils/DateUtils";
-import { CountyTrendGraph } from "../components/Charts/CountyTrendGraph";
 
 export const Report: React.FC<{}> = () => {
   const pagebreak = (lastUpdated: Date | undefined) => {
@@ -27,7 +26,7 @@ export const Report: React.FC<{}> = () => {
         </div>
         <div>
           Data sourced from state health department websites; reporting may be
-          incomplete or delayed
+          incomplete or delayed. Death data is inconsistent and delayed in reporting
         </div>
         <div className="pagebreak" />
       </div>
@@ -39,31 +38,65 @@ export const Report: React.FC<{}> = () => {
       <>
         <CountyMap
           reportView
-          dataType={"New"}
-          title={"Percent Increase for Counties with 20+ reported cases"}
-        />
-        {lastUpdated && pagebreak(lastUpdated)}
-
-        <CountyMap
-          reportView
           dataType={"Total"}
           title={"Total Confirmed Cases"}
-        />
-                {lastUpdated && pagebreak(lastUpdated)}
-
-        <CountyMap
-          reportView
-          dataType={"New"}
-          title={
-            "Percent Increase for Counties with 20+ reported cases near NYC"
-          }
-          presetCoordinates="New York Area"
         />
         {lastUpdated && pagebreak(lastUpdated)}
         <CountyMap
           reportView
           dataType={"Total"}
           title={"Total Confirmed Cases near NYC"}
+          presetCoordinates="New York Area"
+        />
+        {lastUpdated && pagebreak(lastUpdated)}
+        <CountyMap
+          reportView
+          dataType={"Total"}
+          title={"Total Confirmed Cases in Southern California"}
+          presetCoordinates="Southern California"
+        />
+        {lastUpdated && pagebreak(lastUpdated)}
+        <CountyMap
+          reportView
+          dataType={"Total"}
+          title={"Total Confirmed Cases near Washington State"}
+          presetCoordinates="Washington State"
+        />
+        {lastUpdated && pagebreak(lastUpdated)}
+        <CountyMap
+          reportView
+          dataType={"Total"}
+          title={"Total Confirmed Cases near Atlanta Area"}
+          presetCoordinates="Atlanta Area"
+        />
+        {lastUpdated && pagebreak(lastUpdated)}
+        <CountyMap
+          reportView
+          dataType={"Total"}
+          title={"Total Confirmed Cases near New Orleans Area"}
+          presetCoordinates="New Orleans Area"
+        />
+        {lastUpdated && pagebreak(lastUpdated)}
+        <CountyMap
+          reportView
+          dataType={"Total"}
+          title={"Total Confirmed Cases near Miami Area"}
+          presetCoordinates="Miami Area"
+        />
+        {lastUpdated && pagebreak(lastUpdated)}
+
+        <CountyMap
+          reportView
+          dataType={"New"}
+          title={"Percent Increase for Counties with 20+ reported cases"}
+        />
+        {lastUpdated && pagebreak(lastUpdated)}
+        <CountyMap
+          reportView
+          dataType={"New"}
+          title={
+            "Percent Increase for Counties with 20+ reported cases near NYC"
+          }
           presetCoordinates="New York Area"
         />
         {lastUpdated && pagebreak(lastUpdated)}
@@ -78,14 +111,6 @@ export const Report: React.FC<{}> = () => {
         {lastUpdated && pagebreak(lastUpdated)}
         <CountyMap
           reportView
-          dataType={"Total"}
-          title={"Total Confirmed Cases in Southern California"}
-          presetCoordinates="Southern California"
-        />
-        {lastUpdated && pagebreak(lastUpdated)}
-
-        <CountyMap
-          reportView
           dataType={"New"}
           title={
             "Percent Increase for Counties with 20+ reported cases near Washington State"
@@ -93,14 +118,6 @@ export const Report: React.FC<{}> = () => {
           presetCoordinates="Washington State"
         />
         {lastUpdated && pagebreak(lastUpdated)}
-        <CountyMap
-          reportView
-          dataType={"Total"}
-          title={"Total Confirmed Cases near Washington State"}
-          presetCoordinates="Washington State"
-        />
-        {lastUpdated && pagebreak(lastUpdated)}
-
         <CountyMap
           reportView
           dataType={"New"}
@@ -112,14 +129,6 @@ export const Report: React.FC<{}> = () => {
         {lastUpdated && pagebreak(lastUpdated)}
         <CountyMap
           reportView
-          dataType={"Total"}
-          title={"Total Confirmed Cases near Atlanta Area"}
-          presetCoordinates="Atlanta Area"
-        />
-        {lastUpdated && pagebreak(lastUpdated)}
-
-        <CountyMap
-          reportView
           dataType={"New"}
           title={
             "Percent Increase for Counties with 20+ reported cases near the New Orleans Area"
@@ -129,25 +138,10 @@ export const Report: React.FC<{}> = () => {
         {lastUpdated && pagebreak(lastUpdated)}
         <CountyMap
           reportView
-          dataType={"Total"}
-          title={"Total Confirmed Cases near New Orleans Area"}
-          presetCoordinates="New Orleans Area"
-        />
-        {lastUpdated && pagebreak(lastUpdated)}
-
-        <CountyMap
-          reportView
           dataType={"New"}
           title={
             "Percent Increase for Counties with 20+ reported cases near the Miami Area"
           }
-          presetCoordinates="Miami Area"
-        />
-        {lastUpdated && pagebreak(lastUpdated)}
-        <CountyMap
-          reportView
-          dataType={"Total"}
-          title={"Total Confirmed Cases near Miami Area"}
           presetCoordinates="Miami Area"
         />
         {lastUpdated && pagebreak(lastUpdated)}
@@ -311,12 +305,6 @@ export const Report: React.FC<{}> = () => {
               county={undefined}
               timeSeries={state.covidTimeSeries}
               stat="dead"
-              reportView
-            />
-            {lastUpdated && pagebreak(lastUpdated)}
-            <CountyTrendGraph
-              timeSeries={state.covidTimeSeries}
-              selection={state.selection}
               reportView
             />
             {lastUpdated && pagebreak(lastUpdated)}
