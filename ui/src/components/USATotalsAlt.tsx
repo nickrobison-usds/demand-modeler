@@ -4,9 +4,11 @@ import { AppContext } from "../app/AppStore";
 import { CovidDateData } from "../app/AppStore";
 import { getCountyGrandTotal, GrandTotal } from "../utils/calculations";
 import { getSelectedLocationName } from "../utils/utils";
+import { stateAbbreviation } from "../utils/stateAbbreviation";
 
 interface Props {
-
+  state?: string;
+  county?: string;
 };
 
 const USATotalsAlt: React.FunctionComponent<Props> = props => {
@@ -23,23 +25,29 @@ const USATotalsAlt: React.FunctionComponent<Props> = props => {
 
   const total = grandTotals[dates[0]]?.Confirmed;
 
+  const totalWithComma = (total).toLocaleString('en');
+
   const renderChange = (current: number, previous: number) => {
     if (current === undefined || previous === undefined) {
       return "N/A";
     }
     const change = current - previous;
-    return `${change >= 0 ? "+" : ""}${change} (${percentChange(
+    return `${change >= 0 ? "+" : ""}${(change).toLocaleString('en')} (${percentChange(
       current,
       change
     )} %)`;
   };
 
+const selectedState = state.selection.state === undefined ? 'National' : state.covidTimeSeries.states[state.selection.state][0].State;
+
+const selectedCounty = state.selection.county === undefined ? undefined : `: ` +  state.covidTimeSeries.counties[state.selection.county][0].County + ' county';
+
   return (
     <div className="total-wrap">
-      <h1>locationName</h1>
+      <h1>{selectedState}{selectedCounty}</h1>
       <div className="total-item">
         <label className="usa-label">Confirmed cases</label>
-        <span>{total}</span>
+        <span>{totalWithComma}</span>
       </div>
       <div className="total-item">
         <label className="usa-label">24-hour change</label>
