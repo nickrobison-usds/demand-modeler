@@ -28,7 +28,7 @@ export default function UsaSelect<T>(props: Props<T>) {
   });
 
   const label = props.label && (
-    <label className="usa-label" htmlFor={selectId} style={{margin: "0 5px 0 0"}}>
+    <label className="usa-label" htmlFor={selectId}>
       {props.label}
     </label>
   );
