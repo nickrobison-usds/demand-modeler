@@ -7,7 +7,7 @@ interface Option {
   value: string | undefined;
 }
 
-const DEFAULT_TEXT = "All States";
+const DEFAULT_TEXT = "All states";
 const USATotal: React.FunctionComponent<{}> = props => {
   const { dispatch, state } = useContext(AppContext);
 

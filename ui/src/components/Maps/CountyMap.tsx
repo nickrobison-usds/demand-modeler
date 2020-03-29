@@ -33,10 +33,10 @@ const countyGeoData = transformCountyGeoData(
 type DataType = "Total" | "New" | "Increase";
 
 const legendLookup = (metric: Metric): { [key in DataType]: string } => {
-  const type = metric === "confirmed" ? "Confirmed Cases" : "Deaths";
+  const type = metric === "confirmed" ? "confirmed cases" : "Deaths";
   return {
     Total: type,
-    New: `Percent Increase in ${type}`,
+    New: `Percent increase in ${type}`,
     Increase: `Increase in ${type}`
   };
 };
@@ -342,7 +342,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
 
       const label: { [d in DataType]: string } = {
         Total: selectedMetric,
-        New: "Percent Increase",
+        New: "Percent increase",
         Increase: "Increase"
       };
 
@@ -581,14 +581,14 @@ const CountyMap: React.FunctionComponent<Props> = props => {
         <UsaSelect
           options={[
             { text: "Total", value: "Total" },
-            { text: "Percent Increase", value: "New" },
+            { text: "Percent increase", value: "New" },
             { text: "Increase", value: "Increase" }
           ]}
           placeholder={"Total"}
           name="selectDataType"
           selected={dataType}
           onChange={setDataType}
-          label="Map Data Type "
+          label="Map data type "
         />
       )}
     </div>

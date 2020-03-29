@@ -7,7 +7,7 @@ interface Option {
   value: string | undefined;
 }
 
-const DEFAULT_TEXT = "All Counties";
+const DEFAULT_TEXT = "All counties";
 const USATotal: React.FunctionComponent<{}> = () => {
   const {
     dispatch,

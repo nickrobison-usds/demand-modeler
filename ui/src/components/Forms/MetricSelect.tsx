@@ -7,7 +7,7 @@ interface Option {
   value: Metric;
 }
 
-const DEFAULT_TEXT = "Confirmed Cases";
+const DEFAULT_TEXT = "Confirmed cases";
 export const MetricSelect: React.FunctionComponent<{}> = props => {
   const { dispatch, state } = useContext(AppContext);
 

@@ -20,42 +20,37 @@ export const Dashboard: React.FC<{}> = () => {
     <AppContext.Consumer>
       {({ state }) => {
         return (
-          <div className="dashboard-container">
-            <div className="dashboard-nav">
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between"
-                }}
-              >
-                <div style={{ display: "flex" }}>
-                  <MetricSelect />
-                  <StateSelect />
-                  <CountySelect />
-                </div>
-                <div>
-                  <a
-                    className="usa-button usa-button--outline"
-                    href="?report=true"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    View Report
-                  </a>
-                </div>
+        <div>
+          <div className="dashboard-nav">
+            <div className="grid-row grid-gap">
+              <div className="tablet:grid-col-10 mobile:col-12" style={{ display: "flex" }}>
+                <MetricSelect />
+                <StateSelect />
+                <CountySelect />
+              </div>
+              <div className="tablet:grid-col-2 mobile:col-12">
+                <a
+                  className="usa-button usa-button--outline report-button"
+                  href="?report=true"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  View report
+                </a>
+              </div>
             </div>
           </div>
-            <div className="dashboard">
+          <div className="dashboard grid-row grid-gap">
+            <div className="dashboard-map desktop:grid-col-4 tablet:col-12">
               <div>
                 <USATotalsAlt />
-                <Card>
-                  <div>
-                    <CountyMap />
-                  </div>
-                </Card>
+                <div>
+                  <CountyMap />
+                </div>
               </div>
-              <div className="dashboard-scroll">
+            </div>
+            <div className="dashboard-scroll desktop:grid-col-8 tablet:col-12">
+              <div className="grid-row grid-gap">
                 <Card>
                   <MixedBar
                     state={state.selection.state}
@@ -103,6 +98,7 @@ export const Dashboard: React.FC<{}> = () => {
               </div>
             </div>
           </div>
+        </div>
         );
       }}
     </AppContext.Consumer>

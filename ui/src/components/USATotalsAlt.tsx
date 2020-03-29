@@ -40,7 +40,7 @@ const USATotalsAlt: React.FunctionComponent<Props> = props => {
 
 const selectedState = state.selection.state === undefined ? 'National' : state.covidTimeSeries.states[state.selection.state][0].State;
 
-const selectedCounty = state.selection.county === undefined ? undefined : `: ` +  state.covidTimeSeries.counties[state.selection.county][0].County + ' county';
+const selectedCounty = state.selection.county === undefined ? undefined : `: ` +  state.covidTimeSeries.counties[state.selection.county][0].County + ' County';
 
   return (
     <div className="total-wrap">
