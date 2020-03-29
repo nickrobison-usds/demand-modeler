@@ -117,7 +117,7 @@ func serve(backend api.DataBackend, filesDir string) error {
 
 	r.Route("/api", api.MakeRouter)
 	FileServer(r, "", "/", http.Dir(filesDir))
-	log.Printf("Listening on %s\n", port)
+	log.Printf("Listening on %s", port)
 	return http.ListenAndServe(":"+port, r)
 }
 
