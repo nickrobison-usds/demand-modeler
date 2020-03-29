@@ -1,10 +1,7 @@
 import React, { useContext } from "react";
 import "../pages/Dashboard.scss";
 import { AppContext } from "../app/AppStore";
-import { CovidDateData } from "../app/AppStore";
 import { getCountyGrandTotal, GrandTotal } from "../utils/calculations";
-import { getSelectedLocationName } from "../utils/utils";
-import { stateAbbreviation } from "../utils/stateAbbreviation";
 
 interface Props {
   state?: string;

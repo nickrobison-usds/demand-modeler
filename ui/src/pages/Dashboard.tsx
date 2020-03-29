@@ -2,7 +2,6 @@ import React from "react";
 import { AppContext } from "../app/AppStore";
 import CountyMap from "../components/Maps/CountyMap";
 import Card from "../components/Card/Card";
-import USATotals from "../components/USATotals";
 import USATotalsAlt from "../components/USATotalsAlt";
 import StateSelect from "../components/Forms/StateSelect";
 import CountySelect from "../components/Forms/CountySelect";
