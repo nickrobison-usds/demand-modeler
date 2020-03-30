@@ -34,7 +34,11 @@ export const RenderChart: React.FC<Props> = props => {
   );
 
   return open ? (
-    <Modal isOpen={open}>
+    <Modal
+      isOpen={open}
+      shouldCloseOnOverlayClick={true}
+      shouldCloseOnEsc={true}
+    >
       <h3>{props.title}</h3>
       <ResponsiveContainer height={open ? 500 : 200} width="100%">
         {props.children}

@@ -33,10 +33,10 @@ const countyGeoData = transformCountyGeoData(
 type DataType = "Total" | "New" | "Increase";
 
 const legendLookup = (metric: Metric): { [key in DataType]: string } => {
-  const type = metric === "confirmed" ? "Confirmed Cases" : "Deaths";
+  const type = metric === "confirmed" ? "confirmed cases" : "Deaths";
   return {
     Total: type,
-    New: `Percent Increase in ${type}`,
+    New: `Percent increase in ${type}`,
     Increase: `Increase in ${type}`
   };
 };
@@ -342,7 +342,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
 
       const label: { [d in DataType]: string } = {
         Total: selectedMetric,
-        New: "Percent Increase",
+        New: "Percent increase",
         Increase: "Increase"
       };
 
@@ -453,21 +453,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
     viewport.zoom < SHOW_COUNTY_ON_ZOOM ? "state" : "county"
   );
   return (
-    <div id="map-container" style={{ margin: "2em 1em 0 1em" }}>
-      {!props.reportView && (
-        <UsaSelect
-          options={[
-            { text: "Total", value: "Total" },
-            { text: "Percent Increase", value: "New" },
-            { text: "Increase", value: "Increase" }
-          ]}
-          placeholder={"Total"}
-          name="selectDataType"
-          selected={dataType}
-          onChange={setDataType}
-          label="Map Data Type: "
-        />
-      )}
+    <div id="map-container">
       <ReactMapGL
         {...viewport}
         minZoom={2}
@@ -591,6 +577,20 @@ const CountyMap: React.FunctionComponent<Props> = props => {
           </span>
         ))}
       </div>
+      {!props.reportView && (
+        <UsaSelect
+          options={[
+            { text: "Total", value: "Total" },
+            { text: "Percent increase", value: "New" },
+            { text: "Increase", value: "Increase" }
+          ]}
+          placeholder={"Total"}
+          name="selectDataType"
+          selected={dataType}
+          onChange={setDataType}
+          label="Map data type "
+        />
+      )}
     </div>
   );
 };

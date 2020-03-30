@@ -7,7 +7,7 @@ interface Option {
   value: Metric;
 }
 
-const DEFAULT_TEXT = "Confirmed Cases";
+const DEFAULT_TEXT = "Confirmed cases";
 export const MetricSelect: React.FunctionComponent<{}> = props => {
   const { dispatch, state } = useContext(AppContext);
 
@@ -29,20 +29,14 @@ export const MetricSelect: React.FunctionComponent<{}> = props => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center"
-      }}
-    >
+    <div className="navigation-select">
       <UsaSelect
         options={options}
         placeholder={DEFAULT_TEXT}
         name="metricSelect"
         selected={state.selection.metric}
         onChange={onUpdate}
-        label="Metric: "
+        label="Metric"
       />
     </div>
   );

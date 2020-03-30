@@ -20,7 +20,7 @@ export const getSelectedLocationName = (
     }
     const stateName = stateAbbreviation[timeSeries.counties[county][0].State];
     const countyName = timeSeries.counties[county][0].County;
-    return `${countyName}, ${stateName}`;
+    return `${countyName} County, ${stateName}`;
   }
 
   return "the US";

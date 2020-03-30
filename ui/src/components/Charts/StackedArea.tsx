@@ -1,7 +1,7 @@
 import React from "react";
 import {
-  BarChart,
-  Bar,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -12,7 +12,6 @@ import { CovidDateData } from "../../app/AppStore";
 import { monthDay } from "../../utils/DateUtils";
 import { RenderChart } from "./RenderChart";
 import { getSelectedLocationName } from "../../utils/utils";
-import { StripedFill } from "./StripedFill";
 
 interface Props {
   state?: string;
@@ -23,7 +22,7 @@ interface Props {
   chartWidth?: number;
 }
 
-export const MixedBar = (props: Props) => {
+export const StackedArea = (props: Props) => {
   let maxCasesByDate: { [d: string]: number } = {};
 
   // const dates = Object.keys(props.timeSeries).sort();
@@ -99,8 +98,7 @@ export const MixedBar = (props: Props) => {
     if (!dedupedData[i - 1]) {
       return { ...data, Existing: data["Grand Total"] };
     }
-    let newCases = data["Grand Total"] - dedupedData[i - 1]["Grand Total"];
-    if (newCases < 0) newCases = 0;
+    const newCases = data["Grand Total"] - dedupedData[i - 1]["Grand Total"];
     return {
       ...data,
       New: newCases,
@@ -108,17 +106,19 @@ export const MixedBar = (props: Props) => {
     };
   });
 
-  const title = locationName
-    ? `${
-        props.stat === "confirmed" ? "Confirmed cases" : "Deaths"
-      } in ${locationName}`
-    : "No data reported";
+  console.log(finalData);
 
   return (
     <div>
-      <RenderChart reportView={props.reportView} title={title}>
-        <BarChart
-          barSize={50}
+      <h3>
+        {locationName ? (
+          <>Confirmed cases in {locationName}</>
+        ) : (
+          <>No data reported</>
+        )}
+      </h3>
+      <RenderChart reportView={props.reportView}>
+        <AreaChart
           width={props.reportView ? window.innerWidth * 0.9 : undefined}
           height={880}
           data={finalData}
@@ -133,46 +133,11 @@ export const MixedBar = (props: Props) => {
           <XAxis height={60} dataKey="Name" />
           <YAxis dataKey="Grand Total" />
           <Tooltip />
-          <Bar
-            dataKey="New"
-            stackId="data"
-            shape={<StripedFill fill={props.stat === "dead" ? "#111" : "#CB2727"} />}
-          />
-          <Bar dataKey="Existing" stackId="data" fill={props.stat === "dead" ? "#111" : "#900000"} />
-          <Legend content={<CustomLegend stat={props.stat}/>} />
-        </BarChart>
+          <Area type="linear" dataKey="New" stackId="data" stroke="#CB2727" strokeWidth="3" fill="#CB2727" fillOpacity="0" />
+          <Area type="linear" dataKey="Existing" stackId="data" stroke="#900000" strokeWidth="3" fill="#900000" fillOpacity="0" />
+          <Legend />
+        </AreaChart>
       </RenderChart>
     </div>
   );
-};
-
-const CustomLegend = (props: any) => (
-  <div style={{ textAlign: "center" }}>
-    <span
-      style={{
-        display: "inline-block",
-        height: "10px",
-        width: "10px",
-        backgroundColor: props.stat === "dead" ? "#111" : "#900000",
-        margin: "0 5px 0 10px"
-      }}
-    ></span>
-    Existing Cases
-    <span
-      style={{
-        display: "inline-block",
-        height: "10px",
-        width: "10px",
-        background: `repeating-linear-gradient(
-                      135deg,
-                      ${props.stat === "dead" ? "#111" : "#CB2727"},
-                      ${props.stat === "dead" ? "#111" : "#CB2727"} 2px,
-                      #FFFFFF 2px,
-                      #FFFFFF 4px
-                    )`,
-        margin: "0 5px 0 10px"
-      }}
-    ></span>
-    New Cases
-  </div>
-);
+  };
