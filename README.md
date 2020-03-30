@@ -78,8 +78,6 @@ heroku buildpacks:add heroku/go
 
 * Delete `New Death` column
 * Rename 'Walton, FL' to 'Walton County'
-* Rename 'Dade' to 'Miami-Dade'
-* 
 
 1. Run the go application and see if it barfs on the new data. Rinse, repeat until it works.
 
