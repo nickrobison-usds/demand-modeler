@@ -4,147 +4,76 @@ import { StateMixedBar } from "../components/Charts/StateMixedBar";
 import { Top10Counties } from "../components/Charts/Top10Counties";
 import { StateBar } from "../components/Charts/StateBar";
 import { MixedBar } from "../components/Charts/MixedBar";
-import CountyMap from "../components/Maps/CountyMap";
+import CountyMap, {
+  CoorinateKey,
+  EXCLUDE_PERCENT_INCREASE_CASES_BELOW
+} from "../components/Maps/CountyMap";
 import "./Report.scss";
 import { dateTimeString } from "../utils/DateUtils";
+import {  getLastUpdated, getMostRecentStateUpdates } from "../utils/utils";
+
+export const PageBreak: React.FC<{ lastUpdated: Date | undefined }> = ({
+  lastUpdated
+}) => {
+  return (
+    <div style={{ margin: "20px 0", fontSize: "13px" }}>
+      <div>
+        Source:{" "}
+        <a
+          href="https://www.csbs.org/information-covid-19-coronavirus"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Conference of State Bank Supervisors
+        </a>
+        , as of {lastUpdated && dateTimeString(lastUpdated)}.
+      </div>
+      <div>
+        Data sourced from state health department websites; reporting may be
+        incomplete or delayed. Death data is inconsistent and delayed in
+        reporting
+      </div>
+      <div className="pagebreak" />
+    </div>
+  );
+};
 
 export const Report: React.FC<{}> = () => {
-  const pagebreak = (lastUpdated: Date | undefined) => {
-    return (
-      <div style={{ margin: "20px 0", fontSize: "13px" }}>
-        <div>
-          Source:{" "}
-          <a
-            href="https://www.csbs.org/information-covid-19-coronavirus"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Conference of State Bank Supervisors
-          </a>
-          , as of {lastUpdated && dateTimeString(lastUpdated)}.
-          {/* 12 states with highest case count as of 3/17 shown. */}
-        </div>
-        <div>
-          Data sourced from state health department websites; reporting may be
-          incomplete or delayed. Death data is inconsistent and delayed in reporting
-        </div>
-        <div className="pagebreak" />
-      </div>
-    );
-  };
-
   const maps = (lastUpdated: any) => {
+    const dateTypes: DataType[] = ["Total", "New"];
+    const presetCoordinates: (CoorinateKey | undefined)[] = [
+      undefined,
+      "NYC",
+      "Southern California",
+      "Washington State",
+      "Atlanta Area",
+      "New Orleans Area",
+      "Miami Area"
+    ];
+    const mapTitle = (dataType: DataType, coordinateKey: CoorinateKey | undefined) => {
+      let title = dataType === "Total"
+        ? "Total Confirmed Cases"
+        : `Percent Increase for Counties with ${EXCLUDE_PERCENT_INCREASE_CASES_BELOW}+ reported cases`;
+      if (coordinateKey) {
+        title += `Near ${coordinateKey}`;
+      }
+      return title;
+    };
     return (
       <>
-        <CountyMap
-          reportView
-          dataType={"Total"}
-          title={"Total Confirmed Cases"}
-        />
-        {lastUpdated && pagebreak(lastUpdated)}
-        <CountyMap
-          reportView
-          dataType={"Total"}
-          title={"Total Confirmed Cases near NYC"}
-          presetCoordinates="New York Area"
-        />
-        {lastUpdated && pagebreak(lastUpdated)}
-        <CountyMap
-          reportView
-          dataType={"Total"}
-          title={"Total Confirmed Cases in Southern California"}
-          presetCoordinates="Southern California"
-        />
-        {lastUpdated && pagebreak(lastUpdated)}
-        <CountyMap
-          reportView
-          dataType={"Total"}
-          title={"Total Confirmed Cases near Washington State"}
-          presetCoordinates="Washington State"
-        />
-        {lastUpdated && pagebreak(lastUpdated)}
-        <CountyMap
-          reportView
-          dataType={"Total"}
-          title={"Total Confirmed Cases near Atlanta Area"}
-          presetCoordinates="Atlanta Area"
-        />
-        {lastUpdated && pagebreak(lastUpdated)}
-        <CountyMap
-          reportView
-          dataType={"Total"}
-          title={"Total Confirmed Cases near New Orleans Area"}
-          presetCoordinates="New Orleans Area"
-        />
-        {lastUpdated && pagebreak(lastUpdated)}
-        <CountyMap
-          reportView
-          dataType={"Total"}
-          title={"Total Confirmed Cases near Miami Area"}
-          presetCoordinates="Miami Area"
-        />
-        {lastUpdated && pagebreak(lastUpdated)}
-
-        <CountyMap
-          reportView
-          dataType={"New"}
-          title={"Percent Increase for Counties with 20+ reported cases"}
-        />
-        {lastUpdated && pagebreak(lastUpdated)}
-        <CountyMap
-          reportView
-          dataType={"New"}
-          title={
-            "Percent Increase for Counties with 20+ reported cases near NYC"
-          }
-          presetCoordinates="New York Area"
-        />
-        {lastUpdated && pagebreak(lastUpdated)}
-        <CountyMap
-          reportView
-          dataType={"New"}
-          title={
-            "Percent Increase for Counties with 20+ reported cases in Southern California"
-          }
-          presetCoordinates="Southern California"
-        />
-        {lastUpdated && pagebreak(lastUpdated)}
-        <CountyMap
-          reportView
-          dataType={"New"}
-          title={
-            "Percent Increase for Counties with 20+ reported cases near Washington State"
-          }
-          presetCoordinates="Washington State"
-        />
-        {lastUpdated && pagebreak(lastUpdated)}
-        <CountyMap
-          reportView
-          dataType={"New"}
-          title={
-            "Percent Increase for Counties with 20+ reported cases near the Atlanta Area"
-          }
-          presetCoordinates="Atlanta Area"
-        />
-        {lastUpdated && pagebreak(lastUpdated)}
-        <CountyMap
-          reportView
-          dataType={"New"}
-          title={
-            "Percent Increase for Counties with 20+ reported cases near the New Orleans Area"
-          }
-          presetCoordinates="New Orleans Area"
-        />
-        {lastUpdated && pagebreak(lastUpdated)}
-        <CountyMap
-          reportView
-          dataType={"New"}
-          title={
-            "Percent Increase for Counties with 20+ reported cases near the Miami Area"
-          }
-          presetCoordinates="Miami Area"
-        />
-        {lastUpdated && pagebreak(lastUpdated)}
+        {presetCoordinates.map(coordinateKey => {
+          return dateTypes.map(dataType => (
+            <>
+              <CountyMap
+                reportView
+                dataType={dataType}
+                title={mapTitle(dataType, coordinateKey)}
+                presetCoordinates={coordinateKey}
+              />
+              <PageBreak lastUpdated={lastUpdated} />
+            </>
+          ));
+        })}
       </>
     );
   };
@@ -152,35 +81,91 @@ export const Report: React.FC<{}> = () => {
   return (
     <AppContext.Consumer>
       {({ state }) => {
-        let lastUpdated: Date | undefined = undefined;
-        Object.values(state.covidTimeSeries.states)
-          .flat()
-          .forEach(({ Reported }) => {
-            if (!lastUpdated || Reported > lastUpdated) {
-              lastUpdated = Reported;
-            }
-          });
+        const lastUpdated: Date | undefined = getLastUpdated(state.covidTimeSeries);
+        const states = getMostRecentStateUpdates(state.covidTimeSeries);
 
-        const states = Object.keys(state.covidTimeSeries.states).flatMap(
-          k => state.covidTimeSeries.states[k]
-        );
-        const stateIDs = new Set();
-        const dedupedStates: State[] = [];
-        states.forEach(s => {
-          const key = `${s.State}`;
-          if (!stateIDs.has(key)) {
-            dedupedStates.push(s);
-            stateIDs.add(key);
-          }
-        });
-        const top10States = [...dedupedStates].filter((s) => ["New York", "New Jersey", "Washington", "California", "Michigan", "Illinois", "Florida", "Louisiana", "Massachusetts", "Texas"].includes(s.State))
-            .sort((s1, s2) => s2.Confirmed - s1.Confirmed)
-          // .slice(0, 10);
-          console.log(top10States)
+        // const stateIDs = new Set();
+        // const dedupedStates: State[] = [];
+        // states.forEach(s => {
+        //   const key = `${s.State}`;
+        //   if (!stateIDs.has(key)) {
+        //     dedupedStates.push(s);
+        //     stateIDs.add(key);
+        //   }
+        // });
+        // console.log(states, "yo")
+        // const top10States = [...dedupedStates]
+        //   .filter(s =>
+        //     [
+        //       "New York",
+        //       "New Jersey",
+        //       "Washington",
+        //       "California",
+        //       "Michigan",
+        //       "Illinois",
+        //       "Florida",
+        //       "Louisiana",
+        //       "Massachusetts",
+        //       "Texas"
+        //     ].includes(s.State)
+        //   )
+        //   .sort((s1, s2) => s2.Confirmed - s1.Confirmed);
+        // // .slice(0, 10);
+        // console.log(top10States);
 
-          return (
+        return (
           <div className="report grid-container" style={{ marginLeft: 0 }}>
-            {maps(lastUpdated)}
+            {/* {maps(lastUpdated)}
+            <Top10Counties
+              timeSeries={state.covidTimeSeries}
+              stat="confirmed"
+              reportView
+              meta={state.graphMetaData}
+            />
+            <PageBreak lastUpdated={lastUpdated} />
+            <Top10Counties
+              timeSeries={state.covidTimeSeries}
+              stat="confirmed"
+              reportView
+              meta={state.graphMetaData}
+              new={true}
+            />
+            <PageBreak lastUpdated={lastUpdated} />
+            <Top10Counties
+              timeSeries={state.covidTimeSeries}
+              stat="dead"
+              reportView
+              meta={state.graphMetaData}
+            />
+            <PageBreak lastUpdated={lastUpdated} />
+            <Top10Counties
+              timeSeries={state.covidTimeSeries}
+              stat="dead"
+              reportView
+              meta={state.graphMetaData}
+              new={true}
+            />
+            <PageBreak lastUpdated={lastUpdated} />
+            <StateMixedBar
+              state={undefined}
+              county={undefined}
+              timeSeries={state.covidTimeSeries}
+              stat="confirmed"
+              stateCount={true}
+              reportView
+              meta={state.graphMetaData}
+            />
+            <PageBreak lastUpdated={lastUpdated} />
+            <StateMixedBar
+              state={undefined}
+              county={undefined}
+              timeSeries={state.covidTimeSeries}
+              stat="dead"
+              stateCount={true}
+              reportView
+              meta={state.graphMetaData}
+            />
+            <PageBreak lastUpdated={lastUpdated} />
             {top10States.map(s => (
               <>
                 <StateBar
@@ -192,7 +177,7 @@ export const Report: React.FC<{}> = () => {
                   reportView
                   meta={state.graphMetaData}
                 />
-                {lastUpdated && pagebreak(lastUpdated)}
+                <PageBreak lastUpdated={lastUpdated} />
                 <StateBar
                   dataMode="over20Cases"
                   state={s.ID}
@@ -203,7 +188,7 @@ export const Report: React.FC<{}> = () => {
                   meta={state.graphMetaData}
                   new={true}
                 />
-                {lastUpdated && pagebreak(lastUpdated)}
+                <PageBreak lastUpdated={lastUpdated} />
                 <StateBar
                   dataMode="top10"
                   state={s.ID}
@@ -213,7 +198,7 @@ export const Report: React.FC<{}> = () => {
                   reportView
                   meta={state.graphMetaData}
                 />
-                {lastUpdated && pagebreak(lastUpdated)}
+                <PageBreak lastUpdated={lastUpdated} />
                 <StateBar
                   dataMode="top10"
                   state={s.ID}
@@ -224,74 +209,9 @@ export const Report: React.FC<{}> = () => {
                   meta={state.graphMetaData}
                   new={true}
                 />
-                {lastUpdated && pagebreak(lastUpdated)}
+                <PageBreak lastUpdated={lastUpdated} />
               </>
             ))}
-            <Top10Counties
-              timeSeries={state.covidTimeSeries}
-              stat="confirmed"
-              reportView
-              meta={state.graphMetaData}
-            />
-            {pagebreak(lastUpdated)}
-            <Top10Counties
-              timeSeries={state.covidTimeSeries}
-              stat="confirmed"
-              reportView
-              meta={state.graphMetaData}
-              new={true}
-            />
-            {pagebreak(lastUpdated)}
-            <Top10Counties
-              timeSeries={state.covidTimeSeries}
-              stat="dead"
-              reportView
-              meta={state.graphMetaData}
-            />
-            {pagebreak(lastUpdated)}
-            <Top10Counties
-              timeSeries={state.covidTimeSeries}
-              stat="dead"
-              reportView
-              meta={state.graphMetaData}
-              new={true}
-            />
-            {pagebreak(lastUpdated)}
-            <Top10Counties
-              timeSeries={state.covidTimeSeries}
-              stat="mortalityRate"
-              reportView
-              meta={state.graphMetaData}
-            />
-            {pagebreak(lastUpdated)}
-            <Top10Counties
-              timeSeries={state.covidTimeSeries}
-              stat="mortalityRate"
-              reportView
-              meta={state.graphMetaData}
-              new={true}
-            />
-            {pagebreak(lastUpdated)}
-            <StateMixedBar
-              state={undefined}
-              county={undefined}
-              timeSeries={state.covidTimeSeries}
-              stat="confirmed"
-              stateCount={true}
-              reportView
-              meta={state.graphMetaData}
-            />
-            {lastUpdated && pagebreak(lastUpdated)}
-            <StateMixedBar
-              state={undefined}
-              county={undefined}
-              timeSeries={state.covidTimeSeries}
-              stat="dead"
-              stateCount={true}
-              reportView
-              meta={state.graphMetaData}
-            />
-            {lastUpdated && pagebreak(lastUpdated)}
             <MixedBar
               state={undefined}
               county={undefined}
@@ -299,7 +219,7 @@ export const Report: React.FC<{}> = () => {
               stat="confirmed"
               reportView
             />
-            {lastUpdated && pagebreak(lastUpdated)}
+            <PageBreak lastUpdated={lastUpdated} />
             <MixedBar
               state={undefined}
               county={undefined}
@@ -307,7 +227,7 @@ export const Report: React.FC<{}> = () => {
               stat="dead"
               reportView
             />
-            {lastUpdated && pagebreak(lastUpdated)}
+            <PageBreak lastUpdated={lastUpdated} /> */}
           </div>
         );
       }}

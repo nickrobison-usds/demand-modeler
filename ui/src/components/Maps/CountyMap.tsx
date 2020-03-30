@@ -30,8 +30,6 @@ const countyGeoData = transformCountyGeoData(
   rawCountyGeoData as GeoJSON.FeatureCollection
 );
 
-type DataType = "Total" | "New" | "Increase";
-
 const legendLookup = (metric: Metric): { [key in DataType]: string } => {
   const type = metric === "confirmed" ? "Confirmed Cases" : "Deaths";
   return {
@@ -41,7 +39,7 @@ const legendLookup = (metric: Metric): { [key in DataType]: string } => {
   };
 };
 
-const EXCLUDE_PERCENT_INCREASE_CASES_BELOW = 20;
+export const EXCLUDE_PERCENT_INCREASE_CASES_BELOW = 20;
 const ALASKA_COORDS = [
   -173.14944218750094,
   70.47019617187733,
@@ -49,8 +47,8 @@ const ALASKA_COORDS = [
   59.29933020239282
 ];
 
-const PRESET_COORDINATES = {
-  "New York Area": [
+export const PRESET_COORDINATES = {
+  "NYC": [
     -79.71795557211779,
     44.07230181608911,
     -70.02386439122805,
@@ -87,6 +85,7 @@ const PRESET_COORDINATES = {
     23.776191997013665
   ]
 } as const;
+export type CoorinateKey = keyof typeof PRESET_COORDINATES;
 
 interface LegendRegion {
   state: {
@@ -158,7 +157,7 @@ interface Props {
   reportView?: boolean;
   dataType?: DataType;
   title?: string;
-  presetCoordinates?: keyof typeof PRESET_COORDINATES;
+  presetCoordinates?: CoorinateKey
 }
 
 const CountyMap: React.FunctionComponent<Props> = props => {

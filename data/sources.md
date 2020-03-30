@@ -1,9 +1,15 @@
 # Data Sources
 
+source to add
+ * List of APIs https://covid-19-apis.postman.com/
+ * Italy data https://github.com/pcm-dpc/COVID-19
+
 ## Table of Contents
 
 * [County Level](#county-level)
   * [USA Facts](#usaFacts)
+  * [New York Times](#New-York-Times)
+  * [CSBS](#Conference-of-State-Bank-Supervisors)
   * [1point3acers](#1point3acres)
   * [Johns Hopkins](#john-hopkins)
   * [University of Virginia](#university-of-virginia)
@@ -14,13 +20,6 @@
   * [dxy](#world-healthorganization)
 
 ## County Level
-
-### COVID Tracking
-
-links to state data
-
-[data](https://covidtracking.com/)
-[github](https://github.com/COVID19Tracking)
 
 ### USA Facts
 
@@ -35,6 +34,24 @@ Really easy to pull all historical data for counties ❤. good historical county
 * Total Confirmed
 * Total Deaths
 
+### New York Times
+
+[CSV repo](https://github.com/nytimes/covid-19-data)
+
+* State
+  * Total Confirmed
+  * Total Deaths
+* County
+  * Total Confirmed
+  * Total Deaths
+
+### Conference of State Bank Supervisors
+
+[Dashboard](https://www.csbs.org/information-covid-19-coronavirus)
+
+* Total Confirmed
+* Total Deaths
+
 ### 1point3acers
 
 Data from the US and Canada
@@ -44,6 +61,14 @@ Data from the US and Canada
 
 * Total Confirmed
 * Total Deaths
+
+### COVID Tracking
+
+links to state data
+
+[data](https://covidtracking.com/)
+[github](https://github.com/COVID19Tracking)
+
 
 ### University of Virginia
 

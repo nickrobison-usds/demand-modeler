@@ -43,3 +43,24 @@ export const formatNum = (labelValue: number) => {
        : Math.abs(Number(labelValue));
 
    }
+
+export const getLastUpdated = (timeSeries: CovidDateData): Date | undefined => {
+  let lastUpdated: Date | undefined = undefined;
+  Object.values(timeSeries.states)
+    .flat()
+    .forEach(({ Reported }) => {
+      if (!lastUpdated || Reported > lastUpdated) {
+        lastUpdated = Reported;
+      }
+    });
+  return lastUpdated;
+}
+
+export const getMostRecentStateUpdates = (timeSeries: CovidDateData) => {
+  console.log(timeSeries.states,"aaa")
+
+  const stateData = Object.keys(timeSeries.states).flatMap(
+    k => timeSeries.states[k]
+  );
+  console.log(stateData,"abs")
+}
