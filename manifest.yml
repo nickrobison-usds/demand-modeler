@@ -2,5 +2,8 @@
 applications:
 - name: FearlessDreamer2
   command: demand-modeler
+  buildpacks:
+    - https://github.com/cloudfoundry/go-buildpack.git
+    - https://github.com/cloudfoundry/nodejs-buildpack
   services:
     - fearless-dreamer-psql
