@@ -1,8 +1,15 @@
 import React from "react";
 import pptxgen from "pptxgenjs";
-import domtoimage from "dom-to-image";
+import {CovidDateData, State} from "../app/AppStore";
+import * as _ from "lodash";
 
-export const ReportContainer: React.FC = props => {
+export interface ReportContainerProps {
+    states: State[];
+    timeSeries: CovidDateData;
+
+}
+
+export const ReportContainer: React.FC<ReportContainerProps> = props => {
 
     const exportPowerPoint = async () => {
 
@@ -38,39 +45,91 @@ export const ReportContainer: React.FC = props => {
             w: 2.85
         });
 
-        // Add the map
-        let map = document.getElementsByClassName("mapboxgl-map").item(0);
+        // Do the state things
+        const s = ppt.addSlide();
 
-        console.debug("Map element: ", map);
+        const names = props.states.map(s => s.ID);
+        console.debug("States", props.states.map(s => s.ID));
+        console.debug("Names", names);
 
-        const url = await domtoimage.toPng(map!);
-        console.debug("Map URL: ", url);
-        const mapSlide = ppt.addSlide();
-        mapSlide.addImage({
-            data: url,
-            // These positioning values are hard coded based on manual viewing and aligning of the graphs.
-            h: 5.6,
-            w: 5.6,
-            x: 1.9
-        });
+        // Can we create a chart?
+
+        // Split by state ID
+        // const topStates =
+    // .
+        // filter(s => names.has(s.ID));
+
+        // console.debug("Tops: ", topStates);
+        const ts = props.states
+            .map(s => s.ID)
+            .flatMap(i => props.timeSeries.states[i]);
+        console.debug("top states");
+
+        const grouped = _.chain(ts)
+            .sortBy(["Reported"])
+            .groupBy("Reported")
+            .value();
 
 
-        const svgElements = document.getElementsByClassName("report-chart");
-        for (let element of svgElements[Symbol.iterator]()) {
 
-            const url = await domtoimage.toPng(element, {
-                // height: 880,
-                // width: 1242
+        // const grouped = _.chain(fil)
+        //     .sortBy(["Reported"])
+        //     .groupBy(["Reported"])
+        //     .value();
+        console.debug("Grouped", grouped);
+
+        const datas = Object.entries(grouped)
+            .map(entry => {
+                return {
+                    name: entry[0],
+                    labels: entry[1].map(e => e.State),
+                    values: entry[1].map(e => e.Confirmed)
+                }
             });
-            const s = ppt.addSlide();
-            s.addImage({
-                data: url,
-                // These positioning values are hard coded based on manual viewing and aligning of the graphs.
-                h: 5.6,
-                w: 5.6,
-                x: 1.9
-            });
-        }
+        console.debug("Datas", datas);
+
+
+        const values = props.states.map(s => s.Confirmed);
+        const dead = props.states.map(s => s.Dead);
+
+        s.addChart(
+            ppt.ChartType.bar,
+            datas, {x: 1, y: 1, w: 8, h: 4});
+
+        //
+        // // Add the map
+        // let map = document.getElementsByClassName("mapboxgl-map").item(0);
+        //
+        // console.debug("Map element: ", map);
+        //
+        // const url = await domtoimage.toPng(map!);
+        // console.debug("Map URL: ", url);
+        // const mapSlide = ppt.addSlide();
+        // mapSlide.addImage({
+        //     data: url,
+        //     // These positioning values are hard coded based on manual viewing and aligning of the graphs.
+        //     h: 5.6,
+        //     w: 5.6,
+        //     x: 1.9
+        // });
+        //
+        //
+        // const svgElements = document.getElementsByClassName("report-chart");
+        // for (let element of svgElements[Symbol.iterator]()) {
+        //
+        //     const url = await domtoimage.toPng(element, {
+        //         // height: 880,
+        //         // width: 1242
+        //     });
+        //     const s = ppt.addSlide();
+        //     s.addImage({
+        //         data: url,
+        //         // These positioning values are hard coded based on manual viewing and aligning of the graphs.
+        //         h: 5.6,
+        //         w: 5.6,
+        //         x: 1.9
+        //     });
+        // }
         console.debug("Writing PPTX");
         const done = await ppt.writeFile("Sample Presentation.pptx");
         console.debug("Finished exporting: ", done);
