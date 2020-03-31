@@ -457,7 +457,7 @@ const CountyMap: React.FunctionComponent<Props> = props => {
       <ReactMapGL
         {...viewport}
         minZoom={2}
-        width={props.reportView ? window.innerWidth * 0.9 : mapWidth}
+        width={props.reportView ? "auto" : mapWidth}
         {...mapHeight}
         mapboxApiAccessToken={
           "pk.eyJ1IjoidGltYmVzdHVzZHMiLCJhIjoiY2s4MWtuMXpxMHN3dDNsbnF4Y205eWN2MCJ9.kpKyCbPit97l0vIG1gz5wQ"

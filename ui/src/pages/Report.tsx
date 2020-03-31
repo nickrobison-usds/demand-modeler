@@ -179,7 +179,7 @@ export const Report: React.FC<{}> = () => {
           console.log(top10States)
 
           return (
-          <div className="report grid-container" style={{ marginLeft: 0 }}>
+          <div className="report">
             {maps(lastUpdated)}
             {top10States.map(s => (
               <>

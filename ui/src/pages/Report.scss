@@ -1,16 +1,44 @@
-@media print {
-  .pagebreak {
-    page-break-before: always;
-  } /* page-break-after works, as well */
-}
-@page rotated {
-  size: landscape; /* auto is the initial value */
-}
-
 .report {
   page: rotated;
+  display: block;
+  width: 85%;
+  margin: auto;
+}
+
+.reportScreenHeader{
+  border-bottom: 1px solid #c9c9c9;
+  margin-bottom: 2rem;
+
+  .usa-button{
+    float: right;
+    vertical-align: middle;
+    margin-top: 1rem;
+  }
 }
 
 body {
   -webkit-print-color-adjust: exact !important;
+}
+
+@media print {
+  @page {
+    size: landscape;
+    margin: 0.5in;
+  }
+
+  .pagebreak {
+    page-break-before: always;
+  } /* page-break-after works, as well */
+
+  .report{
+    width: 96%;
+    margin: auto;
+  }
+
+  .reportScreenHeader{
+    display: none !important;
+  }
+}
+@page rotated {
+  size: landscape; /* auto is the initial value */
 }
