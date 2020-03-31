@@ -13,11 +13,13 @@ import * as DateUtils from "../utils/DateUtils";
 export interface CovidStats {
   Confirmed: number;
   Dead: number;
+  mortalityRate: number;
 }
 
 export enum ActionType {
   UPDATE_SELECTED_STATE = "UPDATE_SELECTED_STATE",
   UPDATE_SELECTED_COUNTY = "UPDATE_SELECTED_COUNTY",
+  UPDATE_SELECTED_METRIC = "UPDATE_SELECTED_METRIC",
   UPDATE_MAPVIEW = "UPDATE_MAP",
   LOAD_DATA = "LOAD_DATA"
 }
@@ -62,7 +64,11 @@ export interface CovidDateData {
 export interface GraphMetaData {
   maxConfirmedCounty: number;
   maxConfirmedState: number;
+  maxDeadCounty: number;
+  maxDeadState: number;
 }
+
+export type Metric = "confirmed" | "dead";
 
 // TODO: seperate Geo data from time series data
 export interface AppState {
@@ -70,6 +76,7 @@ export interface AppState {
     date: string;
     state?: string;
     county?: string;
+    metric: Metric;
   };
   graphMetaData?: GraphMetaData;
   covidTimeSeries: CovidDateData;
@@ -80,7 +87,8 @@ const DEFAULT_LNG = -99.0762;
 const DEFAULT_ZOOM = 2;
 export const initialState: AppState = {
   selection: {
-    date: DateUtils.formatDate(new Date())
+    date: DateUtils.formatDate(new Date()),
+    metric: "confirmed"
   },
   covidTimeSeries: {
     states: {},
@@ -107,12 +115,17 @@ const setCovidData = (state: AppState, { payload }: Action): AppState => {
     );
     let maxConfirmedCounty = 0;
     let maxConfirmedState = 0;
+    let maxDeadCounty = 0;
+    let maxDeadState = 0;
     countyData.forEach(e => {
       if (
         maxConfirmedCounty < e.Confirmed &&
         !EXCLUDED_STATES.includes(e.State)
       ) {
         maxConfirmedCounty = e.Confirmed;
+      }
+      if (maxDeadCounty < e.Dead && !EXCLUDED_STATES.includes(e.State)) {
+        maxDeadCounty = e.Dead;
       }
     });
     stateData.forEach(e => {
@@ -121,6 +134,9 @@ const setCovidData = (state: AppState, { payload }: Action): AppState => {
         !EXCLUDED_STATES.includes(e.State)
       ) {
         maxConfirmedState = e.Confirmed;
+      }
+      if (maxDeadState < e.Dead && !EXCLUDED_STATES.includes(e.State)) {
+        maxDeadState = e.Dead;
       }
     });
 
@@ -137,7 +153,9 @@ const setCovidData = (state: AppState, { payload }: Action): AppState => {
       covidTimeSeries: payload,
       graphMetaData: {
         maxConfirmedCounty,
-        maxConfirmedState
+        maxConfirmedState,
+        maxDeadCounty,
+        maxDeadState
       }
     };
   }
@@ -246,12 +264,25 @@ const updateSelectedCounty = (
   };
 };
 
+const updateSelectedMetric = (
+  state: AppState,
+  { payload }: Action
+): AppState => {
+  const metric = payload as Metric;
+  return {
+    ...state,
+    selection: { ...state.selection, metric }
+  };
+};
+
 const reducer: Reducer<AppState, Action> = (state, action) => {
   switch (action.type) {
     case ActionType.UPDATE_SELECTED_STATE:
       return updateSelectedState(state, action);
     case ActionType.UPDATE_SELECTED_COUNTY:
       return updateSelectedCounty(state, action);
+    case ActionType.UPDATE_SELECTED_METRIC:
+      return updateSelectedMetric(state, action);
     case ActionType.UPDATE_MAPVIEW:
       return updateMapView(state, action);
     case ActionType.LOAD_DATA:

@@ -24,14 +24,16 @@ type MockStateInputs = {
   date: string;
   state?: MockStateID;
   county?: MockCountyID;
+  metric?: "confirmed" | "dead";
 };
 
 export const createMockState = ({
   date,
   state,
-  county
-}: MockStateInputs): AppState => ({
-  selection: { date, state, county },
+  county,
+  metric = "confirmed"
+}: MockStateInputs): any => ({
+  selection: { date, state, county, metric },
   covidTimeSeries: {
     states: {
       "01": [
@@ -548,6 +550,6 @@ export const createMockState = ({
         }
       ]
     }
-  },
+  } as any,
   mapView: { width: 0, height: 0, latitude: 0, longitude: 0, zoom: 0 }
 });

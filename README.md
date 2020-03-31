@@ -76,12 +76,14 @@ heroku buildpacks:add heroku/go
 1. Copy into the `data/` directory with this name pattern: `covid19_county_2020_{month}_{day}-{time?}.csv
 1. Perform manual cleaning
 
+* Delete `New Death` column
 * Rename 'Walton, FL' to 'Walton County'
-* Remove 'Gloucester, NJ' duplicate
-* Remove duplicate 'Anderson, SC'
-* Rename 'Dade' to 'Miami-Dade'
 
 1. Run the go application and see if it barfs on the new data. Rinse, repeat until it works.
+
+1. Download USAFacts death dataset
+1. Verify top 10 counties in top 10 states in both datasets (USAFacts is source of truth)
+1. Verify top-10 state value still matches what the dataset reports.
 
 ### USA Facts
 

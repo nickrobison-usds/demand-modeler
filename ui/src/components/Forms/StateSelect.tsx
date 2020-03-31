@@ -7,7 +7,7 @@ interface Option {
   value: string | undefined;
 }
 
-const DEFAULT_TEXT = "All States";
+const DEFAULT_TEXT = "All states";
 const USATotal: React.FunctionComponent<{}> = props => {
   const { dispatch, state } = useContext(AppContext);
 
@@ -38,20 +38,14 @@ const USATotal: React.FunctionComponent<{}> = props => {
   options.unshift(defaultOption);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center"
-      }}
-    >
+    <div className="navigation-select">
       <UsaSelect
         options={options}
         placeholder={DEFAULT_TEXT}
         name="stateSelect"
         selected={state.selection.state}
         onChange={onUpdate}
-        label="State: "
+        label="State"
       />
     </div>
   );

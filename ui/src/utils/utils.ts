@@ -20,8 +20,26 @@ export const getSelectedLocationName = (
     }
     const stateName = stateAbbreviation[timeSeries.counties[county][0].State];
     const countyName = timeSeries.counties[county][0].County;
-    return `${countyName}, ${stateName}`;
+    return `${countyName} County, ${stateName}`;
   }
 
   return "the US";
 };
+
+export const formatNum = (labelValue: number) => {
+  // Nine Zeroes for Billions
+  return Math.abs(Number(labelValue)) >= 1.0e+9
+
+       ? parseFloat(String(Math.abs(Number(labelValue)) / 1.0e+9)).toFixed(1) + "B"
+       // Six Zeroes for Millions
+       : Math.abs(Number(labelValue)) >= 1.0e+6
+
+       ? parseFloat(String(Math.abs(Number(labelValue)) / 1.0e+6)).toFixed(1) + "M"
+       // Three Zeroes for Thousands
+       : Math.abs(Number(labelValue)) >= 1.0e+3
+
+       ? parseFloat(String(Math.abs(Number(labelValue)) / 1.0e+3)).toFixed(0) + "K"
+
+       : Math.abs(Number(labelValue));
+
+   }

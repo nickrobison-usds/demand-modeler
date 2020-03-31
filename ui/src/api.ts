@@ -41,7 +41,8 @@ export async function getCountyCases(
       (s: CountyResponse): County => {
         return {
           ...s,
-          Reported: new Date(s.Reported)
+          Reported: new Date(s.Reported),
+          mortalityRate: s.Dead / s.Confirmed
         };
       }
   )
@@ -77,7 +78,8 @@ export async function getStateCases(
       (s: StateResponse): State => {
         return {
           ...s,
-          Reported: new Date(s.Reported)
+          Reported: new Date(s.Reported),
+          mortalityRate: s.Dead / s.Confirmed
         };
       }
   )

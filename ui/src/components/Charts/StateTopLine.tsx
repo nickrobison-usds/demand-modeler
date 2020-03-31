@@ -1,7 +1,7 @@
 import React from "react";
 import {
-  BarChart,
-  Bar,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -16,70 +16,46 @@ import {
 import { getYMaxFromMaxCases } from "../../utils/utils";
 import { stateAbbreviation } from "../../utils/stateAbbreviation";
 import { monthDay } from "../../utils/DateUtils";
-import { formatNum } from "../../utils/utils";
 import { RenderChart } from "./RenderChart";
-import { StripedFill } from "./StripedFill";
-import { CustomLegend } from "./StateBar";
-import { population } from "./population";
 
 type Props = {
   timeSeries: CovidDateData;
-  stat: Stat;
+  stat: "confirmed" | "dead";
   reportView?: boolean;
   meta?: GraphMetaData;
   title?: string;
-  new?: boolean;
 };
 
-const getColors = (stat: Stat) => {
-  switch (stat) {
-    case "dead":
-      return ["#a9a9a9", "#888", "#666", "#333", "#111"];
-    case "confirmed":
-      return ["#E5A3A3", "#D05C5C", "#CB2727", "#C00000", "#900000", "#700000"];
-    case "mortalityRate":
-      return ["#a9a9a9", "#888", "#666", "#333", "#111"];
-  }
-};
+const colors = [
+  "#E5A3A3",
+  "#D05C5C",
+  "#CB2727",
+  "#C00000",
+  "#900000",
+  "#700000"
+];
 
-const getTitle = (stat: Stat, n?: boolean) => {
-  switch (stat) {
-    case "dead":
-      return `Counties with the highest number of deaths${n ? " (24 hours change)" : ""}`;
-    case "confirmed":
-      return `Counties with the highest number of cases${n ? " (24 hours change)" : ""}`;
-    case "mortalityRate":
-      return `Counties with the highest change in moratility rate`;
-  }
-};
-
-export const Top10Counties = (props: Props) => {
+export const StateTopLine = (props: Props) => {
   let title: string;
   let maxCases: number | undefined;
   let dates: string[];
   let data;
   let stateName: string = "";
-  const colors = getColors(props.stat);
+
   // Top 10 Counties (total or in state)
-  title = getTitle(props.stat, props.new);
+  title = `Counties with the highest number of cases`;
 
   let countyData = Object.keys(props.timeSeries.counties).flatMap(
     k => props.timeSeries.counties[k]
   );
   if (props.meta) {
-    maxCases =
-      props.stat === "confirmed"
-        ? props.meta.maxConfirmedCounty
-        : props.meta.maxDeadCounty;
+    maxCases = props.meta.maxConfirmedCounty;
   }
   dates = [
     ...new Set(countyData.map(({ Reported }) => monthDay(Reported)))
   ].sort();
   const counties = countyData.reduce((acc, el) => {
-    const p = population[el.ID];
-    const name = `${el.County}, ${stateAbbreviation[el.State]}${
-      p ? ` (${formatNum(p)})` : ""
-    }`;
+    const name = `${el.County}, ${stateAbbreviation[el.State]}`;
     if (!acc[name]) acc[name] = {};
     acc[name][monthDay(el.Reported)] =
       props.stat === "confirmed" ? el.Confirmed : el.Dead;
@@ -101,7 +77,7 @@ export const Top10Counties = (props: Props) => {
       );
     });
 
-  let dedupedData: { [k: string]: string | number }[] = [];
+  const dedupedData: any[] = [];
   data.forEach(e => {
     const dedupedElement: any = {};
     const d = Object.keys(e).sort();
@@ -123,6 +99,20 @@ export const Top10Counties = (props: Props) => {
     dedupedData.push(dedupedElement);
   });
 
+  // const sortedData = dedupedData.sort((a, b) => {
+  //   const { Name: aName, ...aData } = a;
+  //   const { Name: bName, ...bData } = b;
+  //   const aSum = (Object.values(aData) as number[]).reduce(
+  //     (acc, el) => acc + el,
+  //     0
+  //   );
+  //   const bSum = (Object.values(bData) as number[]).reduce(
+  //     (acc, el) => acc + el,
+  //     0
+  //   );
+  //   return bSum - aSum;
+  // });
+
   const displayDates: string[] = [];
   const displayDateSet = new Set();
   dates.forEach(d => {
@@ -133,37 +123,16 @@ export const Top10Counties = (props: Props) => {
     }
   });
 
-  dedupedData = dedupedData.slice(0, 10);
-
-  const finalData = dedupedData.map(data => {
-    const obj: { [k: string]: string | number } = {};
-    const entries = Object.entries(data);
-    entries.forEach(([key, value], i) => {
-      if (key !== "Name" && i > 0) {
-        let newCases = (value as number) - (entries[i - 1][1] as number);
-        if (newCases < 0) newCases = 0;
-        obj[`${key} New`] = newCases;
-        obj[`${key} Existing`] = (value as number) - newCases;
-      } else if (key !== "Name" && i === 0) {
-        obj[`${key} Existing`] = value;
-        obj[`${key} New`] = 0;
-      }
-      obj[key] = value;
-    });
-    return obj;
-  });
-
   return (
     <>
       <RenderChart
         reportView={props.reportView}
         title={props.title ? props.title : title}
       >
-        <BarChart
-          barSize={10}
+        <LineChart
           width={window.innerWidth * 0.9}
           height={880}
-          data={finalData}
+          data={dedupedData.slice(0, 10)}
           margin={{
             top: 0,
             right: 0,
@@ -188,36 +157,11 @@ export const Top10Counties = (props: Props) => {
           />
           <Tooltip />
           <div style={{ padding: "10px" }} />
-          <Legend
-            content={
-              <CustomLegend
-                displayDates={displayDates}
-                colors={colors}
-                stat={props.stat}
-              />
-            }
-          />
+          <Legend />
           {displayDates.map((date, i) => (
-            <Bar
-              key={`${date.split("|")[0]} New`}
-              id={`${date.split("|")[0]}`}
-              stackId={date.split("|")[0]}
-              dataKey={`${date.split("|")[0]} New`}
-              shape={<StripedFill fill={colors[i]} />}
-            />
+            <line type="monotone" key="confirmed" stroke={colors[i]} />
           ))}
-          {displayDates.map((date, i) => {
-            return props.new ? (
-              null
-            ) :       <Bar
-            key={`${date.split("|")[0]} Existing`}
-            id={`${date.split("|")[0]}`}
-            stackId={date.split("|")[0]}
-            dataKey={`${date.split("|")[0]} Existing`}
-            fill={colors[i]}
-          />;
-          })}
-        </BarChart>
+        </LineChart>
       </RenderChart>
     </>
   );

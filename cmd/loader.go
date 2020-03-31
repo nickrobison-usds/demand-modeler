@@ -5,15 +5,16 @@ import (
 	"context"
 	"encoding/csv"
 	"fmt"
-	"github.com/jackc/pgx/v4"
 	"io"
-	"log"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
 	"sync/atomic"
+
+	"github.com/jackc/pgx/v4"
+	"github.com/rs/zerolog/log"
 )
 
 var unknownRegex = regexp.MustCompile("Waiting on information|Indeterminate|Unassigned|Unknown|Non-*")
@@ -51,10 +52,10 @@ func (d *DataLoader) Close() error {
 }
 
 func (d *DataLoader) loadCases() error {
-	log.Printf("Loading Case data from: %s\n", d.dataDir)
+	log.Debug().Msgf("Loading Case data from: %s\n", d.dataDir)
 
 	// Truncate the database
-	log.Println("Truncating database")
+	log.Warn().Msg("Truncating database")
 	_, err := d.conn.Exec(d.ctx, "TRUNCATE TABLE Counties CASCADE; TRUNCATE TABLE Cases CASCADE;")
 	if err != nil {
 		return err
@@ -75,7 +76,7 @@ func (d *DataLoader) loadCases() error {
 }
 
 func (d *DataLoader) loadCaseFile(file string) error {
-	log.Printf("Loading file: %s\n", file)
+	log.Debug().Msgf("Loading file: %s\n", file)
 	f, err := os.Open(file)
 	if err != nil {
 		return err
@@ -116,7 +117,7 @@ func (d *DataLoader) loadCaseFile(file string) error {
 				return err
 			}
 		} else {
-			log.Printf("Loading existing county: %s, %s. %s\n", row[0], row[1], geoid)
+			log.Debug().Msgf("Loading existing county: %s, %s. %s\n", row[0], row[1], geoid)
 		}
 
 		// Split the dead column into
@@ -139,7 +140,7 @@ func (d *DataLoader) loadCaseFile(file string) error {
 }
 
 func (d *DataLoader) createNewCounty(row []string) (string, error) {
-	log.Printf("No matching geography for %s, %s", row[0], row[1])
+	log.Debug().Msgf("No matching geography for %s, %s", row[0], row[1])
 
 	// See if the county intersects with anything
 	var geoid string
@@ -148,7 +149,7 @@ func (d *DataLoader) createNewCounty(row []string) (string, error) {
 
 	stateFIPS, ok := StateFips[strings.ToUpper(row[1])]
 	if !ok {
-		log.Fatalf("Cannot find FIPS for state: %s", row[1])
+		log.Error().Msgf("Cannot find FIPS for state: %s", row[1])
 	}
 	state = fmt.Sprintf("%02d", stateFIPS)
 
@@ -171,7 +172,7 @@ func (d *DataLoader) createNewCounty(row []string) (string, error) {
 			geoid = fmt.Sprintf("%s%s", state, county)
 			atomic.AddInt32(&countyIter, 1)
 		} else if err != nil {
-			log.Printf("Unable to load %s, %s: %s\n", row[0], row[1], err.Error())
+			log.Error().Msgf("Unable to load %s, %s: %s\n", row[0], row[1], err.Error())
 			return "", err
 		} else {
 			geoid = fmt.Sprintf("%s%s", state, county)
@@ -179,7 +180,7 @@ func (d *DataLoader) createNewCounty(row []string) (string, error) {
 	}
 
 	// Load the new county
-	log.Printf("Loading new county: %s, %s. %s\n", row[0], row[1], geoid)
+	log.Debug().Msgf("Loading new county: %s, %s. %s\n", row[0], row[1], geoid)
 	_, err := d.conn.Exec(d.ctx, "INSERT INTO Counties(County, State, "+
 		"StateFP, CountyFP, ID) VALUES($1, $2, $3, $4, $5)", row[0], row[1], state, county, geoid)
 	if err != nil {
