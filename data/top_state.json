@@ -1,0 +1,1219 @@
+{
+    "JSON": {
+        "jobId": "8c5964da-68e0-4296-8c23-e0fadf9f70ea",
+        "latitudeResult": {
+            "@type": "table",
+            "columns": [
+                "[California, 2020-03-25, sum_of_value]",
+                "[California, 2020-03-26, sum_of_value]",
+                "[California, 2020-03-27, sum_of_value]",
+                "[California, 2020-03-28, sum_of_value]",
+                "[California, 2020-03-29, sum_of_value]",
+                "[California, 2020-03-30, sum_of_value]",
+                "[California, 2020-03-31, sum_of_value]",
+                "[Florida, 2020-03-25, sum_of_value]",
+                "[Florida, 2020-03-26, sum_of_value]",
+                "[Florida, 2020-03-27, sum_of_value]",
+                "[Florida, 2020-03-28, sum_of_value]",
+                "[Florida, 2020-03-29, sum_of_value]",
+                "[Florida, 2020-03-30, sum_of_value]",
+                "[Florida, 2020-03-31, sum_of_value]",
+                "[Illinois, 2020-03-25, sum_of_value]",
+                "[Illinois, 2020-03-26, sum_of_value]",
+                "[Illinois, 2020-03-27, sum_of_value]",
+                "[Illinois, 2020-03-28, sum_of_value]",
+                "[Illinois, 2020-03-29, sum_of_value]",
+                "[Illinois, 2020-03-30, sum_of_value]",
+                "[Illinois, 2020-03-31, sum_of_value]",
+                "[Louisiana, 2020-03-25, sum_of_value]",
+                "[Louisiana, 2020-03-26, sum_of_value]",
+                "[Louisiana, 2020-03-27, sum_of_value]",
+                "[Louisiana, 2020-03-28, sum_of_value]",
+                "[Louisiana, 2020-03-29, sum_of_value]",
+                "[Louisiana, 2020-03-30, sum_of_value]",
+                "[Louisiana, 2020-03-31, sum_of_value]",
+                "[Massachusetts, 2020-03-25, sum_of_value]",
+                "[Massachusetts, 2020-03-26, sum_of_value]",
+                "[Massachusetts, 2020-03-27, sum_of_value]",
+                "[Massachusetts, 2020-03-28, sum_of_value]",
+                "[Massachusetts, 2020-03-29, sum_of_value]",
+                "[Massachusetts, 2020-03-30, sum_of_value]",
+                "[Massachusetts, 2020-03-31, sum_of_value]",
+                "[Michigan, 2020-03-25, sum_of_value]",
+                "[Michigan, 2020-03-26, sum_of_value]",
+                "[Michigan, 2020-03-27, sum_of_value]",
+                "[Michigan, 2020-03-28, sum_of_value]",
+                "[Michigan, 2020-03-29, sum_of_value]",
+                "[Michigan, 2020-03-30, sum_of_value]",
+                "[Michigan, 2020-03-31, sum_of_value]",
+                "[New Jersey, 2020-03-25, sum_of_value]",
+                "[New Jersey, 2020-03-26, sum_of_value]",
+                "[New Jersey, 2020-03-27, sum_of_value]",
+                "[New Jersey, 2020-03-28, sum_of_value]",
+                "[New Jersey, 2020-03-29, sum_of_value]",
+                "[New Jersey, 2020-03-30, sum_of_value]",
+                "[New Jersey, 2020-03-31, sum_of_value]",
+                "[New York, 2020-03-25, sum_of_value]",
+                "[New York, 2020-03-26, sum_of_value]",
+                "[New York, 2020-03-27, sum_of_value]",
+                "[New York, 2020-03-28, sum_of_value]",
+                "[New York, 2020-03-29, sum_of_value]",
+                "[New York, 2020-03-30, sum_of_value]",
+                "[New York, 2020-03-31, sum_of_value]",
+                "[Pennsylvania, 2020-03-25, sum_of_value]",
+                "[Pennsylvania, 2020-03-26, sum_of_value]",
+                "[Pennsylvania, 2020-03-27, sum_of_value]",
+                "[Pennsylvania, 2020-03-28, sum_of_value]",
+                "[Pennsylvania, 2020-03-29, sum_of_value]",
+                "[Pennsylvania, 2020-03-30, sum_of_value]",
+                "[Pennsylvania, 2020-03-31, sum_of_value]",
+                "[Washington, 2020-03-25, sum_of_value]",
+                "[Washington, 2020-03-26, sum_of_value]",
+                "[Washington, 2020-03-27, sum_of_value]",
+                "[Washington, 2020-03-28, sum_of_value]",
+                "[Washington, 2020-03-29, sum_of_value]",
+                "[Washington, 2020-03-30, sum_of_value]",
+                "[Washington, 2020-03-31, sum_of_value]"
+            ],
+            "columnTypes": [
+                {
+                    "type": "DOUBLE",
+                    "name": "[California, 2020-03-25, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[California, 2020-03-26, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[California, 2020-03-27, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[California, 2020-03-28, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[California, 2020-03-29, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[California, 2020-03-30, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[California, 2020-03-31, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Florida, 2020-03-25, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Florida, 2020-03-26, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Florida, 2020-03-27, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Florida, 2020-03-28, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Florida, 2020-03-29, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Florida, 2020-03-30, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Florida, 2020-03-31, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Illinois, 2020-03-25, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Illinois, 2020-03-26, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Illinois, 2020-03-27, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Illinois, 2020-03-28, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Illinois, 2020-03-29, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Illinois, 2020-03-30, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Illinois, 2020-03-31, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Louisiana, 2020-03-25, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Louisiana, 2020-03-26, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Louisiana, 2020-03-27, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Louisiana, 2020-03-28, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Louisiana, 2020-03-29, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Louisiana, 2020-03-30, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Louisiana, 2020-03-31, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Massachusetts, 2020-03-25, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Massachusetts, 2020-03-26, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Massachusetts, 2020-03-27, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Massachusetts, 2020-03-28, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Massachusetts, 2020-03-29, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Massachusetts, 2020-03-30, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Massachusetts, 2020-03-31, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Michigan, 2020-03-25, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Michigan, 2020-03-26, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Michigan, 2020-03-27, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Michigan, 2020-03-28, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Michigan, 2020-03-29, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Michigan, 2020-03-30, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Michigan, 2020-03-31, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[New Jersey, 2020-03-25, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[New Jersey, 2020-03-26, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[New Jersey, 2020-03-27, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[New Jersey, 2020-03-28, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[New Jersey, 2020-03-29, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[New Jersey, 2020-03-30, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[New Jersey, 2020-03-31, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[New York, 2020-03-25, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[New York, 2020-03-26, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[New York, 2020-03-27, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[New York, 2020-03-28, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[New York, 2020-03-29, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[New York, 2020-03-30, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[New York, 2020-03-31, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Pennsylvania, 2020-03-25, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Pennsylvania, 2020-03-26, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Pennsylvania, 2020-03-27, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Pennsylvania, 2020-03-28, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Pennsylvania, 2020-03-29, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Pennsylvania, 2020-03-30, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Pennsylvania, 2020-03-31, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Washington, 2020-03-25, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Washington, 2020-03-26, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Washington, 2020-03-27, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Washington, 2020-03-28, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Washington, 2020-03-29, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Washington, 2020-03-30, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                },
+                {
+                    "type": "DOUBLE",
+                    "name": "[Washington, 2020-03-31, sum_of_value]",
+                    "nullable": true,
+                    "userDefinedTypeClass": null,
+                    "customMetadata": {},
+                    "arraySubtype": null,
+                    "precision": null,
+                    "scale": null,
+                    "mapKeyType": null,
+                    "mapValueType": null,
+                    "subSchemas": null
+                }
+            ],
+            "results": {
+                "[California, 2020-03-25, sum_of_value]": {
+                    "0": 3161
+                },
+                "[Washington, 2020-03-31, sum_of_value]": {
+                    "0": 4965
+                },
+                "[Massachusetts, 2020-03-27, sum_of_value]": {
+                    "0": 2933
+                },
+                "[Pennsylvania, 2020-03-27, sum_of_value]": {
+                    "0": 2345
+                },
+                "[Florida, 2020-03-27, sum_of_value]": {
+                    "0": 3192
+                },
+                "[New Jersey, 2020-03-25, sum_of_value]": {
+                    "0": 3477
+                },
+                "[New York, 2020-03-25, sum_of_value]": {
+                    "0": 33030
+                },
+                "[Massachusetts, 2020-03-31, sum_of_value]": {
+                    "0": 5255
+                },
+                "[Pennsylvania, 2020-03-31, sum_of_value]": {
+                    "0": 4844
+                },
+                "[Florida, 2020-03-31, sum_of_value]": {
+                    "0": 6319
+                },
+                "[Louisiana, 2020-03-25, sum_of_value]": {
+                    "0": 1784
+                },
+                "[Louisiana, 2020-03-28, sum_of_value]": {
+                    "0": 3306
+                },
+                "[Illinois, 2020-03-31, sum_of_value]": {
+                    "0": 5045
+                },
+                "[California, 2020-03-28, sum_of_value]": {
+                    "0": 5632
+                },
+                "[Michigan, 2020-03-29, sum_of_value]": {
+                    "0": 5393
+                },
+                "[Illinois, 2020-03-27, sum_of_value]": {
+                    "0": 3024
+                },
+                "[Washington, 2020-03-27, sum_of_value]": {
+                    "0": 3724
+                },
+                "[New York, 2020-03-28, sum_of_value]": {
+                    "0": 53520
+                },
+                "[Massachusetts, 2020-03-29, sum_of_value]": {
+                    "0": 4487
+                },
+                "[Louisiana, 2020-03-30, sum_of_value]": {
+                    "0": 4011
+                },
+                "[Pennsylvania, 2020-03-25, sum_of_value]": {
+                    "0": 1284
+                },
+                "[Louisiana, 2020-03-27, sum_of_value]": {
+                    "0": 2729
+                },
+                "[New Jersey, 2020-03-31, sum_of_value]": {
+                    "0": 12789
+                },
+                "[New York, 2020-03-27, sum_of_value]": {
+                    "0": 46093
+                },
+                "[New York, 2020-03-31, sum_of_value]": {
+                    "0": 70197
+                },
+                "[New York, 2020-03-29, sum_of_value]": {
+                    "0": 59742
+                },
+                "[New Jersey, 2020-03-29, sum_of_value]": {
+                    "0": 10366
+                },
+                "[Louisiana, 2020-03-31, sum_of_value]": {
+                    "0": 4011
+                },
+                "[New Jersey, 2020-03-27, sum_of_value]": {
+                    "0": 6841
+                },
+                "[Washington, 2020-03-29, sum_of_value]": {
+                    "0": 4358
+                },
+                "[Florida, 2020-03-25, sum_of_value]": {
+                    "0": 1973
+                },
+                "[Pennsylvania, 2020-03-26, sum_of_value]": {
+                    "0": 1795
+                },
+                "[Louisiana, 2020-03-26, sum_of_value]": {
+                    "0": 2292
+                },
+                "[Illinois, 2020-03-25, sum_of_value]": {
+                    "0": 1867
+                },
+                "[Pennsylvania, 2020-03-30, sum_of_value]": {
+                    "0": 4154
+                },
+                "[Florida, 2020-03-30, sum_of_value]": {
+                    "0": 5695
+                },
+                "[New Jersey, 2020-03-28, sum_of_value]": {
+                    "0": 8646
+                },
+                "[Michigan, 2020-03-28, sum_of_value]": {
+                    "0": 4588
+                },
+                "[Florida, 2020-03-26, sum_of_value]": {
+                    "0": 2352
+                },
+                "[Illinois, 2020-03-30, sum_of_value]": {
+                    "0": 5039
+                },
+                "[Louisiana, 2020-03-29, sum_of_value]": {
+                    "0": 3532
+                },
+                "[Washington, 2020-03-28, sum_of_value]": {
+                    "0": 4151
+                },
+                "[Illinois, 2020-03-26, sum_of_value]": {
+                    "0": 1870
+                },
+                "[New York, 2020-03-30, sum_of_value]": {
+                    "0": 67384
+                },
+                "[Pennsylvania, 2020-03-28, sum_of_value]": {
+                    "0": 2909
+                },
+                "[Massachusetts, 2020-03-28, sum_of_value]": {
+                    "0": 3893
+                },
+                "[Florida, 2020-03-28, sum_of_value]": {
+                    "0": 4031
+                },
+                "[California, 2020-03-29, sum_of_value]": {
+                    "0": 6247
+                },
+                "[Michigan, 2020-03-25, sum_of_value]": {
+                    "0": 2289
+                },
+                "[New York, 2020-03-26, sum_of_value]": {
+                    "0": 37877
+                },
+                "[New Jersey, 2020-03-26, sum_of_value]": {
+                    "0": 5398
+                },
+                "[New Jersey, 2020-03-30, sum_of_value]": {
+                    "0": 12789
+                },
+                "[Michigan, 2020-03-26, sum_of_value]": {
+                    "0": 2839
+                },
+                "[Florida, 2020-03-29, sum_of_value]": {
+                    "0": 4942
+                },
+                "[Illinois, 2020-03-29, sum_of_value]": {
+                    "0": 4584
+                },
+                "[Washington, 2020-03-25, sum_of_value]": {
+                    "0": 2600
+                },
+                "[Pennsylvania, 2020-03-29, sum_of_value]": {
+                    "0": 3464
+                },
+                "[California, 2020-03-31, sum_of_value]": {
+                    "0": 7467
+                },
+                "[Michigan, 2020-03-30, sum_of_value]": {
+                    "0": 6403
+                },
+                "[California, 2020-03-27, sum_of_value]": {
+                    "0": 4885
+                },
+                "[Illinois, 2020-03-28, sum_of_value]": {
+                    "0": 3487
+                },
+                "[California, 2020-03-26, sum_of_value]": {
+                    "0": 3886
+                },
+                "[Washington, 2020-03-26, sum_of_value]": {
+                    "0": 3055
+                },
+                "[Michigan, 2020-03-27, sum_of_value]": {
+                    "0": 3626
+                },
+                "[Washington, 2020-03-30, sum_of_value]": {
+                    "0": 4913
+                },
+                "[California, 2020-03-30, sum_of_value]": {
+                    "0": 7390
+                },
+                "[Massachusetts, 2020-03-25, sum_of_value]": {
+                    "0": 1676
+                },
+                "[Massachusetts, 2020-03-26, sum_of_value]": {
+                    "0": 2147
+                },
+                "[Michigan, 2020-03-31, sum_of_value]": {
+                    "0": 3208
+                },
+                "[Massachusetts, 2020-03-30, sum_of_value]": {
+                    "0": 5255
+                }
+            },
+            "resultSize": 1,
+            "computedTime": 1585687560080,
+            "computedVersion": "9.7.0",
+            "resultComputationMetadata": null,
+            "resultId": "fdbd53ef-9f19-4289-aef4-13b3fdfffe7b",
+            "warningMessage": null
+        },
+        "exception": null,
+        "progressPercentage": 100,
+        "valid": true
+    },
+    "Response Payload": {
+        "EDITOR_CONFIG": {
+            "text": "{\"jobId\":\"8c5964da-68e0-4296-8c23-e0fadf9f70ea\",\"latitudeResult\":{\"@type\":\"table\",\"columns\":[\"[California, 2020-03-25, sum_of_value]\",\"[California, 2020-03-26, sum_of_value]\",\"[California, 2020-03-27, sum_of_value]\",\"[California, 2020-03-28, sum_of_value]\",\"[California, 2020-03-29, sum_of_value]\",\"[California, 2020-03-30, sum_of_value]\",\"[California, 2020-03-31, sum_of_value]\",\"[Florida, 2020-03-25, sum_of_value]\",\"[Florida, 2020-03-26, sum_of_value]\",\"[Florida, 2020-03-27, sum_of_value]\",\"[Florida, 2020-03-28, sum_of_value]\",\"[Florida, 2020-03-29, sum_of_value]\",\"[Florida, 2020-03-30, sum_of_value]\",\"[Florida, 2020-03-31, sum_of_value]\",\"[Illinois, 2020-03-25, sum_of_value]\",\"[Illinois, 2020-03-26, sum_of_value]\",\"[Illinois, 2020-03-27, sum_of_value]\",\"[Illinois, 2020-03-28, sum_of_value]\",\"[Illinois, 2020-03-29, sum_of_value]\",\"[Illinois, 2020-03-30, sum_of_value]\",\"[Illinois, 2020-03-31, sum_of_value]\",\"[Louisiana, 2020-03-25, sum_of_value]\",\"[Louisiana, 2020-03-26, sum_of_value]\",\"[Louisiana, 2020-03-27, sum_of_value]\",\"[Louisiana, 2020-03-28, sum_of_value]\",\"[Louisiana, 2020-03-29, sum_of_value]\",\"[Louisiana, 2020-03-30, sum_of_value]\",\"[Louisiana, 2020-03-31, sum_of_value]\",\"[Massachusetts, 2020-03-25, sum_of_value]\",\"[Massachusetts, 2020-03-26, sum_of_value]\",\"[Massachusetts, 2020-03-27, sum_of_value]\",\"[Massachusetts, 2020-03-28, sum_of_value]\",\"[Massachusetts, 2020-03-29, sum_of_value]\",\"[Massachusetts, 2020-03-30, sum_of_value]\",\"[Massachusetts, 2020-03-31, sum_of_value]\",\"[Michigan, 2020-03-25, sum_of_value]\",\"[Michigan, 2020-03-26, sum_of_value]\",\"[Michigan, 2020-03-27, sum_of_value]\",\"[Michigan, 2020-03-28, sum_of_value]\",\"[Michigan, 2020-03-29, sum_of_value]\",\"[Michigan, 2020-03-30, sum_of_value]\",\"[Michigan, 2020-03-31, sum_of_value]\",\"[New Jersey, 2020-03-25, sum_of_value]\",\"[New Jersey, 2020-03-26, sum_of_value]\",\"[New Jersey, 2020-03-27, sum_of_value]\",\"[New Jersey, 2020-03-28, sum_of_value]\",\"[New Jersey, 2020-03-29, sum_of_value]\",\"[New Jersey, 2020-03-30, sum_of_value]\",\"[New Jersey, 2020-03-31, sum_of_value]\",\"[New York, 2020-03-25, sum_of_value]\",\"[New York, 2020-03-26, sum_of_value]\",\"[New York, 2020-03-27, sum_of_value]\",\"[New York, 2020-03-28, sum_of_value]\",\"[New York, 2020-03-29, sum_of_value]\",\"[New York, 2020-03-30, sum_of_value]\",\"[New York, 2020-03-31, sum_of_value]\",\"[Pennsylvania, 2020-03-25, sum_of_value]\",\"[Pennsylvania, 2020-03-26, sum_of_value]\",\"[Pennsylvania, 2020-03-27, sum_of_value]\",\"[Pennsylvania, 2020-03-28, sum_of_value]\",\"[Pennsylvania, 2020-03-29, sum_of_value]\",\"[Pennsylvania, 2020-03-30, sum_of_value]\",\"[Pennsylvania, 2020-03-31, sum_of_value]\",\"[Washington, 2020-03-25, sum_of_value]\",\"[Washington, 2020-03-26, sum_of_value]\",\"[Washington, 2020-03-27, sum_of_value]\",\"[Washington, 2020-03-28, sum_of_value]\",\"[Washington, 2020-03-29, sum_of_value]\",\"[Washington, 2020-03-30, sum_of_value]\",\"[Washington, 2020-03-31, sum_of_value]\"],\"columnTypes\":[{\"type\":\"DOUBLE\",\"name\":\"[California, 2020-03-25, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[California, 2020-03-26, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[California, 2020-03-27, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[California, 2020-03-28, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[California, 2020-03-29, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[California, 2020-03-30, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[California, 2020-03-31, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Florida, 2020-03-25, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Florida, 2020-03-26, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Florida, 2020-03-27, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Florida, 2020-03-28, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Florida, 2020-03-29, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Florida, 2020-03-30, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Florida, 2020-03-31, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Illinois, 2020-03-25, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Illinois, 2020-03-26, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Illinois, 2020-03-27, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Illinois, 2020-03-28, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Illinois, 2020-03-29, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Illinois, 2020-03-30, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Illinois, 2020-03-31, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Louisiana, 2020-03-25, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Louisiana, 2020-03-26, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Louisiana, 2020-03-27, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Louisiana, 2020-03-28, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Louisiana, 2020-03-29, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Louisiana, 2020-03-30, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Louisiana, 2020-03-31, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Massachusetts, 2020-03-25, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Massachusetts, 2020-03-26, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Massachusetts, 2020-03-27, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Massachusetts, 2020-03-28, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Massachusetts, 2020-03-29, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Massachusetts, 2020-03-30, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Massachusetts, 2020-03-31, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Michigan, 2020-03-25, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Michigan, 2020-03-26, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Michigan, 2020-03-27, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Michigan, 2020-03-28, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Michigan, 2020-03-29, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Michigan, 2020-03-30, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Michigan, 2020-03-31, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[New Jersey, 2020-03-25, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[New Jersey, 2020-03-26, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[New Jersey, 2020-03-27, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[New Jersey, 2020-03-28, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[New Jersey, 2020-03-29, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[New Jersey, 2020-03-30, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[New Jersey, 2020-03-31, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[New York, 2020-03-25, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[New York, 2020-03-26, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[New York, 2020-03-27, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[New York, 2020-03-28, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[New York, 2020-03-29, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[New York, 2020-03-30, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[New York, 2020-03-31, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Pennsylvania, 2020-03-25, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Pennsylvania, 2020-03-26, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Pennsylvania, 2020-03-27, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Pennsylvania, 2020-03-28, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Pennsylvania, 2020-03-29, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Pennsylvania, 2020-03-30, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Pennsylvania, 2020-03-31, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Washington, 2020-03-25, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Washington, 2020-03-26, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Washington, 2020-03-27, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Washington, 2020-03-28, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Washington, 2020-03-29, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Washington, 2020-03-30, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null},{\"type\":\"DOUBLE\",\"name\":\"[Washington, 2020-03-31, sum_of_value]\",\"nullable\":true,\"userDefinedTypeClass\":null,\"customMetadata\":{},\"arraySubtype\":null,\"precision\":null,\"scale\":null,\"mapKeyType\":null,\"mapValueType\":null,\"subSchemas\":null}],\"results\":{\"[California, 2020-03-25, sum_of_value]\":{\"0\":3161.0},\"[Washington, 2020-03-31, sum_of_value]\":{\"0\":4965.0},\"[Massachusetts, 2020-03-27, sum_of_value]\":{\"0\":2933.0},\"[Pennsylvania, 2020-03-27, sum_of_value]\":{\"0\":2345.0},\"[Florida, 2020-03-27, sum_of_value]\":{\"0\":3192.0},\"[New Jersey, 2020-03-25, sum_of_value]\":{\"0\":3477.0},\"[New York, 2020-03-25, sum_of_value]\":{\"0\":33030.0},\"[Massachusetts, 2020-03-31, sum_of_value]\":{\"0\":5255.0},\"[Pennsylvania, 2020-03-31, sum_of_value]\":{\"0\":4844.0},\"[Florida, 2020-03-31, sum_of_value]\":{\"0\":6319.0},\"[Louisiana, 2020-03-25, sum_of_value]\":{\"0\":1784.0},\"[Louisiana, 2020-03-28, sum_of_value]\":{\"0\":3306.0},\"[Illinois, 2020-03-31, sum_of_value]\":{\"0\":5045.0},\"[California, 2020-03-28, sum_of_value]\":{\"0\":5632.0},\"[Michigan, 2020-03-29, sum_of_value]\":{\"0\":5393.0},\"[Illinois, 2020-03-27, sum_of_value]\":{\"0\":3024.0},\"[Washington, 2020-03-27, sum_of_value]\":{\"0\":3724.0},\"[New York, 2020-03-28, sum_of_value]\":{\"0\":53520.0},\"[Massachusetts, 2020-03-29, sum_of_value]\":{\"0\":4487.0},\"[Louisiana, 2020-03-30, sum_of_value]\":{\"0\":4011.0},\"[Pennsylvania, 2020-03-25, sum_of_value]\":{\"0\":1284.0},\"[Louisiana, 2020-03-27, sum_of_value]\":{\"0\":2729.0},\"[New Jersey, 2020-03-31, sum_of_value]\":{\"0\":12789.0},\"[New York, 2020-03-27, sum_of_value]\":{\"0\":46093.0},\"[New York, 2020-03-31, sum_of_value]\":{\"0\":70197.0},\"[New York, 2020-03-29, sum_of_value]\":{\"0\":59742.0},\"[New Jersey, 2020-03-29, sum_of_value]\":{\"0\":10366.0},\"[Louisiana, 2020-03-31, sum_of_value]\":{\"0\":4011.0},\"[New Jersey, 2020-03-27, sum_of_value]\":{\"0\":6841.0},\"[Washington, 2020-03-29, sum_of_value]\":{\"0\":4358.0},\"[Florida, 2020-03-25, sum_of_value]\":{\"0\":1973.0},\"[Pennsylvania, 2020-03-26, sum_of_value]\":{\"0\":1795.0},\"[Louisiana, 2020-03-26, sum_of_value]\":{\"0\":2292.0},\"[Illinois, 2020-03-25, sum_of_value]\":{\"0\":1867.0},\"[Pennsylvania, 2020-03-30, sum_of_value]\":{\"0\":4154.0},\"[Florida, 2020-03-30, sum_of_value]\":{\"0\":5695.0},\"[New Jersey, 2020-03-28, sum_of_value]\":{\"0\":8646.0},\"[Michigan, 2020-03-28, sum_of_value]\":{\"0\":4588.0},\"[Florida, 2020-03-26, sum_of_value]\":{\"0\":2352.0},\"[Illinois, 2020-03-30, sum_of_value]\":{\"0\":5039.0},\"[Louisiana, 2020-03-29, sum_of_value]\":{\"0\":3532.0},\"[Washington, 2020-03-28, sum_of_value]\":{\"0\":4151.0},\"[Illinois, 2020-03-26, sum_of_value]\":{\"0\":1870.0},\"[New York, 2020-03-30, sum_of_value]\":{\"0\":67384.0},\"[Pennsylvania, 2020-03-28, sum_of_value]\":{\"0\":2909.0},\"[Massachusetts, 2020-03-28, sum_of_value]\":{\"0\":3893.0},\"[Florida, 2020-03-28, sum_of_value]\":{\"0\":4031.0},\"[California, 2020-03-29, sum_of_value]\":{\"0\":6247.0},\"[Michigan, 2020-03-25, sum_of_value]\":{\"0\":2289.0},\"[New York, 2020-03-26, sum_of_value]\":{\"0\":37877.0},\"[New Jersey, 2020-03-26, sum_of_value]\":{\"0\":5398.0},\"[New Jersey, 2020-03-30, sum_of_value]\":{\"0\":12789.0},\"[Michigan, 2020-03-26, sum_of_value]\":{\"0\":2839.0},\"[Florida, 2020-03-29, sum_of_value]\":{\"0\":4942.0},\"[Illinois, 2020-03-29, sum_of_value]\":{\"0\":4584.0},\"[Washington, 2020-03-25, sum_of_value]\":{\"0\":2600.0},\"[Pennsylvania, 2020-03-29, sum_of_value]\":{\"0\":3464.0},\"[California, 2020-03-31, sum_of_value]\":{\"0\":7467.0},\"[Michigan, 2020-03-30, sum_of_value]\":{\"0\":6403.0},\"[California, 2020-03-27, sum_of_value]\":{\"0\":4885.0},\"[Illinois, 2020-03-28, sum_of_value]\":{\"0\":3487.0},\"[California, 2020-03-26, sum_of_value]\":{\"0\":3886.0},\"[Washington, 2020-03-26, sum_of_value]\":{\"0\":3055.0},\"[Michigan, 2020-03-27, sum_of_value]\":{\"0\":3626.0},\"[Washington, 2020-03-30, sum_of_value]\":{\"0\":4913.0},\"[California, 2020-03-30, sum_of_value]\":{\"0\":7390.0},\"[Massachusetts, 2020-03-25, sum_of_value]\":{\"0\":1676.0},\"[Massachusetts, 2020-03-26, sum_of_value]\":{\"0\":2147.0},\"[Michigan, 2020-03-31, sum_of_value]\":{\"0\":3208.0},\"[Massachusetts, 2020-03-30, sum_of_value]\":{\"0\":5255.0}},\"resultSize\":1,\"computedTime\":1585687560080,\"computedVersion\":\"9.7.0\",\"resultComputationMetadata\":null,\"resultId\":\"fdbd53ef-9f19-4289-aef4-13b3fdfffe7b\",\"warningMessage\":null},\"exception\":null,\"progressPercentage\":100,\"valid\":true}",
+            "mode": "application/json"
+        }
+    }
+}
