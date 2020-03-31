@@ -1,8 +1,6 @@
 ---
 applications:
 - name: FearlessDreamer2
-  docker:
-    image: nickrobisonusds/fearless-dreamer:latest
-  disk_quota: 2G
+  command: demand-modeler
   services:
     - fearless-dreamer-psql
