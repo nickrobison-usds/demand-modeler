@@ -38,7 +38,7 @@ export const StateMixedBar = (props: Props) => {
   }
   const colors =
   props.stat === "confirmed"
-    ? ["#E5A3A3", "#D05C5C", "#CB2727", "#C00000", "#900000", "#700000"]
+    ? ["#E5A3A3", "#D05C5C", "#CB2727", "#C00000", "#900000", "#700000", "#500000"]
     : ["#a9a9a9", "#888", "#666", "#333", "#111"];
   let title: string;
   let maxCases: number | undefined;

@@ -7,7 +7,8 @@ import { statePopulation } from "./Charts/population";
 
 export interface ReportContainerProps {
   states: State[];
-  timeSeries: CovidDateData;
+  weeklyTimeSeries: CovidDateData;
+  historicalTimeSeries: CovidDateData;
 }
 
 const addTitleSlide = (ppt: pptxgen) => {
@@ -68,7 +69,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
     // console.debug("Tops: ", topStates);
     const ts = props.states
       .map(s => s.ID)
-      .flatMap(i => props.timeSeries.states[i]);
+      .flatMap(i => props.weeklyTimeSeries.states[i]);
     console.debug("top states");
 
     const grouped = _.chain(ts)
@@ -101,7 +102,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       h: 4
     });
 
-    console.log("time series", props.timeSeries);
+    // console.log("time series", props.timeSeries);
     // Line chart
     const lineChartConfig = () => ({
       x: 0,
@@ -121,7 +122,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
 
     type LineData = { name: string; labels: string[]; values: number[] };
 
-    const stateLineData = Object.values(props.timeSeries.states).reduce(
+    const stateLineData = Object.values(props.historicalTimeSeries.states).reduce(
       (acc, stateSeries) => {
         const state: LineData = {
           name: stateAbbreviation[stateSeries[0].State],

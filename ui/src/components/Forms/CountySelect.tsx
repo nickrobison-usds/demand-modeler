@@ -12,7 +12,7 @@ const USATotal: React.FunctionComponent<{}> = () => {
   const {
     dispatch,
     state: {
-      covidTimeSeries,
+      lastWeekCovidTimeSeries,
       selection: { state, county }
     }
   } = useContext(AppContext);
@@ -21,7 +21,7 @@ const USATotal: React.FunctionComponent<{}> = () => {
     return null;
   }
 
-  const stateName = covidTimeSeries.states[state][0].State;
+  const stateName = lastWeekCovidTimeSeries.states[state][0].State;
 
   const defaultOption: Option = {
     text: DEFAULT_TEXT,
@@ -31,8 +31,8 @@ const USATotal: React.FunctionComponent<{}> = () => {
   const options: Option[] = [];
 
   const countyMap: { [ID: string]: Option } = {};
-  Object.keys(covidTimeSeries.counties)
-    .flatMap(k => covidTimeSeries.counties[k])
+  Object.keys(lastWeekCovidTimeSeries.counties)
+    .flatMap(k => lastWeekCovidTimeSeries.counties[k])
     .filter(c => c.State === stateName)
     .forEach(c => {
       countyMap[c.ID] = {
