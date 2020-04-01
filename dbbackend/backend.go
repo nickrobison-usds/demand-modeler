@@ -67,7 +67,7 @@ func (d *DBBackend) GetTopCounties(ctx context.Context, start *time.Time) ([]cmd
 
 	log.Debug().Msg("Returning case data")
 
-	query := "SELECT c.ID, c.County, c.State, s.Update, s.Confirmed, COALESCE(s.confirmed - lag(s.confirmed) over (partition by s.geoid order by s.Update), 0) as new, s.Dead, s.NewDead FROM counties as c " +
+	query := "SELECT c.ID, c.County, c.State, s.Update, s.Confirmed, s.Dead FROM counties as c " +
 		"LEFT JOIN cases as s " +
 		"ON s.geoid = c.ID "
 
@@ -96,7 +96,7 @@ func (d *DBBackend) GetCountyCases(ctx context.Context, countyID string) ([]cmd.
 
 	log.Debug().Msgf("Returning case data for county: %s\n" + countyID)
 
-	query := "SELECT c.ID, c.County, c.State, s.Update, s.Confirmed, COALESCE(s.confirmed - lag(s.confirmed) over (partition by geoid order by update), 0) as new, s.Dead, s.NewDead, ST_AsGeoJSON(t.geom) as geom FROM counties as c " +
+	query := "SELECT c.ID, c.County, c.State, s.Update, s.Confirmed, s.Dead, ST_AsGeoJSON(t.geom) as geom FROM counties as c " +
 		"LEFT JOIN tiger as t " +
 		"ON c.ID = t.geoid " +
 		"LEFT JOIN cases as s " +
@@ -118,7 +118,7 @@ func (d *DBBackend) GetTopStates(ctx context.Context, start *time.Time) ([]cmd.S
 	}
 	defer conn.Release()
 
-	query := "SELECT c.statefp, c.State, s.Update, SUM(s.Confirmed) as confirmed, SUM(s.NewConfirmed), SUM(s.Dead), SUM(s.NewDead) FROM counties as c " +
+	query := "SELECT c.statefp, c.State, s.Update, SUM(s.Confirmed) as confirmed, SUM(s.Dead) FROM counties as c " +
 		"LEFT JOIN cases as s " +
 		"ON s.geoid = c.ID "
 
@@ -145,7 +145,7 @@ func (d *DBBackend) GetStateCases(ctx context.Context, stateID string) ([]cmd.St
 	}
 	defer conn.Release()
 
-	query := "SELECT c.statefp, c.state, a.update, SUM(a.confirmed) as confirmed, SUM(a.newconfirmed), SUM(a.dead), SUM(a.newdead) from counties as c " +
+	query := "SELECT c.statefp, c.state, a.update, SUM(a.confirmed) as confirmed, SUM(a.dead) from counties as c " +
 		"LEFT JOIN cases as a ON c.id = a.geoid " +
 		"WHERE c.statefp = $1 " +
 		"GROUP BY c.statefp, c.state, a.update " +
@@ -179,19 +179,15 @@ func queryCountyCases(ctx context.Context, conn *pgxpool.Conn, sql string, args 
 		var state string
 		var updated time.Time
 		var confirmed int
-		var newConfirmed int
 		var dead int
-		var newDead int
-		err := rows.Scan(&id, &county, &state, &updated, &confirmed, &newConfirmed, &dead, &newDead)
+		err := rows.Scan(&id, &county, &state, &updated, &confirmed, &dead)
 		if err != nil {
 			return cases, err
 		}
 
 		caseCount := &cmd.CaseCount{
 			Confirmed:    confirmed,
-			NewConfirmed: newConfirmed,
 			Dead:         dead,
-			NewDead:      newDead,
 			Reported:     updated,
 		}
 
@@ -218,19 +214,15 @@ func queryStateCases(ctx context.Context, conn *pgxpool.Conn, sql string, args .
 		var id string
 		var state string
 		var confirmed int
-		var newConfirmed int
 		var dead int
-		var newDead int
 		var reported time.Time
-		err := rows.Scan(&id, &state, &reported, &confirmed, &newConfirmed, &dead, &newDead)
+		err := rows.Scan(&id, &state, &reported, &confirmed, &dead)
 		if err != nil {
 			return cases, err
 		}
 		caseCount := &cmd.CaseCount{
 			Confirmed:    confirmed,
-			NewConfirmed: newConfirmed,
 			Dead:         dead,
-			NewDead:      newDead,
 			Reported:     reported,
 		}
 

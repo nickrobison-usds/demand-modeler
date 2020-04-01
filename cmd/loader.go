@@ -165,6 +165,7 @@ func (d *DataLoader) createNewCounty(county *CountyCases) error {
 	// Load the new county
 	// log.Debug().Msgf("Loading new county: %s, %s. %s", county.County, county.State, county.ID)
 	countyName := county.County
+	// TDOO: remove this
 	if len(countyName) > 50 {
 		countyName = string(county.County[0:49])
 	}
@@ -178,12 +179,16 @@ func (d *DataLoader) createNewCounty(county *CountyCases) error {
 }
 
 func (d *DataLoader) insertCase(c *CountyCases) error {
-	_, err := d.conn.Exec(d.ctx, "INSERT INTO Cases(Geoid, "+
-		"Confirmed, NewConfirmed, "+
-		"Dead, NewDead, Update) VALUES($1, $2, $3, $4, $5, $6)", c.ID, c.Confirmed, c.NewConfirmed, c.Dead, c.NewDead, c.Reported)
-	if err != nil {
-		log.Printf("Error inserting county: %s, %s. %s %s", c.County, c.State, c.ID, c.Reported)
-		return err
+	// TODO remove this if
+	if (len(c.County) > 1 && len(c.State) > 1) {
+		_, err := d.conn.Exec(d.ctx, "INSERT INTO Cases(Geoid, "+
+		"Confirmed, "+
+		"Dead, Update) VALUES($1, $2, $3, $4)", c.ID, c.Confirmed, c.Dead, c.Reported)
+		if err != nil {
+			log.Printf("Error inserting county: %s, %s. %s %s", c.County, c.State, c.ID, c.Reported)
+			return err
+		}
 	}
+
 	return nil
 }

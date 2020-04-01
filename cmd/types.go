@@ -12,9 +12,7 @@ var daikonFormatter string = "2006-01-02"
 
 type CaseCount struct {
 	Confirmed    int
-	NewConfirmed int
 	Dead         int
-	NewDead      int
 	Reported     time.Time
 }
 
@@ -71,8 +69,6 @@ func CountyCaseFromDaikon(row []string) (*CountyCases, error) {
 		CaseCount: &CaseCount{
 			Confirmed:    confirmed,
 			Dead:         dead,
-			NewConfirmed: 0,
-			NewDead:      0,
 			Reported:     reported,
 		},
 		StateFIPS:  statefps,
