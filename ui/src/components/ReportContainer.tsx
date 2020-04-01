@@ -4,6 +4,7 @@ import { CovidDateData, State } from "../app/AppStore";
 import * as _ from "lodash";
 import { stateAbbreviation } from "../utils/stateAbbreviation";
 import { population } from "./Charts/population";
+import * as PowerPointUtils from "../utils/PowerPointUtils";
 
 export interface ReportContainerProps {
   states: State[];
@@ -38,7 +39,7 @@ export const addTitleSlide = (ppt: pptxgen) => {
     h: 2.84,
     w: 2.85
   });
-}
+};
 
 export const addTopTenStates = (ppt: pptxgen, states: State[], timeSeries: CovidDateData) => {
     // Do the state things
@@ -62,7 +63,7 @@ export const addTopTenStates = (ppt: pptxgen, states: State[], timeSeries: Covid
     const ts = states
       .map(s => s.ID)
       .flatMap(i => timeSeries.states[i]);
-    console.debug("top states");
+    console.debug("top states", ts);
 
     const grouped = _.chain(ts)
       .sortBy(["Reported"])
@@ -75,25 +76,22 @@ export const addTopTenStates = (ppt: pptxgen, states: State[], timeSeries: Covid
     //     .value();
     console.debug("Grouped", grouped);
 
-    const datas = Object.entries(grouped).map(entry => {
-      return {
-        name: entry[0],
-        labels: entry[1].map(e => e.State),
-        values: entry[1].map(e => e.Confirmed)
-      };
-    });
-    console.debug("Datas", datas);
+    const groupedEntries = Object.entries(grouped);
+    const dataCombined = PowerPointUtils.buildClusteredStack(
+        // The date labels
+        groupedEntries.map(entry => entry[0]),
+        ["Confirmed", "Deaths"],
+        groupedEntries.length > 0 ? groupedEntries[0][1].map(e => e.State) : [],
+        [
+            groupedEntries.map(entry => entry[1].map(e => e.Confirmed)),
+            groupedEntries.map(entry => entry[1].map(e => e.Dead))
+        ]
+    );
 
-    // const values = props.states.map(s => s.Confirmed);
-    // const dead = props.states.map(s => s.Dead);
+    console.debug("Data Combined:", dataCombined);
 
-    s.addChart(ppt.ChartType.bar, datas, {
-      x: 1,
-      y: 1,
-      w: 8,
-      h: 4
-    });
-}
+    PowerPointUtils.addClusteredStackedChart(s, dataCombined, {x: 1, y: 1, w: 8, h: 4});
+};
 
 export const ReportContainer: React.FC<ReportContainerProps> = props => {
   const exportPowerPoint = async () => {
@@ -175,6 +173,8 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       ...lineChartConfig(),
       title: "Cumulative cases per 100,000"
     });
+
+    addTopTenStates(ppt, props.states, props.weeklyTimeSeries);
 
     // // Add the map
     // let map = document.getElementsByClassName("mapboxgl-map").item(0);
