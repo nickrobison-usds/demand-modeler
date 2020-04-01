@@ -5,6 +5,7 @@ import * as _ from "lodash";
 import * as PowerPointUtils from "../utils/PowerPointUtils";
 import { stateAbbreviation } from "../utils/stateAbbreviation";
 import { population } from "./Charts/population";
+import { lineColors } from "../utils/reportHelpers";
 
 export interface ReportContainerProps {
   states: State[];
@@ -112,7 +113,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
 
     const TEXT_COLOR = "0A2644";
     const TEXT_FONT_FACE = "Source Sans Pro";
-    const AXIS_COLOR = "DEDEDE";
+    const AXIS_COLOR = "EEEEEE";
 
     // Titles
     const titleConf = () => ({
@@ -133,6 +134,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       w: 7.5,
       h: 4.5,
       legendFontSize: 8,
+      lineSize: 1.5,
       lineDataSymbol: "none",
       valGridLine: { style: "none" },
       serGridLine: { style: "none" },
@@ -213,24 +215,74 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
         });
     };
 
+    const addLineChartWithLegend = (
+      slide: pptxgen.ISlide,
+      lineData: LineData[]
+    ): pptxgen.ISlide => {
+      const chartColors: string[] = [];
+      // Skip territories not in existing slides
+      const lines = [...lineData].filter(
+        el => lineColors[el.name] !== undefined
+      );
+      lines.forEach((el, i) => {
+        const color = lineColors[el.name];
+        chartColors.push(color);
+        slide.addShape(ppt.ShapeType.rect, {
+          w: 0.18,
+          h: 0.09,
+          x: i % 2 === 0 ? 8 : 8.6,
+          y: 1.41 + 0.14 * Math.floor(i / 2),
+          fill: { color }
+        });
+        slide.addText(el.name, {
+          x: i % 2 === 0 ? 8.2 : 8.8,
+          y: 1.3 + 0.14 * Math.floor(i / 2),
+          fontSize: 8
+        });
+      });
+      slide.addShape(ppt.ShapeType.line, {
+        x: 8.23,
+        y: 1.38,
+        w: 0,
+        h: 0.14 * Math.ceil(lines.length / 2),
+        line: AXIS_COLOR,
+        lineSize: 1
+      });
+      slide.addShape(ppt.ShapeType.line, {
+        x: 8.84,
+        y: 1.38,
+        w: 0,
+        h: 0.14 * Math.floor(lines.length / 2),
+        line: AXIS_COLOR,
+        lineSize: 1
+      });
+      slide.addChart(ppt.ChartType.line, lineData, {
+        ...lineChartConfig(),
+        chartColors
+      });
+      return slide;
+    };
+
     // Exception states
-    addSlideWithTitle(
+    const exceptionStateSlide = addSlideWithTitle(
       ppt,
       `Cumulative cases per 100,000: ${exceptionStates.join(", ")}`
-    ).addChart(ppt.ChartType.line, exceptionStateData, lineChartConfig());
+    );
+    addLineChartWithLegend(exceptionStateSlide, exceptionStateData);
     // Non-exception states
-    addSlideWithTitle(
+    const nonExceptionStateSlide = addSlideWithTitle(
       ppt,
       `Cumulative cases per 100,000: states except ${exceptionStates.join(
         ", "
       )}`
-    ).addChart(ppt.ChartType.line, nonExceptionStateData, lineChartConfig());
-    // All states
-    addSlideWithTitle(ppt, "Cumulative cases per 100,000: All States").addChart(
-      ppt.ChartType.line,
-      stateLineData,
-      lineChartConfig()
     );
+    addLineChartWithLegend(nonExceptionStateSlide, nonExceptionStateData);
+    // All states
+    const allStateSlide = addSlideWithTitle(
+      ppt,
+      "Cumulative cases per 100,000: All States"
+    );
+    addLineChartWithLegend(allStateSlide, stateLineData);
 
     // // Add the map
     // let map = document.getElementsByClassName("mapboxgl-map").item(0);
