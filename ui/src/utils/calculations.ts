@@ -13,7 +13,7 @@ const getSelectedStateName = (state: AppState) => {
   if (state.selection.state === undefined) {
     return null;
   }
-  return state.covidTimeSeries.states[state.selection.state][0].State;
+  return state.lastWeekCovidTimeSeries.states[state.selection.state][0].State;
 };
 
 export const getTopCounties = (
@@ -23,7 +23,7 @@ export const getTopCounties = (
 ): County[][] => {
   // TODO: pass state in as a Parameter
   const stateName = getSelectedStateName(appState);
-  let counties = Object.values(appState.covidTimeSeries.counties).reduce(
+  let counties = Object.values(appState.lastWeekCovidTimeSeries.counties).reduce(
     (acc, el) => [...acc, ...el],
     []
   );
@@ -59,7 +59,7 @@ export const getTopCounties = (
     });
   const topCounties = newestCounties
     .slice(0, numberOfCounties)
-    .map(county => appState.covidTimeSeries.counties[county.ID]);
+    .map(county => appState.lastWeekCovidTimeSeries.counties[county.ID]);
 
   return topCounties;
 };
@@ -69,7 +69,7 @@ export const getTopStates = (
   stat: "confirmed" | "dead",
   numberOfCounties = 10
 ): State[][] => {
-  let states = Object.values(appState.covidTimeSeries.states).reduce(
+  let states = Object.values(appState.lastWeekCovidTimeSeries.states).reduce(
     (acc, el) => [...acc, ...el],
     []
   );
@@ -101,13 +101,13 @@ export const getTopStates = (
     });
   const topStates = newestStateData
     .slice(0, numberOfCounties)
-    .map(state => appState.covidTimeSeries.states[state.ID]);
+    .map(state => appState.lastWeekCovidTimeSeries.states[state.ID]);
 
   return topStates;
 };
 
 export const getCountyGrandTotal = (appState: AppState): GrandTotal => {
-  let counties = Object.values(appState.covidTimeSeries.counties).reduce(
+  let counties = Object.values(appState.lastWeekCovidTimeSeries.counties).reduce(
     (acc, el) => [...acc, ...el],
     []
   );
