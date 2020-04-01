@@ -2,11 +2,9 @@ import React, { useContext, useEffect, useState } from "react";
 import { AppContext, ActionType, CovidDateData } from "../app/AppStore";
 import {getCountyCases, getStateCases} from "../api";
 
-const NUMBER_OF_DAYS = 5;
 
 const loadData = async () => {
   const start = new Date("1/22/2020");
-  start.setDate(start.getDate() - NUMBER_OF_DAYS);
 
   const loadStateData = async () => {
     const date = new Date(start);

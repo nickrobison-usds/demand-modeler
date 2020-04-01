@@ -184,7 +184,7 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
   const {
     dispatch,
     state,
-    state: { covidTimeSeries }
+    state: { lastWeekCovidTimeSeries }
   } = useContext(AppContext);
 
   const selectedMetric =
@@ -208,8 +208,8 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
     const geoData = level === "state" ? stateData : countyData;
     const timeSeriesDate =
       level === "state"
-        ? state.covidTimeSeries.states
-        : state.covidTimeSeries.counties;
+        ? state.lastWeekCovidTimeSeries.states
+        : state.lastWeekCovidTimeSeries.counties;
     let min = 0;
     let max = 0;
     const formatedGeoJSON = geoData.features.map(f => {
@@ -224,7 +224,7 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
         const parsedID = parseInt(`${ID}`);
         if (typeof parsedID === "number") {
           const region = timeSeriesDate[ID];
-          if (region) {
+          if (region && region.length > 0) {
             region.sort(compare);
             if (dataType === "Total") {
               metric = region[0][selectedMetric];
@@ -255,6 +255,7 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
             } else if (metric > max) {
               max = metric;
             }
+            console.log(region[0])
             Name =
               level === "state"
                 ? region[0].State
@@ -310,7 +311,7 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
       features: formatData("state")
     });
     // eslint-disable-next-line
-  }, [covidTimeSeries, dataType, selectedMetric]);
+  }, [lastWeekCovidTimeSeries, dataType, selectedMetric]);
 
   const onHover = (event: PointerEvent) => {
     let name = "";
@@ -336,7 +337,7 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
       let name = hoverInfo.feature.NAME;
       if (hoverInfo.feature.COUNTY) {
         const stateName =
-          state.covidTimeSeries.states[hoverInfo.feature.STATE][0].State;
+          state.lastWeekCovidTimeSeries.states[hoverInfo.feature.STATE][0].State;
         name = `${name}, ${stateAbbreviation[stateName]}`;
       }
 

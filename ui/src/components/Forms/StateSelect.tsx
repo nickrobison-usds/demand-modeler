@@ -19,8 +19,8 @@ const USATotal: React.FunctionComponent<{}> = props => {
   const options: Option[] = [];
 
   const stateMap: { [ID: string]: Option } = {};
-  Object.keys(state.covidTimeSeries.states)
-    .flatMap(k => state.covidTimeSeries.states[k])
+  Object.keys(state.lastWeekCovidTimeSeries.states)
+    .flatMap(k => state.lastWeekCovidTimeSeries.states[k])
     .forEach(s => {
       stateMap[s.ID] = {
         text: s.State,

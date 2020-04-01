@@ -54,7 +54,7 @@ export const Dashboard: React.FC<{}> = () => {
                   <MixedBar
                     state={state.selection.state}
                     county={state.selection.county}
-                    timeSeries={state.covidTimeSeries}
+                    timeSeries={state.lastWeekCovidTimeSeries}
                     stat={state.selection.metric}
                     chartWidth={chartWidth}
                   />
@@ -64,10 +64,10 @@ export const Dashboard: React.FC<{}> = () => {
                     <StateMixedBar
                       state={state.selection.state}
                       county={state.selection.county}
-                      timeSeries={state.covidTimeSeries}
+                      timeSeries={state.lastWeekCovidTimeSeries}
                       stat={state.selection.metric}
                       stateCount={true}
-                      meta={state.graphMetaData}
+                      meta={state.lastWeekCovidTimeSeries.graphMetaData}
                       chartWidth={chartWidth}
                     />
                   </Card>
@@ -78,16 +78,16 @@ export const Dashboard: React.FC<{}> = () => {
                       <StateMixedBar
                         state={state.selection.state}
                         county={state.selection.county}
-                        timeSeries={state.covidTimeSeries}
+                        timeSeries={state.lastWeekCovidTimeSeries}
                         stat={state.selection.metric}
                         stateCount={false}
-                        meta={state.graphMetaData}
+                        meta={state.lastWeekCovidTimeSeries.graphMetaData}
                         chartWidth={chartWidth}
                       />
                     </Card>
                     <Card>
                       <CountyTrendGraph
-                        timeSeries={state.covidTimeSeries}
+                        timeSeries={state.lastWeekCovidTimeSeries}
                         chartWidth={chartWidth}
                         selection={state.selection}
                       />
