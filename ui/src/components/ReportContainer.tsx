@@ -210,7 +210,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       <button className="usa-button" onClick={exportPowerPoint}>
         Export
       </button>
-      <>{props.children}</>
+      {/* <>{props.children}</> */}
       <canvas />
     </div>
   );
