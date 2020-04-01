@@ -90,3 +90,9 @@ heroku buildpacks:add heroku/go
 ```bash
 docker build -f usafacts_loader.Dockerfile -t usafacts . && docker run -it --network=demand-modeler_default usafacts
 ```
+
+The following steps need to be taken to manually clean the data:
+
+1. Remove duplicate `Wayne County,WY` and `Washakie County,WY` record
+1. Shorten Jackson County, MO name
+1. remove `New York City Unallocated`

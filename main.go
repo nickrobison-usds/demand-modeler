@@ -67,7 +67,11 @@ func runServer(c *cli.Context) error {
 	}
 	defer loader.Close()
 
-	err = loader.Load()
+	err = loader.Truncate()
+	if err != nil {
+		log.Fatal().Err(err).Send()
+	}
+	err = loader.LoadUSAFacts()
 	if err != nil {
 		log.Fatal().Err(err).Send()
 	}
