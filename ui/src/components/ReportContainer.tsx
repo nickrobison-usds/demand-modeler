@@ -87,8 +87,8 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
     });
     console.debug("Datas", datas);
 
-    const values = props.states.map(s => s.Confirmed);
-    const dead = props.states.map(s => s.Dead);
+    // const values = props.states.map(s => s.Confirmed);
+    // const dead = props.states.map(s => s.Dead);
 
     s.addChart(ppt.ChartType.bar, datas, {
       x: 1,
