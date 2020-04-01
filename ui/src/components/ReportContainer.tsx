@@ -90,8 +90,8 @@ export const addTopTenStates = (ppt: pptxgen, states: State[], timeSeries: Covid
 
     console.debug("Data Combined:", dataCombined);
 
-    PowerPointUtils.addClusteredStackedChart(s, dataCombined, {x: 1, y: 1, w: 8, h: 4});
-}
+    PowerPointUtils.addClusteredStackedChart(ppt, s, dataCombined, {x: 1, y: 1, w: 8, h: 4});
+};
 
 export const ReportContainer: React.FC<ReportContainerProps> = props => {
   const exportPowerPoint = async () => {
@@ -101,7 +101,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
     ppt.company = "United States Digital Service";
     // Generate the title slide
     addTitleSlide(ppt);
-    // addTopTenStates(ppt, props.states, props.weeklyTimeSeries)
+    addTopTenStates(ppt, props.states, props.weeklyTimeSeries);
 
     // Line chart
     const lineChartConfig = () => ({

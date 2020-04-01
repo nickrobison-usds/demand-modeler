@@ -43,9 +43,9 @@ export const buildClusteredStack = (barLabels: Array<string>, stackLabels: Array
     });
 };
 
-export const addClusteredStackedChart = (slide: pptxgen.ISlide, data: Array<object>, options: object) => {
+export const addClusteredStackedChart = (ppt: pptxgen, slide: pptxgen.ISlide, data: Array<object>, options: object) => {
     slide.addChart(
-        pptxgen.CHART_TYPE.BAR,
+        ppt.ChartType.bar,
         data,
         {
             barGrouping: 'stacked',
