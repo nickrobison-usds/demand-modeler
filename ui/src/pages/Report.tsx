@@ -318,7 +318,5 @@ export const Report: React.FC<{}> = () => {
             </div>
           </ReportContainer>
         );
-      }}
-    </AppContext.Consumer>
-  );
+    };
 };
