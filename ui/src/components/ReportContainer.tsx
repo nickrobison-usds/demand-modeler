@@ -3,7 +3,7 @@ import pptxgen from "pptxgenjs";
 import { CovidDateData, State } from "../app/AppStore";
 import * as _ from "lodash";
 import { stateAbbreviation } from "../utils/stateAbbreviation";
-import { statePopulation } from "./Charts/population";
+import { population } from "./Charts/population";
 
 export interface ReportContainerProps {
   states: State[];
@@ -11,7 +11,7 @@ export interface ReportContainerProps {
   historicalTimeSeries: CovidDateData;
 }
 
-const addTitleSlide = (ppt: pptxgen) => {
+export const addTitleSlide = (ppt: pptxgen) => {
   const titleSlide = ppt.addSlide();
   titleSlide.addText("COVID-19 county-level case data", {
     fontFace: "Calibri (Headings)",
@@ -40,22 +40,14 @@ const addTitleSlide = (ppt: pptxgen) => {
   });
 }
 
-export const ReportContainer: React.FC<ReportContainerProps> = props => {
-  const exportPowerPoint = async () => {
-    // noinspection JSPotentiallyInvalidConstructorUsage
-    const ppt = new pptxgen();
-    ppt.layout = "LAYOUT_16x9";
-    ppt.company = "United States Digital Service";
-    // Generate the title slide
-    addTitleSlide(ppt);
-
+export const addTopTenStates = (ppt: pptxgen, states: State[], timeSeries: CovidDateData) => {
     // Do the state things
     const s = ppt.addSlide();
 
-    const names = props.states.map(s => s.ID);
+    const names = states.map(s => s.ID);
     console.debug(
       "States",
-      props.states.map(s => s.ID)
+      states.map(s => s.ID)
     );
     console.debug("Names", names);
 
@@ -67,9 +59,9 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
     // filter(s => names.has(s.ID));
 
     // console.debug("Tops: ", topStates);
-    const ts = props.states
+    const ts = states
       .map(s => s.ID)
-      .flatMap(i => props.weeklyTimeSeries.states[i]);
+      .flatMap(i => timeSeries.states[i]);
     console.debug("top states");
 
     const grouped = _.chain(ts)
@@ -101,8 +93,18 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       w: 8,
       h: 4
     });
+}
 
-    // console.log("time series", props.timeSeries);
+export const ReportContainer: React.FC<ReportContainerProps> = props => {
+  const exportPowerPoint = async () => {
+    // noinspection JSPotentiallyInvalidConstructorUsage
+    const ppt = new pptxgen();
+    ppt.layout = "LAYOUT_16x9";
+    ppt.company = "United States Digital Service";
+    // Generate the title slide
+    addTitleSlide(ppt);
+    // addTopTenStates(ppt, props.states, props.weeklyTimeSeries)
+
     // Line chart
     const lineChartConfig = () => ({
       x: 0,
@@ -133,7 +135,8 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
           state.labels.push(
             el.Reported.getMonth() + 1 + "/" + el.Reported.getDate()
           );
-          state.values.push((el.Confirmed * 100000) / statePopulation[el.ID]);
+          state.values.push(el.Confirmed / (population[el.ID + "000"]/100000));
+          console.log(el.ID)
         });
         acc.push(state);
         return acc;
@@ -158,7 +161,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
     // Exception states
     ppt.addSlide().addChart(ppt.ChartType.line, exceptionStateData, {
       ...lineChartConfig(),
-      title: `Cumulative cases per 100,000, ${exceptionStates.join(", ")}`
+      title: `CUMULATIVE CASES PER 100,000: ${exceptionStates.join(", ")}`
     });
     // Non-exception states
     ppt.addSlide().addChart(ppt.ChartType.line, nonExceptionStateData, {
