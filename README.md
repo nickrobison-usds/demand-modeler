@@ -91,5 +91,6 @@ docker build -f usafacts_loader.Dockerfile -t usafacts . && docker run -it --net
 
 The following steps need to be taken to manually clean the data:
 
-1. Remove 1st `Wayne County` record, as it's a duplicate but has no values recorded
+1. Remove duplicate `Wayne County,WY` and `Washakie County,WY` record
 1. Shorten Jackson County, MO name
+1. remove `New York City Unallocated`

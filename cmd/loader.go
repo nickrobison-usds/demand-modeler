@@ -23,6 +23,7 @@ var unknownRegex = regexp.MustCompile("Waiting on information|Indeterminate|Unas
 var countyIter int32 = 850
 
 var usaFactsTime string = "1/2/06 MST"
+var usaFactsTimeDeaths string = "1/2/2006 MST"
 
 type DataLoader struct {
 	ctx     context.Context
@@ -75,6 +76,7 @@ func (d *DataLoader) LoadUSAFacts() error {
 		}
 		dates[idx] = t
 	}
+	log.Debug().Msgf("loading %s dates", len(dates))
 
 	rows, err := r.ReadAll()
 	if err != nil {
@@ -84,16 +86,75 @@ func (d *DataLoader) LoadUSAFacts() error {
 	var cases []*CountyCases
 
 	for _, row := range rows {
-		c, err := CountyCasesFromUSAFacts(row, dates)
+		c, err := CountyCasesFromUSAFacts(row, dates, false)
 		if err != nil {
 			return err
 		}
 
 		cases = append(cases, c...)
 	}
+	log.Debug().Msgf("loading %s cases", len(cases))
 
 	for _, c := range cases {
-		err := d.loadUSACase(c)
+		err := d.loadUSACase(c, false)
+		if err != nil {
+			return err
+		}
+	}
+
+
+	fileD := filepath.Join(d.dataDir, "covid_deaths_usafacts.csv")
+
+	log.Debug().Msgf("Loading file: %s", fileD)
+	fd, err := os.Open(fileD)
+	if err != nil {
+		return err
+	}
+	defer fd.Close()
+
+	// Read remaining rows
+	rD := csv.NewReader(fd)
+
+	// Transform the header rows into dates
+	headerD, err := rD.Read()
+	if err != nil {
+		return nil
+	}
+
+	datesD := make([]time.Time, len(headerD)-4)
+
+	for idxD, hD := range headerD[4:] {
+		t, err := time.Parse(usaFactsTimeDeaths, hD+" EST")
+		if err != nil {
+			return err
+		}
+		datesD[idxD] = t
+	}
+	log.Debug().Msgf("loading %s dates", len(datesD))
+
+
+	rowsD, err := rD.ReadAll()
+	if err != nil {
+		return err
+	}
+	log.Debug().Msgf("loading %s rows", len(rowsD))
+
+	var casesD []*CountyCases
+
+	for _, rowD := range rowsD {
+		c, err := CountyCasesFromUSAFacts(rowD, datesD, true)
+		if err != nil {
+			return err
+		}
+
+		casesD = append(casesD, c...)
+	}
+
+	log.Debug().Msgf("loading %s cases", len(casesD))
+
+
+	for _, c := range casesD {
+		err := d.loadUSACase(c, true)
 		if err != nil {
 			return err
 		}
@@ -125,7 +186,7 @@ func (d *DataLoader) Close() error {
 func (d *DataLoader) loadCSBSCases() error {
 	log.Debug().Msgf("Loading Case data from: %s", d.dataDir)
 	// Find all the temporal data files
-	files, err := filepath.Glob(filepath.Join(d.dataDir, "covid19_county_*.csv"))
+	files, err := filepath.Glob(filepath.Join(d.dataDir, "historical/covid19_county_*.csv"))
 	if err != nil {
 		return err
 	}
@@ -189,7 +250,7 @@ func (d *DataLoader) loadCaseFile(file string) error {
 		}
 
 		// Now insert into the Cases table
-		err = d.insertCase(c)
+		err = d.insertCase(c, false)
 		if err != nil {
 			return err
 		}
@@ -198,7 +259,7 @@ func (d *DataLoader) loadCaseFile(file string) error {
 	return nil
 }
 
-func (d *DataLoader) loadUSACase(c *CountyCases) error {
+func (d *DataLoader) loadUSACase(c *CountyCases, deaths bool) error {
 
 	// For each case, see if we already have a county
 	// Otherwise, load a new county and move on
@@ -217,11 +278,11 @@ func (d *DataLoader) loadUSACase(c *CountyCases) error {
 		}
 	}
 
-	return d.insertCase(c)
+	return d.insertCase(c, deaths)
 }
 
 func (d *DataLoader) createNewCounty(county *CountyCases) error {
-	log.Debug().Msgf("No matching geography for %s, %s", county.County, county.State)
+	// log.Debug().Msgf("No matching geography for %s, %s", county.County, county.State)
 	var stateFIPS string
 
 	stateF, ok := StateFips[strings.ToUpper(county.State)]
@@ -262,9 +323,13 @@ func (d *DataLoader) createNewCounty(county *CountyCases) error {
 	// county.ID = geoid
 
 	// Load the new county
-	log.Debug().Msgf("Loading new county: %s, %s. %s", county.County, county.State, county.ID)
+	// log.Debug().Msgf("Loading new county: %s, %s. %s", county.County, county.State, county.ID)
+	countyName := county.County
+	if len(countyName) > 50 {
+		countyName = string(county.County[0:49])
+	}
 	_, err := d.conn.Exec(d.ctx, "INSERT INTO Counties(County, State, "+
-		"StateFP, CountyFP, ID) VALUES($1, $2, $3, $4, $5)", county.County, county.State, county.StateFIPS, county.CountyFIPS, county.ID)
+		"StateFP, CountyFP, ID) VALUES($1, $2, $3, $4, $5)", countyName, county.State, county.StateFIPS, county.CountyFIPS, county.ID)
 	if err != nil {
 		return err
 	}
@@ -272,13 +337,21 @@ func (d *DataLoader) createNewCounty(county *CountyCases) error {
 	return nil
 }
 
-func (d *DataLoader) insertCase(c *CountyCases) error {
-	_, err := d.conn.Exec(d.ctx, "INSERT INTO Cases(Geoid, "+
-		"Confirmed, NewConfirmed, "+
-		"Dead, NewDead, Update) VALUES($1, $2, $3, $4, $5, $6)", c.ID, c.Confirmed, c.NewConfirmed, c.Dead, c.NewDead, c.Reported)
-	if err != nil {
-		log.Printf("Error inserting county: %s, %s. %s %s", c.County, c.State, c.ID, c.Reported)
-		return err
+func (d *DataLoader) insertCase(c *CountyCases, deaths bool) error {
+	if deaths {
+		_, err := d.conn.Exec(d.ctx, "UPDATE Cases SET Dead=$2 WHERE Geoid=$1 AND Update=$3", c.ID, c.Dead, c.Reported)
+		if err != nil {
+			log.Printf("Error updateing county: %s, %s. %s %s", c.County, c.State, c.ID, c.Reported)
+			return err
+		}
+	} else {
+		_, err := d.conn.Exec(d.ctx, "INSERT INTO Cases(Geoid, "+
+			"Confirmed, NewConfirmed, "+
+			"Dead, NewDead, Update) VALUES($1, $2, $3, $4, $5, $6)", c.ID, c.Confirmed, c.NewConfirmed, c.Dead, c.NewDead, c.Reported)
+		if err != nil {
+			log.Printf("Error inserting county: %s, %s. %s %s", c.County, c.State, c.ID, c.Reported)
+			return err
+		}
 	}
 
 	return nil

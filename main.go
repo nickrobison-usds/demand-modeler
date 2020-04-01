@@ -75,10 +75,6 @@ func runServer(c *cli.Context) error {
 	if err != nil {
 		log.Fatal().Err(err).Send()
 	}
-	err = loader.LoadCSBS()
-	if err != nil {
-		log.Fatal().Err(err).Send()
-	}
 
 	return serve(backend, filesDir)
 }

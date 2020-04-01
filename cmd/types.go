@@ -83,7 +83,7 @@ func CountyCaseFromCSBS(row []string) (*CountyCases, error) {
 }
 
 // CountyCasesFromUSAFacts splits a USAFact row into multiple cases
-func CountyCasesFromUSAFacts(row []string, times []time.Time) ([]*CountyCases, error) {
+func CountyCasesFromUSAFacts(row []string, times []time.Time, deaths bool) ([]*CountyCases, error) {
 	// Each row is a single county, with all observations
 
 	statefp := fmt.Sprintf("%02s", row[3])
@@ -101,7 +101,9 @@ func CountyCasesFromUSAFacts(row []string, times []time.Time) ([]*CountyCases, e
 	for idx, val := range row[4:] {
 
 		reported := times[idx]
-		confirmed, err := strconv.Atoi(val)
+		// log.Debug().Msgf("value: %s %s %s", statefp, countyfp, val)
+
+		value, err := strconv.Atoi(val)
 		if err != nil {
 			return nil, err
 		}
@@ -111,20 +113,38 @@ func CountyCasesFromUSAFacts(row []string, times []time.Time) ([]*CountyCases, e
 			return nil, fmt.Errorf("Cannot find state name for %s", row[2])
 		}
 
-		cases = append(cases, &CountyCases{
-			ID:         countyfp + statefp,
-			County:     row[1],
-			CountyFIPS: countyfp,
-			StateFIPS:  statefp,
-			State:      state,
-			CaseCount: &CaseCount{
-				Confirmed:    confirmed,
-				Dead:         0,
-				NewConfirmed: 0,
-				NewDead:      0,
-				Reported:     reported,
-			},
-		})
+		if deaths {
+			cases = append(cases, &CountyCases{
+				ID:         countyfp + statefp,
+				County:     row[1],
+				CountyFIPS: countyfp,
+				StateFIPS:  statefp,
+				State:      state,
+				CaseCount: &CaseCount{
+					Confirmed:    0,
+					Dead:         value,
+					NewConfirmed: 0,
+					NewDead:      0,
+					Reported:     reported,
+				},
+			})
+		} else {
+			cases = append(cases, &CountyCases{
+				ID:         countyfp + statefp,
+				County:     row[1],
+				CountyFIPS: countyfp,
+				StateFIPS:  statefp,
+				State:      state,
+				CaseCount: &CaseCount{
+					Confirmed:    value,
+					Dead:         0,
+					NewConfirmed: 0,
+					NewDead:      0,
+					Reported:     reported,
+				},
+			})
+		}
+
 	}
 
 	return cases, nil
