@@ -29,9 +29,6 @@ func main() {
 
 	app := &cli.App{
 		Name: "Fearless Dreamer",
-		Commands: []*cli.Command{
-			cmd.USALoaderCMD(),
-		},
 		Action: runServer,
 	}
 
@@ -71,7 +68,7 @@ func runServer(c *cli.Context) error {
 	if err != nil {
 		log.Fatal().Err(err).Send()
 	}
-	err = loader.LoadUSAFacts()
+	err = loader.LoadDaikon()
 	if err != nil {
 		log.Fatal().Err(err).Send()
 	}

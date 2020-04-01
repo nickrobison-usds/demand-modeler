@@ -11,7 +11,6 @@ import (
 	"regexp"
 	"strings"
 	"sync/atomic"
-	"time"
 
 	"github.com/jackc/pgx/v4"
 	"github.com/rs/zerolog/log"
@@ -21,9 +20,6 @@ var unknownRegex = regexp.MustCompile("Waiting on information|Indeterminate|Unas
 
 // Unassigned values have to start higher than the largest FIPS code in the TIGER database (which is 840)
 var countyIter int32 = 850
-
-var usaFactsTime string = "1/2/06 MST"
-var usaFactsTimeDeaths string = "1/2/2006 MST"
 
 type DataLoader struct {
 	ctx     context.Context
@@ -46,161 +42,12 @@ func NewLoader(ctx context.Context, url string, dataDir string) (*DataLoader, er
 	}, nil
 }
 
-// LoadUSAFacts imports the USAFacts JSON file and loads it into the database
-func (d *DataLoader) LoadUSAFacts() error {
 
-	file := filepath.Join(d.dataDir, "covid_confirmed_usafacts.csv")
-
-	log.Debug().Msgf("Loading file: %s", file)
-	f, err := os.Open(file)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
-	// Read remaining rows
-	r := csv.NewReader(f)
-
-	// Transform the header rows into dates
-	header, err := r.Read()
-	if err != nil {
-		return nil
-	}
-
-	dates := make([]time.Time, len(header)-4)
-
-	for idx, h := range header[4:] {
-		t, err := time.Parse(usaFactsTime, h+" EST")
-		if err != nil {
-			return err
-		}
-		dates[idx] = t
-	}
-	log.Debug().Msgf("loading %s dates", len(dates))
-
-	rows, err := r.ReadAll()
-	if err != nil {
-		return err
-	}
-
-	var cases []*CountyCases
-
-	for _, row := range rows {
-		c, err := CountyCasesFromUSAFacts(row, dates, false)
-		if err != nil {
-			return err
-		}
-
-		cases = append(cases, c...)
-	}
-	log.Debug().Msgf("loading %s cases", len(cases))
-
-	for _, c := range cases {
-		err := d.loadUSACase(c, false)
-		if err != nil {
-			return err
-		}
-	}
-
-
-	fileD := filepath.Join(d.dataDir, "covid_deaths_usafacts.csv")
-
-	log.Debug().Msgf("Loading file: %s", fileD)
-	fd, err := os.Open(fileD)
-	if err != nil {
-		return err
-	}
-	defer fd.Close()
-
-	// Read remaining rows
-	rD := csv.NewReader(fd)
-
-	// Transform the header rows into dates
-	headerD, err := rD.Read()
-	if err != nil {
-		return nil
-	}
-
-	datesD := make([]time.Time, len(headerD)-4)
-
-	for idxD, hD := range headerD[4:] {
-		t, err := time.Parse(usaFactsTimeDeaths, hD+" EST")
-		if err != nil {
-			return err
-		}
-		datesD[idxD] = t
-	}
-	log.Debug().Msgf("loading %s dates", len(datesD))
-
-
-	rowsD, err := rD.ReadAll()
-	if err != nil {
-		return err
-	}
-	log.Debug().Msgf("loading %s rows", len(rowsD))
-
-	var casesD []*CountyCases
-
-	for _, rowD := range rowsD {
-		c, err := CountyCasesFromUSAFacts(rowD, datesD, true)
-		if err != nil {
-			return err
-		}
-
-		casesD = append(casesD, c...)
-	}
-
-	log.Debug().Msgf("loading %s cases", len(casesD))
-
-
-	for _, c := range casesD {
-		err := d.loadUSACase(c, true)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-//LoadCSBS loads the CSBS CSV files
-func (d *DataLoader) LoadCSBS() error {
-	return d.loadCSBSCases()
-}
-
-//Truncate removes all data from the Counties and Cases tables
-func (d *DataLoader) Truncate() error {
-	// Truncate the database
-	log.Warn().Msg("Truncating database")
-	_, err := d.conn.Exec(d.ctx, "TRUNCATE TABLE Counties CASCADE; TRUNCATE TABLE Cases CASCADE;")
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-//Close shutdowns the loader and closes the connection
-func (d *DataLoader) Close() error {
-	return d.conn.Close(d.ctx)
-}
-
-func (d *DataLoader) loadCSBSCases() error {
+// LoadDaikon loads the daikon CSV files
+func (d *DataLoader) LoadDaikon() error {
 	log.Debug().Msgf("Loading Case data from: %s", d.dataDir)
-	// Find all the temporal data files
-	files, err := filepath.Glob(filepath.Join(d.dataDir, "historical/covid19_county_*.csv"))
-	if err != nil {
-		return err
-	}
-	// Load each file individually
-	for _, file := range files {
-		err := d.loadCaseFile(file)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
 
-func (d *DataLoader) loadCaseFile(file string) error {
+	file := filepath.Join(d.dataDir, "TimeSeriesInput.csv")
 	log.Debug().Msgf("Loading file: %s", file)
 	f, err := os.Open(file)
 	if err != nil {
@@ -225,8 +72,7 @@ func (d *DataLoader) loadCaseFile(file string) error {
 		return err
 	}
 	for _, row := range rows {
-
-		c, err := CountyCaseFromCSBS(row)
+		c, err := CountyCaseFromDaikon(row)
 		if err != nil {
 			return err
 		}
@@ -250,7 +96,7 @@ func (d *DataLoader) loadCaseFile(file string) error {
 		}
 
 		// Now insert into the Cases table
-		err = d.insertCase(c, false)
+		err = d.insertCase(c)
 		if err != nil {
 			return err
 		}
@@ -259,26 +105,20 @@ func (d *DataLoader) loadCaseFile(file string) error {
 	return nil
 }
 
-func (d *DataLoader) loadUSACase(c *CountyCases, deaths bool) error {
-
-	// For each case, see if we already have a county
-	// Otherwise, load a new county and move on
-	var geoid string
-	err := d.conn.QueryRow(d.ctx, "SELECT id from Counties WHERE ID=$1", c.ID).Scan(&geoid)
+//Truncate removes all data from the Counties and Cases tables
+func (d *DataLoader) Truncate() error {
+	// Truncate the database
+	log.Warn().Msg("Truncating database")
+	_, err := d.conn.Exec(d.ctx, "TRUNCATE TABLE Counties CASCADE; TRUNCATE TABLE Cases CASCADE;")
 	if err != nil {
-		// Yes, this is terrible, but it works for now.
-		// This means we need to create a new county
-		if err.Error() == "no rows in result set" {
-			err = d.createNewCounty(c)
-			if err != nil {
-				return err
-			}
-		} else {
-			return err
-		}
+		return err
 	}
+	return nil
+}
 
-	return d.insertCase(c, deaths)
+//Close shutdowns the loader and closes the connection
+func (d *DataLoader) Close() error {
+	return d.conn.Close(d.ctx)
 }
 
 func (d *DataLoader) createNewCounty(county *CountyCases) error {
@@ -337,22 +177,13 @@ func (d *DataLoader) createNewCounty(county *CountyCases) error {
 	return nil
 }
 
-func (d *DataLoader) insertCase(c *CountyCases, deaths bool) error {
-	if deaths {
-		_, err := d.conn.Exec(d.ctx, "UPDATE Cases SET Dead=$2 WHERE Geoid=$1 AND Update=$3", c.ID, c.Dead, c.Reported)
-		if err != nil {
-			log.Printf("Error updateing county: %s, %s. %s %s", c.County, c.State, c.ID, c.Reported)
-			return err
-		}
-	} else {
-		_, err := d.conn.Exec(d.ctx, "INSERT INTO Cases(Geoid, "+
-			"Confirmed, NewConfirmed, "+
-			"Dead, NewDead, Update) VALUES($1, $2, $3, $4, $5, $6)", c.ID, c.Confirmed, c.NewConfirmed, c.Dead, c.NewDead, c.Reported)
-		if err != nil {
-			log.Printf("Error inserting county: %s, %s. %s %s", c.County, c.State, c.ID, c.Reported)
-			return err
-		}
+func (d *DataLoader) insertCase(c *CountyCases) error {
+	_, err := d.conn.Exec(d.ctx, "INSERT INTO Cases(Geoid, "+
+		"Confirmed, NewConfirmed, "+
+		"Dead, NewDead, Update) VALUES($1, $2, $3, $4, $5, $6)", c.ID, c.Confirmed, c.NewConfirmed, c.Dead, c.NewDead, c.Reported)
+	if err != nil {
+		log.Printf("Error inserting county: %s, %s. %s %s", c.County, c.State, c.ID, c.Reported)
+		return err
 	}
-
 	return nil
 }
