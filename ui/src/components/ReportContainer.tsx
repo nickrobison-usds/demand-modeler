@@ -255,7 +255,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
         line: AXIS_COLOR,
         lineSize: 1
       });
-      slide.addChart(ppt.ChartType.line, lineData, {
+      slide.addChart(ppt.ChartType.line, lines, {
         ...lineChartConfig(),
         chartColors
       });
