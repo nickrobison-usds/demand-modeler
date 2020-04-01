@@ -23,7 +23,7 @@ export const Report: React.FC<{}> = () => {
                         Conference of State Bank Supervisors
                     </a>
                     , as of {lastUpdated && dateTimeString(lastUpdated)}.
-                    {/* 12 states with highest case count as of 3/17 shown. */}
+                     12 states with highest case count as of 3/17 shown.
                 </div>
                 <div>
                     Data sourced from state health department websites; reporting may be
@@ -35,6 +35,7 @@ export const Report: React.FC<{}> = () => {
     };
 
     const maps = (lastUpdated: any) => {
+        return null;
         return (
             <>
                 <CountyMap
@@ -182,53 +183,53 @@ export const Report: React.FC<{}> = () => {
                 return (
                     <ReportContainer states={top10States} timeSeries={state.covidTimeSeries}>
                         <div className="report grid-container" style={{marginLeft: 0}}>
-                            {/*{maps(lastUpdated)}*/}
-                            {/*{top10States.map(s => (*/}
-                            {/*    <>*/}
-                            {/*        <StateBar*/}
-                            {/*            dataMode="over20Cases"*/}
-                            {/*            state={s.ID}*/}
-                            {/*            timeSeries={state.covidTimeSeries}*/}
-                            {/*            stat="confirmed"*/}
-                            {/*            stateCount={false}*/}
-                            {/*            reportView*/}
-                            {/*            meta={state.graphMetaData}*/}
-                            {/*        />*/}
-                            {/*        {lastUpdated && pagebreak(lastUpdated)}*/}
-                            {/*        <StateBar*/}
-                            {/*            dataMode="over20Cases"*/}
-                            {/*            state={s.ID}*/}
-                            {/*            timeSeries={state.covidTimeSeries}*/}
-                            {/*            stat="confirmed"*/}
-                            {/*            stateCount={false}*/}
-                            {/*            reportView*/}
-                            {/*            meta={state.graphMetaData}*/}
-                            {/*            new={true}*/}
-                            {/*        />*/}
-                            {/*        {lastUpdated && pagebreak(lastUpdated)}*/}
-                            {/*        <StateBar*/}
-                            {/*            dataMode="top10"*/}
-                            {/*            state={s.ID}*/}
-                            {/*            timeSeries={state.covidTimeSeries}*/}
-                            {/*            stat="dead"*/}
-                            {/*            stateCount={false}*/}
-                            {/*            reportView*/}
-                            {/*            meta={state.graphMetaData}*/}
-                            {/*        />*/}
-                            {/*        {lastUpdated && pagebreak(lastUpdated)}*/}
-                            {/*        <StateBar*/}
-                            {/*            dataMode="top10"*/}
-                            {/*            state={s.ID}*/}
-                            {/*            timeSeries={state.covidTimeSeries}*/}
-                            {/*            stat="dead"*/}
-                            {/*            stateCount={false}*/}
-                            {/*            reportView*/}
-                            {/*            meta={state.graphMetaData}*/}
-                            {/*            new={true}*/}
-                            {/*        />*/}
-                            {/*        {lastUpdated && pagebreak(lastUpdated)}*/}
-                            {/*    </>*/}
-                            {/*))}*/}
+                            {maps(lastUpdated)}
+                            {top10States.map(s => (
+                                <>
+                                    <StateBar
+                                        dataMode="over20Cases"
+                                        state={s.ID}
+                                        timeSeries={state.covidTimeSeries}
+                                        stat="confirmed"
+                                        stateCount={false}
+                                        reportView
+                                        meta={state.graphMetaData}
+                                    />
+                                    {lastUpdated && pagebreak(lastUpdated)}
+                                    <StateBar
+                                        dataMode="over20Cases"
+                                        state={s.ID}
+                                        timeSeries={state.covidTimeSeries}
+                                        stat="confirmed"
+                                        stateCount={false}
+                                        reportView
+                                        meta={state.graphMetaData}
+                                        new={true}
+                                    />
+                                    {lastUpdated && pagebreak(lastUpdated)}
+                                    <StateBar
+                                        dataMode="top10"
+                                        state={s.ID}
+                                        timeSeries={state.covidTimeSeries}
+                                        stat="dead"
+                                        stateCount={false}
+                                        reportView
+                                        meta={state.graphMetaData}
+                                    />
+                                    {lastUpdated && pagebreak(lastUpdated)}
+                                    <StateBar
+                                        dataMode="top10"
+                                        state={s.ID}
+                                        timeSeries={state.covidTimeSeries}
+                                        stat="dead"
+                                        stateCount={false}
+                                        reportView
+                                        meta={state.graphMetaData}
+                                        new={true}
+                                    />
+                                    {lastUpdated && pagebreak(lastUpdated)}
+                                </>
+                            ))}
                             <Top10Counties
                                 timeSeries={state.covidTimeSeries}
                                 stat="confirmed"
