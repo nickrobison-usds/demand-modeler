@@ -5,7 +5,7 @@ import {getCountyCases, getStateCases} from "../api";
 const NUMBER_OF_DAYS = 5;
 
 const loadData = async () => {
-  const start = new Date();
+  const start = new Date("1/22/2020");
   start.setDate(start.getDate() - NUMBER_OF_DAYS);
 
   const loadStateData = async () => {
