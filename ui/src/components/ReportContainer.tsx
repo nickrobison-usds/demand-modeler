@@ -10,6 +10,35 @@ export interface ReportContainerProps {
   timeSeries: CovidDateData;
 }
 
+const addTitleSlide = (ppt: pptxgen) => {
+  const titleSlide = ppt.addSlide();
+  titleSlide.addText("COVID-19 county-level case data", {
+    fontFace: "Calibri (Headings)",
+    bold: true,
+    color: ppt.SchemeColor.text2,
+    x: 1.8,
+    y: 2.26,
+    fontSize: 40,
+    h: 0.38,
+    w: 8.2
+  });
+  titleSlide.addText("Data as of (today)", {
+    fontSize: 20,
+    x: 1.8,
+    y: 2.75
+  });
+  titleSlide.addShape(ppt.ShapeType.line, {
+    color: "#FF0000",
+    height: 3.17,
+    width: 0.03,
+    rotate: 45,
+    x: 0.31,
+    y: 1.25,
+    h: 2.84,
+    w: 2.85
+  });
+}
+
 export const ReportContainer: React.FC<ReportContainerProps> = props => {
   const exportPowerPoint = async () => {
     // noinspection JSPotentiallyInvalidConstructorUsage
@@ -17,32 +46,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
     ppt.layout = "LAYOUT_16x9";
     ppt.company = "United States Digital Service";
     // Generate the title slide
-    const titleSlide = ppt.addSlide();
-    titleSlide.addText("COVID-19 county-level case data", {
-      fontFace: "Calibri (Headings)",
-      bold: true,
-      color: ppt.SchemeColor.text2,
-      x: 1.8,
-      y: 2.26,
-      fontSize: 40,
-      h: 0.38,
-      w: 8.2
-    });
-    titleSlide.addText("Data as of (today)", {
-      fontSize: 20,
-      x: 1.8,
-      y: 2.75
-    });
-    titleSlide.addShape(ppt.ShapeType.line, {
-      color: "#FF0000",
-      height: 3.17,
-      width: 0.03,
-      rotate: 45,
-      x: 0.31,
-      y: 1.25,
-      h: 2.84,
-      w: 2.85
-    });
+    addTitleSlide(ppt);
 
     // Do the state things
     const s = ppt.addSlide();
