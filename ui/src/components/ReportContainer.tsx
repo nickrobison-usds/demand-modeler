@@ -2,6 +2,7 @@ import React from "react";
 import pptxgen from "pptxgenjs";
 import {CovidDateData, State} from "../app/AppStore";
 import * as _ from "lodash";
+import * as PowerPointUtils from "../utils/PowerPointUtils";
 
 export interface ReportContainerProps {
     states: State[];
@@ -63,7 +64,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
         const ts = props.states
             .map(s => s.ID)
             .flatMap(i => props.timeSeries.states[i]);
-        console.debug("top states");
+        console.debug("top states", ts);
 
         const grouped = _.chain(ts)
             .sortBy(["Reported"])
@@ -78,23 +79,21 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
         //     .value();
         console.debug("Grouped", grouped);
 
-        const datas = Object.entries(grouped)
-            .map(entry => {
-                return {
-                    name: entry[0],
-                    labels: entry[1].map(e => e.State),
-                    values: entry[1].map(e => e.Confirmed)
-                }
-            });
-        console.debug("Datas", datas);
+        const groupedEntries = Object.entries(grouped);
+        const dataCombined = PowerPointUtils.buildClusteredStack(
+            // The date labels
+            groupedEntries.map(entry => entry[0]),
+            ["Confirmed", "Deaths"],
+            groupedEntries.length > 0 ? groupedEntries[0][1].map(e => e.State) : [],
+            [
+                groupedEntries.map(entry => entry[1].map(e => e.Confirmed)),
+                groupedEntries.map(entry => entry[1].map(e => e.Dead))
+            ]
+        );
 
+        console.debug("Data Combined:", dataCombined);
 
-        const values = props.states.map(s => s.Confirmed);
-        const dead = props.states.map(s => s.Dead);
-
-        s.addChart(
-            ppt.ChartType.bar,
-            datas, {x: 1, y: 1, w: 8, h: 4});
+        PowerPointUtils.addClusteredStackedChart(s, dataCombined, {x: 1, y: 1, w: 8, h: 4});
 
         //
         // // Add the map
