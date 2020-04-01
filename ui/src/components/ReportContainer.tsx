@@ -101,7 +101,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
     ppt.company = "United States Digital Service";
     // Generate the title slide
     addTitleSlide(ppt);
-    // addTopTenStates(ppt, props.states, props.weeklyTimeSeries)
+    addTopTenStates(ppt, props.states, props.weeklyTimeSeries)
 
     // Line chart
     const lineChartConfig = () => ({
@@ -173,8 +173,6 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       ...lineChartConfig(),
       title: "Cumulative cases per 100,000"
     });
-
-    addTopTenStates(ppt, props.states, props.weeklyTimeSeries);
 
     // // Add the map
     // let map = document.getElementsByClassName("mapboxgl-map").item(0);
