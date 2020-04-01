@@ -3194,12 +3194,3 @@ export const population: { [fipsKey: string]: number } = {
   "56043": 8328,
   "56045": 7234
 };
-
-export const statePopulation: { [s: string]: number } = Object.entries(
-  population
-).reduce((acc, [county, population]) => {
-  const stateKey = county.substr(0, 2);
-  if (!acc[stateKey]) acc[stateKey] = 0;
-  acc[stateKey] += population;
-  return acc;
-}, {} as { [s: string]: number });
