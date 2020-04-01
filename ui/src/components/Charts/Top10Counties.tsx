@@ -36,7 +36,7 @@ const getColors = (stat: Stat) => {
     case "dead":
       return ["#a9a9a9", "#888", "#666", "#333", "#111"];
     case "confirmed":
-      return ["#E5A3A3", "#D05C5C", "#CB2727", "#C00000", "#900000", "#700000"];
+      return ["#E5A3A3", "#D05C5C", "#CB2727", "#C00000", "#900000", "#700000", "#500000"];
     case "mortalityRate":
       return ["#a9a9a9", "#888", "#666", "#333", "#111"];
   }

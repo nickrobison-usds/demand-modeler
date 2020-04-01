@@ -32,7 +32,7 @@ const colors = [
   "#CB2727",
   "#C00000",
   "#900000",
-  "#700000"
+  "#700000", "#500000"
 ];
 
 export const StateTopLine = (props: Props) => {

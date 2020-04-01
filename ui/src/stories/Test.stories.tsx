@@ -58,7 +58,8 @@ storiesOf("USA Totals", module)
     return (
       <AppStoreProvider
         initialState={{
-          covidTimeSeries: mockCovidTimeSeries,
+          lastWeekCovidTimeSeries: mockCovidTimeSeries,
+          historicalCovidTimeSeries: mockCovidTimeSeries,
           selection: { date: "2020-3-16", metric: "confirmed" },
           mapView: { width: 0, height: 0, latitude: 0, longitude: 0, zoom: 0 }
         }}
@@ -71,7 +72,8 @@ storiesOf("USA Totals", module)
     return (
       <AppStoreProvider
         initialState={{
-          covidTimeSeries: mockCovidTimeSeries,
+          lastWeekCovidTimeSeries: mockCovidTimeSeries,
+          historicalCovidTimeSeries: mockCovidTimeSeries,
           selection: { date: "2020-3-15", state: "1", metric: "confirmed" },
           mapView: { width: 0, height: 0, latitude: 0, longitude: 0, zoom: 0 }
         }}
@@ -84,7 +86,8 @@ storiesOf("USA Totals", module)
     return (
       <AppStoreProvider
         initialState={{
-          covidTimeSeries: mockCovidTimeSeries,
+          lastWeekCovidTimeSeries: mockCovidTimeSeries,
+          historicalCovidTimeSeries: mockCovidTimeSeries,
           selection: {
             date: "2020-3-15",
             state: "1",

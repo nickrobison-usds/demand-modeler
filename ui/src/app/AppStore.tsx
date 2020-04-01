@@ -7,8 +7,12 @@ import React, {
 } from "react";
 import * as TypeGuards from "../utils/guards";
 import * as DateUtils from "../utils/DateUtils";
+import { statements } from "@babel/template";
+import { Stats } from "fs";
 // import L from "leaflet";
 // import mapboxgl from "mapbox-gl";
+
+const NUMBER_OF_DAYS = 7;
 
 export interface CovidStats {
   Confirmed: number;
@@ -56,9 +60,12 @@ export interface State extends CovidStats {
   Reported: Date;
 }
 
+type Region = State | County;
+
 export interface CovidDateData {
   states: { [key: string]: State[] };
   counties: { [key: string]: County[] };
+  graphMetaData?: GraphMetaData;
 }
 
 export interface GraphMetaData {
@@ -78,8 +85,8 @@ export interface AppState {
     county?: string;
     metric: Metric;
   };
-  graphMetaData?: GraphMetaData;
-  covidTimeSeries: CovidDateData;
+  lastWeekCovidTimeSeries: CovidDateData;
+  historicalCovidTimeSeries: CovidDateData;
   mapView: MapView;
 }
 const DEFAULT_LAT = 40.8136;
@@ -87,10 +94,14 @@ const DEFAULT_LNG = -99.0762;
 const DEFAULT_ZOOM = 2;
 export const initialState: AppState = {
   selection: {
-    date: DateUtils.formatDate(new Date()),
+    date: DateUtils.formatDate(new Date("1/22/2020")),
     metric: "confirmed"
   },
-  covidTimeSeries: {
+  lastWeekCovidTimeSeries: {
+    states: {},
+    counties: {}
+  },
+  historicalCovidTimeSeries: {
     states: {},
     counties: {}
   },
@@ -105,61 +116,87 @@ export const initialState: AppState = {
 
 export const AppContext = createContext({} as AppContextType);
 export const EXCLUDED_STATES = ["New York"];
+const getMetaData = (stateData: State[], countyData: County[]): GraphMetaData => {
+  let maxConfirmedCounty = 0;
+  let maxConfirmedState = 0;
+  let maxDeadCounty = 0;
+  let maxDeadState = 0;
+  countyData.forEach(e => {
+    if (
+      maxConfirmedCounty < e.Confirmed &&
+      !EXCLUDED_STATES.includes(e.State)
+    ) {
+      maxConfirmedCounty = e.Confirmed;
+    }
+    if (maxDeadCounty < e.Dead && !EXCLUDED_STATES.includes(e.State)) {
+      maxDeadCounty = e.Dead;
+    }
+  });
+  stateData.forEach(e => {
+    if (
+      maxConfirmedState < e.Confirmed &&
+      !EXCLUDED_STATES.includes(e.State)
+    ) {
+      maxConfirmedState = e.Confirmed;
+    }
+    if (maxDeadState < e.Dead && !EXCLUDED_STATES.includes(e.State)) {
+      maxDeadState = e.Dead;
+    }
+  });
+  return {
+    maxConfirmedCounty,
+    maxConfirmedState,
+    maxDeadCounty,
+    maxDeadState
+  };
+}
+
+const filterRegions = <T extends Region>(start: Date, regions: {[key: string]: T[]}): {[key: string]: T[]} => {
+  const regionObject: {[key: string]: T[]} = {};
+  Object.keys(regions).forEach(k => {
+    const regionArray: T[] = [];
+    regions[k].forEach((r: T) => {
+      if (r.Reported >= start) {
+        regionArray.push(r);
+      }
+    })
+    regionObject[k] = regionArray;
+ });
+ return regionObject;
+}
+
 const setCovidData = (state: AppState, { payload }: Action): AppState => {
-  if (TypeGuards.isCovidData(payload)) {
-    const stateData = Object.keys(payload.states).flatMap(
-      k => payload.states[k]
-    );
-    const countyData = Object.keys(payload.counties).flatMap(
-      k => payload.counties[k]
-    );
-    let maxConfirmedCounty = 0;
-    let maxConfirmedState = 0;
-    let maxDeadCounty = 0;
-    let maxDeadState = 0;
-    countyData.forEach(e => {
-      if (
-        maxConfirmedCounty < e.Confirmed &&
-        !EXCLUDED_STATES.includes(e.State)
-      ) {
-        maxConfirmedCounty = e.Confirmed;
-      }
-      if (maxDeadCounty < e.Dead && !EXCLUDED_STATES.includes(e.State)) {
-        maxDeadCounty = e.Dead;
-      }
-    });
-    stateData.forEach(e => {
-      if (
-        maxConfirmedState < e.Confirmed &&
-        !EXCLUDED_STATES.includes(e.State)
-      ) {
-        maxConfirmedState = e.Confirmed;
-      }
-      if (maxDeadState < e.Dead && !EXCLUDED_STATES.includes(e.State)) {
-        maxDeadState = e.Dead;
-      }
-    });
-
-    // consolidate all states records with ID = 99
-    const realStateId: { [name: string]: string } = {};
-    stateData.forEach(e => {
-      if (e.ID !== "99") {
-        realStateId[e.State] = e.ID;
-      }
-    });
-
-    return {
-      ...state,
-      covidTimeSeries: payload,
-      graphMetaData: {
-        maxConfirmedCounty,
-        maxConfirmedState,
-        maxDeadCounty,
-        maxDeadState
-      }
-    };
+  if (!TypeGuards.isCovidData(payload)) {
+    return state;
   }
-  return state;
+
+  // handle historical data
+  const stateData = Object.keys(payload.states).flatMap(k => payload.states[k]);
+  const countyData = Object.keys(payload.counties).flatMap(k => payload.counties[k]);
+  const historicalMetaData = getMetaData(stateData, countyData);
+
+  // calculate weekly data
+  const start = new Date();
+  start.setDate(start.getDate() - NUMBER_OF_DAYS);
+  const weeklyStates = filterRegions(start, payload.states);
+  const weeklyCountys = filterRegions(start, payload.counties);
+  const weeklyStateData = Object.keys(payload.states).flatMap(k => payload.states[k]);
+  const weeklyCountyData = Object.keys(payload.counties).flatMap(k => payload.counties[k]);
+  const weeklyMetaData = getMetaData(weeklyStateData, weeklyCountyData);
+
+  return {
+    ...state,
+    historicalCovidTimeSeries: {
+      states: payload.states,
+      counties: payload.counties,
+      graphMetaData: historicalMetaData
+    },
+    lastWeekCovidTimeSeries: {
+      states: weeklyStates,
+      counties: weeklyCountys,
+      graphMetaData: weeklyMetaData
+    },
+  };
 };
 
 const updateMapView = (state: AppState, { payload }: Action): AppState => {
@@ -185,7 +222,7 @@ const updateSelectedState = (
   let zoom = DEFAULT_ZOOM;
   if (id !== undefined) {
     // It's fine to pull a single value out of the array because the boundary doesn't change
-    // const s = state.covidTimeSeries.states[id][0];
+    // const s = state.lastWeekCovidTimeSeries.states[id][0];
     // if (s && s.Geo) {
     //   var polygon = s.Geo.coordinates;
     //   var fit = new L.Polygon(polygon as any).getBounds();
@@ -231,7 +268,7 @@ const updateSelectedCounty = (
   let lng = DEFAULT_LNG;
   let zoom = DEFAULT_ZOOM;
   // if (id !== undefined) {
-  //   const c = state.covidTimeSeries.counties[id][0];
+  //   const c = state.lastWeekCovidTimeSeries.counties[id][0];
   //   if (c && c.Geo) {
   //     var polygon = c.Geo.coordinates;
   //     var fit = new L.Polygon(polygon as any).getBounds();
