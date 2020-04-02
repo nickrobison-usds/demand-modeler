@@ -44,15 +44,11 @@ export interface AppContextType {
 
 export interface County extends CovidStats {
   ID: string;
-  County: string;
-  State: string;
   Reported: Date;
 }
 
 export interface State extends CovidStats {
   ID: string;
-  State: string;
-  CountyIDs?: string[];
   Reported: Date;
 }
 

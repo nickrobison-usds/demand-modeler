@@ -7,7 +7,6 @@ export interface StateIDs {
 
 interface StateResponse {
   ID: string;
-  State: string;
   Reported: string;
   Confirmed: number;
   Dead: number;
@@ -15,8 +14,6 @@ interface StateResponse {
 
 interface CountyResponse {
   ID: string;
-  County: string;
-  State: string;
   Reported: string;
   Confirmed: number;
   Dead: number;
