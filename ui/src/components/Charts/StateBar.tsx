@@ -16,7 +16,7 @@ import {
 import { getYMaxFromMaxCases } from "../../utils/utils";
 import { monthDay } from "../../utils/DateUtils";
 import { StripedFill } from "./StripedFill";
-import { population } from "./population";
+import { population } from "../../utils/fips/population";
 import { formatNum } from "../../utils/utils";
 
 type Props = {

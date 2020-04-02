@@ -14,7 +14,7 @@ import {
   EXCLUDED_STATES
 } from "../../app/AppStore";
 import { getYMaxFromMaxCases } from "../../utils/utils";
-import { stateAbbreviation } from "../../utils/stateAbbreviation";
+import { stateAbbreviation } from "../../utils/fips/stateAbbreviation";
 import { monthDay } from "../../utils/DateUtils";
 import { RenderChart } from "./RenderChart";
 
