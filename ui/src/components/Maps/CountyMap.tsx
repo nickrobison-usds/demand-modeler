@@ -18,7 +18,7 @@ import ReactMapGL, {
 } from "react-map-gl";
 import rawCountyGeoData from "./geojson-counties-fips.json";
 import stateGeoData from "./state.geo.json";
-import { stateAbbreviation } from "../../utils/stateAbbreviation";
+import { stateAbbreviation } from "../../utils/fips/stateAbbreviation";
 import { useResizeToContainer } from "../../utils/useResizeToContainer";
 import bbox from "@turf/bbox";
 import { easeCubic } from "d3";
