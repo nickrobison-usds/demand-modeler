@@ -18,6 +18,8 @@ import { monthDay } from "../../utils/DateUtils";
 import { RenderChart } from "./RenderChart";
 import { StripedFill } from "./StripedFill";
 import { CustomLegend } from "./StateBar";
+import * as fips from "../../utils/fips";
+import * as timeSeries from "../../utils/timesSeries";
 
 type Props = {
   state?: string;
@@ -37,21 +39,25 @@ export const StateMixedBar = (props: Props) => {
     return null;
   }
   const colors =
-  props.stat === "confirmed"
-    ? ["#E5A3A3", "#D05C5C", "#CB2727", "#C00000", "#900000", "#700000", "#500000"]
-    : ["#a9a9a9", "#888", "#666", "#333", "#111"];
+    props.stat === "confirmed"
+      ? [
+          "#E5A3A3",
+          "#D05C5C",
+          "#CB2727",
+          "#C00000",
+          "#900000",
+          "#700000",
+          "#500000"
+        ]
+      : ["#a9a9a9", "#888", "#666", "#333", "#111"];
   let title: string;
   let maxCases: number | undefined;
   let dates: string[];
   let data;
-  let stateName: string = "";
+  let stateName: string = props.state ? fips.getStateName(props.state) : "";
 
   // Top 10 Counties (total or in state)
   if (props.state || !props.stateCount) {
-    stateName =
-      Object.keys(props.timeSeries.states)
-        .flatMap(k => props.timeSeries.states[k])
-        .find(state => state.ID === props.state)?.State || "";
     if (stateName !== "") {
       title = `${stateName}`;
     } else {
@@ -59,12 +65,11 @@ export const StateMixedBar = (props: Props) => {
         props.stat === "confirmed" ? "cases" : "deaths"
       }${props.new ? " (24 hours change)" : ""}`;
     }
-    let countyData = Object.keys(props.timeSeries.counties).flatMap(
-      k => props.timeSeries.counties[k]
-    );
-    if (props.state) {
-      countyData = countyData.filter(({ State }) => State === stateName);
-    }
+
+    const countyData = props.state
+      ? timeSeries.getCountyDataForState(props.timeSeries, props.state)
+      : timeSeries.getCountyData(props.timeSeries);
+
     if (props.meta) {
       maxCases =
         props.stat === "confirmed"
@@ -75,14 +80,14 @@ export const StateMixedBar = (props: Props) => {
       ...new Set(countyData.map(({ Reported }) => monthDay(Reported)))
     ].sort();
     const counties = countyData.reduce((acc, el) => {
-      if (!acc[el.County]) acc[el.County] = {};
-      acc[el.County][monthDay(el.Reported)] =
+      if (!acc[el.ID]) acc[el.ID] = {};
+      acc[el.ID][monthDay(el.Reported)] =
         props.stat === "confirmed" ? el.Confirmed : el.Dead;
       return acc;
     }, {} as { [c: string]: { [d: string]: number } });
-    data = Object.entries(counties).reduce((acc, [Name, data]) => {
+    data = Object.entries(counties).reduce((acc, [ID, data]) => {
       acc.push({
-        Name,
+        Name: fips.getCountyName(ID),
         ...data
       });
       return acc;
@@ -105,14 +110,14 @@ export const StateMixedBar = (props: Props) => {
           : props.meta.maxDeadState;
     }
     const states = stateData.reduce((acc, el) => {
-      if (!acc[el.State]) acc[el.State] = {};
-      acc[el.State][monthDay(el.Reported)] =
+      if (!acc[el.ID]) acc[el.ID] = {};
+      acc[el.ID][monthDay(el.Reported)] =
         props.stat === "confirmed" ? el.Confirmed : el.Dead;
       return acc;
     }, {} as { [c: string]: { [d: string]: number } });
-    data = Object.entries(states).reduce((acc, [Name, data]) => {
+    data = Object.entries(states).reduce((acc, [ID, data]) => {
       acc.push({
-        Name,
+        Name: fips.getStateName(ID),
         ...data
       });
       return acc;
@@ -221,7 +226,15 @@ export const StateMixedBar = (props: Props) => {
           />
           <Tooltip />
           <div style={{ padding: "10px" }} />
-          <Legend content={<CustomLegend displayDates={displayDates} colors={colors} stat={props.stat}/>}/>
+          <Legend
+            content={
+              <CustomLegend
+                displayDates={displayDates}
+                colors={colors}
+                stat={props.stat}
+              />
+            }
+          />
           {displayDates.map((date, i) => {
             return (
               <Bar

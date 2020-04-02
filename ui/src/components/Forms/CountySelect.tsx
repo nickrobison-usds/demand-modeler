@@ -1,6 +1,8 @@
 import React, { useContext } from "react";
 import { ActionType, AppContext } from "../../app/AppStore";
 import UsaSelect from "../Forms/USASelect";
+import * as fips from "../../utils/fips";
+import * as timesSeries from "../../utils/timesSeries";
 
 interface Option {
   text: string;
@@ -8,7 +10,7 @@ interface Option {
 }
 
 const DEFAULT_TEXT = "All counties";
-const USATotal: React.FunctionComponent<{}> = () => {
+const CountySelect: React.FunctionComponent<{}> = () => {
   const {
     dispatch,
     state: {
@@ -21,32 +23,23 @@ const USATotal: React.FunctionComponent<{}> = () => {
     return null;
   }
 
-  const stateName = lastWeekCovidTimeSeries.states[state][0].State;
-
   const defaultOption: Option = {
     text: DEFAULT_TEXT,
     value: undefined
   };
 
-  const options: Option[] = [];
+  const options: Option[] = timesSeries.getCountiesForState(lastWeekCovidTimeSeries, state).map(c =>{
+    return {
+      text: fips.getCountyName(c.ID),
+      value: c.ID
+    }
+  });
+  options.sort((a, b) => (a.text > b.text ? 1 : -1));
+  options.unshift(defaultOption);
 
-  const countyMap: { [ID: string]: Option } = {};
-  Object.keys(lastWeekCovidTimeSeries.counties)
-    .flatMap(k => lastWeekCovidTimeSeries.counties[k])
-    .filter(c => c.State === stateName)
-    .forEach(c => {
-      countyMap[c.ID] = {
-        text: c.County,
-        value: c.ID
-      };
-    });
-  Object.values(countyMap).forEach((o: Option) => options.push(o));
   const onUpdate = (countyID: string | undefined) => {
     dispatch({ type: ActionType.UPDATE_SELECTED_COUNTY, payload: countyID });
   };
-
-  options.sort((a, b) => (a.text > b.text ? 1 : -1));
-  options.unshift(defaultOption);
 
   return (
     <div className="navigation-select">
@@ -62,4 +55,4 @@ const USATotal: React.FunctionComponent<{}> = () => {
   );
 };
 
-export default USATotal;
+export default CountySelect;

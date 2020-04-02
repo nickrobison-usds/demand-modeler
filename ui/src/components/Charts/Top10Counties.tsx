@@ -20,7 +20,7 @@ import { formatNum } from "../../utils/utils";
 import { RenderChart } from "./RenderChart";
 import { StripedFill } from "./StripedFill";
 import { CustomLegend } from "./StateBar";
-import { population } from "../../utils/fips/population";
+import * as fips from "../../utils/fips";
 
 type Props = {
   timeSeries: CovidDateData;
@@ -76,8 +76,8 @@ export const Top10Counties = (props: Props) => {
     ...new Set(countyData.map(({ Reported }) => monthDay(Reported)))
   ].sort();
   const counties = countyData.reduce((acc, el) => {
-    const p = population[el.ID];
-    const name = `${el.County}, ${stateAbbreviation[el.State]}${
+    const p = fips.getPopulation(el.ID);
+    const name = `${fips.getCountyName(el.ID)}, ${fips.getStateAbr(el.ID)}${
       p ? ` (${formatNum(p)})` : ""
     }`;
     if (!acc[name]) acc[name] = {};

@@ -18,7 +18,7 @@ import ReactMapGL, {
 } from "react-map-gl";
 import rawCountyGeoData from "./geojson-counties-fips.json";
 import stateGeoData from "./state.geo.json";
-import { stateAbbreviation } from "../../utils/fips/stateAbbreviation";
+import * as fips from "../../utils/fips";
 import { useResizeToContainer } from "../../utils/useResizeToContainer";
 import bbox from "@turf/bbox";
 import { easeCubic } from "d3";
@@ -258,8 +258,8 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
             console.log(region[0])
             Name =
               level === "state"
-                ? region[0].State
-                : `${(region[0] as County).County}, ${
+                ? fips.getStateName(region[0].ID)
+                : `${fips.getCountyName(region[0].ID)}, ${
                     stateAbbreviation[region[0].State]
                   }`;
           }
