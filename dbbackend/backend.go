@@ -64,7 +64,7 @@ func (d *DBBackend) GetTopStates(ctx context.Context, start *time.Time) ([]cmd.S
 	}
 	defer conn.Release()
 
-	query := "SELECT c.geoid, c.Update, SUM(c.Confirmed) as confirmed, SUM(c.Dead) FROM cases as c "
+	query := "SELECT substring(c.geoid, 0, 2), c.Update, SUM(c.Confirmed) as confirmed, SUM(c.Dead) FROM cases as c "
 
 	if start != nil {
 		query = fmt.Sprintf("%s WHERE c.update > '%s' ", query, start.Format(time.RFC3339))
