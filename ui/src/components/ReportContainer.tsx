@@ -287,59 +287,89 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
     addLineChartWithLegend(allStateSlide, stateLineData);
 
     // Metro areas (stacked)
-    const metroArea = "Washington";
-
-    const barColors = {
-      confirmed: ["52000E", "824952", "B59399"],
-    };
-
-    const barChartConfig = () => ({
-      ...lineChartConfig(),
-      barGrouping: "stacked",
-      valAxisTitle: "Confirmed cases".toUpperCase(),
-      w: 9,
-      showLabel: true,
-      showValue: true,
-      barGapWidthPct: 10,
-      dataLabelFontSize: 6,
-      dataLabelFontFace: TEXT_FONT_FACE,
-      dataLabelColor: "EEEEEE",
-      chartColors: barColors.confirmed,
-      showLegend: true,
-      legendFontFace: TEXT_FONT_FACE,
-      valGridLine: { style: "solid", color: AXIS_COLOR },
-    });
+    const metroArea = "Seattle";
 
     type StackedBarData = {
       name: string;
       labels: string[];
       values: number[];
     };
-    const waCounties = ["53033", "53053", "53061"].reverse();
-    const stat: Stat = "confirmed";
-    const countyData = waCounties
-      .map((fips) => props.historicalTimeSeries.counties[fips])
-      .reduce((acc, county) => {
-        const data: StackedBarData = {
-          name: county[0].County + ", " + stateAbbreviation[county[0].State],
-          labels: [],
-          values: [],
-        };
-        county.reverse().forEach((el) => {
-          data.labels.push(
-            el.Reported.getMonth() + 1 + "/" + el.Reported.getDate()
-          );
-          data.values.push(el[stat === "confirmed" ? "Confirmed" : "Dead"]);
-        });
-        acc.push(data);
-        return acc;
-      }, [] as StackedBarData[]);
 
-    addSlideWithTitle(ppt, `${metroArea} Metro Area: Confirmed Cases`).addChart(
-      ppt.ChartType.bar,
-      countyData,
-      barChartConfig()
-    );
+    const waCounties = ["53033", "53053", "53061"];
+
+    const addCountySlide = (
+      ppt: pptxgen,
+      metroArea: string,
+      counties: string[],
+      stat: Stat,
+      daily = false
+    ): pptxgen.ISlide => {
+      const barColors =
+        stat === "confirmed"
+          ? ["420000", "910A0A", "B12323"]
+          : ["121D2D", "4C5664", "697380"];
+
+      const barChartConfig = () => ({
+        ...lineChartConfig(),
+        barGrouping: "stacked",
+        valAxisTitle: `Confirmed ${
+          stat === "confirmed" ? "cases" : "deaths"
+        }`.toUpperCase(),
+        w: 9,
+        showLabel: true,
+        showValue: true,
+        barGapWidthPct: 10,
+        dataLabelFontSize: 6,
+        dataLabelFontFace: TEXT_FONT_FACE,
+        dataLabelColor: "EEEEEE",
+        chartColors: barColors,
+        showLegend: true,
+        legendFontFace: TEXT_FONT_FACE,
+        valGridLine: { style: "solid", color: AXIS_COLOR },
+        dataLabelFormatCode: "0;;;",
+      });
+
+      const countyData = [...counties]
+        .reverse()
+        .map((fips) => props.historicalTimeSeries.counties[fips])
+        .reduce((acc, county) => {
+          const data: StackedBarData = {
+            name: county[0].County + ", " + stateAbbreviation[county[0].State],
+            labels: [],
+            values: [],
+          };
+          const orderedCounties = [...county].reverse();
+
+          orderedCounties.forEach((el, i) => {
+            data.labels.push(
+              el.Reported.getMonth() + 1 + "/" + el.Reported.getDate()
+            );
+            let value = el[stat === "confirmed" ? "Confirmed" : "Dead"];
+            if (daily && orderedCounties[i - 1]) {
+              value -=
+                orderedCounties[i - 1][
+                  stat === "confirmed" ? "Confirmed" : "Dead"
+                ];
+            }
+            data.values.push(value);
+          });
+          acc.push(data);
+          return acc;
+        }, [] as StackedBarData[]);
+
+      return addSlideWithTitle(
+        ppt,
+        `${metroArea} Metro Area: Confirmed ${
+          stat === "confirmed" ? "Cases" : "Deaths"
+        }${daily ? " (Daily)" : ""}`
+      ).addChart(ppt.ChartType.bar, countyData, barChartConfig());
+    };
+
+    addCountySlide(ppt, metroArea, waCounties, "confirmed");
+    addCountySlide(ppt, metroArea, waCounties, "confirmed", true);
+    addCountySlide(ppt, metroArea, waCounties, "dead");
+    addCountySlide(ppt, metroArea, waCounties, "dead", true);
+
     // Washington confirmed cases
     // King, Pierce, Snohomish
 
