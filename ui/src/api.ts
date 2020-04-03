@@ -82,6 +82,7 @@ export async function getStateCases(
         return {
           ...s,
           Reported: parseDate(s.Reported),
+          ID: s.ID + '000',
           mortalityRate: s.Dead / s.Confirmed
         };
       }
