@@ -49,5 +49,32 @@ export const lineColors: { [s: string]: string } = {
   TX: "558031",
   MN: "C0DDF4",
   WV: "FDCCA6",
-  NE: "E5E5E5"
+  NE: "E5E5E5",
 };
+
+export const metroAreas: { area: string; fipsCodes: string[] }[] = [
+  {
+    area: "Seattle, WA",
+    fipsCodes: ["53033", "53053", "53061"],
+  },
+  {
+    area: "Detroit, MI",
+    fipsCodes: ["26125", "26163"],
+  },
+  {
+    area: "New York, NY",
+    fipsCodes: ["34003", "36059", "36061", "36087", "34037", "36119"],
+  },
+  {
+    area: "Chicago, IL",
+    fipsCodes: ["17031"],
+  },
+  {
+    area: "New Orleans, LA",
+    fipsCodes: ["22051", "22071"],
+  },
+  {
+    area: "Los Angeles, CA",
+    fipsCodes: ["06037", "06059", "06065", "06071", "06111"],
+  },
+];

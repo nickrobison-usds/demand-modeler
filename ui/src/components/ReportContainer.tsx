@@ -5,7 +5,7 @@ import * as _ from "lodash";
 import * as PowerPointUtils from "../utils/PowerPointUtils";
 import { stateAbbreviation } from "../utils/fips/stateAbbreviation";
 import * as fips from "../utils/fips";
-import { lineColors } from "../utils/reportHelpers";
+import { lineColors, metroAreas } from "../utils/reportHelpers";
 
 export interface ReportContainerProps {
   states: State[];
@@ -23,12 +23,12 @@ export const addTitleSlide = (ppt: pptxgen) => {
     y: 2.26,
     fontSize: 40,
     h: 0.38,
-    w: 8.2
+    w: 8.2,
   });
   titleSlide.addText("Data as of (today)", {
     fontSize: 20,
     x: 1.8,
-    y: 2.75
+    y: 2.75,
   });
   titleSlide.addShape(ppt.ShapeType.line, {
     color: "#FF0000",
@@ -38,7 +38,7 @@ export const addTitleSlide = (ppt: pptxgen) => {
     x: 0.31,
     y: 1.25,
     h: 2.84,
-    w: 2.85
+    w: 2.85,
   });
 };
 
@@ -50,10 +50,10 @@ export const addTopTenStates = (
   // Do the state things
   const s = ppt.addSlide();
 
-  const names = states.map(s => s.ID);
+  const names = states.map((s) => s.ID);
   console.debug(
     "States",
-    states.map(s => s.ID)
+    states.map((s) => s.ID)
   );
   console.debug("Names", names);
 
@@ -65,7 +65,7 @@ export const addTopTenStates = (
   // filter(s => names.has(s.ID));
 
   // console.debug("Tops: ", topStates);
-  const ts = states.map(s => s.ID).flatMap(i => timeSeries.states[i]);
+  const ts = states.map((s) => s.ID).flatMap((i) => timeSeries.states[i]);
   console.debug("top states");
 
   const grouped = _.chain(ts)
@@ -82,12 +82,12 @@ export const addTopTenStates = (
   const groupedEntries = Object.entries(grouped);
   const dataCombined = PowerPointUtils.buildClusteredStack(
     // The date labels
-    groupedEntries.map(entry => entry[0]),
+    groupedEntries.map((entry) => entry[0]),
     ["Confirmed", "Deaths"],
-    groupedEntries.length > 0 ? groupedEntries[0][1].map(e => e.State) : [],
+    groupedEntries.length > 0 ? groupedEntries[0][1].map((e) => e.State) : [],
     [
-      groupedEntries.map(entry => entry[1].map(e => e.Confirmed)),
-      groupedEntries.map(entry => entry[1].map(e => e.Dead))
+      groupedEntries.map((entry) => entry[1].map((e) => e.Confirmed)),
+      groupedEntries.map((entry) => entry[1].map((e) => e.Dead)),
     ]
   );
 
@@ -97,11 +97,11 @@ export const addTopTenStates = (
     x: 1,
     y: 1,
     w: 8,
-    h: 4
+    h: 4,
   });
 };
 
-export const ReportContainer: React.FC<ReportContainerProps> = props => {
+export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
   const exportPowerPoint = async () => {
     // noinspection JSPotentiallyInvalidConstructorUsage
     const ppt = new pptxgen();
@@ -124,7 +124,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       x: 0,
       y: 0.3,
       w: "100%",
-      align: "center"
+      align: "center",
     });
 
     // Line chart
@@ -162,7 +162,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       axisLineColor: AXIS_COLOR,
       serAxisLabelColor: TEXT_COLOR,
       serAxisTitleColor: TEXT_COLOR,
-      valAxisMajorUnit: 0
+      valAxisMajorUnit: 0,
     });
 
     type LineData = { name: string; labels: string[]; values: number[] };
@@ -170,20 +170,25 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
     const stateLineData = Object.values(
       props.historicalTimeSeries.states
     ).reduce((acc, stateSeries) => {
-      const nameNotNull = stateSeries.find(s => s.State !== "") as State;
+      const nameNotNull = stateSeries.find((s) => s.State !== "") as State;
       const state: LineData = {
         name: stateAbbreviation[nameNotNull.State],
         labels: [],
-        values: []
+        values: [],
       };
-      stateSeries.forEach(el => {
+      stateSeries.forEach((el) => {
         if (el.State !== "") {
           state.labels.push(
             el.Reported.getMonth() + 1 + "/" + el.Reported.getDate()
           );
-          state.values.push(el.Confirmed / (fips.getPopulation(el.ID + "000") / 100000));
+          state.values.push(
+            el.Confirmed / (fips.getPopulation(el.ID + "000") / 100000)
+          );
         }
       });
+      // The first day is only used to calculate diffs. Remove it.
+      state.labels.shift();
+      state.values.shift();
       acc.push(state);
       return acc;
     }, [] as LineData[]);
@@ -193,12 +198,12 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
     });
 
     const exceptionStates = ["NY", "NJ", "CT", "WA", "CA"];
-    const exceptionStateData = stateLineData.filter(el =>
+    const exceptionStateData = stateLineData.filter((el) =>
       exceptionStates.includes(el.name)
     );
 
     const nonExceptionStateData = stateLineData.filter(
-      el => !exceptionStates.includes(el.name)
+      (el) => !exceptionStates.includes(el.name)
     );
 
     const addSlideWithTitle = (ppt: pptxgen, title: string): pptxgen.ISlide => {
@@ -211,7 +216,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
           w: 2.5,
           h: 0.0,
           line: AXIS_COLOR,
-          lineSize: 1.5
+          lineSize: 1.5,
         });
     };
 
@@ -222,7 +227,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       const chartColors: string[] = [];
       // Skip territories not in existing slides
       const lines = [...lineData].filter(
-        el => lineColors[el.name] !== undefined
+        (el) => lineColors[el.name] !== undefined
       );
       lines.forEach((el, i) => {
         const color = lineColors[el.name];
@@ -232,12 +237,12 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
           h: 0.09,
           x: i % 2 === 0 ? 8 : 8.6,
           y: 1.41 + 0.14 * Math.floor(i / 2),
-          fill: { color }
+          fill: { color },
         });
         slide.addText(el.name, {
           x: i % 2 === 0 ? 8.2 : 8.8,
           y: 1.3 + 0.14 * Math.floor(i / 2),
-          fontSize: 8
+          fontSize: 8,
         });
       });
       slide.addShape(ppt.ShapeType.line, {
@@ -246,7 +251,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
         w: 0,
         h: 0.14 * Math.ceil(lines.length / 2),
         line: AXIS_COLOR,
-        lineSize: 1
+        lineSize: 1,
       });
       slide.addShape(ppt.ShapeType.line, {
         x: 8.84,
@@ -254,11 +259,11 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
         w: 0,
         h: 0.14 * Math.floor(lines.length / 2),
         line: AXIS_COLOR,
-        lineSize: 1
+        lineSize: 1,
       });
       slide.addChart(ppt.ChartType.line, lines, {
         ...lineChartConfig(),
-        chartColors
+        chartColors,
       });
       return slide;
     };
@@ -283,6 +288,123 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       "Cumulative cases per 100,000: All States"
     );
     addLineChartWithLegend(allStateSlide, stateLineData);
+
+    // Metro areas (stacked)
+    type StackedBarData = {
+      name: string;
+      labels: string[];
+      values: number[];
+    };
+
+    let dataLabelFontSize = 7;
+
+    const addCountySlide = (
+      ppt: pptxgen,
+      metroArea: string,
+      counties: string[],
+      stat: Stat,
+      daily = false
+    ): pptxgen.ISlide => {
+      let firstCounty: string = "";
+
+      const countyData = [...counties]
+        .reverse()
+        .map((fips) => props.historicalTimeSeries.counties[fips])
+        .reduce((acc, county) => {
+          if (!firstCounty) {
+            firstCounty = `${county[0].County} County`;
+          }
+
+          const data: StackedBarData = {
+            name: county[0].County + ", " + stateAbbreviation[county[0].State],
+            labels: [],
+            values: [],
+          };
+          // Data comes in in reverse chronological order
+          const orderedCounties = [...county].reverse();
+
+          orderedCounties.forEach((el, i) => {
+            data.labels.push(
+              el.Reported.getMonth() + 1 + "/" + el.Reported.getDate()
+            );
+            let value = el[stat === "confirmed" ? "Confirmed" : "Dead"];
+            if (daily && orderedCounties[i - 1]) {
+              value = Math.max(
+                value -
+                  orderedCounties[i - 1][
+                    stat === "confirmed" ? "Confirmed" : "Dead"
+                  ],
+                0
+              );
+            }
+            if (value > 9999) {
+              dataLabelFontSize = 5;
+            }
+            data.values.push(value);
+          });
+          // The first day is only used to calculate diffs. Remove it.
+          data.labels.shift();
+          data.values.shift();
+          acc.push(data);
+          return acc;
+        }, [] as StackedBarData[]);
+
+      const confirmedColors = [
+        ...(counties.length > 3 ? ["0A0000"] : []),
+        ...(counties.length > 5 ? ["1F0000"] : []),
+        "420000",
+        "910A0A",
+        "B12323",
+        ...(counties.length > 4 ? ["CF4545"] : []),
+      ].slice(0, counties.length);
+      const deadColors = [
+        ...(counties.length > 3 ? ["111111"] : []),
+        "121D2D",
+        ...(counties.length > 5 ? ["303133"] : []),
+        "4C5664",
+        "697380",
+        ...(counties.length > 4 ? ["899099"] : []),
+      ].slice(0, counties.length);
+
+      const barColors = stat === "confirmed" ? confirmedColors : deadColors;
+
+      const barChartConfig = () => ({
+        ...lineChartConfig(),
+        barGrouping: "stacked",
+        valAxisTitle: `Confirmed ${
+          stat === "confirmed" ? "cases" : "deaths"
+        }`.toUpperCase(),
+        w: 9,
+        showLabel: true,
+        showValue: true,
+        barGapWidthPct: 10,
+        dataLabelFontSize,
+        dataLabelFontFace: TEXT_FONT_FACE,
+        dataLabelColor: "EEEEEE",
+        chartColors: barColors,
+        showLegend: counties.length > 1,
+        legendFontFace: TEXT_FONT_FACE,
+        valGridLine: { style: "solid", color: AXIS_COLOR },
+        dataLabelFormatCode: "0;;;",
+      });
+
+      return addSlideWithTitle(
+        ppt,
+        `${metroArea} Metro Area${
+          counties.length === 1 ? ` (${firstCounty})` : ""
+        }: Confirmed ${stat === "confirmed" ? "Cases" : "Deaths"}${
+          daily ? " Daily" : ""
+        }`
+      ).addChart(ppt.ChartType.bar, countyData, barChartConfig());
+    };
+
+    metroAreas.forEach((metroArea) => {
+      const { area, fipsCodes } = metroArea;
+      addCountySlide(ppt, area, fipsCodes, "confirmed");
+      addCountySlide(ppt, area, fipsCodes, "confirmed", true);
+      addCountySlide(ppt, area, fipsCodes, "dead");
+      addCountySlide(ppt, area, fipsCodes, "dead", true);
+    });
 
     // // Add the map
     // let map = document.getElementsByClassName("mapboxgl-map").item(0);
