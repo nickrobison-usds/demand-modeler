@@ -8,7 +8,7 @@ SOURCE = "CSBS"
 REPORTS = [
     {
         "report_id": "ri.report.main.report.273e0b98-3e55-4a85-9bd8-da1349ee7701",
-        "params": [{"Source":[SOURCE], "State":["North Carolina"]}],
+        "params": {"Source":[SOURCE], "State":["North Carolina"]},
         "name": "north_carolina.pptx"
     }
 ]
@@ -18,10 +18,10 @@ REPORT_RENDER_URL = f"{BASE_URL}/resource-renderer/api/report/"
 HEADERS = {'Authorization' : "Bearer {}".format(os.environ["TOKEN"])}
 
 
-for report in reports:
+for report in REPORTS:
     print(f"rendering {report}")
     render_request = requests.post(
-        f"{REPORT_RENDER_URL}{report["report_id"]}",
+        f"{REPORT_RENDER_URL}{report['report_id']}",
         json={
             "asynchronous": False,
             "format":"PPT",
@@ -33,6 +33,7 @@ for report in reports:
     )
 
     print(render_request.status_code)
+    print(render_request.text)
     preview_rid = render_request.json()['previewRid']
 
     ppt_stream = requests.get(
