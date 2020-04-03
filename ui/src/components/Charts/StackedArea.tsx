@@ -80,11 +80,11 @@ export const StackedArea = (props: Props) => {
   const dedupedData: any[] = [];
   for (let i = 0; i < data.length; i++) {
     if (data[i + 1]) {
-      if (data[i].Name.split("|")[0] === data[i + 1].Name.split("|")[0]) {
+      if (data[i].Name.split("|")[1] === data[i + 1].Name.split("|")[1]) {
         continue;
       }
     }
-    data[i].Name = data[i].Name.split("|")[0];
+    data[i].Name = data[i].Name.split("|")[1];
     dedupedData.push(data[i]);
   }
 

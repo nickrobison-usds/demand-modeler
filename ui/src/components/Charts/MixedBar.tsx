@@ -34,6 +34,7 @@ export const MixedBar = (props: Props) => {
         .map(({ Reported }) => monthDay(Reported))
     )
   ].sort();
+  console.log("dates", dates)
   const data = dates.map(date => {
     let total = 0;
     if (props.county) {
@@ -81,11 +82,11 @@ export const MixedBar = (props: Props) => {
   const dedupedData: any[] = [];
   for (let i = 0; i < data.length; i++) {
     if (data[i + 1]) {
-      if (data[i].Name.split("|")[0] === data[i + 1].Name.split("|")[0]) {
+      if (data[i].Name.split("|")[1] === data[i + 1].Name.split("|")[1]) {
         continue;
       }
     }
-    data[i].Name = data[i].Name.split("|")[0];
+    data[i].Name = data[i].Name.split("|")[1];
     dedupedData.push(data[i]);
   }
 

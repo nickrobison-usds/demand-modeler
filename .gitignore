@@ -5,5 +5,5 @@ node_modules
 package-lock.json
 ui/node_modules
 ui/build
-ui/.env.local
+.env.local
 .DS_Store

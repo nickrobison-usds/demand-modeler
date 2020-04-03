@@ -113,12 +113,12 @@ export const Top10Counties = (props: Props) => {
       }
       if (d[i + 1]) {
         if (
-          d[i].toString().split("|")[0] === d[i + 1].toString().split("|")[0]
+          d[i].toString().split("|")[1] === d[i + 1].toString().split("|")[1]
         ) {
           continue;
         }
       }
-      dedupedElement[d[i].toString().split("|")[0]] = e[key];
+      dedupedElement[d[i].toString().split("|")[1]] = e[key];
     }
     dedupedData.push(dedupedElement);
   });
@@ -126,7 +126,7 @@ export const Top10Counties = (props: Props) => {
   const displayDates: string[] = [];
   const displayDateSet = new Set();
   dates.forEach(d => {
-    const key = d.split("|")[0];
+    const key = d.split("|")[1];
     if (!displayDateSet.has(key)) {
       displayDates.push(key);
       displayDateSet.add(key);
@@ -199,10 +199,10 @@ export const Top10Counties = (props: Props) => {
           />
           {displayDates.map((date, i) => (
             <Bar
-              key={`${date.split("|")[0]} New`}
-              id={`${date.split("|")[0]}`}
-              stackId={date.split("|")[0]}
-              dataKey={`${date.split("|")[0]} New`}
+              key={`${date.split("|")[1]} New`}
+              id={`${date.split("|")[1]}`}
+              stackId={date.split("|")[1]}
+              dataKey={`${date.split("|")[1]} New`}
               shape={<StripedFill fill={colors[i]} />}
             />
           ))}
@@ -210,10 +210,10 @@ export const Top10Counties = (props: Props) => {
             return props.new ? (
               null
             ) :       <Bar
-            key={`${date.split("|")[0]} Existing`}
-            id={`${date.split("|")[0]}`}
-            stackId={date.split("|")[0]}
-            dataKey={`${date.split("|")[0]} Existing`}
+            key={`${date.split("|")[1]} Existing`}
+            id={`${date.split("|")[1]}`}
+            stackId={date.split("|")[1]}
+            dataKey={`${date.split("|")[1]} Existing`}
             fill={colors[i]}
           />;
           })}

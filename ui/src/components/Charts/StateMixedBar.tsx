@@ -76,7 +76,7 @@ export const StateMixedBar = (props: Props) => {
     ].sort();
     const counties = countyData.reduce((acc, el) => {
       if (!acc[el.County]) acc[el.County] = {};
-      acc[el.County][monthDay(el.Reported)] =
+      acc[el.County][monthDay(el.Reported).split("|")[1]] =
         props.stat === "confirmed" ? el.Confirmed : el.Dead;
       return acc;
     }, {} as { [c: string]: { [d: string]: number } });
@@ -106,7 +106,7 @@ export const StateMixedBar = (props: Props) => {
     }
     const states = stateData.reduce((acc, el) => {
       if (!acc[el.State]) acc[el.State] = {};
-      acc[el.State][monthDay(el.Reported)] =
+      acc[el.State][monthDay(el.Reported).split("|")[1]] =
         props.stat === "confirmed" ? el.Confirmed : el.Dead;
       return acc;
     }, {} as { [c: string]: { [d: string]: number } });
@@ -131,12 +131,12 @@ export const StateMixedBar = (props: Props) => {
       }
       if (d[i + 1]) {
         if (
-          d[i].toString().split("|")[0] === d[i + 1].toString().split("|")[0]
+          d[i].toString().split("|")[1] === d[i + 1].toString().split("|")[1]
         ) {
           continue;
         }
       }
-      dedupedElement[d[i].toString().split("|")[0]] = e[key];
+      dedupedElement[d[i].toString().split("|")[1]] = e[key];
     }
     dedupedData.push(dedupedElement);
   });
@@ -160,7 +160,7 @@ export const StateMixedBar = (props: Props) => {
   const displayDates: string[] = [];
   const displayDateSet = new Set();
   dates.forEach(d => {
-    const key = d.split("|")[0];
+    const key = d.split("|")[1];
     if (!displayDateSet.has(key)) {
       displayDates.push(key);
       displayDateSet.add(key);
@@ -185,6 +185,7 @@ export const StateMixedBar = (props: Props) => {
     return obj;
   });
 
+  console.log(finalData)
   return (
     <>
       <RenderChart
@@ -222,12 +223,13 @@ export const StateMixedBar = (props: Props) => {
           <div style={{ padding: "10px" }} />
           <Legend content={<CustomLegend displayDates={displayDates} colors={colors} stat={props.stat}/>}/>
           {displayDates.map((date, i) => {
+            console.log(date)
             return (
               <Bar
-                id={`${date.split("|")[0]}`}
-                key={`${date.split("|")[0]} New`}
-                stackId={`${date.split("|")[0]}`}
-                dataKey={`${date.split("|")[0]} New`}
+                id={`${date}`}
+                key={`${date} New`}
+                stackId={`${date}`}
+                dataKey={`${date} New`}
                 shape={<StripedFill fill={colors[i]} />}
               />
             );
@@ -236,10 +238,10 @@ export const StateMixedBar = (props: Props) => {
             return props.new ? (
               null
             ) : <Bar
-            key={`${date.split("|")[0]} Existing`}
-            id={`${date.split("|")[0]}`}
-            stackId={date.split("|")[0]}
-            dataKey={`${date.split("|")[0]} Existing`}
+            key={`${date} Existing`}
+            id={`${date}`}
+            stackId={date}
+            dataKey={`${date} Existing`}
             fill={colors[i]}
           />;
           })}

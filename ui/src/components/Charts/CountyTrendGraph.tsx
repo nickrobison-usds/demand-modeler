@@ -44,7 +44,7 @@ export const CountyTrendGraph = (props: Props) => {
 
   dates = [
     ...new Set(
-      countyData.map(({ Reported }) => monthDay(Reported).split("|")[0])
+      countyData.map(({ Reported }) => monthDay(Reported))
     )
   ].sort();
 
@@ -56,11 +56,12 @@ export const CountyTrendGraph = (props: Props) => {
 
     const name = `${el.County}, ${stateAbbreviation[el.State]}`;
     if (!acc[name]) acc[name] = {};
-    acc[name][monthDay(el.Reported).split("|")[0]] = el.Confirmed;
+    acc[name][monthDay(el.Reported).split("|")[1]] = el.Confirmed;
     return acc;
   }, {} as { [c: string]: { [d: string]: number } });
 
-  dates.forEach(date => {
+  dates.forEach(d => {
+    const date = d.split("|")[1]
     const dataPoint: DataPoint = {
       Date: date
     };

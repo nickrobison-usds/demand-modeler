@@ -89,12 +89,12 @@ export const StateTopLine = (props: Props) => {
       }
       if (d[i + 1]) {
         if (
-          d[i].toString().split("|")[0] === d[i + 1].toString().split("|")[0]
+          d[i].toString().split("|")[1] === d[i + 1].toString().split("|")[1]
         ) {
           continue;
         }
       }
-      dedupedElement[d[i].toString().split("|")[0]] = e[key];
+      dedupedElement[d[i].toString().split("|")[1]] = e[key];
     }
     dedupedData.push(dedupedElement);
   });
@@ -116,7 +116,7 @@ export const StateTopLine = (props: Props) => {
   const displayDates: string[] = [];
   const displayDateSet = new Set();
   dates.forEach(d => {
-    const key = d.split("|")[0];
+    const key = d.split("|")[1];
     if (!displayDateSet.has(key)) {
       displayDates.push(key);
       displayDateSet.add(key);
