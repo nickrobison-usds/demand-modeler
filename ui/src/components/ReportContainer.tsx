@@ -109,7 +109,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
     ppt.company = "United States Digital Service";
     // Generate the title slide
     addTitleSlide(ppt);
-    addTopTenStates(ppt, props.states, props.weeklyTimeSeries);
+    // addTopTenStates(ppt, props.states, props.weeklyTimeSeries)
 
     const TEXT_COLOR = "0A2644";
     const TEXT_FONT_FACE = "Source Sans Pro";
