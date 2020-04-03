@@ -186,6 +186,9 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
           );
         }
       });
+      // The first day is only used to calculate diffs. Remove it.
+      state.labels.shift();
+      state.values.shift();
       acc.push(state);
       return acc;
     }, [] as LineData[]);
@@ -353,6 +356,9 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
             }
             data.values.push(value);
           });
+          // The first day is only used to calculate diffs. Remove it.
+          data.labels.shift();
+          data.values.shift();
           acc.push(data);
           return acc;
         }, [] as StackedBarData[]);
