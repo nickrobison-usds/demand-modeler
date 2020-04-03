@@ -1,0 +1,7 @@
+.idea/
+data/tl_*
+*.iml
+node_modules
+package-lock.json
+ui/*
+.DS_Store
