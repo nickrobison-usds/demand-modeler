@@ -10,7 +10,7 @@ import {
   Label
 } from "recharts";
 import { CovidDateData, AppState } from "../../app/AppStore";
-import { stateAbbreviation } from "../../utils/stateAbbreviation";
+import { stateAbbreviation } from "../../utils/fips/stateAbbreviation";
 import { monthDay } from "../../utils/DateUtils";
 import { interpolateRainbow } from "d3";
 import { RenderChart } from "./RenderChart";

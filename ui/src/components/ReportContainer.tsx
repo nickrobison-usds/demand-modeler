@@ -3,8 +3,8 @@ import pptxgen from "pptxgenjs";
 import { CovidDateData, State } from "../app/AppStore";
 import * as _ from "lodash";
 import * as PowerPointUtils from "../utils/PowerPointUtils";
-import { stateAbbreviation } from "../utils/stateAbbreviation";
-import { population } from "./Charts/population";
+import { stateAbbreviation } from "../utils/fips/stateAbbreviation";
+import * as fips from "../utils/fips";
 import { lineColors } from "../utils/reportHelpers";
 
 export interface ReportContainerProps {
@@ -109,7 +109,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
     ppt.company = "United States Digital Service";
     // Generate the title slide
     addTitleSlide(ppt);
-    addTopTenStates(ppt, props.states, props.weeklyTimeSeries);
+    // addTopTenStates(ppt, props.states, props.weeklyTimeSeries)
 
     const TEXT_COLOR = "0A2644";
     const TEXT_FONT_FACE = "Source Sans Pro";
@@ -170,17 +170,19 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
     const stateLineData = Object.values(
       props.historicalTimeSeries.states
     ).reduce((acc, stateSeries) => {
+      const nameNotNull = stateSeries.find(s => s.State !== "") as State;
       const state: LineData = {
-        name: stateAbbreviation[stateSeries[0].State],
+        name: stateAbbreviation[nameNotNull.State],
         labels: [],
         values: []
       };
       stateSeries.forEach(el => {
-        state.labels.push(
-          el.Reported.getMonth() + 1 + "/" + el.Reported.getDate()
-        );
-        state.values.push(el.Confirmed / (population[el.ID + "000"] / 100000));
-        console.log(el.ID);
+        if (el.State !== "") {
+          state.labels.push(
+            el.Reported.getMonth() + 1 + "/" + el.Reported.getDate()
+          );
+          state.values.push(el.Confirmed / (fips.getPopulation(el.ID + "000") / 100000));
+        }
       });
       acc.push(state);
       return acc;
@@ -191,7 +193,6 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
     });
 
     const exceptionStates = ["NY", "NJ", "CT", "WA", "CA"];
-
     const exceptionStateData = stateLineData.filter(el =>
       exceptionStates.includes(el.name)
     );
@@ -255,7 +256,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
         line: AXIS_COLOR,
         lineSize: 1
       });
-      slide.addChart(ppt.ChartType.line, lineData, {
+      slide.addChart(ppt.ChartType.line, lines, {
         ...lineChartConfig(),
         chartColors
       });

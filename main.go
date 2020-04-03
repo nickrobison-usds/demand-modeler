@@ -29,9 +29,6 @@ func main() {
 
 	app := &cli.App{
 		Name: "Fearless Dreamer",
-		Commands: []*cli.Command{
-			cmd.USALoaderCMD(),
-		},
 		Action: runServer,
 	}
 
