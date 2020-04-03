@@ -1,8 +1,21 @@
 ---
 applications:
-- name: FearlessDreamer2
-  docker:
-    image: nickrobisonusds/fearless-dreamer:latest
+- name: usds-covid-fearless-dreamer-backend
   disk_quota: 2G
+  memory: 128MB
+  timeout: 180
+  buildpacks:
+    - go_buildpack
   services:
-    - fearless-dreamer-psql
+    - usds-covid-fearless-dreamer-psql
+
+- name: usds-covid-fearless-dreamer
+  path: ui
+  memory: 512MB
+  buildpacks:
+    - nodejs_buildpack
+  env:
+    HOST: 127.0.0.1
+    REACT_APP_API_URI: "https://usds-covid-fearless-dreamer-backend.app.cloud.gov"
+    GENERATE_SOURCEMAP: false # Due to running out of memory
+    OPTIMIZE_MEMORY: true
