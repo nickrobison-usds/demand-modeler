@@ -40,6 +40,9 @@ for report in REPORTS:
         f"{BASE_URL}/resource-renderer/api/{preview_rid}/stream",
         headers=HEADERS
     )
+    print(ppt_stream.status_code)
+    with open(report['name'], "wb") as f:
+        print(f"write to {report['name']}")
 
-    with open(sys.argv[4], "wb") as f:
         f.write(ppt_stream.content)
+        print(os.listdir())
