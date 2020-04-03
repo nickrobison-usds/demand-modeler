@@ -58,20 +58,9 @@ func runServer(c *cli.Context) error {
 		}
 	}
 	defer backend.Shutdown()
-	loader, err := cmd.NewLoader(ctx, url, filepath.Join(workDir, "data"))
-	if err != nil {
-		log.Fatal().Err(err).Send()
-	}
-	defer loader.Close()
 
-	err = loader.Truncate()
-	if err != nil {
-		log.Fatal().Err(err).Send()
-	}
-	err = loader.LoadDaikon()
-	if err != nil {
-		log.Fatal().Err(err).Send()
-	}
+	// Populate the data
+	go loadData(ctx, url, workDir)
 
 	return serve(backend, filesDir)
 }
@@ -151,6 +140,26 @@ func migrateDatabase(dbURL string, workDir string) error {
 		return err
 	}
 	return nil
+}
+
+func loadData(ctx context.Context, url string, workDir string) {
+
+    loader, err := cmd.NewLoader(ctx, url, filepath.Join(workDir, "data"))
+
+    if err != nil {
+        log.Fatal().Err(err).Send()
+    }
+    defer loader.Close()
+
+    err = loader.Truncate()
+    if err != nil {
+        log.Fatal().Err(err).Send()
+    }
+
+    err = loader.LoadDaikon()
+    if err != nil {
+        log.Fatal().Err(err).Send()
+    }
 }
 
 func getDBURL() string {
