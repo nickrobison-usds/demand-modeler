@@ -260,7 +260,7 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
               level === "state"
                 ? fips.getStateName(region[0].ID)
                 : `${fips.getCountyName(region[0].ID)}, ${
-                    stateAbbreviation[region[0].State]
+                    fips.getStateAbr(region[0].ID)
                   }`;
           }
         }
@@ -336,9 +336,8 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
     if (hoverInfo) {
       let name = hoverInfo.feature.NAME;
       if (hoverInfo.feature.COUNTY) {
-        const stateName =
-          state.lastWeekCovidTimeSeries.states[hoverInfo.feature.STATE][0].State;
-        name = `${name}, ${stateAbbreviation[stateName]}`;
+        const stateName = fips.getStateAbr(hoverInfo.feature.STATE);
+        name = `${name}, ${stateName}`;
       }
 
       const label: { [d in DataType]: string } = {

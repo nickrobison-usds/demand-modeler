@@ -6,8 +6,7 @@ import (
 	"time"
 )
 
-// var daikonFormatter string = "2006-01-02"
-var daikonFormatter string = "1/2/06"
+var daikonFormatter string = "2006-01-02"
 
 type CaseCount struct {
 	Confirmed    int

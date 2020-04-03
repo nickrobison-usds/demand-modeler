@@ -64,10 +64,10 @@ func (d *DBBackend) GetTopStates(ctx context.Context, start *time.Time) ([]cmd.S
 	}
 	defer conn.Release()
 
-	query := "SELECT c.geoid c.Update, SUM(c.Confirmed) as confirmed, SUM(c.Dead) FROM cases as c "
+	query := "SELECT c.geoid, c.Update, SUM(c.Confirmed) as confirmed, SUM(c.Dead) FROM cases as c "
 
 	if start != nil {
-		query = fmt.Sprintf("%s WHERE s.update > '%s' ", query, start.Format(time.RFC3339))
+		query = fmt.Sprintf("%s WHERE c.update > '%s' ", query, start.Format(time.RFC3339))
 	}
 	query = query + "GROUP BY substring(c.geoid, 0, 2), c.update " +
 		"ORDER BY substring(c.geoid, 0, 2), c.update;"

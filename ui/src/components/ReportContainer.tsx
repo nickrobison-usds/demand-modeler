@@ -105,7 +105,11 @@ export const addTopTenStates = (
     // The date labels
     groupedEntries.map((entry) => entry[0]),
     ["Confirmed", "Deaths"],
+<<<<<<< HEAD
     groupedEntries.length > 0 ? groupedEntries[0][1].map((e) => e.State) : [],
+=======
+    groupedEntries.length > 0 ? groupedEntries[0][1].map(e => fips.getStateName(e.ID)) : [],
+>>>>>>> 7bf1b4c... WIP
     [
       groupedEntries.map((entry) => entry[1].map((e) => e.Confirmed)),
       groupedEntries.map((entry) => entry[1].map((e) => e.Dead)),
@@ -191,21 +195,16 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
     const stateLineData = Object.values(
       props.historicalTimeSeries.states
     ).reduce((acc, stateSeries) => {
-      const nameNotNull = stateSeries.find((s) => s.State !== "") as State;
       const state: LineData = {
-        name: stateAbbreviation[nameNotNull.State],
+        name: fips.getStateAbr(stateSeries[0].ID),
         labels: [],
         values: [],
       };
-      stateSeries.forEach((el) => {
-        if (el.State !== "") {
-          state.labels.push(
-            el.Reported.getMonth() + 1 + "/" + el.Reported.getDate()
-          );
-          state.values.push(
-            el.Confirmed / (fips.getPopulation(el.ID + "000") / 100000)
-          );
-        }
+      stateSeries.forEach(el => {
+        state.labels.push(
+          el.Reported.getMonth() + 1 + "/" + el.Reported.getDate()
+        );
+        state.values.push(el.Confirmed / (fips.getPopulation(el.ID + "000") / 100000));
       });
       // The first day is only used to calculate diffs. Remove it.
       state.labels.shift();

@@ -7,6 +7,7 @@ import {MixedBar} from "../components/Charts/MixedBar";
 // import CountyMap from "../components/Maps/CountyMap";
 import "./Report.scss";
 import {dateTimeString} from "../utils/DateUtils";
+import * as fips from "../utils/fips";
 import {ReportContainer} from "../components/ReportContainer";
 
 export const Report: React.FC<{}> = () => {
@@ -169,13 +170,13 @@ export const Report: React.FC<{}> = () => {
         const stateIDs = new Set();
         const dedupedStates: State[] = [];
         states.forEach(s => {
-          const key = `${s.State}`;
+          const key = `${fips.getStateName(s.ID)}`;
           if (!stateIDs.has(key)) {
             dedupedStates.push(s);
             stateIDs.add(key);
           }
         });
-        const top10States = [...dedupedStates].filter((s) => ["New York", "New Jersey", "Washington", "California", "Michigan", "Illinois", "Florida", "Louisiana", "Massachusetts", "Texas"].includes(s.State))
+        const top10States = [...dedupedStates].filter((s) => ["New York", "New Jersey", "Washington", "California", "Michigan", "Illinois", "Florida", "Louisiana", "Massachusetts", "Texas"].includes(fips.getStateName(s.ID)))
           .sort((s1, s2) => s2.Confirmed - s1.Confirmed)
         // .slice(0, 10);
         console.log(top10States);

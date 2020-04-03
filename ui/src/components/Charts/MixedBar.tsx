@@ -11,7 +11,6 @@ import {
 import { CovidDateData } from "../../app/AppStore";
 import { monthDay } from "../../utils/DateUtils";
 import { RenderChart } from "./RenderChart";
-import { getSelectedLocationName } from "../../utils/utils";
 import { StripedFill } from "./StripedFill";
 import * as fips from "../../utils/fips";
 
@@ -90,11 +89,7 @@ export const MixedBar = (props: Props) => {
     dedupedData.push(data[i]);
   }
 
-  const locationName = getSelectedLocationName(
-    props.state,
-    props.county,
-    props.timeSeries
-  );
+  const locationName = `${fips.getCountyName(props.state as string)} County, ${fips.getStateAbr(props.state as string)}`;
 
   const finalData = dedupedData.map((data, i) => {
     if (!dedupedData[i - 1]) {
