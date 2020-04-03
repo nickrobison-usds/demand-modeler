@@ -43,6 +43,18 @@
   ddocker-compose up --build api
   ```
 
+## Bootstrapping Cloud.gov
+
+1. Create a cloud.gov database service
+    1. Use the relational database template
+    1. Select a `psql`-based instance
+    1. Skip binding the service to an instance
+1. Create a cloud.gov application
+    1. Update `manifest.yml` with the service name identified in step 1
+    1. Change the name of the applications if needed, verifying the URLs are correct
+    1. Run `cf push`
+    1. Done!
+
 ## Bootstrapping Heroku
 
 1. Create a Postgres service and link it to the application
