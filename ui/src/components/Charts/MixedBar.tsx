@@ -89,7 +89,13 @@ export const MixedBar = (props: Props) => {
     dedupedData.push(data[i]);
   }
 
-  const locationName = `${fips.getCountyName(props.state as string)} County, ${fips.getStateAbr(props.state as string)}`;
+
+  const selectedState = props.state === undefined ? 'National' : fips.getStateName(props.state);
+
+  const selectedCounty = props.county === undefined ? undefined : `: ` + fips.getCountyName(props.county) + ' County';
+
+
+  const locationName = `${selectedCounty}${selectedState}`;
 
   const finalData = dedupedData.map((data, i) => {
     if (!dedupedData[i - 1]) {
