@@ -34,7 +34,6 @@ export const MixedBar = (props: Props) => {
         .map(({ Reported }) => monthDay(Reported))
     )
   ].sort();
-  console.log("dates", dates)
   const data = dates.map(date => {
     let total = 0;
     if (props.county) {

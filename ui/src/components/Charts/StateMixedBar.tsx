@@ -76,7 +76,7 @@ export const StateMixedBar = (props: Props) => {
     ].sort();
     const counties = countyData.reduce((acc, el) => {
       if (!acc[el.County]) acc[el.County] = {};
-      acc[el.County][monthDay(el.Reported).split("|")[1]] =
+      acc[el.County][monthDay(el.Reported)] =
         props.stat === "confirmed" ? el.Confirmed : el.Dead;
       return acc;
     }, {} as { [c: string]: { [d: string]: number } });
@@ -106,7 +106,7 @@ export const StateMixedBar = (props: Props) => {
     }
     const states = stateData.reduce((acc, el) => {
       if (!acc[el.State]) acc[el.State] = {};
-      acc[el.State][monthDay(el.Reported).split("|")[1]] =
+      acc[el.State][monthDay(el.Reported)] =
         props.stat === "confirmed" ? el.Confirmed : el.Dead;
       return acc;
     }, {} as { [c: string]: { [d: string]: number } });
@@ -131,12 +131,12 @@ export const StateMixedBar = (props: Props) => {
       }
       if (d[i + 1]) {
         if (
-          d[i].toString().split("|")[1] === d[i + 1].toString().split("|")[1]
+          d[i].toString() === d[i + 1].toString()
         ) {
           continue;
         }
       }
-      dedupedElement[d[i].toString().split("|")[1]] = e[key];
+      dedupedElement[d[i].toString()] = e[key];
     }
     dedupedData.push(dedupedElement);
   });
@@ -170,7 +170,8 @@ export const StateMixedBar = (props: Props) => {
   const finalData = sortedData.map(data => {
     const obj: { [k: string]: string | number } = {};
     const entries = Object.entries(data);
-    entries.forEach(([key, value], i) => {
+    entries.forEach(([k, value], i) => {
+      const key = k.split("|")[1];
       if (key !== "Name" && i > 0) {
         let newCases = (value as number) - (entries[i - 1][1] as number);
         if (newCases < 0) newCases = 0;
@@ -185,7 +186,6 @@ export const StateMixedBar = (props: Props) => {
     return obj;
   });
 
-  console.log(finalData)
   return (
     <>
       <RenderChart
