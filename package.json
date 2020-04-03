@@ -6,7 +6,11 @@
   "scripts": {
     "install": "yarn --cwd ui/ install --production=false",
     "build.react": "yarn --cwd ui/ run build",
-    "build": "yarn run install && yarn run build.react"
+    "build": "yarn run install && yarn run build.react",
+    "cf.target": "cf target -o dhs-prototyping -s usds-covid",
+    "deploy.server": "yarn run cf.target && cf push usds-covid-fearless-dreamer-backend",
+    "deploy.ui": "yarn run cf.target && cf push usds-covid-fearless-dreamer",
+    "deploy": "yarn run deploy.server && yarn run deploy.ui"
   },
   "engines": {
     "node": "13.x",
