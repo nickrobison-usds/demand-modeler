@@ -9,6 +9,7 @@
     "build": "yarn run install && yarn run build.react"
   },
   "engines": {
+    "node": "13.x",
     "yarn": "1.22.x"
   }
 }

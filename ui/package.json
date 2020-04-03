@@ -69,5 +69,9 @@
     "@types/urijs": "^1.19.7",
     "node-sass": "^4.13.1",
     "prettier": "^1.19.1"
+  },
+  "engines": {
+    "node": "13.x",
+    "yarn": "1.22.x"
   }
 }
