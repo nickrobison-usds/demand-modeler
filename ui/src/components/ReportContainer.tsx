@@ -23,12 +23,12 @@ export const addTitleSlide = (ppt: pptxgen) => {
     y: 2.26,
     fontSize: 40,
     h: 0.38,
-    w: 8.2
+    w: 8.2,
   });
   titleSlide.addText("Data as of (today)", {
     fontSize: 20,
     x: 1.8,
-    y: 2.75
+    y: 2.75,
   });
   titleSlide.addShape(ppt.ShapeType.line, {
     color: "#FF0000",
@@ -38,7 +38,7 @@ export const addTitleSlide = (ppt: pptxgen) => {
     x: 0.31,
     y: 1.25,
     h: 2.84,
-    w: 2.85
+    w: 2.85,
   });
 };
 
@@ -50,10 +50,10 @@ export const addTopTenStates = (
   // Do the state things
   const s = ppt.addSlide();
 
-  const names = states.map(s => s.ID);
+  const names = states.map((s) => s.ID);
   console.debug(
     "States",
-    states.map(s => s.ID)
+    states.map((s) => s.ID)
   );
   console.debug("Names", names);
 
@@ -65,7 +65,7 @@ export const addTopTenStates = (
   // filter(s => names.has(s.ID));
 
   // console.debug("Tops: ", topStates);
-  const ts = states.map(s => s.ID).flatMap(i => timeSeries.states[i]);
+  const ts = states.map((s) => s.ID).flatMap((i) => timeSeries.states[i]);
   console.debug("top states");
 
   const grouped = _.chain(ts)
@@ -82,12 +82,12 @@ export const addTopTenStates = (
   const groupedEntries = Object.entries(grouped);
   const dataCombined = PowerPointUtils.buildClusteredStack(
     // The date labels
-    groupedEntries.map(entry => entry[0]),
+    groupedEntries.map((entry) => entry[0]),
     ["Confirmed", "Deaths"],
-    groupedEntries.length > 0 ? groupedEntries[0][1].map(e => e.State) : [],
+    groupedEntries.length > 0 ? groupedEntries[0][1].map((e) => e.State) : [],
     [
-      groupedEntries.map(entry => entry[1].map(e => e.Confirmed)),
-      groupedEntries.map(entry => entry[1].map(e => e.Dead))
+      groupedEntries.map((entry) => entry[1].map((e) => e.Confirmed)),
+      groupedEntries.map((entry) => entry[1].map((e) => e.Dead)),
     ]
   );
 
@@ -97,11 +97,11 @@ export const addTopTenStates = (
     x: 1,
     y: 1,
     w: 8,
-    h: 4
+    h: 4,
   });
 };
 
-export const ReportContainer: React.FC<ReportContainerProps> = props => {
+export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
   const exportPowerPoint = async () => {
     // noinspection JSPotentiallyInvalidConstructorUsage
     const ppt = new pptxgen();
@@ -124,7 +124,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       x: 0,
       y: 0.3,
       w: "100%",
-      align: "center"
+      align: "center",
     });
 
     // Line chart
@@ -162,7 +162,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       axisLineColor: AXIS_COLOR,
       serAxisLabelColor: TEXT_COLOR,
       serAxisTitleColor: TEXT_COLOR,
-      valAxisMajorUnit: 0
+      valAxisMajorUnit: 0,
     });
 
     type LineData = { name: string; labels: string[]; values: number[] };
@@ -170,18 +170,20 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
     const stateLineData = Object.values(
       props.historicalTimeSeries.states
     ).reduce((acc, stateSeries) => {
-      const nameNotNull = stateSeries.find(s => s.State !== "") as State;
+      const nameNotNull = stateSeries.find((s) => s.State !== "") as State;
       const state: LineData = {
         name: stateAbbreviation[nameNotNull.State],
         labels: [],
-        values: []
+        values: [],
       };
-      stateSeries.forEach(el => {
+      stateSeries.forEach((el) => {
         if (el.State !== "") {
           state.labels.push(
             el.Reported.getMonth() + 1 + "/" + el.Reported.getDate()
           );
-          state.values.push(el.Confirmed / (fips.getPopulation(el.ID + "000") / 100000));
+          state.values.push(
+            el.Confirmed / (fips.getPopulation(el.ID + "000") / 100000)
+          );
         }
       });
       acc.push(state);
@@ -193,12 +195,12 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
     });
 
     const exceptionStates = ["NY", "NJ", "CT", "WA", "CA"];
-    const exceptionStateData = stateLineData.filter(el =>
+    const exceptionStateData = stateLineData.filter((el) =>
       exceptionStates.includes(el.name)
     );
 
     const nonExceptionStateData = stateLineData.filter(
-      el => !exceptionStates.includes(el.name)
+      (el) => !exceptionStates.includes(el.name)
     );
 
     const addSlideWithTitle = (ppt: pptxgen, title: string): pptxgen.ISlide => {
@@ -211,7 +213,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
           w: 2.5,
           h: 0.0,
           line: AXIS_COLOR,
-          lineSize: 1.5
+          lineSize: 1.5,
         });
     };
 
@@ -222,7 +224,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       const chartColors: string[] = [];
       // Skip territories not in existing slides
       const lines = [...lineData].filter(
-        el => lineColors[el.name] !== undefined
+        (el) => lineColors[el.name] !== undefined
       );
       lines.forEach((el, i) => {
         const color = lineColors[el.name];
@@ -232,12 +234,12 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
           h: 0.09,
           x: i % 2 === 0 ? 8 : 8.6,
           y: 1.41 + 0.14 * Math.floor(i / 2),
-          fill: { color }
+          fill: { color },
         });
         slide.addText(el.name, {
           x: i % 2 === 0 ? 8.2 : 8.8,
           y: 1.3 + 0.14 * Math.floor(i / 2),
-          fontSize: 8
+          fontSize: 8,
         });
       });
       slide.addShape(ppt.ShapeType.line, {
@@ -246,7 +248,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
         w: 0,
         h: 0.14 * Math.ceil(lines.length / 2),
         line: AXIS_COLOR,
-        lineSize: 1
+        lineSize: 1,
       });
       slide.addShape(ppt.ShapeType.line, {
         x: 8.84,
@@ -254,11 +256,11 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
         w: 0,
         h: 0.14 * Math.floor(lines.length / 2),
         line: AXIS_COLOR,
-        lineSize: 1
+        lineSize: 1,
       });
       slide.addChart(ppt.ChartType.line, lines, {
         ...lineChartConfig(),
-        chartColors
+        chartColors,
       });
       return slide;
     };
@@ -283,6 +285,63 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       "Cumulative cases per 100,000: All States"
     );
     addLineChartWithLegend(allStateSlide, stateLineData);
+
+    // Metro areas (stacked)
+    const metroArea = "Washington";
+
+    const barColors = {
+      confirmed: ["52000E", "824952", "B59399"],
+    };
+
+    const barChartConfig = () => ({
+      ...lineChartConfig(),
+      barGrouping: "stacked",
+      valAxisTitle: "Confirmed cases".toUpperCase(),
+      w: 9,
+      showLabel: true,
+      showValue: true,
+      barGapWidthPct: 10,
+      dataLabelFontSize: 6,
+      dataLabelFontFace: TEXT_FONT_FACE,
+      dataLabelColor: "EEEEEE",
+      chartColors: barColors.confirmed,
+      showLegend: true,
+      legendFontFace: TEXT_FONT_FACE,
+      valGridLine: { style: "solid", color: AXIS_COLOR },
+    });
+
+    type StackedBarData = {
+      name: string;
+      labels: string[];
+      values: number[];
+    };
+    const waCounties = ["53033", "53053", "53061"].reverse();
+    const stat: Stat = "confirmed";
+    const countyData = waCounties
+      .map((fips) => props.historicalTimeSeries.counties[fips])
+      .reduce((acc, county) => {
+        const data: StackedBarData = {
+          name: county[0].County + ", " + stateAbbreviation[county[0].State],
+          labels: [],
+          values: [],
+        };
+        county.reverse().forEach((el) => {
+          data.labels.push(
+            el.Reported.getMonth() + 1 + "/" + el.Reported.getDate()
+          );
+          data.values.push(el[stat === "confirmed" ? "Confirmed" : "Dead"]);
+        });
+        acc.push(data);
+        return acc;
+      }, [] as StackedBarData[]);
+
+    addSlideWithTitle(ppt, `${metroArea} Metro Area: Confirmed Cases`).addChart(
+      ppt.ChartType.bar,
+      countyData,
+      barChartConfig()
+    );
+    // Washington confirmed cases
+    // King, Pierce, Snohomish
 
     // // Add the map
     // let map = document.getElementsByClassName("mapboxgl-map").item(0);
