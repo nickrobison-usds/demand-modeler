@@ -486,7 +486,6 @@ const CountyMap: React.FunctionComponent<Props> = props => {
           return hoverInfo ? "pointer" : "grab";
         }}
         onClick={event => {
-          console.log(event);
           const feature = event.features && event.features[0];
           if (feature) {
             const clickedState = feature.properties.STATE;

@@ -158,7 +158,7 @@ export const StateBar = (props: Props) => {
     });
     return obj;
   });
-  console.log(finalData)
+
   return (
     <>
       <h3>{props.title ? props.title : title}</h3>

@@ -106,8 +106,6 @@ export const StackedArea = (props: Props) => {
     };
   });
 
-  console.log(finalData);
-
   return (
     <div>
       <h3>
