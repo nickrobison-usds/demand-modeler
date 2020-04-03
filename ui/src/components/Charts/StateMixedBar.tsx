@@ -172,16 +172,16 @@ export const StateMixedBar = (props: Props) => {
     const entries = Object.entries(data);
     entries.forEach(([k, value], i) => {
       const key = k.split("|")[1];
-      if (key !== "Name" && i > 0) {
+      if (k !== "Name" && i > 0) {
         let newCases = (value as number) - (entries[i - 1][1] as number);
         if (newCases < 0) newCases = 0;
         obj[`${key} New`] = newCases;
         obj[`${key} Existing`] = (value as number) - newCases;
-      } else if (key !== "Name" && i === 0) {
+      } else if (k !== "Name" && i === 0) {
         obj[`${key} Existing`] = value;
         obj[`${key} New`] = 0;
       }
-      obj[key] = value;
+      obj[k] = value;
     });
     return obj;
   });
@@ -223,7 +223,6 @@ export const StateMixedBar = (props: Props) => {
           <div style={{ padding: "10px" }} />
           <Legend content={<CustomLegend displayDates={displayDates} colors={colors} stat={props.stat}/>}/>
           {displayDates.map((date, i) => {
-            console.log(date)
             return (
               <Bar
                 id={`${date}`}

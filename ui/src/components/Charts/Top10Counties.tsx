@@ -113,12 +113,12 @@ export const Top10Counties = (props: Props) => {
       }
       if (d[i + 1]) {
         if (
-          d[i].toString().split("|")[1] === d[i + 1].toString().split("|")[1]
+          d[i].toString() === d[i + 1].toString()
         ) {
           continue;
         }
       }
-      dedupedElement[d[i].toString().split("|")[1]] = e[key];
+      dedupedElement[d[i].toString()] = e[key];
     }
     dedupedData.push(dedupedElement);
   });
@@ -138,17 +138,18 @@ export const Top10Counties = (props: Props) => {
   const finalData = dedupedData.map(data => {
     const obj: { [k: string]: string | number } = {};
     const entries = Object.entries(data);
-    entries.forEach(([key, value], i) => {
-      if (key !== "Name" && i > 0) {
+    entries.forEach(([k, value], i) => {
+      const key = k.split("|")[1];
+      if (k !== "Name" && i > 0) {
         let newCases = (value as number) - (entries[i - 1][1] as number);
         if (newCases < 0) newCases = 0;
         obj[`${key} New`] = newCases;
         obj[`${key} Existing`] = (value as number) - newCases;
-      } else if (key !== "Name" && i === 0) {
+      } else if (k !== "Name" && i === 0) {
         obj[`${key} Existing`] = value;
         obj[`${key} New`] = 0;
       }
-      obj[key] = value;
+      obj[k] = value;
     });
     return obj;
   });
@@ -199,10 +200,10 @@ export const Top10Counties = (props: Props) => {
           />
           {displayDates.map((date, i) => (
             <Bar
-              key={`${date.split("|")[1]} New`}
-              id={`${date.split("|")[1]}`}
-              stackId={date.split("|")[1]}
-              dataKey={`${date.split("|")[1]} New`}
+              key={`${date} New`}
+              id={`${date}`}
+              stackId={date}
+              dataKey={`${date} New`}
               shape={<StripedFill fill={colors[i]} />}
             />
           ))}
@@ -210,10 +211,10 @@ export const Top10Counties = (props: Props) => {
             return props.new ? (
               null
             ) :       <Bar
-            key={`${date.split("|")[1]} Existing`}
-            id={`${date.split("|")[1]}`}
-            stackId={date.split("|")[1]}
-            dataKey={`${date.split("|")[1]} Existing`}
+            key={`${date} Existing`}
+            id={`${date}`}
+            stackId={date}
+            dataKey={`${date} Existing`}
             fill={colors[i]}
           />;
           })}
