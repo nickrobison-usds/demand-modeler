@@ -36,7 +36,7 @@
 1. Create a cloud.gov application
     1. Update `manifest.yml` with the service name identified in step 1
     1. Change the name of the applications if needed, verifying the URLs are correct
-    1. Run `cf push`
+    1. Run `yarn run deploy`
     1. Done!
 
 ## Bootstrapping Heroku
