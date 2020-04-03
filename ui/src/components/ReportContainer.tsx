@@ -5,7 +5,7 @@ import * as _ from "lodash";
 import * as PowerPointUtils from "../utils/PowerPointUtils";
 import { stateAbbreviation } from "../utils/fips/stateAbbreviation";
 import * as fips from "../utils/fips";
-import { lineColors } from "../utils/reportHelpers";
+import { lineColors, metroAreas } from "../utils/reportHelpers";
 
 export interface ReportContainerProps {
   states: State[];
@@ -290,15 +290,13 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
     addLineChartWithLegend(allStateSlide, stateLineData);
 
     // Metro areas (stacked)
-    const metroArea = "Seattle";
-
     type StackedBarData = {
       name: string;
       labels: string[];
       values: number[];
     };
 
-    const waCounties = ["53033", "53053", "53061"];
+    let dataLabelFontSize = 7;
 
     const addCountySlide = (
       ppt: pptxgen,
@@ -307,10 +305,68 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
       stat: Stat,
       daily = false
     ): pptxgen.ISlide => {
-      const barColors =
-        stat === "confirmed"
-          ? ["420000", "910A0A", "B12323"]
-          : ["121D2D", "4C5664", "697380"];
+      let firstCounty: string = "";
+
+      const countyData = [...counties]
+        .reverse()
+        .map((fips) => props.historicalTimeSeries.counties[fips])
+        .reduce((acc, county) => {
+          if (!firstCounty) {
+            firstCounty = `${county[0].County} County`;
+          }
+
+          const data: StackedBarData = {
+            name: county[0].County + ", " + stateAbbreviation[county[0].State],
+            labels: [],
+            values: [],
+          };
+          // Data comes in in reverse chronological order
+          const orderedCounties = [...county].reverse();
+
+          orderedCounties.forEach((el, i) => {
+            data.labels.push(
+              el.Reported.getMonth() + 1 + "/" + el.Reported.getDate()
+            );
+            let value = el[stat === "confirmed" ? "Confirmed" : "Dead"];
+            if (daily && orderedCounties[i - 1]) {
+              value = Math.max(
+                value -
+                  orderedCounties[i - 1][
+                    stat === "confirmed" ? "Confirmed" : "Dead"
+                  ],
+                0
+              );
+            }
+            if (value > 9999) {
+              dataLabelFontSize = 5;
+            }
+            data.values.push(value);
+          });
+          // The first day is only used to calculate diffs. Remove it.
+          data.labels.shift();
+          data.values.shift();
+          acc.push(data);
+          return acc;
+        }, [] as StackedBarData[]);
+
+      const confirmedColors = [
+        ...(counties.length > 3 ? ["0A0000"] : []),
+        ...(counties.length > 5 ? ["1F0000"] : []),
+        "420000",
+        "910A0A",
+        "B12323",
+        ...(counties.length > 4 ? ["CF4545"] : []),
+      ].slice(0, counties.length);
+      const deadColors = [
+        ...(counties.length > 3 ? ["111111"] : []),
+        "121D2D",
+        ...(counties.length > 5 ? ["303133"] : []),
+        "4C5664",
+        "697380",
+        ...(counties.length > 4 ? ["899099"] : []),
+      ].slice(0, counties.length);
+
+      const barColors = stat === "confirmed" ? confirmedColors : deadColors;
 
       const barChartConfig = () => ({
         ...lineChartConfig(),
@@ -322,62 +378,33 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
         showLabel: true,
         showValue: true,
         barGapWidthPct: 10,
-        dataLabelFontSize: 6,
+        dataLabelFontSize,
         dataLabelFontFace: TEXT_FONT_FACE,
         dataLabelColor: "EEEEEE",
         chartColors: barColors,
-        showLegend: true,
+        showLegend: counties.length > 1,
         legendFontFace: TEXT_FONT_FACE,
         valGridLine: { style: "solid", color: AXIS_COLOR },
         dataLabelFormatCode: "0;;;",
       });
 
-      const countyData = [...counties]
-        .reverse()
-        .map((fips) => props.historicalTimeSeries.counties[fips])
-        .reduce((acc, county) => {
-          const data: StackedBarData = {
-            name: county[0].County + ", " + stateAbbreviation[county[0].State],
-            labels: [],
-            values: [],
-          };
-          const orderedCounties = [...county].reverse();
-
-          orderedCounties.forEach((el, i) => {
-            data.labels.push(
-              el.Reported.getMonth() + 1 + "/" + el.Reported.getDate()
-            );
-            let value = el[stat === "confirmed" ? "Confirmed" : "Dead"];
-            if (daily && orderedCounties[i - 1]) {
-              value -=
-                orderedCounties[i - 1][
-                  stat === "confirmed" ? "Confirmed" : "Dead"
-                ];
-            }
-            data.values.push(value);
-          });
-          // The first day is only used to calculate diffs. Remove it.
-          data.labels.shift();
-          data.values.shift();
-          acc.push(data);
-          return acc;
-        }, [] as StackedBarData[]);
-
       return addSlideWithTitle(
         ppt,
-        `${metroArea} Metro Area: Confirmed ${
-          stat === "confirmed" ? "Cases" : "Deaths"
-        }${daily ? " (Daily)" : ""}`
+        `${metroArea} Metro Area${
+          counties.length === 1 ? ` (${firstCounty})` : ""
+        }: Confirmed ${stat === "confirmed" ? "Cases" : "Deaths"}${
+          daily ? " Daily" : ""
+        }`
       ).addChart(ppt.ChartType.bar, countyData, barChartConfig());
     };
 
-    addCountySlide(ppt, metroArea, waCounties, "confirmed");
-    addCountySlide(ppt, metroArea, waCounties, "confirmed", true);
-    addCountySlide(ppt, metroArea, waCounties, "dead");
-    addCountySlide(ppt, metroArea, waCounties, "dead", true);
-
-    // Washington confirmed cases
-    // King, Pierce, Snohomish
+    metroAreas.forEach((metroArea) => {
+      const { area, fipsCodes } = metroArea;
+      addCountySlide(ppt, area, fipsCodes, "confirmed");
+      addCountySlide(ppt, area, fipsCodes, "confirmed", true);
+      addCountySlide(ppt, area, fipsCodes, "dead");
+      addCountySlide(ppt, area, fipsCodes, "dead", true);
+    });
 
     // // Add the map
     // let map = document.getElementsByClassName("mapboxgl-map").item(0);
