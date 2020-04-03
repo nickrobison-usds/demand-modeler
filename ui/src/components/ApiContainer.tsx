@@ -1,10 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AppContext, ActionType, CovidDateData } from "../app/AppStore";
-import {getCountyCases, getStateCases} from "../api";
-
+import { getCountyCases, getStateCases } from "../api";
 
 const loadData = async () => {
-  const start = new Date("3/01/2020");
+  const start = new Date("2/29/2020");
 
   const loadStateData = async () => {
     const date = new Date(start);
@@ -28,7 +27,7 @@ Curently loads all data on app mount in the following order:
 3. Dispatch state and country arrays to the store
 */
 
-export const ApiContainer: React.FC = props => {
+export const ApiContainer: React.FC = (props) => {
   const [isLoading, setIsLoading] = useState(true);
   const { dispatch } = useContext(AppContext);
 
@@ -48,7 +47,7 @@ export const ApiContainer: React.FC = props => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        height: "100vh"
+        height: "100vh",
       }}
     >
       <h3>Loading...</h3>
