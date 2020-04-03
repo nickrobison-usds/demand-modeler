@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/dom": "^7.2.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
@@ -51,29 +50,24 @@
     ]
   },
   "devDependencies": {
-    "@babel/core": "7",
     "@storybook/react": "^5.3.17",
     "@types/d3": "^5.7.2",
     "@types/dom-to-image": "^2.6.0",
     "@types/file-saver": "^2.0.1",
-    "@types/jest": "^24.0.0",
     "@types/leaflet": "^1.5.11",
-    "@types/lodash": "^4.14.149",
     "@types/mapbox-gl": "^1.8.1",
+    "@types/react-map-gl": "^5.2.0",
+    "@types/storybook__react": "^5.2.1",
+    "@types/jest": "^24.0.0",
+    "@types/lodash": "^4.14.149",
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
-    "@types/react-map-gl": "^5.2.0",
     "@types/react-modal": "^3.10.5",
     "@types/recharts": "^1.8.7",
-    "@types/storybook__react": "^5.2.1",
     "@types/urijs": "^1.19.7",
-    "babel-loader": "^8.1.0",
-    "eslint": "^6.8.0",
-    "eslint-plugin-flowtype": "3.x",
     "node-sass": "^4.13.1",
-    "prettier": "^1.19.1",
-    "webpack": "^4.42.1"
+    "prettier": "^1.19.1"
   },
   "engines": {
     "node": "13.x",
