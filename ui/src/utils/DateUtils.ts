@@ -15,6 +15,11 @@ export function isSameDate(a: Date, b: Date) {
   return a.getDate() === b.getDate();
 }
 
+
+export function isSameDay(a: Date, b: Date) {
+  return a.getDate() === b.getDate() && a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth();
+}
+
 export function getPreviousDate(date: Date): Date {
   const d = new Date(date.getTime());
   d.setDate(d.getDate() - 1);

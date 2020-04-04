@@ -6,6 +6,7 @@ import * as PowerPointUtils from "../utils/PowerPointUtils";
 import { stateAbbreviation } from "../utils/fips/stateAbbreviation";
 import * as fips from "../utils/fips";
 import { lineColors, metroAreas } from "../utils/reportHelpers";
+import { isSameDay} from "../utils/DateUtils"
 
 export interface ReportContainerProps {
   states: State[];
@@ -298,6 +299,17 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
 
     let dataLabelFontSize = 7;
 
+    const accumulateNYCData = (counties: string[], index: number, attribute: "Dead" | "Confirmed") => {
+      let total = 0;
+      counties.forEach(fip => {
+        const entry = props.historicalTimeSeries.counties[fip][index];
+        if (entry) {
+          total += props.historicalTimeSeries.counties[fip][index][attribute]
+        }
+      });
+      return total;
+    }
+
     const addCountySlide = (
       ppt: pptxgen,
       metroArea: string,
@@ -309,7 +321,26 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
 
       const countyData = [...counties]
         .reverse()
-        .map((fips) => props.historicalTimeSeries.counties[fips])
+        .map((fips) => {
+          if (fips === "36061") {
+            const nyc_combined = ["36061", "36005", "36081","36047", "36085"];
+            return props.historicalTimeSeries.counties[fips].map((county, index) => {
+              var today = new Date();
+              // today.setDate(today.getDate() - 1); // hack for testing with stale data
+              if (isSameDay(county.Reported, today)) {
+                console.log("reported = today")
+                return county;
+              }
+              return {
+                ...county,
+                Dead: accumulateNYCData(nyc_combined, index, "Dead"),
+                Confirmed: accumulateNYCData(nyc_combined, index, "Confirmed"),
+              }
+            });
+          } else {
+            return props.historicalTimeSeries.counties[fips]
+          }
+        })
         .reduce((acc, county) => {
           if (!firstCounty) {
             firstCounty = `${county[0].County} County`;
@@ -320,6 +351,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
             labels: [],
             values: [],
           };
+
           // Data comes in in reverse chronological order
           const orderedCounties = [...county].reverse();
 
