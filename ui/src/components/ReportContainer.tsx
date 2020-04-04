@@ -6,9 +6,9 @@ import * as PowerPointUtils from "./PowerPointGenerator/Utils";
 import * as fips from "../utils/fips";
 import { lineColors, metroAreas } from "../utils/reportHelpers";
 import { isSameDay, monthDayCommaYear} from "../utils/DateUtils"
-import { addTitleSlide } from "./PowerPointGenerator/Slides/template/TitleSlides/TitleSlide";
-import { addLineChartWithLegend, LineData, lineChartConfig } from "./PowerPointGenerator/Slides/template/InteriorSlides/LineChartWithTitle";
-import { addBlankSlideWithTitle } from "./PowerPointGenerator/Slides/template/InteriorSlides/BlankWithTitle";
+import { addTitleSlide } from "./PowerPointGenerator/Slides/Templates/TitleSlides/TitleSlide";
+import { addLineChartWithLegend, LineData, lineChartConfig } from "./PowerPointGenerator/Slides/Templates/InteriorSlides/LineChartWithTitle";
+import { addBlankSlideWithTitle } from "./PowerPointGenerator/Slides/Templates/InteriorSlides/BlankWithTitle";
 import * as styles from "./PowerPointGenerator/Styles";
 
 export interface ReportContainerProps {
@@ -140,13 +140,41 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
       lineColors
     );
 
-    const top12StatesWithoutNY = getStateLineData(Object.values(props.historicalTimeSeries.states)).filter((el) => !["NY"].includes(el.name)).splice(0,12);
+    const States0to12WithoutNY = getStateLineData(Object.values(props.historicalTimeSeries.states)).filter((el) => !["NY"].includes(el.name)).splice(0,12);
     addLineChartWithLegend(
       ppt,
-      `Cumulative cases per 100,000: Top 12 States Without NY`,
-      top12StatesWithoutNY,
+      `Cumulative cases per 100,000: Top States 1-12 Without NY`,
+      States0to12WithoutNY,
       lineColors
     );
+
+    const States12to24WithoutNY = getStateLineData(Object.values(props.historicalTimeSeries.states)).filter((el) => !["NY"].includes(el.name)).splice(12,12);
+    const States12to24NJ = getStateLineData(Object.values(props.historicalTimeSeries.states)).filter((el) => ["NJ"].includes(el.name));
+    addLineChartWithLegend(
+      ppt,
+      `Cumulative cases per 100,000: Top 13-24 States Without NY With NJ`,
+      [...States12to24NJ, ...States12to24WithoutNY],
+      lineColors
+    );
+
+    const States24to36ithoutNY = getStateLineData(Object.values(props.historicalTimeSeries.states)).filter((el) => !["NY"].includes(el.name)).splice(24,12);
+    const States24to36NJ = getStateLineData(Object.values(props.historicalTimeSeries.states)).filter((el) => ["NJ"].includes(el.name));
+    addLineChartWithLegend(
+      ppt,
+      `Cumulative cases per 100,000: Top 25-36 States Without NY With NJ`,
+      [...States24to36NJ, ...States24to36ithoutNY],
+      lineColors
+    );
+
+    const States24to51ithoutNY = getStateLineData(Object.values(props.historicalTimeSeries.states)).filter((el) => !["NY"].includes(el.name)).splice(36,15);
+    const States24to51NJ = getStateLineData(Object.values(props.historicalTimeSeries.states)).filter((el) => ["NJ"].includes(el.name));
+    addLineChartWithLegend(
+      ppt,
+      `Cumulative cases per 100,000: Top 37-51 States Without NY With NJ`,
+      [...States24to51NJ, ...States24to51ithoutNY],
+      lineColors
+    );
+
 
     const exceptionStates = ["NY", "NJ", "CT", "WA", "CA"];
     const exceptionStatesData = getStateLineData(Object.values(props.historicalTimeSeries.states)).filter((el) => exceptionStates.includes(el.name));
