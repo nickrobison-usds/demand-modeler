@@ -6,7 +6,7 @@ import * as PowerPointUtils from "../utils/PowerPointUtils";
 import { stateAbbreviation } from "../utils/fips/stateAbbreviation";
 import * as fips from "../utils/fips";
 import { lineColors, metroAreas } from "../utils/reportHelpers";
-import { isSameDay} from "../utils/DateUtils"
+import { isSameDay, monthDayCommaYear} from "../utils/DateUtils"
 
 export interface ReportContainerProps {
   states: State[];
@@ -16,7 +16,7 @@ export interface ReportContainerProps {
 
 export const addTitleSlide = (ppt: pptxgen) => {
   const titleSlide = ppt.addSlide();
-  titleSlide.addText("COVID-19 county-level case data", {
+  titleSlide.addText("Case Data by State and Metropolitan Area", {
     fontFace: "Calibri (Headings)",
     bold: true,
     color: ppt.SchemeColor.text2,
@@ -26,10 +26,10 @@ export const addTitleSlide = (ppt: pptxgen) => {
     h: 0.38,
     w: 8.2,
   });
-  titleSlide.addText(`Data as of ${new Date()}`, {
+  titleSlide.addText(`Data as of ${monthDayCommaYear(new Date())}`, {
     fontSize: 20,
     x: 1.8,
-    y: 2.75,
+    y: 3.2,
   });
   titleSlide.addShape(ppt.ShapeType.line, {
     color: "#FF0000",
@@ -40,6 +40,26 @@ export const addTitleSlide = (ppt: pptxgen) => {
     y: 1.25,
     h: 2.84,
     w: 2.85,
+  });
+  titleSlide.addText(`Source of case & mortality data: Conference of State Bank Supervisors and USAFacts.org, as of ${monthDayCommaYear(new Date())}`, {
+    fontFace: "Calibri (Body)",
+    italics: true,
+    color: ppt.SchemeColor.text2,
+    x: 1.8,
+    y: 4.22,
+    fontSize: 11,
+    h: 0.38,
+    w: 8.2,
+  });
+  titleSlide.addText(`Data sourced from state health departments and news reports; reporting may be incomplete and delayed`, {
+    fontFace: "Calibri (Body)",
+    italics: true,
+    color: ppt.SchemeColor.text2,
+    x: 1.8,
+    y: 4.4,
+    fontSize: 11,
+    h: 0.38,
+    w: 8.2,
   });
 };
 
@@ -109,7 +129,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
     ppt.layout = "LAYOUT_16x9";
     ppt.company = "United States Digital Service";
     // Generate the title slide
-    // addTitleSlide(ppt);
+    addTitleSlide(ppt);
     // addTopTenStates(ppt, props.states, props.weeklyTimeSeries)
 
     const TEXT_COLOR = "0A2644";
@@ -418,7 +438,8 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
 
       const barColors = stat === "confirmed" ? confirmedColors : deadColors;
 
-      const barChartConfig = () => ({
+      const barChartConfig = () => {
+        const config = {
         ...lineChartConfig(),
         barGrouping: "stacked",
         valAxisTitle: `Confirmed ${
@@ -436,7 +457,17 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
         legendFontFace: TEXT_FONT_FACE,
         valGridLine: { style: "solid", color: AXIS_COLOR },
         dataLabelFormatCode: "0;;;",
-      });
+      }
+      // if (metroArea !== "New York, NY") {
+      //   if (stat === "confirmed") {
+
+      //   } else {
+
+      //   }
+      //   // (config as any).valAxisMaxVal = 10000;
+      // }
+      return config;
+    };
 
       return addSlideWithTitle(
         ppt,
