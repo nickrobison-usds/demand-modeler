@@ -1,4 +1,4 @@
-import { AppState, County, State } from "../app/AppStore";
+import { AppState } from "../app/AppStore";
 import * as fips from "./fips";
 
 export interface Stats {

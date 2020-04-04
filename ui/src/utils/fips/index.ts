@@ -3,6 +3,9 @@ import { population } from "./population";
 import { stateFullNames } from "./stateFullNames";
 
 export const getStateAbr = (fips: string) => {
+  if (names[fips] === undefined) {
+    console.log("no name for", fips);
+  }
   return names[fips].State;
 }
 
