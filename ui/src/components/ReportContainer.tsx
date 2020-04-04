@@ -13,6 +13,10 @@ export interface ReportContainerProps {
   historicalTimeSeries: CovidDateData;
 }
 
+const TEXT_COLOR = "0A2644";
+const TEXT_FONT_FACE = "Source Sans Pro";
+const AXIS_COLOR = "EEEEEE";
+
 export const addTitleSlide = (ppt: pptxgen) => {
   const titleSlide = ppt.addSlide();
   titleSlide.addText("Case Data by State and Metropolitan Area", {
@@ -130,10 +134,6 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
     // Generate the title slide
     addTitleSlide(ppt);
     // addTopTenStates(ppt, props.states, props.weeklyTimeSeries)
-
-    const TEXT_COLOR = "0A2644";
-    const TEXT_FONT_FACE = "Source Sans Pro";
-    const AXIS_COLOR = "EEEEEE";
 
     // Titles
     const titleConf = () => ({
