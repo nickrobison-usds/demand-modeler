@@ -7,7 +7,7 @@ import * as fips from "../utils/fips";
 interface Props {
   state?: string;
   county?: string;
-};
+}
 
 const USATotalsAlt: React.FunctionComponent<Props> = props => {
   const { state } = useContext(AppContext);
@@ -23,34 +23,41 @@ const USATotalsAlt: React.FunctionComponent<Props> = props => {
 
   const total = grandTotals[dates[0]]?.Confirmed;
 
-  const totalWithComma = (total).toLocaleString('en');
+  const totalWithComma = total.toLocaleString("en");
 
   const renderChange = (current: number, previous: number) => {
     if (current === undefined || previous === undefined) {
       return "N/A";
     }
     const change = current - previous;
-    return `${change >= 0 ? "+" : ""}${(change).toLocaleString('en')} (${percentChange(
-      current,
-      change
-    )} %)`;
+    return `${change >= 0 ? "+" : ""}${change.toLocaleString(
+      "en"
+    )} (${percentChange(current, change)} %)`;
   };
 
-const selectedState = state.selection.state === undefined ? 'National' : fips.getStateName(state.selection.state);
+  const selectedState =
+    state.selection.state === undefined
+      ? "National"
+      : fips.getStateName(state.selection.state);
 
-const selectedCounty = state.selection.county === undefined ? undefined : `: ` + fips.getCountyName(state.selection.county) + ' County';
+  const selectedCounty =
+    state.selection.county === undefined
+      ? undefined
+      : `: ` + fips.getCountyName(state.selection.county) + " County";
 
   return (
     <div className="total-wrap">
-      <h1>{selectedState}{selectedCounty}</h1>
+      <h1>
+        {selectedState}
+        {selectedCounty}
+      </h1>
       <div className="total-item">
         <label className="usa-label">Confirmed cases</label>
         <span>{totalWithComma}</span>
       </div>
       <div className="total-item">
         <label className="usa-label">24-hour change</label>
-        <span>{renderChange(total, grandTotals[dates[1]]?.Confirmed)}
-        </span>
+        <span>{renderChange(total, grandTotals[dates[1]]?.Confirmed)}</span>
         {/* <Card header="48 hour Change">
           {renderChange(total, grandTotals[dates[2]].Confirmed)}
         </Card> */}

@@ -28,12 +28,14 @@ const CountySelect: React.FunctionComponent<{}> = () => {
     value: undefined
   };
 
-  const options: Option[] = timesSeries.getCountiesForState(lastWeekCovidTimeSeries, state).map(c =>{
-    return {
-      text: fips.getCountyName(c.ID),
-      value: c.ID
-    }
-  });
+  const options: Option[] = timesSeries
+    .getCountiesForState(lastWeekCovidTimeSeries, state)
+    .map(c => {
+      return {
+        text: fips.getCountyName(c.ID),
+        value: c.ID
+      };
+    });
   options.sort((a, b) => (a.text > b.text ? 1 : -1));
   options.unshift(defaultOption);
 

@@ -38,7 +38,7 @@ const makeCountyData = (day: number): County[] => {
         State: `${state}`,
         Confirmed: Math.round(Math.random() * 400),
         Dead: Math.round(Math.random() * 30),
-        Reported: new Date(`3/${day}/2020`),
+        Reported: new Date(`3/${day}/2020`)
       } as any);
     });
   });

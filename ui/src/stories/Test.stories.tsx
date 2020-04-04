@@ -51,4 +51,3 @@ storiesOf("Charts", module)
       />
     );
   });
-

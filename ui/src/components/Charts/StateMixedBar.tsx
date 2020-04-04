@@ -135,9 +135,7 @@ export const StateMixedBar = (props: Props) => {
         continue;
       }
       if (d[i + 1]) {
-        if (
-          d[i].toString() === d[i + 1].toString()
-        ) {
+        if (d[i].toString() === d[i + 1].toString()) {
           continue;
         }
       }
@@ -247,15 +245,15 @@ export const StateMixedBar = (props: Props) => {
             );
           })}
           {displayDates.map((date, i) => {
-            return props.new ? (
-              null
-            ) : <Bar
-            key={`${date} Existing`}
-            id={`${date}`}
-            stackId={date}
-            dataKey={`${date} Existing`}
-            fill={colors[i]}
-          />;
+            return props.new ? null : (
+              <Bar
+                key={`${date} Existing`}
+                id={`${date}`}
+                stackId={date}
+                dataKey={`${date} Existing`}
+                fill={colors[i]}
+              />
+            );
           })}
         </BarChart>
       </RenderChart>

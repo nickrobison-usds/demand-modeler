@@ -7,19 +7,19 @@ export const getStateAbr = (fips: string) => {
     console.log("no name for", fips);
   }
   return names[fips].State;
-}
+};
 
 export const getStateName = (fips: string) => {
   return stateFullNames[getStateAbr(fips)];
-}
+};
 
 export const getCountyName = (fips: string) => {
   if (names[fips] === undefined) {
-    console.log("fips name not found", fips)
+    console.log("fips name not found", fips);
   }
   return names[fips].County;
-}
+};
 
 export const getPopulation = (fips: string) => {
   return population[fips];
-}
+};

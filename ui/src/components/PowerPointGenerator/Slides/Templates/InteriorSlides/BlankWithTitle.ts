@@ -1,7 +1,10 @@
 import pptxgen from "pptxgenjs";
 import * as style from "../../../Styles";
 
-export const addBlankSlideWithTitle = (ppt: pptxgen, title: string): pptxgen.ISlide => {
+export const addBlankSlideWithTitle = (
+  ppt: pptxgen,
+  title: string
+): pptxgen.ISlide => {
   return ppt
     .addSlide()
     .addText(title.toUpperCase(), {

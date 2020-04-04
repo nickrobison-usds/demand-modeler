@@ -258,9 +258,9 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
             Name =
               level === "state"
                 ? fips.getStateName(region[0].ID)
-                : `${fips.getCountyName(region[0].ID)}, ${
-                    fips.getStateAbr(region[0].ID)
-                  }`;
+                : `${fips.getCountyName(region[0].ID)}, ${fips.getStateAbr(
+                    region[0].ID
+                  )}`;
           }
         }
       }

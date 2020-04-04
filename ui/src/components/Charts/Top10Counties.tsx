@@ -35,7 +35,15 @@ const getColors = (stat: Stat) => {
     case "dead":
       return ["#a9a9a9", "#888", "#666", "#333", "#111"];
     case "confirmed":
-      return ["#E5A3A3", "#D05C5C", "#CB2727", "#C00000", "#900000", "#700000", "#500000"];
+      return [
+        "#E5A3A3",
+        "#D05C5C",
+        "#CB2727",
+        "#C00000",
+        "#900000",
+        "#700000",
+        "#500000"
+      ];
     case "mortalityRate":
       return ["#a9a9a9", "#888", "#666", "#333", "#111"];
   }
@@ -44,9 +52,13 @@ const getColors = (stat: Stat) => {
 const getTitle = (stat: Stat, n?: boolean) => {
   switch (stat) {
     case "dead":
-      return `Counties with the highest number of deaths${n ? " (24 hours change)" : ""}`;
+      return `Counties with the highest number of deaths${
+        n ? " (24 hours change)" : ""
+      }`;
     case "confirmed":
-      return `Counties with the highest number of cases${n ? " (24 hours change)" : ""}`;
+      return `Counties with the highest number of cases${
+        n ? " (24 hours change)" : ""
+      }`;
     case "mortalityRate":
       return `Counties with the highest change in moratility rate`;
   }
@@ -111,9 +123,7 @@ export const Top10Counties = (props: Props) => {
         continue;
       }
       if (d[i + 1]) {
-        if (
-          d[i].toString() === d[i + 1].toString()
-        ) {
+        if (d[i].toString() === d[i + 1].toString()) {
           continue;
         }
       }
@@ -207,15 +217,15 @@ export const Top10Counties = (props: Props) => {
             />
           ))}
           {displayDates.map((date, i) => {
-            return props.new ? (
-              null
-            ) :       <Bar
-            key={`${date} Existing`}
-            id={`${date}`}
-            stackId={date}
-            dataKey={`${date} Existing`}
-            fill={colors[i]}
-          />;
+            return props.new ? null : (
+              <Bar
+                key={`${date} Existing`}
+                id={`${date}`}
+                stackId={date}
+                dataKey={`${date} Existing`}
+                fill={colors[i]}
+              />
+            );
           })}
         </BarChart>
       </RenderChart>
