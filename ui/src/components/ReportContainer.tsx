@@ -26,7 +26,7 @@ export const addTitleSlide = (ppt: pptxgen) => {
     h: 0.38,
     w: 8.2,
   });
-  titleSlide.addText("Data as of (today)", {
+  titleSlide.addText(`Data as of ${new Date()}`, {
     fontSize: 20,
     x: 1.8,
     y: 2.75,
@@ -109,7 +109,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
     ppt.layout = "LAYOUT_16x9";
     ppt.company = "United States Digital Service";
     // Generate the title slide
-    addTitleSlide(ppt);
+    // addTitleSlide(ppt);
     // addTopTenStates(ppt, props.states, props.weeklyTimeSeries)
 
     const TEXT_COLOR = "0A2644";
@@ -310,6 +310,38 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
       return total;
     }
 
+    const getConfirmedColors = (length: number): string[] => {
+      switch (length) {
+        default:
+        case 6:
+          return ["160004", "52000F", "910A0A", "B8051A", "DE0029", "EF8094"].reverse();
+        case 5:
+          return ["160004", "52000F", "910A0A", "DE0029", "EF8094"].reverse();
+        case 3:
+          return ["DE0029", "910A0A", "52000F"];
+        case 2:
+          return ["DE0029", "910A0A"];
+        case 1:
+          return ["910A0A"];
+      }
+    }
+
+    const getDeadColors = (length: number): string[] => {
+      switch (length) {
+        default:
+        case 6:
+          return ["032E41", "285266", "4D768A", "729BAF", "97BFD3", "DEF1FC"].reverse();
+        case 5:
+          return ["032E41", "315B6F", "60899D", "8EB6CA", "BCE3F8"].reverse();
+        case 3:
+          return ["BCE3F8", "33689A", "032E41"];
+        case 2:
+          return ["BCE3F8", "33689A"];
+        case 1:
+          return ["33689A"];
+      }
+    }
+
     const addCountySlide = (
       ppt: pptxgen,
       metroArea: string,
@@ -381,22 +413,8 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
           return acc;
         }, [] as StackedBarData[]);
 
-      const confirmedColors = [
-        ...(counties.length > 3 ? ["0A0000"] : []),
-        ...(counties.length > 5 ? ["1F0000"] : []),
-        "420000",
-        "910A0A",
-        "B12323",
-        ...(counties.length > 4 ? ["CF4545"] : []),
-      ].slice(0, counties.length);
-      const deadColors = [
-        ...(counties.length > 3 ? ["111111"] : []),
-        "121D2D",
-        ...(counties.length > 5 ? ["303133"] : []),
-        "4C5664",
-        "697380",
-        ...(counties.length > 4 ? ["899099"] : []),
-      ].slice(0, counties.length);
+      const confirmedColors = getConfirmedColors(counties.length);
+      const deadColors = getDeadColors(counties.length);
 
       const barColors = stat === "confirmed" ? confirmedColors : deadColors;
 
@@ -408,7 +426,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
         }`.toUpperCase(),
         w: 9,
         showLabel: true,
-        showValue: true,
+        showValue: false,
         barGapWidthPct: 10,
         dataLabelFontSize,
         dataLabelFontFace: TEXT_FONT_FACE,

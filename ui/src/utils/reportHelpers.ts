@@ -55,7 +55,7 @@ export const lineColors: { [s: string]: string } = {
 export const metroAreas: { area: string; fipsCodes: string[] }[] = [
   {
     area: "Seattle, WA",
-    fipsCodes: ["53033", "53053", "53061"],
+    fipsCodes: ["53053", "53061", "53033"],
   },
   {
     area: "Detroit, MI",
@@ -63,8 +63,9 @@ export const metroAreas: { area: string; fipsCodes: string[] }[] = [
   },
   {
     area: "New York, NY",
-    fipsCodes: ["34003", "36059", "36061", "36087", "34037", "36119"],
+    fipsCodes: ["36061", "34003", "36059", "36119", "36087", "34037"].reverse(),
   },
+  // if value = 36061 and date is note today add 36005, 36081,36047, and 36085
   {
     area: "Chicago, IL",
     fipsCodes: ["17031"],
@@ -75,6 +76,6 @@ export const metroAreas: { area: string; fipsCodes: string[] }[] = [
   },
   {
     area: "Los Angeles, CA",
-    fipsCodes: ["06037", "06059", "06065", "06071", "06111"],
+    fipsCodes: ["06111", "06071","06059", "06065", "06037"],
   },
 ];
