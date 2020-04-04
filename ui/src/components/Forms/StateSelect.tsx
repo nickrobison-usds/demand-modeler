@@ -1,6 +1,8 @@
 import React, { useContext } from "react";
 import { ActionType, AppContext } from "../../app/AppStore";
 import UsaSelect from "../Forms/USASelect";
+import * as fips from "../../utils/fips";
+import * as timesSeries from "../../utils/timesSeries";
 
 interface Option {
   text: string;
@@ -8,7 +10,7 @@ interface Option {
 }
 
 const DEFAULT_TEXT = "All states";
-const USATotal: React.FunctionComponent<{}> = props => {
+const StateSelect: React.FunctionComponent<{}> = props => {
   const { dispatch, state } = useContext(AppContext);
 
   const defaultOption: Option = {
@@ -16,26 +18,20 @@ const USATotal: React.FunctionComponent<{}> = props => {
     value: undefined
   };
 
-  const options: Option[] = [];
-
-  const stateMap: { [ID: string]: Option } = {};
-  Object.keys(state.lastWeekCovidTimeSeries.states)
-    .flatMap(k => state.lastWeekCovidTimeSeries.states[k])
-    .forEach(s => {
-      stateMap[s.ID] = {
-        text: s.State,
-        value: s.ID
-      };
-    });
-  Object.values(stateMap).forEach((o: Option) => options.push(o));
+  const states = timesSeries.getStates(state.lastWeekCovidTimeSeries);
+  const options: Option[] = states.map(s => {
+    return {
+      text: fips.getStateName(s.ID),
+      value: s.ID
+    }
+  });
+  options.sort((a, b) => (a.text > b.text ? 1 : -1));
+  options.unshift(defaultOption);
 
   const onUpdate = (stateID: string | undefined) => {
     dispatch({ type: ActionType.UPDATE_SELECTED_STATE, payload: stateID });
     dispatch({ type: ActionType.UPDATE_SELECTED_COUNTY, payload: undefined });
   };
-
-  options.sort((a, b) => (a.text > b.text ? 1 : -1));
-  options.unshift(defaultOption);
 
   return (
     <div className="navigation-select">
@@ -51,4 +47,4 @@ const USATotal: React.FunctionComponent<{}> = props => {
   );
 };
 
-export default USATotal;
+export default StateSelect;

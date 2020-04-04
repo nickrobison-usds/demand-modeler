@@ -7,7 +7,6 @@ export interface StateIDs {
 
 interface StateResponse {
   ID: string;
-  State: string;
   Reported: string;
   Confirmed: number;
   Dead: number;
@@ -15,8 +14,6 @@ interface StateResponse {
 
 interface CountyResponse {
   ID: string;
-  County: string;
-  State: string;
   Reported: string;
   Confirmed: number;
   Dead: number;
@@ -85,6 +82,7 @@ export async function getStateCases(
         return {
           ...s,
           Reported: parseDate(s.Reported),
+          ID: s.ID + '000',
           mortalityRate: s.Dead / s.Confirmed
         };
       }

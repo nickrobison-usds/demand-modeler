@@ -11,8 +11,8 @@ import {
 import { CovidDateData } from "../../app/AppStore";
 import { monthDay } from "../../utils/DateUtils";
 import { RenderChart } from "./RenderChart";
-import { getSelectedLocationName } from "../../utils/utils";
 import { StripedFill } from "./StripedFill";
+import * as fips from "../../utils/fips";
 
 interface Props {
   state?: string;
@@ -50,11 +50,11 @@ export const MixedBar = (props: Props) => {
       maxCasesByDate[date] = (maxCasesByDate[date] || 0) + total;
     } else if (props.state) {
       // We just need the first value in order to match the counties
-      const state = props.timeSeries.states[props.state][0].State;
+      const state = fips.getStateName(props.timeSeries.states[props.state][0].ID);
 
       const counties = Object.values(props.timeSeries.counties)
         .flat()
-        .filter(({ State }) => State === state);
+        .filter(({ ID }) =>  fips.getStateName(ID) === state);
 
       counties
         .filter(({ Reported }) => monthDay(Reported) === date)
@@ -89,11 +89,13 @@ export const MixedBar = (props: Props) => {
     dedupedData.push(data[i]);
   }
 
-  const locationName = getSelectedLocationName(
-    props.state,
-    props.county,
-    props.timeSeries
-  );
+
+  const selectedState = props.state === undefined ? 'National' : fips.getStateName(props.state);
+
+  const selectedCounty = props.county === undefined ? undefined : `: ` + fips.getCountyName(props.county) + ' County';
+
+
+  const locationName = `${selectedCounty}${selectedState}`;
 
   const finalData = dedupedData.map((data, i) => {
     if (!dedupedData[i - 1]) {

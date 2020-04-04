@@ -11,6 +11,9 @@ export const getStateName = (fips: string) => {
 }
 
 export const getCountyName = (fips: string) => {
+  if (names[fips] === undefined) {
+    console.log("fips name not found", fips)
+  }
   return names[fips].County;
 }
 

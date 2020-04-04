@@ -15,27 +15,11 @@
 
 ## Setup
 
-1. Download the TIGER files:
-
-  ```bash
-  wget https://www2.census.gov/geo/tiger/TIGER2019/STATE/tl_2019_us_state.zip -O data/tl_2019_us_state.zip
-  wget https://www2.census.gov/geo/tiger/TIGER2019/COUNTY/tl_2019_us_county.zip -O data/tl_2019_us_county.zip
-  ```
-
-1. Unzip the files (there should be a .shp, .shx, .dbf, .prj file for each)
 1. install [Docker](https://docs.docker.com/install/)
 
   ```bash
   docker-compose up postgres
   ```
-
-1. load tiger files into the database
-
-  ```bash
-  docker build -f loader.Dockerfile -t loader . && docker run -it --network=demand-modeler_default loader
-  ```
-
-  \* if the network is not correct double check it with `docker network ls`
 
 1. start the API
 

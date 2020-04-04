@@ -10,8 +10,8 @@ import {
   Label
 } from "recharts";
 import { CovidDateData, AppState } from "../../app/AppStore";
-import { stateAbbreviation } from "../../utils/fips/stateAbbreviation";
 import { monthDay } from "../../utils/DateUtils";
+import { names } from "../../utils/fips/names";
 import { interpolateRainbow } from "d3";
 import { RenderChart } from "./RenderChart";
 
@@ -54,7 +54,8 @@ export const CountyTrendGraph = (props: Props) => {
       return acc;
     }
 
-    const name = `${el.County}, ${stateAbbreviation[el.State]}`;
+
+    const name = `${names[el.ID].County}, ${names[el.ID].State}`;
     if (!acc[name]) acc[name] = {};
     acc[name][monthDay(el.Reported).split("|")[1]] = el.Confirmed;
     return acc;
