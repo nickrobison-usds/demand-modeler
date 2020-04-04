@@ -2,12 +2,15 @@ import React from "react";
 import pptxgen from "pptxgenjs";
 import { CovidDateData, State } from "../app/AppStore";
 import * as _ from "lodash";
-import * as PowerPointUtils from "./PowerPointGenerator/utils";
-import * as pptStyle from "./PowerPointGenerator/style";
+import * as PowerPointUtils from "./PowerPointGenerator/Utils";
 import * as fips from "../utils/fips";
 import { lineColors, metroAreas } from "../utils/reportHelpers";
 import { isSameDay, monthDayCommaYear} from "../utils/DateUtils"
-import {addTitleSlide} from "./PowerPointGenerator/slides/titleSlides/titleSlide"
+import { addTitleSlide } from "./PowerPointGenerator/Slides/template/TitleSlides/TitleSlide";
+import { addLineChartWithLegend, LineData, lineChartConfig } from "./PowerPointGenerator/Slides/template/InteriorSlides/LineChartWithTitle";
+import { addBlankSlideWithTitle } from "./PowerPointGenerator/Slides/template/InteriorSlides/BlankWithTitle";
+import * as styles from "./PowerPointGenerator/Styles";
+
 export interface ReportContainerProps {
   states: State[];
   weeklyTimeSeries: CovidDateData;
@@ -73,6 +76,29 @@ export const addTopTenStates = (
   });
 };
 
+const getStateLineData = (states: State[][]) => {
+  return states.reduce((acc, stateSeries) => {
+    const state: LineData = {
+      name: fips.getStateAbr(stateSeries[0].ID),
+      labels: [],
+      values: [],
+    };
+    stateSeries.forEach(el => {
+      state.labels.push(
+        el.Reported.getMonth() + 1 + "/" + el.Reported.getDate()
+      );
+      state.values.push(el.Confirmed / (fips.getPopulation(el.ID) / 100000));
+    });
+    // The first day is only used to calculate diffs. Remove it.
+    state.labels.shift();
+    state.values.shift();
+    acc.push(state);
+    return acc;
+  }, [] as LineData[]).sort((a, b) => {
+    return b.values[b.values.length - 1] - a.values[a.values.length - 1];
+  });
+}
+
 export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
   const exportPowerPoint = async () => {
     // noinspection JSPotentiallyInvalidConstructorUsage
@@ -89,150 +115,60 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
     );
     // addTopTenStates(ppt, props.states, props.weeklyTimeSeries)
 
-
     // Line chart
-    const lineChartConfig = () => ({
-      x: 0.5,
-      y: 1,
-      w: 7.5,
-      h: 4.5,
-      legendFontSize: 8,
-      lineSize: 1.5,
-      lineDataSymbol: "none",
-      valGridLine: { style: "none" },
-      serGridLine: { style: "none" },
-      catGridLine: { style: "none" },
-      showValAxisTitle: true,
-      valAxisTitle: "Confirmed cases per 100,000".toUpperCase(),
-      catAxisLabelRotate: 270,
-      showTitle: false,
-      valAxisTitleFontSize: 7,
-      valAxisLabelFontSize: 9,
-      catAxisLabelFontSize: 9,
-      // Font faces
-      titleFontFace: TEXT_FONT_FACE,
-      catAxisLabelFontFace: TEXT_FONT_FACE,
-      catAxisTitleFontFace: TEXT_FONT_FACE,
-      valAxisLabelFontFace: TEXT_FONT_FACE,
-      valAxisTitleFontFace: TEXT_FONT_FACE,
-      // Colors
-      legendColor: TEXT_COLOR,
-      titleColor: TEXT_COLOR,
-      catAxisLabelColor: TEXT_COLOR,
-      valAxisLabelColor: TEXT_COLOR,
-      valAxisTitleColor: TEXT_COLOR,
-      gridLineColor: AXIS_COLOR,
-      axisLineColor: AXIS_COLOR,
-      serAxisLabelColor: TEXT_COLOR,
-      serAxisTitleColor: TEXT_COLOR,
-      valAxisMajorUnit: 0,
-    });
+    const allStates = getStateLineData(Object.values(props.historicalTimeSeries.states));
+    addLineChartWithLegend(
+      ppt,
+      "Cumulative cases per 100,000: All States",
+      allStates,
+      lineColors
+    );
 
-    type LineData = { name: string; labels: string[]; values: number[] };
+    const allStatesWithoutNY = getStateLineData(Object.values(props.historicalTimeSeries.states)).filter((el) => !["NY"].includes(el.name));
+    addLineChartWithLegend(
+      ppt,
+      `Cumulative cases per 100,000: All States Without NY`,
+      allStatesWithoutNY,
+      lineColors
+    );
 
-    const stateLineData = Object.values(
-      props.historicalTimeSeries.states
-    ).reduce((acc, stateSeries) => {
-      const state: LineData = {
-        name: fips.getStateAbr(stateSeries[0].ID),
-        labels: [],
-        values: [],
-      };
-      stateSeries.forEach(el => {
-        state.labels.push(
-          el.Reported.getMonth() + 1 + "/" + el.Reported.getDate()
-        );
-        state.values.push(el.Confirmed / (fips.getPopulation(el.ID) / 100000));
-      });
-      // The first day is only used to calculate diffs. Remove it.
-      state.labels.shift();
-      state.values.shift();
-      acc.push(state);
-      return acc;
-    }, [] as LineData[]);
-    console.log(stateLineData)
-    stateLineData.sort((a, b) => {
-      return b.values[b.values.length - 1] - a.values[a.values.length - 1];
-    });
+    const top12States = getStateLineData(Object.values(props.historicalTimeSeries.states)).splice(0,12);
+    addLineChartWithLegend(
+      ppt,
+      `Cumulative cases per 100,000: Top 12 States`,
+      top12States,
+      lineColors
+    );
+
+    const top12StatesWithoutNY = getStateLineData(Object.values(props.historicalTimeSeries.states)).filter((el) => !["NY"].includes(el.name)).splice(0,12);
+    addLineChartWithLegend(
+      ppt,
+      `Cumulative cases per 100,000: Top 12 States Without NY`,
+      top12StatesWithoutNY,
+      lineColors
+    );
 
     const exceptionStates = ["NY", "NJ", "CT", "WA", "CA"];
-    const exceptionStateData = stateLineData.filter((el) =>
-      exceptionStates.includes(el.name)
-    );
-
-    const nonExceptionStateData = stateLineData.filter(
-      (el) => !exceptionStates.includes(el.name)
-    );
-
-
-    const addLineChartWithLegend = (
-      slide: pptxgen.ISlide,
-      lineData: LineData[]
-    ): pptxgen.ISlide => {
-      const chartColors: string[] = [];
-      // Skip territories not in existing slides
-      const lines = [...lineData].filter(
-        (el) => lineColors[el.name] !== undefined
-      );
-      lines.forEach((el, i) => {
-        const color = lineColors[el.name];
-        chartColors.push(color);
-        slide.addShape(ppt.ShapeType.rect, {
-          w: 0.18,
-          h: 0.09,
-          x: i % 2 === 0 ? 8 : 8.6,
-          y: 1.41 + 0.14 * Math.floor(i / 2),
-          fill: { color },
-        });
-        slide.addText(el.name, {
-          x: i % 2 === 0 ? 8.2 : 8.8,
-          y: 1.3 + 0.14 * Math.floor(i / 2),
-          fontSize: 8,
-        });
-      });
-      slide.addShape(ppt.ShapeType.line, {
-        x: 8.23,
-        y: 1.38,
-        w: 0,
-        h: 0.14 * Math.ceil(lines.length / 2),
-        line: AXIS_COLOR,
-        lineSize: 1,
-      });
-      slide.addShape(ppt.ShapeType.line, {
-        x: 8.84,
-        y: 1.38,
-        w: 0,
-        h: 0.14 * Math.floor(lines.length / 2),
-        line: AXIS_COLOR,
-        lineSize: 1,
-      });
-      slide.addChart(ppt.ChartType.line, lines, {
-        ...lineChartConfig(),
-        chartColors,
-      });
-      return slide;
-    };
-
-    // Exception states
-    const exceptionStateSlide = addSlideWithTitle(
+    const exceptionStatesData = getStateLineData(Object.values(props.historicalTimeSeries.states)).filter((el) => exceptionStates.includes(el.name));
+    addLineChartWithLegend(
       ppt,
-      `Cumulative cases per 100,000: ${exceptionStates.join(", ")}`
+      `Cumulative cases per 100,000: ${exceptionStates.join(
+        ", "
+      )}`,
+      exceptionStatesData,
+      lineColors
     );
-    addLineChartWithLegend(exceptionStateSlide, exceptionStateData);
-    // Non-exception states
-    const nonExceptionStateSlide = addSlideWithTitle(
+
+    // // Non-exception states
+    const nonExceptionStatesData = getStateLineData(Object.values(props.historicalTimeSeries.states)).filter((el) => !exceptionStates.includes(el.name));
+    addLineChartWithLegend(
       ppt,
       `Cumulative cases per 100,000: states except ${exceptionStates.join(
         ", "
-      )}`
+      )}`,
+      nonExceptionStatesData,
+      lineColors
     );
-    addLineChartWithLegend(nonExceptionStateSlide, nonExceptionStateData);
-    // All states
-    const allStateSlide = addSlideWithTitle(
-      ppt,
-      "Cumulative cases per 100,000: All States"
-    );
-    addLineChartWithLegend(allStateSlide, stateLineData);
 
     // Metro areas (stacked)
     type StackedBarData = {
@@ -372,26 +308,18 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
         showValue: false,
         barGapWidthPct: 10,
         dataLabelFontSize,
-        dataLabelFontFace: TEXT_FONT_FACE,
+        dataLabelFontFace: styles.BODY_FONT_FACE,
         dataLabelColor: "EEEEEE",
         chartColors: barColors,
         showLegend: counties.length > 1,
-        legendFontFace: TEXT_FONT_FACE,
-        valGridLine: { style: "solid", color: AXIS_COLOR },
+        legendFontFace: styles.BODY_FONT_FACE,
+        valGridLine: { style: "solid", color: styles.AXIS_COLOR },
         dataLabelFormatCode: "0;;;",
       }
-      // if (metroArea !== "New York, NY") {
-      //   if (stat === "confirmed") {
-
-      //   } else {
-
-      //   }
-      //   // (config as any).valAxisMaxVal = 10000;
-      // }
       return config;
     };
 
-      return addSlideWithTitle(
+      return addBlankSlideWithTitle(
         ppt,
         `${metroArea} Metro Area${
           counties.length === 1 ? ` (${firstCounty})` : ""
@@ -408,6 +336,22 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
       addCountySlide(ppt, area, fipsCodes, "dead");
       addCountySlide(ppt, area, fipsCodes, "dead", true);
     });
+
+    console.debug("Writing PPTX");
+    const done = await ppt.writeFile("Sample Presentation.pptx");
+    console.debug("Finished exporting: ", done);
+  };
+  return (
+    <div>
+      <button className="usa-button" onClick={exportPowerPoint}>
+        Export
+      </button>
+      {/* <>{props.children}</> */}
+      <canvas />
+    </div>
+  );
+};
+
 
     // // Add the map
     // let map = document.getElementsByClassName("mapboxgl-map").item(0);
@@ -442,17 +386,3 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
     //         x: 1.9
     //     });
     // }
-    console.debug("Writing PPTX");
-    const done = await ppt.writeFile("Sample Presentation.pptx");
-    console.debug("Finished exporting: ", done);
-  };
-  return (
-    <div>
-      <button className="usa-button" onClick={exportPowerPoint}>
-        Export
-      </button>
-      {/* <>{props.children}</> */}
-      <canvas />
-    </div>
-  );
-};
