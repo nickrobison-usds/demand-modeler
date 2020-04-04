@@ -219,7 +219,7 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
         Name = f.properties["NAME"];
         const ID =
           level === "state"
-            ? f.properties["STATE"]
+            ? `${f.properties["STATE"]}000`
             : `${f.properties["STATE"]}${f.properties["COUNTY"]}`;
         const parsedID = parseInt(`${ID}`);
         if (typeof parsedID === "number") {
@@ -335,7 +335,7 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
     if (hoverInfo) {
       let name = hoverInfo.feature.NAME;
       if (hoverInfo.feature.COUNTY) {
-        const stateName = fips.getStateAbr(hoverInfo.feature.STATE);
+        const stateName = fips.getStateAbr(hoverInfo.feature.STATE + "000");
         name = `${name}, ${stateName}`;
       }
 
@@ -374,7 +374,7 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
           );
         })
       : stateData.features.find(
-          feature => feature.properties?.STATE === state.selection.state
+          feature => feature.properties?.STATE + "000" === state.selection.state
         );
 
     setViewport(viewport => {
@@ -432,7 +432,7 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
           );
         }
 
-        return feature?.properties?.STATE === state.selection.state;
+        return feature?.properties?.STATE + "000" === state.selection.state;
       }
     );
   }
@@ -504,7 +504,7 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
             } else {
               dispatch({
                 type: ActionType.UPDATE_SELECTED_STATE,
-                payload: clickedState
+                payload: clickedState + "000"
               });
               dispatch({
                 type: ActionType.UPDATE_SELECTED_COUNTY,

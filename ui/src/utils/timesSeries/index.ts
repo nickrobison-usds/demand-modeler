@@ -17,7 +17,7 @@ export const getCountiesForState = (
   const countyMap: { [ID: string]: State } = {};
   Object.keys(timeseries.counties)
     .flatMap(k => timeseries.counties[k])
-    .filter(c => c.ID === stateId)
+    .filter(c => c.ID.substring(0, 2) === stateId.substring(0, 2))
     .forEach(s => (countyMap[s.ID] = s));
   return Object.values(countyMap);
 };

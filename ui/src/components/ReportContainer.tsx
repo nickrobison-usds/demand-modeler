@@ -3,7 +3,6 @@ import pptxgen from "pptxgenjs";
 import { CovidDateData, State } from "../app/AppStore";
 import * as _ from "lodash";
 import * as PowerPointUtils from "../utils/PowerPointUtils";
-import { stateAbbreviation } from "../utils/fips/stateAbbreviation";
 import * as fips from "../utils/fips";
 import { lineColors, metroAreas } from "../utils/reportHelpers";
 import { isSameDay, monthDayCommaYear} from "../utils/DateUtils"
