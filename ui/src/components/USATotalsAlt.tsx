@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import "../pages/Dashboard.scss";
 import { AppContext } from "../app/AppStore";
 import { getCountyGrandTotal, GrandTotal } from "../utils/calculations";
+import * as fips from "../utils/fips";
 
 interface Props {
   state?: string;
@@ -35,9 +36,9 @@ const USATotalsAlt: React.FunctionComponent<Props> = props => {
     )} %)`;
   };
 
-const selectedState = state.selection.state === undefined ? 'National' : state.lastWeekCovidTimeSeries.states[state.selection.state][0].State;
+const selectedState = state.selection.state === undefined ? 'National' : fips.getStateName(state.selection.state);
 
-const selectedCounty = state.selection.county === undefined ? undefined : `: ` +  state.lastWeekCovidTimeSeries.counties[state.selection.county][0].County + ' County';
+const selectedCounty = state.selection.county === undefined ? undefined : `: ` + fips.getCountyName(state.selection.county) + ' County';
 
   return (
     <div className="total-wrap">

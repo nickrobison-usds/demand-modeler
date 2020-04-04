@@ -18,7 +18,7 @@ import ReactMapGL, {
 } from "react-map-gl";
 import rawCountyGeoData from "./geojson-counties-fips.json";
 import stateGeoData from "./state.geo.json";
-import { stateAbbreviation } from "../../utils/fips/stateAbbreviation";
+import * as fips from "../../utils/fips";
 import { useResizeToContainer } from "../../utils/useResizeToContainer";
 import bbox from "@turf/bbox";
 import { easeCubic } from "d3";
@@ -255,12 +255,11 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
             } else if (metric > max) {
               max = metric;
             }
-            console.log(region[0])
             Name =
               level === "state"
-                ? region[0].State
-                : `${(region[0] as County).County}, ${
-                    stateAbbreviation[region[0].State]
+                ? fips.getStateName(region[0].ID)
+                : `${fips.getCountyName(region[0].ID)}, ${
+                    fips.getStateAbr(region[0].ID)
                   }`;
           }
         }
@@ -336,9 +335,8 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
     if (hoverInfo) {
       let name = hoverInfo.feature.NAME;
       if (hoverInfo.feature.COUNTY) {
-        const stateName =
-          state.lastWeekCovidTimeSeries.states[hoverInfo.feature.STATE][0].State;
-        name = `${name}, ${stateAbbreviation[stateName]}`;
+        const stateName = fips.getStateAbr(hoverInfo.feature.STATE);
+        name = `${name}, ${stateName}`;
       }
 
       const label: { [d in DataType]: string } = {

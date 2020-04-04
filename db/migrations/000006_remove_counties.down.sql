@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS Counties (
+    ID VARCHAR(5) PRIMARY KEY,
+    County VARCHAR(50),
+    State VARCHAR(25),
+    StateFP VARCHAR(2),
+    CountyFP VARCHAR(3)
+)

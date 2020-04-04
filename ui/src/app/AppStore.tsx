@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import * as TypeGuards from "../utils/guards";
 import * as DateUtils from "../utils/DateUtils";
+import {splitFips} from "../utils/fips/utils";
 
 const NUMBER_OF_DAYS = 7;
 
@@ -44,15 +45,11 @@ export interface AppContextType {
 
 export interface County extends CovidStats {
   ID: string;
-  County: string;
-  State: string;
   Reported: Date;
 }
 
 export interface State extends CovidStats {
   ID: string;
-  State: string;
-  CountyIDs?: string[];
   Reported: Date;
 }
 
@@ -111,31 +108,33 @@ export const initialState: AppState = {
 };
 
 export const AppContext = createContext({} as AppContextType);
-export const EXCLUDED_STATES = ["New York"];
+export const EXCLUDED_STATES = ["01"];
 const getMetaData = (stateData: State[], countyData: County[]): GraphMetaData => {
   let maxConfirmedCounty = 0;
   let maxConfirmedState = 0;
   let maxDeadCounty = 0;
   let maxDeadState = 0;
   countyData.forEach(e => {
+    const stateFip = splitFips(e.ID).state
     if (
       maxConfirmedCounty < e.Confirmed &&
-      !EXCLUDED_STATES.includes(e.State)
+      !EXCLUDED_STATES.includes(stateFip)
     ) {
       maxConfirmedCounty = e.Confirmed;
     }
-    if (maxDeadCounty < e.Dead && !EXCLUDED_STATES.includes(e.State)) {
+    if (maxDeadCounty < e.Dead && !EXCLUDED_STATES.includes(stateFip)) {
       maxDeadCounty = e.Dead;
     }
   });
   stateData.forEach(e => {
+    const stateFip = splitFips(e.ID).state
     if (
       maxConfirmedState < e.Confirmed &&
-      !EXCLUDED_STATES.includes(e.State)
+      !EXCLUDED_STATES.includes(stateFip)
     ) {
       maxConfirmedState = e.Confirmed;
     }
-    if (maxDeadState < e.Dead && !EXCLUDED_STATES.includes(e.State)) {
+    if (maxDeadState < e.Dead && !EXCLUDED_STATES.includes(stateFip)) {
       maxDeadState = e.Dead;
     }
   });

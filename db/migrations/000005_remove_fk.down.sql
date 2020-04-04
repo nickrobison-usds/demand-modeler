@@ -1,0 +1,3 @@
+ALTER TABLE Cases
+ADD FOREIGN KEY (Geoid) REFERENCES Counties(ID);
+
