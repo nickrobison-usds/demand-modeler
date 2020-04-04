@@ -105,11 +105,7 @@ export const addTopTenStates = (
     // The date labels
     groupedEntries.map((entry) => entry[0]),
     ["Confirmed", "Deaths"],
-<<<<<<< HEAD
-    groupedEntries.length > 0 ? groupedEntries[0][1].map((e) => e.State) : [],
-=======
     groupedEntries.length > 0 ? groupedEntries[0][1].map(e => fips.getStateName(e.ID)) : [],
->>>>>>> 7bf1b4c... WIP
     [
       groupedEntries.map((entry) => entry[1].map((e) => e.Confirmed)),
       groupedEntries.map((entry) => entry[1].map((e) => e.Dead)),
@@ -204,7 +200,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
         state.labels.push(
           el.Reported.getMonth() + 1 + "/" + el.Reported.getDate()
         );
-        state.values.push(el.Confirmed / (fips.getPopulation(el.ID + "000") / 100000));
+        state.values.push(el.Confirmed / (fips.getPopulation(el.ID) / 100000));
       });
       // The first day is only used to calculate diffs. Remove it.
       state.labels.shift();
@@ -212,7 +208,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
       acc.push(state);
       return acc;
     }, [] as LineData[]);
-
+    console.log(stateLineData)
     stateLineData.sort((a, b) => {
       return b.values[b.values.length - 1] - a.values[a.values.length - 1];
     });
@@ -377,9 +373,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
             const nyc_combined = ["36061", "36005", "36081","36047", "36085"];
             return props.historicalTimeSeries.counties[fips].map((county, index) => {
               var today = new Date();
-              // today.setDate(today.getDate() - 1); // hack for testing with stale data
               if (isSameDay(county.Reported, today)) {
-                console.log("reported = today")
                 return county;
               }
               return {
@@ -394,11 +388,11 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
         })
         .reduce((acc, county) => {
           if (!firstCounty) {
-            firstCounty = `${county[0].County} County`;
+            firstCounty = `${fips.getCountyName(county[0].ID)} County`;
           }
 
           const data: StackedBarData = {
-            name: county[0].County + ", " + stateAbbreviation[county[0].State],
+            name: fips.getCountyName(county[0].ID) + ", " + fips.getStateAbr(county[0].ID),
             labels: [],
             values: [],
           };

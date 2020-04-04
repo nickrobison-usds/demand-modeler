@@ -255,7 +255,6 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
             } else if (metric > max) {
               max = metric;
             }
-            console.log(region[0])
             Name =
               level === "state"
                 ? fips.getStateName(region[0].ID)

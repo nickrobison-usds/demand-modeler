@@ -179,7 +179,6 @@ export const Report: React.FC<{}> = () => {
         const top10States = [...dedupedStates].filter((s) => ["New York", "New Jersey", "Washington", "California", "Michigan", "Illinois", "Florida", "Louisiana", "Massachusetts", "Texas"].includes(fips.getStateName(s.ID)))
           .sort((s1, s2) => s2.Confirmed - s1.Confirmed)
         // .slice(0, 10);
-        console.log(top10States);
 
         return (
           <ReportContainer

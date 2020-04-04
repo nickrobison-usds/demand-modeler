@@ -35,7 +35,6 @@ export const ApiContainer: React.FC = (props) => {
   useEffect(() => {
     (async () => {
       const [states, counties] = await loadData();
-      console.log(counties["36061"])
       const data: CovidDateData = { states, counties };
       dispatch({ type: ActionType.LOAD_DATA, payload: data });
       setIsLoading(false);

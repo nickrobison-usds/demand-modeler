@@ -19,9 +19,7 @@ const StateSelect: React.FunctionComponent<{}> = props => {
   };
 
   const states = timesSeries.getStates(state.lastWeekCovidTimeSeries);
-  console.log(states)
   const options: Option[] = states.map(s => {
-    console.log(s.ID, s)
     return {
       text: fips.getStateName(s.ID),
       value: s.ID
