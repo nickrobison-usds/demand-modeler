@@ -2,69 +2,17 @@ import React from "react";
 import pptxgen from "pptxgenjs";
 import { CovidDateData, State } from "../app/AppStore";
 import * as _ from "lodash";
-import * as PowerPointUtils from "../utils/PowerPointUtils";
+import * as PowerPointUtils from "./PowerPointGenerator/utils";
+import * as pptStyle from "./PowerPointGenerator/style";
 import * as fips from "../utils/fips";
 import { lineColors, metroAreas } from "../utils/reportHelpers";
 import { isSameDay, monthDayCommaYear} from "../utils/DateUtils"
-
+import {addTitleSlide} from "./PowerPointGenerator/slides/titleSlides/titleSlide"
 export interface ReportContainerProps {
   states: State[];
   weeklyTimeSeries: CovidDateData;
   historicalTimeSeries: CovidDateData;
 }
-
-const TEXT_COLOR = "0A2644";
-const TEXT_FONT_FACE = "Source Sans Pro";
-const AXIS_COLOR = "EEEEEE";
-
-export const addTitleSlide = (ppt: pptxgen) => {
-  const titleSlide = ppt.addSlide();
-  titleSlide.addText("Case Data by State and Metropolitan Area", {
-    fontFace: "Calibri (Headings)",
-    bold: true,
-    color: ppt.SchemeColor.text2,
-    x: 1.8,
-    y: 2.26,
-    fontSize: 40,
-    h: 0.38,
-    w: 8.2,
-  });
-  titleSlide.addText(`Data as of ${monthDayCommaYear(new Date())}`, {
-    fontSize: 20,
-    x: 1.8,
-    y: 3.2,
-  });
-  titleSlide.addShape(ppt.ShapeType.line, {
-    color: "#FF0000",
-    height: 3.17,
-    width: 0.03,
-    rotate: 45,
-    x: 0.31,
-    y: 1.25,
-    h: 2.84,
-    w: 2.85,
-  });
-  titleSlide.addText(`Source of case & mortality data: Conference of State Bank Supervisors and USAFacts.org, as of ${monthDayCommaYear(new Date())}`, {
-    fontFace: "Calibri (Body)",
-    italics: true,
-    color: ppt.SchemeColor.text2,
-    x: 1.8,
-    y: 4.22,
-    fontSize: 11,
-    h: 0.38,
-    w: 8.2,
-  });
-  titleSlide.addText(`Data sourced from state health departments and news reports; reporting may be incomplete and delayed`, {
-    fontFace: "Calibri (Body)",
-    italics: true,
-    color: ppt.SchemeColor.text2,
-    x: 1.8,
-    y: 4.4,
-    fontSize: 11,
-    h: 0.38,
-    w: 8.2,
-  });
-};
 
 export const addTopTenStates = (
   ppt: pptxgen,
@@ -132,20 +80,15 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
     ppt.layout = "LAYOUT_16x9";
     ppt.company = "United States Digital Service";
     // Generate the title slide
-    addTitleSlide(ppt);
+    addTitleSlide(
+      ppt,
+      "Case Data by State and Metropolitan Area",
+      `Data as of ${monthDayCommaYear(new Date())}`,
+      `Source of case & mortality data: Conference of State Bank Supervisors and USAFacts.org, as of ${monthDayCommaYear(new Date())}`,
+      `Data sourced from state health departments and news reports; reporting may be incomplete and delayed`
+    );
     // addTopTenStates(ppt, props.states, props.weeklyTimeSeries)
 
-    // Titles
-    const titleConf = () => ({
-      fontFace: TEXT_FONT_FACE,
-      color: TEXT_COLOR,
-      charSpacing: 2,
-      fontSize: 16,
-      x: 0,
-      y: 0.3,
-      w: "100%",
-      align: "center",
-    });
 
     // Line chart
     const lineChartConfig = () => ({
@@ -221,19 +164,6 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
       (el) => !exceptionStates.includes(el.name)
     );
 
-    const addSlideWithTitle = (ppt: pptxgen, title: string): pptxgen.ISlide => {
-      return ppt
-        .addSlide()
-        .addText(title.toUpperCase(), titleConf())
-        .addShape(ppt.ShapeType.line, {
-          x: 3.75,
-          y: 0.75,
-          w: 2.5,
-          h: 0.0,
-          line: AXIS_COLOR,
-          lineSize: 1.5,
-        });
-    };
 
     const addLineChartWithLegend = (
       slide: pptxgen.ISlide,
