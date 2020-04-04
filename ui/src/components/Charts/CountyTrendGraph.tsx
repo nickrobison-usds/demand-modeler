@@ -43,9 +43,7 @@ export const CountyTrendGraph = (props: Props) => {
     .filter(c => c.Confirmed >= MIN_CASES);
 
   dates = [
-    ...new Set(
-      countyData.map(({ Reported }) => monthDay(Reported))
-    )
+    ...new Set(countyData.map(({ Reported }) => monthDay(Reported)))
   ].sort();
 
   const counties = countyData.reduce((acc, el) => {
@@ -54,7 +52,6 @@ export const CountyTrendGraph = (props: Props) => {
       return acc;
     }
 
-
     const name = `${names[el.ID].County}, ${names[el.ID].State}`;
     if (!acc[name]) acc[name] = {};
     acc[name][monthDay(el.Reported).split("|")[1]] = el.Confirmed;
@@ -62,7 +59,7 @@ export const CountyTrendGraph = (props: Props) => {
   }, {} as { [c: string]: { [d: string]: number } });
 
   dates.forEach(d => {
-    const date = d.split("|")[1]
+    const date = d.split("|")[1];
     const dataPoint: DataPoint = {
       Date: date
     };

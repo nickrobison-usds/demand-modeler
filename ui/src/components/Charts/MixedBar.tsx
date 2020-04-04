@@ -50,11 +50,13 @@ export const MixedBar = (props: Props) => {
       maxCasesByDate[date] = (maxCasesByDate[date] || 0) + total;
     } else if (props.state) {
       // We just need the first value in order to match the counties
-      const state = fips.getStateName(props.timeSeries.states[props.state][0].ID);
+      const state = fips.getStateName(
+        props.timeSeries.states[props.state][0].ID
+      );
 
       const counties = Object.values(props.timeSeries.counties)
         .flat()
-        .filter(({ ID }) =>  fips.getStateName(ID) === state);
+        .filter(({ ID }) => fips.getStateName(ID) === state);
 
       counties
         .filter(({ Reported }) => monthDay(Reported) === date)
@@ -89,11 +91,13 @@ export const MixedBar = (props: Props) => {
     dedupedData.push(data[i]);
   }
 
+  const selectedState =
+    props.state === undefined ? "National" : fips.getStateName(props.state);
 
-  const selectedState = props.state === undefined ? 'National' : fips.getStateName(props.state);
-
-  const selectedCounty = props.county === undefined ? undefined : `: ` + fips.getCountyName(props.county) + ' County';
-
+  const selectedCounty =
+    props.county === undefined
+      ? undefined
+      : `: ` + fips.getCountyName(props.county) + " County";
 
   const locationName = `${selectedCounty}${selectedState}`;
 
@@ -138,10 +142,16 @@ export const MixedBar = (props: Props) => {
           <Bar
             dataKey="New"
             stackId="data"
-            shape={<StripedFill fill={props.stat === "dead" ? "#111" : "#CB2727"} />}
+            shape={
+              <StripedFill fill={props.stat === "dead" ? "#111" : "#CB2727"} />
+            }
           />
-          <Bar dataKey="Existing" stackId="data" fill={props.stat === "dead" ? "#111" : "#900000"} />
-          <Legend content={<CustomLegend stat={props.stat}/>} />
+          <Bar
+            dataKey="Existing"
+            stackId="data"
+            fill={props.stat === "dead" ? "#111" : "#900000"}
+          />
+          <Legend content={<CustomLegend stat={props.stat} />} />
         </BarChart>
       </RenderChart>
     </div>

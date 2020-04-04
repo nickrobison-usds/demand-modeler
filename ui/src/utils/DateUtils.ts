@@ -15,9 +15,12 @@ export function isSameDate(a: Date, b: Date) {
   return a.getDate() === b.getDate();
 }
 
-
 export function isSameDay(a: Date, b: Date) {
-  return a.getDate() === b.getDate() && a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth();
+  return (
+    a.getDate() === b.getDate() &&
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth()
+  );
 }
 
 export function getPreviousDate(date: Date): Date {
@@ -60,7 +63,7 @@ export const dateTimeString = (date: Date) => {
 export const monthDay = (date: Date) => {
   const hour = addZero(date.getHours());
   const minute = addZero(date.getMinutes());
-  const m = date.getMonth()
+  const m = date.getMonth();
   const month = theMonths[m];
   const day = date.getDate();
   const year = date.getFullYear();
@@ -69,7 +72,7 @@ export const monthDay = (date: Date) => {
 };
 
 export const monthDayCommaYear = (date: Date) => {
-  const m = date.getMonth()
+  const m = date.getMonth();
   const month = theMonths[m];
   const day = date.getDate();
   const year = date.getFullYear();

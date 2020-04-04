@@ -23,7 +23,7 @@ const StateSelect: React.FunctionComponent<{}> = props => {
     return {
       text: fips.getStateName(s.ID),
       value: s.ID
-    }
+    };
   });
   options.sort((a, b) => (a.text > b.text ? 1 : -1));
   options.unshift(defaultOption);

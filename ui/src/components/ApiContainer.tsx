@@ -28,7 +28,7 @@ Curently loads all data on app mount in the following order:
 3. Dispatch state and country arrays to the store
 */
 
-export const ApiContainer: React.FC = (props) => {
+export const ApiContainer: React.FC = props => {
   const [isLoading, setIsLoading] = useState(true);
   const { dispatch } = useContext(AppContext);
 
@@ -48,7 +48,7 @@ export const ApiContainer: React.FC = (props) => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        height: "100vh",
+        height: "100vh"
       }}
     >
       <h3>Loading...</h3>

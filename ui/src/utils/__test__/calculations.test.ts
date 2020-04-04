@@ -1,10 +1,8 @@
 import { createMockState } from "../../app/mockState";
-import {
-  getCountyGrandTotal
-} from "../calculations";
+import { getCountyGrandTotal } from "../calculations";
 import {
   countyGrandTotalForState,
-  countyGrandTotalForCounty,
+  countyGrandTotalForCounty
 } from "./matchers";
 
 describe("calculations", () => {

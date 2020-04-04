@@ -1,19 +1,19 @@
 import React from "react";
-import {AppContext, State} from "../app/AppStore";
-import {StateMixedBar} from "../components/Charts/StateMixedBar";
-import {Top10Counties} from "../components/Charts/Top10Counties";
-import {StateBar} from "../components/Charts/StateBar";
-import {MixedBar} from "../components/Charts/MixedBar";
+import { AppContext, State } from "../app/AppStore";
+import { StateMixedBar } from "../components/Charts/StateMixedBar";
+import { Top10Counties } from "../components/Charts/Top10Counties";
+import { StateBar } from "../components/Charts/StateBar";
+import { MixedBar } from "../components/Charts/MixedBar";
 // import CountyMap from "../components/Maps/CountyMap";
 import "./Report.scss";
-import {dateTimeString} from "../utils/DateUtils";
+import { dateTimeString } from "../utils/DateUtils";
 import * as fips from "../utils/fips";
-import {ReportContainer} from "../components/ReportContainer";
+import { ReportContainer } from "../components/ReportContainer";
 
 export const Report: React.FC<{}> = () => {
   const pagebreak = (lastUpdated: Date | undefined) => {
     return (
-      <div style={{margin: "20px 0", fontSize: "13px"}}>
+      <div style={{ margin: "20px 0", fontSize: "13px" }}>
         <div>
           Source:{" "}
           <a
@@ -23,14 +23,15 @@ export const Report: React.FC<{}> = () => {
           >
             Conference of State Bank Supervisors
           </a>
-          , as of {lastUpdated && dateTimeString(lastUpdated)}.
-           12 states with highest case count as of 3/17 shown.
+          , as of {lastUpdated && dateTimeString(lastUpdated)}. 12 states with
+          highest case count as of 3/17 shown.
         </div>
         <div>
           Data sourced from state health department websites; reporting may be
-          incomplete or delayed. Death data is inconsistent and delayed in reporting
+          incomplete or delayed. Death data is inconsistent and delayed in
+          reporting
         </div>
-        <div className="pagebreak"/>
+        <div className="pagebreak" />
       </div>
     );
   };
@@ -154,19 +155,19 @@ export const Report: React.FC<{}> = () => {
 
   return (
     <AppContext.Consumer>
-      {({state}) => {
+      {({ state }) => {
         let lastUpdated: Date | undefined = undefined;
         Object.values(state.lastWeekCovidTimeSeries.states)
           .flat()
-          .forEach(({Reported}) => {
+          .forEach(({ Reported }) => {
             if (!lastUpdated || Reported > lastUpdated) {
               lastUpdated = Reported;
             }
           });
 
-        const states = Object.keys(state.lastWeekCovidTimeSeries.states).flatMap(
-          k => state.lastWeekCovidTimeSeries.states[k]
-        );
+        const states = Object.keys(
+          state.lastWeekCovidTimeSeries.states
+        ).flatMap(k => state.lastWeekCovidTimeSeries.states[k]);
         const stateIDs = new Set();
         const dedupedStates: State[] = [];
         states.forEach(s => {
@@ -176,8 +177,22 @@ export const Report: React.FC<{}> = () => {
             stateIDs.add(key);
           }
         });
-        const top10States = [...dedupedStates].filter((s) => ["New York", "New Jersey", "Washington", "California", "Michigan", "Illinois", "Florida", "Louisiana", "Massachusetts", "Texas"].includes(fips.getStateName(s.ID)))
-          .sort((s1, s2) => s2.Confirmed - s1.Confirmed)
+        const top10States = [...dedupedStates]
+          .filter(s =>
+            [
+              "New York",
+              "New Jersey",
+              "Washington",
+              "California",
+              "Michigan",
+              "Illinois",
+              "Florida",
+              "Louisiana",
+              "Massachusetts",
+              "Texas"
+            ].includes(fips.getStateName(s.ID))
+          )
+          .sort((s1, s2) => s2.Confirmed - s1.Confirmed);
         // .slice(0, 10);
 
         return (
@@ -186,7 +201,7 @@ export const Report: React.FC<{}> = () => {
             weeklyTimeSeries={state.lastWeekCovidTimeSeries}
             historicalTimeSeries={state.historicalCovidTimeSeries}
           >
-            <div className="report grid-container" style={{marginLeft: 0}}>
+            <div className="report grid-container" style={{ marginLeft: 0 }}>
               {maps(lastUpdated)}
               {top10States.map(s => (
                 <>
@@ -318,7 +333,7 @@ export const Report: React.FC<{}> = () => {
             </div>
           </ReportContainer>
         );
-       }}
+      }}
     </AppContext.Consumer>
   );
 };

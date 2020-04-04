@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import * as TypeGuards from "../utils/guards";
 import * as DateUtils from "../utils/DateUtils";
-import {splitFips} from "../utils/fips/utils";
+import { splitFips } from "../utils/fips/utils";
 
 const NUMBER_OF_DAYS = 7;
 
@@ -109,13 +109,16 @@ export const initialState: AppState = {
 
 export const AppContext = createContext({} as AppContextType);
 export const EXCLUDED_STATES = ["01"];
-const getMetaData = (stateData: State[], countyData: County[]): GraphMetaData => {
+const getMetaData = (
+  stateData: State[],
+  countyData: County[]
+): GraphMetaData => {
   let maxConfirmedCounty = 0;
   let maxConfirmedState = 0;
   let maxDeadCounty = 0;
   let maxDeadState = 0;
   countyData.forEach(e => {
-    const stateFip = splitFips(e.ID).state
+    const stateFip = splitFips(e.ID).state;
     if (
       maxConfirmedCounty < e.Confirmed &&
       !EXCLUDED_STATES.includes(stateFip)
@@ -127,7 +130,7 @@ const getMetaData = (stateData: State[], countyData: County[]): GraphMetaData =>
     }
   });
   stateData.forEach(e => {
-    const stateFip = splitFips(e.ID).state
+    const stateFip = splitFips(e.ID).state;
     if (
       maxConfirmedState < e.Confirmed &&
       !EXCLUDED_STATES.includes(stateFip)
@@ -144,21 +147,24 @@ const getMetaData = (stateData: State[], countyData: County[]): GraphMetaData =>
     maxDeadCounty,
     maxDeadState
   };
-}
+};
 
-const filterRegions = <T extends Region>(start: Date, regions: {[key: string]: T[]}): {[key: string]: T[]} => {
-  const regionObject: {[key: string]: T[]} = {};
+const filterRegions = <T extends Region>(
+  start: Date,
+  regions: { [key: string]: T[] }
+): { [key: string]: T[] } => {
+  const regionObject: { [key: string]: T[] } = {};
   Object.keys(regions).forEach(k => {
     const regionArray: T[] = [];
     regions[k].forEach((r: T) => {
       if (r.Reported >= start) {
         regionArray.push(r);
       }
-    })
+    });
     regionObject[k] = regionArray;
- });
- return regionObject;
-}
+  });
+  return regionObject;
+};
 
 const setCovidData = (state: AppState, { payload }: Action): AppState => {
   if (!TypeGuards.isCovidData(payload)) {
@@ -167,7 +173,9 @@ const setCovidData = (state: AppState, { payload }: Action): AppState => {
 
   // handle historical data
   const stateData = Object.keys(payload.states).flatMap(k => payload.states[k]);
-  const countyData = Object.keys(payload.counties).flatMap(k => payload.counties[k]);
+  const countyData = Object.keys(payload.counties).flatMap(
+    k => payload.counties[k]
+  );
   const historicalMetaData = getMetaData(stateData, countyData);
 
   // calculate weekly data
@@ -175,8 +183,12 @@ const setCovidData = (state: AppState, { payload }: Action): AppState => {
   start.setDate(start.getDate() - NUMBER_OF_DAYS);
   const weeklyStates = filterRegions(start, payload.states);
   const weeklyCountys = filterRegions(start, payload.counties);
-  const weeklyStateData = Object.keys(payload.states).flatMap(k => payload.states[k]);
-  const weeklyCountyData = Object.keys(payload.counties).flatMap(k => payload.counties[k]);
+  const weeklyStateData = Object.keys(payload.states).flatMap(
+    k => payload.states[k]
+  );
+  const weeklyCountyData = Object.keys(payload.counties).flatMap(
+    k => payload.counties[k]
+  );
   const weeklyMetaData = getMetaData(weeklyStateData, weeklyCountyData);
 
   return {
@@ -190,7 +202,7 @@ const setCovidData = (state: AppState, { payload }: Action): AppState => {
       states: weeklyStates,
       counties: weeklyCountys,
       graphMetaData: weeklyMetaData
-    },
+    }
   };
 };
 
@@ -216,7 +228,6 @@ const updateSelectedState = (
   let lng = DEFAULT_LNG;
   let zoom = DEFAULT_ZOOM;
   if (id !== undefined) {
-
   } else {
     selection.county = undefined;
   }

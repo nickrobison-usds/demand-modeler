@@ -92,7 +92,9 @@ export const StateBar = (props: Props) => {
   data = Object.entries(counties)
     .reduce((acc, [ID, data]) => {
       acc.push({
-        Name: `${fips.getCountyName(ID)}${popMap[ID] ? ` (${formatNum(popMap[ID])})` : ""}`,
+        Name: `${fips.getCountyName(ID)}${
+          popMap[ID] ? ` (${formatNum(popMap[ID])})` : ""
+        }`,
         ...data
       });
       return acc;
@@ -120,9 +122,7 @@ export const StateBar = (props: Props) => {
         continue;
       }
       if (d[i + 1]) {
-        if (
-          d[i].toString() === d[i + 1].toString()
-        ) {
+        if (d[i].toString() === d[i + 1].toString()) {
           continue;
         }
       }

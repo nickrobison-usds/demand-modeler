@@ -25,14 +25,17 @@ export const getCountiesForState = (
 // Flat array of all state data
 export const getStateData = (timeSeries: CovidDateData): State[] => {
   return Object.keys(timeSeries.states).flatMap(k => timeSeries.states[k]);
-}
+};
 
 // Flat array of all county data
 export const getCountyData = (timeSeries: CovidDateData): County[] => {
   return Object.keys(timeSeries.counties).flatMap(k => timeSeries.counties[k]);
-}
+};
 
 // Flat array of all county data for a given State
-export const getCountyDataForState = (timeSeries: CovidDateData, stateId: string): County[] => {
+export const getCountyDataForState = (
+  timeSeries: CovidDateData,
+  stateId: string
+): County[] => {
   return getCountyData(timeSeries).filter(c => c.ID === stateId);
-}
+};
