@@ -22,6 +22,12 @@ interface CountyResponse {
   Dead: number;
 }
 
+const parseDate = (d: string) => {
+  const date = new Date(d.split("T")[0]);
+  date.setDate(date.getDate() + 1);
+  return date;
+}
+
 export async function getCountyCases(
     start?: Date,
     end?: Date
@@ -41,7 +47,7 @@ export async function getCountyCases(
       (s: CountyResponse): County => {
         return {
           ...s,
-          Reported: new Date(s.Reported),
+          Reported: parseDate(s.Reported),
           mortalityRate: s.Dead / s.Confirmed
         };
       }
@@ -78,7 +84,7 @@ export async function getStateCases(
       (s: StateResponse): State => {
         return {
           ...s,
-          Reported: new Date(s.Reported),
+          Reported: parseDate(s.Reported),
           mortalityRate: s.Dead / s.Confirmed
         };
       }
