@@ -75,7 +75,7 @@ func runServer(c *cli.Context) error {
 		}
 		end := time.Now()
 		duration := end.Sub(start)
-		log.Info().Int64("load_time", duration.Milliseconds()).Msg("Background data load completed")
+		log.Info().Dur("load_time", duration).Msg("Background data load completed")
 	}()
 
 	return serve(backend, filesDir)
