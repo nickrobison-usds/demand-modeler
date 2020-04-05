@@ -14,7 +14,8 @@ export const addStackedBarChartWithTitle = (
     title: string,
     barData: StackedBarData[],
     axisTitle: string,
-    barColors: string[]
+    barColors: string[],
+    showLegend: boolean
 ) => {
   const slide = addBlankSlideWithTitle(ppt, title)
 
@@ -29,7 +30,7 @@ export const addStackedBarChartWithTitle = (
     dataLabelFontFace: styles.BODY_FONT_FACE,
     dataLabelColor: "EEEEEE",
     chartColors: barColors,
-    showLegend: true,
+    showLegend: showLegend,
     legendFontFace: styles.BODY_FONT_FACE,
     valGridLine: { style: "solid", color: styles.AXIS_COLOR },
     dataLabelFormatCode: "0;;;"

@@ -11,7 +11,7 @@ import {
   addLineChartWithLegend,
   LineData
 } from "./PowerPointGenerator/Slides/Templates/InteriorSlides/LineChartWithTitle";
-import {addCBSAMetroAreaSlides} from "./PowerPointGenerator/Slides/CBSAMetroAreaSlides";
+import {addCBSAMetroAreaSlides} from "./PowerPointGenerator/Slides/CBSASlides/CBSAMetroAreaSlides";
 
 export interface ReportContainerProps {
   states: State[];
