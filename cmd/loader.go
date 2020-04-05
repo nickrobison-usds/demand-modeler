@@ -52,7 +52,7 @@ func (d *DataLoader) Close() error {
 }
 
 func (d *DataLoader) loadCases() error {
-	log.Debug().Msgf("Loading Case data from: %s\n", d.dataDir)
+	log.Debug().Msgf("Loading Case data from: %s", d.dataDir)
 
 	// Truncate the database
 	log.Warn().Msg("Truncating database")
@@ -76,7 +76,7 @@ func (d *DataLoader) loadCases() error {
 }
 
 func (d *DataLoader) loadCaseFile(file string) error {
-	log.Debug().Msgf("Loading file: %s\n", file)
+	log.Debug().Msgf("Loading file: %s", file)
 	f, err := os.Open(file)
 	if err != nil {
 		return err
@@ -172,7 +172,7 @@ func (d *DataLoader) createNewCounty(row []string) (string, error) {
 			geoid = fmt.Sprintf("%s%s", state, county)
 			atomic.AddInt32(&countyIter, 1)
 		} else if err != nil {
-			log.Error().Msgf("Unable to load %s, %s: %s\n", row[0], row[1], err.Error())
+			log.Error().Msgf("Unable to load %s, %s: %s", row[0], row[1], err.Error())
 			return "", err
 		} else {
 			geoid = fmt.Sprintf("%s%s", state, county)
@@ -180,7 +180,7 @@ func (d *DataLoader) createNewCounty(row []string) (string, error) {
 	}
 
 	// Load the new county
-	log.Debug().Msgf("Loading new county: %s, %s. %s\n", row[0], row[1], geoid)
+	log.Debug().Msgf("Loading new county: %s, %s. %s", row[0], row[1], geoid)
 	_, err := d.conn.Exec(d.ctx, "INSERT INTO Counties(County, State, "+
 		"StateFP, CountyFP, ID) VALUES($1, $2, $3, $4, $5)", row[0], row[1], state, county, geoid)
 	if err != nil {
