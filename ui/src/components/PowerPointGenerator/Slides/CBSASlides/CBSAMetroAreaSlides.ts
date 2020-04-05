@@ -199,14 +199,16 @@ const addCountySlide = (
   const deadColors = getDeadColors(countyFips.length);
 
   const barColors = stat === "confirmed" ? confirmedColors : deadColors;
+  let firstCounty: string = countyFips.length > 1 ? "" : `(${fipsUtils.getCountyName(countyFips[0])})`;
   addStackedBarChartWithTitle(
     ppt,
     `Confirmed ${
       stat === "confirmed" ? "Cases" : "Deaths"
-    }${daily ? " Daily" : ""} in ${metroArea}`,
+    }${daily ? " Daily" : ""} in ${metroArea} ${firstCounty}`,
     countyData,
     `Confirmed ${stat === "confirmed" ? "cases" : "deaths"}`.toUpperCase(),
-    barColors
+    barColors,
+    countyFips.length > 1
   );
 };
 
