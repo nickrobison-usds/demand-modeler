@@ -5,7 +5,7 @@ import * as _ from "lodash";
 import * as PowerPointUtils from "./PowerPointGenerator/Utils";
 import * as fips from "../utils/fips";
 import { lineColors } from "../utils/reportHelpers";
-import { monthDayCommaYear } from "../utils/DateUtils";
+import { monthDayCommaYear, yearMonthDayDot } from "../utils/DateUtils";
 import { addTitleSlide } from "./PowerPointGenerator/Slides/Templates/TitleSlides/TitleSlide";
 import {
   addLineChartWithLegend,
@@ -239,7 +239,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
     addCBSAMetroAreaSlides(ppt, counties);
 
     console.debug("Writing PPTX");
-    const done = await ppt.writeFile("Sample Presentation.pptx");
+    const done = await ppt.writeFile(`${yearMonthDayDot} State line graphs and metropolitan areas.pptx`);
     console.debug("Finished exporting: ", done);
   };
   return (
