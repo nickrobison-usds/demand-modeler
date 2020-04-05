@@ -1,12 +1,12 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -53,32 +53,32 @@ func runServer(c *cli.Context) error {
 	err = migrateDatabase(url, workDir)
 
 	// Load it up
-	ctx := context.Background()
+	ctx := c.Context
 	backend, err := dbbackend.NewBackend(ctx, url)
 	if err != nil {
+		log.Fatal().Err(err).Send()
+	}
+	defer backend.Shutdown()
+
+	go func() {
+		log.Info().Msg("Beginning background data load")
+		start := time.Now()
+		loader, err := cmd.NewLoader(ctx, url, filepath.Join(workDir, "data"))
 		if err != nil {
 			log.Fatal().Err(err).Send()
 		}
-	}
-	defer backend.Shutdown()
-	loader, err := cmd.NewLoader(ctx, url, filepath.Join(workDir, "data"))
-	if err != nil {
-		log.Fatal().Err(err).Send()
-	}
-	defer loader.Close()
+		defer loader.Close()
 
-	err = loader.Load()
-	if err != nil {
-		log.Fatal().Err(err).Send()
-	}
+		err = loader.Load()
+		if err != nil {
+			log.Fatal().Err(err).Send()
+		}
+		end := time.Now()
+		duration := end.Sub(start)
+		log.Info().Int64("load_time", duration.Milliseconds()).Msg("Background data load completed")
+	}()
 
 	return serve(backend, filesDir)
-}
-
-func rootHandler() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("hello world"))
-	}
 }
 
 func serve(backend api.DataBackend, filesDir string) error {
@@ -94,7 +94,7 @@ func serve(backend api.DataBackend, filesDir string) error {
 	// Setup CORS
 	// Basic CORS
 	// for more ideas, see: https://developer.github.com/v3/#cross-origin-resource-sharing
-	cors := cors.New(cors.Options{
+	corsHandler := cors.New(cors.Options{
 		// AllowedOrigins: []string{"https://foo.com"}, // Use this to allow specific origin hosts
 		AllowedOrigins: []string{"*"},
 		// AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
@@ -104,7 +104,7 @@ func serve(backend api.DataBackend, filesDir string) error {
 		AllowCredentials: true,
 		MaxAge:           300, // Maximum value not ignored by any of major browsers
 	})
-	r.Use(cors.Handler)
+	r.Use(corsHandler.Handler)
 
 	// Get the port
 	var port string

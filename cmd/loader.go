@@ -117,7 +117,7 @@ func (d *DataLoader) loadCaseFile(file string) error {
 				return err
 			}
 		} else {
-			log.Debug().Msgf("Loading existing county: %s, %s. %s\n", row[0], row[1], geoid)
+			log.Debug().Msgf("Loading existing county: %s, %s. %s", row[0], row[1], geoid)
 		}
 
 		// Split the dead column into
@@ -131,7 +131,7 @@ func (d *DataLoader) loadCaseFile(file string) error {
 			"Confirmed, NewConfirmed, "+
 			"Dead, NewDead, Update) VALUES($1, $2, $3, $4, $5, $6)", geoid, row[2], row[3], dead, newDead, row[8])
 		if err != nil {
-			log.Printf("Error inserting county: %s, %s. %s %s\n", row[0], row[1], geoid, row[8])
+			log.Printf("Error inserting county: %s, %s. %s %s", row[0], row[1], geoid, row[8])
 			return err
 		}
 
