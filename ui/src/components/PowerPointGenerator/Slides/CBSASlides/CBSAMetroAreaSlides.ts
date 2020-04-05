@@ -1,11 +1,11 @@
 import pptxgen from "pptxgenjs";
-import { County } from "../../../app/AppStore";
+import { County } from "../../../../app/AppStore";
 import {
   addStackedBarChartWithTitle,
   StackedBarData
-} from "./Templates/InteriorSlides/StackedBarChartWithTitle";
-import { isSameDay } from "../../../utils/DateUtils";
-import { getCountyName, getStateAbr } from "../../../utils/fips";
+} from "../Templates/InteriorSlides/StackedBarChartWithTitle";
+import { isSameDay } from "../../../../utils/DateUtils";
+import { getCountyName, getStateAbr } from "../../../../utils/fips";
 
 export const metroAreas: { area: string; fipsCodes: string[] }[] = [
   {
