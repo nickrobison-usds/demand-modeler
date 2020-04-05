@@ -6,6 +6,9 @@ import {
 } from "../Templates/InteriorSlides/StackedBarChartWithTitle";
 import { isSameDay } from "../../../../utils/DateUtils";
 import { getCountyName, getStateAbr } from "../../../../utils/fips";
+import { cbsaCodes } from "./cbsaCodes"
+import * as fipsUtils from "../../../../utils/fips";
+import { addBlankSlideWithTitle } from "../Templates/InteriorSlides/BlankWithTitle";
 
 export const metroAreas: { area: string; fipsCodes: string[] }[] = [
   {
@@ -32,7 +35,23 @@ export const metroAreas: { area: string; fipsCodes: string[] }[] = [
   {
     area: "Los Angeles, CA",
     fipsCodes: ["06111", "06071", "06059", "06065", "06037"]
-  }
+  },
+  {
+    area: "Boston, MA",
+    fipsCodes: ["25021", "25025", "25017", "25023", "25009"]
+  },
+  {
+    area: "Washington, DC",
+    fipsCodes: ["11001", "24031", "24033", "24017", "24021", "24009"]
+  },
+  {
+    area: "Baltimore, MD",
+    fipsCodes: ["24005", "24510", "24003", "24027", "24013", "24025", "24035"]
+  },
+  {
+    area: "Hailey, ID",
+    fipsCodes: ["16013", "16025", "16063"]
+  },
 ];
 
 export const getConfirmedColors = (length: number): string[] => {
@@ -104,7 +123,8 @@ const getCountyData = (
   daily = false
 ) => {
   return [...countyFips]
-    .reverse()
+    // population is used to approximate outbreak
+    .sort((a, b) => fipsUtils.getPopulation(b) - fipsUtils.getPopulation(a))
     .map(fips => {
       if (fips === "36061") {
         const nyc_combined = ["36061", "36005", "36081", "36047", "36085"];
@@ -125,12 +145,15 @@ const getCountyData = (
           };
         });
       } else {
+        if (counties[fips] === undefined) {
+          return [];
+        }
         return counties[fips];
       }
     })
     .reduce((acc, county) => {
       const data: StackedBarData = {
-        name: getCountyName(county[0].ID) + ", " + getStateAbr(county[0].ID),
+        name: county[0] ? getCountyName(county[0].ID) + ", " + getStateAbr(county[0].ID) : "",
         labels: [],
         values: []
       };
@@ -178,24 +201,57 @@ const addCountySlide = (
   const barColors = stat === "confirmed" ? confirmedColors : deadColors;
   addStackedBarChartWithTitle(
     ppt,
-    `${metroArea} Metro Area: Confirmed ${
+    `Confirmed ${
       stat === "confirmed" ? "Cases" : "Deaths"
-    }${daily ? " Daily" : ""}`,
+    }${daily ? " Daily" : ""} in ${metroArea}`,
     countyData,
     `Confirmed ${stat === "confirmed" ? "cases" : "deaths"}`.toUpperCase(),
     barColors
   );
 };
 
+const getConfirmed = (counties: { [fip: string]: County[] }, id: string) => {
+  return counties[id] ? counties[id][0].Confirmed : 0;
+}
+
 export const addCBSAMetroAreaSlides = (
   ppt: pptxgen,
   counties: { [fip: string]: County[] }
 ) => {
-  metroAreas.forEach(metroArea => {
-    const { area, fipsCodes } = metroArea;
+  metroAreas.forEach(code => {
+    const { area, fipsCodes} = code;
     addCountySlide(ppt, counties, area, fipsCodes, "confirmed");
     addCountySlide(ppt, counties, area, fipsCodes, "confirmed", true);
     addCountySlide(ppt, counties, area, fipsCodes, "dead");
     addCountySlide(ppt, counties, area, fipsCodes, "dead", true);
+  });
+
+  const sum = (accumulator: any, currentValue: string) => {
+    const cases = getConfirmed(counties, currentValue);
+    if (typeof accumulator != "number") {
+      const firstCaseCount = getConfirmed(counties, accumulator);
+      return firstCaseCount + cases;
+    }
+    return accumulator + cases;
+  };
+
+  addBlankSlideWithTitle(ppt, "Top 25 CBSA ordered by Total Confirmed cases")
+
+  Object.values(cbsaCodes).sort(
+    (a, b) => {
+      const sumA = a.fips.reduce(sum as any);
+      const sumB = b.fips.reduce(sum as any);
+
+      // cast element for when reduce isn't called (array of len 1)
+      const valueA = typeof sumA != "number" ? getConfirmed(counties, a.fips[0]) : parseInt(sumA);
+      const valueB = typeof sumB != "number" ? getConfirmed(counties, b.fips[0]) : parseInt(sumB);
+
+      return valueB - valueA
+    }
+  ).splice(0,25).forEach(({name, fips}) => {
+    addCountySlide(ppt, counties, name, fips, "confirmed");
+    addCountySlide(ppt, counties, name, fips, "confirmed", true);
+    addCountySlide(ppt, counties, name, fips, "dead");
+    addCountySlide(ppt, counties, name, fips, "dead", true);
   });
 };

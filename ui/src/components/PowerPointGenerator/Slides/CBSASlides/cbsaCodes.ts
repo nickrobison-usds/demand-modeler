@@ -1,4 +1,4 @@
-﻿const cbsaCodes = {
+﻿export const cbsaCodes: {[key: string]: {fips: string[], name: string}} = {
   "12940": {
     fips: [
       "22005",
