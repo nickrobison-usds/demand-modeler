@@ -4,16 +4,14 @@ import { CovidDateData, State } from "../app/AppStore";
 import * as _ from "lodash";
 import * as PowerPointUtils from "./PowerPointGenerator/Utils";
 import * as fips from "../utils/fips";
-import { lineColors, metroAreas } from "../utils/reportHelpers";
-import { isSameDay, monthDayCommaYear } from "../utils/DateUtils";
+import { lineColors } from "../utils/reportHelpers";
+import { monthDayCommaYear } from "../utils/DateUtils";
 import { addTitleSlide } from "./PowerPointGenerator/Slides/Templates/TitleSlides/TitleSlide";
 import {
   addLineChartWithLegend,
-  LineData,
-  lineChartConfig
+  LineData
 } from "./PowerPointGenerator/Slides/Templates/InteriorSlides/LineChartWithTitle";
-import { addBlankSlideWithTitle } from "./PowerPointGenerator/Slides/Templates/InteriorSlides/BlankWithTitle";
-import * as styles from "./PowerPointGenerator/Styles";
+import {addCBSAMetroAreaSlides} from "./PowerPointGenerator/Slides/CBSAMetroAreaSlides";
 
 export interface ReportContainerProps {
   states: State[];
@@ -237,149 +235,8 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       lineColors
     );
 
-    // Metro areas (stacked)
-    type StackedBarData = {
-      name: string;
-      labels: string[];
-      values: number[];
-    };
-
-    let dataLabelFontSize = 7;
-
-    const accumulateNYCData = (
-      counties: string[],
-      index: number,
-      attribute: "Dead" | "Confirmed"
-    ) => {
-      let total = 0;
-      counties.forEach(fip => {
-        const entry = props.historicalTimeSeries.counties[fip][index];
-        if (entry) {
-          total += props.historicalTimeSeries.counties[fip][index][attribute];
-        }
-      });
-      return total;
-    };
-
-    const addCountySlide = (
-      ppt: pptxgen,
-      metroArea: string,
-      counties: string[],
-      stat: Stat,
-      daily = false
-    ): pptxgen.ISlide => {
-      let firstCounty: string = "";
-
-      const countyData = [...counties]
-        .reverse()
-        .map(fips => {
-          if (fips === "36061") {
-            const nyc_combined = ["36061", "36005", "36081", "36047", "36085"];
-            return props.historicalTimeSeries.counties[fips].map(
-              (county, index) => {
-                var today = new Date();
-                if (isSameDay(county.Reported, today)) {
-                  return county;
-                }
-                return {
-                  ...county,
-                  Dead: accumulateNYCData(nyc_combined, index, "Dead"),
-                  Confirmed: accumulateNYCData(nyc_combined, index, "Confirmed")
-                };
-              }
-            );
-          } else {
-            return props.historicalTimeSeries.counties[fips];
-          }
-        })
-        .reduce((acc, county) => {
-          if (!firstCounty) {
-            firstCounty = `${fips.getCountyName(county[0].ID)} County`;
-          }
-
-          const data: StackedBarData = {
-            name:
-              fips.getCountyName(county[0].ID) +
-              ", " +
-              fips.getStateAbr(county[0].ID),
-            labels: [],
-            values: []
-          };
-
-          // Data comes in in reverse chronological order
-          const orderedCounties = [...county].reverse();
-
-          orderedCounties.forEach((el, i) => {
-            data.labels.push(
-              el.Reported.getMonth() + 1 + "/" + el.Reported.getDate()
-            );
-            let value = el[stat === "confirmed" ? "Confirmed" : "Dead"];
-            if (daily && orderedCounties[i - 1]) {
-              value = Math.max(
-                value -
-                  orderedCounties[i - 1][
-                    stat === "confirmed" ? "Confirmed" : "Dead"
-                  ],
-                0
-              );
-            }
-            if (value > 9999) {
-              dataLabelFontSize = 5;
-            }
-            data.values.push(value);
-          });
-          // The first day is only used to calculate diffs. Remove it.
-          data.labels.shift();
-          data.values.shift();
-          acc.push(data);
-          return acc;
-        }, [] as StackedBarData[]);
-
-      const confirmedColors = styles.getConfirmedColors(counties.length);
-      const deadColors = styles.getDeadColors(counties.length);
-
-      const barColors = stat === "confirmed" ? confirmedColors : deadColors;
-
-      const barChartConfig = () => {
-        const config = {
-          ...lineChartConfig(),
-          barGrouping: "stacked",
-          valAxisTitle: `Confirmed ${
-            stat === "confirmed" ? "cases" : "deaths"
-          }`.toUpperCase(),
-          w: 9,
-          showLabel: true,
-          showValue: false,
-          barGapWidthPct: 10,
-          dataLabelFontSize,
-          dataLabelFontFace: styles.BODY_FONT_FACE,
-          dataLabelColor: "EEEEEE",
-          chartColors: barColors,
-          showLegend: counties.length > 1,
-          legendFontFace: styles.BODY_FONT_FACE,
-          valGridLine: { style: "solid", color: styles.AXIS_COLOR },
-          dataLabelFormatCode: "0;;;"
-        };
-        return config;
-      };
-
-      return addBlankSlideWithTitle(
-        ppt,
-        `${metroArea} Metro Area${
-          counties.length === 1 ? ` (${firstCounty})` : ""
-        }: Confirmed ${stat === "confirmed" ? "Cases" : "Deaths"}${
-          daily ? " Daily" : ""
-        }`
-      ).addChart(ppt.ChartType.bar, countyData, barChartConfig());
-    };
-
-    metroAreas.forEach(metroArea => {
-      const { area, fipsCodes } = metroArea;
-      addCountySlide(ppt, area, fipsCodes, "confirmed");
-      addCountySlide(ppt, area, fipsCodes, "confirmed", true);
-      addCountySlide(ppt, area, fipsCodes, "dead");
-      addCountySlide(ppt, area, fipsCodes, "dead", true);
-    });
+    const counties = props.historicalTimeSeries.counties;
+    addCBSAMetroAreaSlides(ppt, counties);
 
     console.debug("Writing PPTX");
     const done = await ppt.writeFile("Sample Presentation.pptx");

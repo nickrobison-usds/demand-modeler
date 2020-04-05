@@ -51,31 +51,3 @@ export const lineColors: { [s: string]: string } = {
   WV: "FDCCA6",
   NE: "E5E5E5"
 };
-
-export const metroAreas: { area: string; fipsCodes: string[] }[] = [
-  {
-    area: "Seattle, WA",
-    fipsCodes: ["53053", "53061", "53033"]
-  },
-  {
-    area: "Detroit, MI",
-    fipsCodes: ["26125", "26163"]
-  },
-  {
-    area: "New York, NY",
-    fipsCodes: ["36061", "34003", "36059", "36119", "36087", "34037"].reverse()
-  },
-  // if value = 36061 and date is note today add 36005, 36081,36047, and 36085
-  {
-    area: "Chicago, IL",
-    fipsCodes: ["17031"]
-  },
-  {
-    area: "New Orleans, LA",
-    fipsCodes: ["22051", "22071"]
-  },
-  {
-    area: "Los Angeles, CA",
-    fipsCodes: ["06111", "06071", "06059", "06065", "06037"]
-  }
-];
