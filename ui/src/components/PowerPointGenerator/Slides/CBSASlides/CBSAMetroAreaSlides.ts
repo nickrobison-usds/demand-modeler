@@ -220,13 +220,13 @@ export const addCBSAMetroAreaSlides = (
   ppt: pptxgen,
   counties: { [fip: string]: County[] }
 ) => {
-  metroAreas.forEach(code => {
-    const { area, fipsCodes} = code;
-    addCountySlide(ppt, counties, area, fipsCodes, "confirmed");
-    addCountySlide(ppt, counties, area, fipsCodes, "confirmed", true);
-    addCountySlide(ppt, counties, area, fipsCodes, "dead");
-    addCountySlide(ppt, counties, area, fipsCodes, "dead", true);
-  });
+  // metroAreas.forEach(code => {
+  //   const { area, fipsCodes} = code;
+  //   addCountySlide(ppt, counties, area, fipsCodes, "confirmed");
+  //   addCountySlide(ppt, counties, area, fipsCodes, "confirmed", true);
+  //   addCountySlide(ppt, counties, area, fipsCodes, "dead");
+  //   addCountySlide(ppt, counties, area, fipsCodes, "dead", true);
+  // });
 
   const sum = (accumulator: any, currentValue: string) => {
     const cases = getConfirmed(counties, currentValue);

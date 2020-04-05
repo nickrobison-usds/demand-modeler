@@ -239,7 +239,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
     addCBSAMetroAreaSlides(ppt, counties);
 
     console.debug("Writing PPTX");
-    const done = await ppt.writeFile(`${yearMonthDayDot} State line graphs and metropolitan areas.pptx`);
+    const done = await ppt.writeFile(`${yearMonthDayDot(new Date())} State line graphs and metropolitan areas.pptx`);
     console.debug("Finished exporting: ", done);
   };
   return (
