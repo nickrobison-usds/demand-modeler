@@ -8,10 +8,10 @@ import { lineColors } from "../utils/reportHelpers";
 import { monthDayCommaYear, yearMonthDayDot } from "../utils/DateUtils";
 import { addTitleSlide } from "./PowerPointGenerator/Slides/Templates/TitleSlides/TitleSlide";
 import {
-  addLineChartWithLegend,
-  LineData
+  addLineChartWithLegend
 } from "./PowerPointGenerator/Slides/Templates/InteriorSlides/LineChartWithTitle";
-import {addCBSAMetroAreaSlides} from "./PowerPointGenerator/Slides/CBSASlides/CBSAMetroAreaSlides";
+import {addCBSAStackedBarSlides} from "./PowerPointGenerator/Slides/CBSASlides/CBSAStackedBars";
+import {addCBSATop25} from "./PowerPointGenerator/Slides/CBSASlides/Top25CBSALineGraph";
 
 export interface ReportContainerProps {
   states: State[];
@@ -83,7 +83,7 @@ export const addTopTenStates = (
 const getStateLineData = (states: State[][]) => {
   return states
     .reduce((acc, stateSeries) => {
-      const state: LineData = {
+      const state: ChartData = {
         name: fips.getStateAbr(stateSeries[0].ID),
         labels: [],
         values: []
@@ -99,7 +99,7 @@ const getStateLineData = (states: State[][]) => {
       state.values.shift();
       acc.push(state);
       return acc;
-    }, [] as LineData[])
+    }, [] as ChartData[])
     .sort((a, b) => {
       return b.values[b.values.length - 1] - a.values[a.values.length - 1];
     });
@@ -215,6 +215,8 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
     const exceptionStatesData = getStateLineData(
       Object.values(props.historicalTimeSeries.states)
     ).filter(el => exceptionStates.includes(el.name));
+    console.log("exception cases", exceptionStatesData)
+
     addLineChartWithLegend(
       ppt,
       `Cumulative cases per 100,000: ${exceptionStates.join(", ")}`,
@@ -236,7 +238,8 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
     );
 
     const counties = props.historicalTimeSeries.counties;
-    addCBSAMetroAreaSlides(ppt, counties);
+    addCBSATop25(ppt, counties);
+    addCBSAStackedBarSlides(ppt, counties);
 
     console.debug("Writing PPTX");
     const done = await ppt.writeFile(`${yearMonthDayDot(new Date())} State line graphs and metropolitan areas.pptx`);

@@ -3,16 +3,10 @@ import * as styles from "../../../Styles";
 import { lineChartConfig } from "./LineChartWithTitle";
 import { addBlankSlideWithTitle } from "./BlankWithTitle";
 
-export type StackedBarData = {
-  name: string;
-  labels: string[];
-  values: number[];
-};
-
 export const addStackedBarChartWithTitle = (
     ppt: pptxgen,
     title: string,
-    barData: StackedBarData[],
+    barData: ChartData[],
     axisTitle: string,
     barColors: string[],
     showLegend: boolean
@@ -20,9 +14,10 @@ export const addStackedBarChartWithTitle = (
   const slide = addBlankSlideWithTitle(ppt, title)
 
   if (showLegend) {
-    const bars = [...barData].reverse()
+    const bars = [...barData].reverse();
+    const colors = [...barColors];
     bars.forEach((el, i) => {
-      const color = barColors[i % barColors.length];
+      const color = colors[((barData.length-1) - i) % colors.length];
       slide.addShape(ppt.ShapeType.rect, {
         w: 0.18,
         h: 0.09,

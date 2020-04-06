@@ -1,14 +1,13 @@
 import pptxgen from "pptxgenjs";
 import { County } from "../../../../app/AppStore";
 import {
-  addStackedBarChartWithTitle,
-  StackedBarData
+  addStackedBarChartWithTitle
 } from "../Templates/InteriorSlides/StackedBarChartWithTitle";
-import { isSameDay } from "../../../../utils/DateUtils";
 import { getCountyName, getStateAbr } from "../../../../utils/fips";
 import { cbsaCodes } from "./cbsaCodes"
 import * as fipsUtils from "../../../../utils/fips";
 import { addBlankSlideWithTitle } from "../Templates/InteriorSlides/BlankWithTitle";
+import { CSBAOrderedByStat } from "./Utils";
 
 export const metroAreas: { area: string; fipsCodes: string[] }[] = [
   {
@@ -100,22 +99,6 @@ export const getDeadColors = (length: number): string[] => {
   }
 };
 
-const accumulateNYCData = (
-  counties: { [fip: string]: County[] },
-  countyFips: string[],
-  index: number,
-  attribute: "Dead" | "Confirmed"
-) => {
-  let total = 0;
-  countyFips.forEach(fip => {
-    const entry = counties[fip][index];
-    if (entry) {
-      total += counties[fip][index][attribute];
-    }
-  });
-  return total;
-};
-
 const getCountyData = (
   counties: { [fip: string]: County[] },
   countyFips: string[],
@@ -126,33 +109,14 @@ const getCountyData = (
     // population is used to approximate outbreak
     .sort((a, b) => fipsUtils.getPopulation(b) - fipsUtils.getPopulation(a))
     .map(fips => {
-      if (fips === "36061") {
-        const nyc_combined = ["36061", "36005", "36081", "36047", "36085"];
-        return counties[fips].map((county, index) => {
-          var today = new Date();
-          if (isSameDay(county.Reported, today)) {
-            return county;
-          }
-          return {
-            ...county,
-            Dead: accumulateNYCData(counties, nyc_combined, index, "Dead"),
-            Confirmed: accumulateNYCData(
-              counties,
-              nyc_combined,
-              index,
-              "Confirmed"
-            )
-          };
-        });
-      } else {
-        if (counties[fips] === undefined) {
-          return [];
-        }
-        return counties[fips];
+      if (counties[fips] === undefined) {
+        console.warn(`API response missing data for FIPS ${fips}`)
+        return [];
       }
+      return counties[fips];
     })
     .reduce((acc, county) => {
-      const data: StackedBarData = {
+      const data: ChartData = {
         name: county[0] ? getCountyName(county[0].ID) + ", " + getStateAbr(county[0].ID) : "",
         labels: [],
         values: []
@@ -182,7 +146,7 @@ const getCountyData = (
       data.values.shift();
       acc.push(data);
       return acc;
-    }, [] as StackedBarData[]);
+    }, [] as ChartData[]);
 };
 
 const addCountySlide = (
@@ -212,11 +176,7 @@ const addCountySlide = (
   );
 };
 
-const getConfirmed = (counties: { [fip: string]: County[] }, id: string) => {
-  return counties[id] ? counties[id][0].Confirmed : 0;
-}
-
-export const addCBSAMetroAreaSlides = (
+export const addCBSAStackedBarSlides = (
   ppt: pptxgen,
   counties: { [fip: string]: County[] }
 ) => {
@@ -228,29 +188,10 @@ export const addCBSAMetroAreaSlides = (
   //   addCountySlide(ppt, counties, area, fipsCodes, "dead", true);
   // });
 
-  const sum = (accumulator: any, currentValue: string) => {
-    const cases = getConfirmed(counties, currentValue);
-    if (typeof accumulator != "number") {
-      const firstCaseCount = getConfirmed(counties, accumulator);
-      return firstCaseCount + cases;
-    }
-    return accumulator + cases;
-  };
-
   addBlankSlideWithTitle(ppt, "Top 25 CBSA ordered by Total Confirmed cases")
 
-  Object.values(cbsaCodes).sort(
-    (a, b) => {
-      const sumA = a.fips.reduce(sum as any);
-      const sumB = b.fips.reduce(sum as any);
-
-      // cast element for when reduce isn't called (array of len 1)
-      const valueA = typeof sumA != "number" ? getConfirmed(counties, a.fips[0]) : parseInt(sumA);
-      const valueB = typeof sumB != "number" ? getConfirmed(counties, b.fips[0]) : parseInt(sumB);
-
-      return valueB - valueA
-    }
-  ).splice(0,25).forEach(({name, fips}) => {
+  CSBAOrderedByStat(counties, "Confirmed", 25).forEach(id => {
+    const {name, fips} = cbsaCodes[id];
     addCountySlide(ppt, counties, name, fips, "confirmed");
     addCountySlide(ppt, counties, name, fips, "confirmed", true);
     addCountySlide(ppt, counties, name, fips, "dead");
