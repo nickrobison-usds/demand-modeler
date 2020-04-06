@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import {
-  ActionType,
   AppContext,
   County,
   State,
@@ -12,24 +11,12 @@ import ReactMapGL, {
   Source,
   ViewportProps,
   PointerEvent,
-  Popup,
-  WebMercatorViewport,
-  FlyToInterpolator
+  Popup
 } from "react-map-gl";
-import rawCountyGeoData from "./geojson-counties-fips.json";
 import cbsaGeoData from "./cb_2013_us_cbsa_5m.geo.json";
-import stateGeoData from "./state.geo.json";
-import * as fips from "../../utils/fips";
-import { useResizeToContainer } from "../../utils/useResizeToContainer";
-import bbox from "@turf/bbox";
-import { easeCubic } from "d3";
 import "./CountyMap.css";
 import UsaSelect from "../Forms/USASelect";
-import { transformCountyGeoData } from "./transformCountyGeoData";
 import {cbsaCodes} from "../PowerPointGenerator/Slides/CBSASlides/cbsaCodes";
-const countyGeoData = transformCountyGeoData(
-  rawCountyGeoData as GeoJSON.FeatureCollection
-);
 
 type GeoLevel = "state" | "county" | "cbsa"
 type DataType = "Total" | "New";
@@ -101,10 +88,7 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
   const [hoverInfo, setHoverInfo] = useState<{ [k: string]: any } | null>();
   const [legendScales, setLegendScales] = useState<LegendScales>(defaultLegend);
 
-  const mapWidth = useResizeToContainer("#map-container");
-
   const {
-    dispatch,
     state,
     state: { lastWeekCovidTimeSeries }
   } = useContext(AppContext);
