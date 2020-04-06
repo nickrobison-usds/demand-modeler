@@ -72,7 +72,7 @@ workflows:
       - build-api
   deploy-cloudgov:
     jobs:
-      - deploy-cloudgov
-    filters:
-      branches:
-        only: ronheft/ci-autodeploy
+      - deploy-cloudgov:
+          filters:
+            branches:
+              only: ronheft/ci-autodeploy
