@@ -1,10 +1,10 @@
 import React from "react";
 import { AppContext, State } from "../app/AppStore";
-import { StateMixedBar } from "../components/Charts/StateMixedBar";
-import { Top10Counties } from "../components/Charts/Top10Counties";
-import { StateBar } from "../components/Charts/StateBar";
-import { MixedBar } from "../components/Charts/MixedBar";
-// import CountyMap from "../components/Maps/CountyMap";
+// import { StateMixedBar } from "../components/Charts/StateMixedBar";
+// import { Top10Counties } from "../components/Charts/Top10Counties";
+// import { StateBar } from "../components/Charts/StateBar";
+// import { MixedBar } from "../components/Charts/MixedBar";
+import CountyMap from "../components/Maps/CountyMap";
 import "./Report.scss";
 import { dateTimeString } from "../utils/DateUtils";
 import * as fips from "../utils/fips";
@@ -37,7 +37,16 @@ export const Report: React.FC<{}> = () => {
   };
 
   const maps = (lastUpdated: any) => {
-    return null;
+    return (
+      <>
+      <CountyMap
+        reportView
+        dataType={"3DayChange"}
+        title={"Average Change over 3 days"}
+      />
+      {lastUpdated && pagebreak(lastUpdated)}
+      </>
+    );
     // return (
     //   <>
     //     <CountyMap
@@ -203,7 +212,7 @@ export const Report: React.FC<{}> = () => {
           >
             <div className="report grid-container" style={{ marginLeft: 0 }}>
               {maps(lastUpdated)}
-              {top10States.map(s => (
+              {/* {top10States.map(s => (
                 <>
                   <StateBar
                     dataMode="over20Cases"
@@ -329,7 +338,7 @@ export const Report: React.FC<{}> = () => {
                 stat="dead"
                 reportView
               />
-              {lastUpdated && pagebreak(lastUpdated)}
+              {lastUpdated && pagebreak(lastUpdated)} */}
             </div>
           </ReportContainer>
         );
