@@ -26,7 +26,7 @@
 1. install [Docker](https://docs.docker.com/install/)
 
   ```bash
-  docker-compose up --build postgres
+  docker-compose up postgres
   ```
 
 1. load tiger files into the database
@@ -40,7 +40,7 @@
 1. start the API
 
   ```bash
-  ddocker-compose up --build api
+  docker-compose up --build api
   ```
 
 ## Bootstrapping Heroku
