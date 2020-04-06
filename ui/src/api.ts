@@ -60,6 +60,35 @@ export async function getCountyCases(
       counties[county.ID] = c;
     });
 
+  // USAFacts -> CSBS hack
+  // const Manhatten = "36061";
+  // const Bronx = "36005";
+  // const Queens = "36081";
+  // const Kings = "36047";
+  // const Richmond = "36085";
+  // const today = 0;
+  // const nyc_combined = [Manhatten, Bronx, Queens, Kings, Richmond];
+  // const accumulateNYCData = (
+  //   counties: { [fip: string]: County[] },
+  //   countyFips: string[],
+  //   attribute: "Dead" | "Confirmed"
+  // ) => {
+  //   let total = 0;
+  //   countyFips.forEach(fip => {
+  //     total += counties[fip][today][attribute];
+  //   });
+  //   return total;
+  // };
+  // counties[Manhatten][today].Confirmed = accumulateNYCData(
+  //   counties,
+  //   nyc_combined,
+  //   "Confirmed"
+  // );
+  // counties[Manhatten][today].Dead = accumulateNYCData(
+  //   counties,
+  //   nyc_combined,
+  //   "Dead"
+  // );
   return counties;
 }
 

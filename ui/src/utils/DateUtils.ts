@@ -79,3 +79,12 @@ export const monthDayCommaYear = (date: Date) => {
   // Changing this may break all the bar graphs
   return `${month} ${day}, ${year}`;
 };
+
+export const yearMonthDayDot = (date: Date) => {
+  const m = date.getMonth();
+  const month = theMonths[m];
+  const day = date.getDate();
+  const year = date.getFullYear();
+  // Changing this may break all the bar graphs
+  return `${year}.${month}.${day}`;
+};

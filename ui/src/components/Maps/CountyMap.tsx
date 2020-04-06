@@ -30,14 +30,15 @@ const countyGeoData = transformCountyGeoData(
   rawCountyGeoData as GeoJSON.FeatureCollection
 );
 
-type DataType = "Total" | "New" | "Increase";
+type DataType = "Total" | "New" | "Increase" | "3DayChange";
 
 const legendLookup = (metric: Metric): { [key in DataType]: string } => {
   const type = metric === "confirmed" ? "confirmed cases" : "Deaths";
   return {
     Total: type,
     New: `Percent increase in ${type}`,
-    Increase: `Increase in ${type}`
+    Increase: `Increase in ${type}`,
+    "3DayChange": `3DayChange in ${type}`
   };
 };
 
@@ -103,6 +104,7 @@ interface LegendScales {
   Total: LegendRegion;
   New: LegendRegion;
   Increase: LegendRegion;
+  "3DayChange": LegendRegion;
 }
 
 // make this dynammic
@@ -138,7 +140,17 @@ const defaultLegend: LegendScales = {
       end: 3000,
       scale: defaultScale
     }
-  }
+  },
+  "3DayChange": {
+    state: {
+      end: 100,
+      scale: defaultScale
+    },
+    county: {
+      end: 100,
+      scale: defaultScale
+    }
+  },
 };
 
 const compare = (a: County | State, b: County | State) => {
@@ -171,7 +183,7 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
     stateGeoData as any
   );
   const [dataType, setDataType] = useState<DataType>(
-    props.dataType ? props.dataType : "New"
+    props.dataType ? props.dataType : "3DayChange"
   );
   const [viewport, setViewport] = useState(
     initialState.mapView as ViewportProps
@@ -193,8 +205,8 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
   const getDateLayer = (level: "state" | "county") => {
     const x = legendScales[dataType][level];
     return [
-      [x.scale[0], "#DEE4E8"],
-      [x.scale[1], "#F3CB7C"],
+      [x.scale[0], "#326F1F"],
+      [x.scale[1], "#DEE4E8"],
       [x.scale[2], "#ECAC53"],
       [x.scale[3], "#E58445"],
       [x.scale[4], "#E16742"],
@@ -233,7 +245,7 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
                 region.length > 1
                   ? region[0][selectedMetric] - region[1][selectedMetric]
                   : 0;
-            } else {
+            } else if (dataType === "New") {
               if (region.length > 1) {
                 if (
                   region[0][selectedMetric] <
@@ -245,6 +257,23 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
                   const now = region[0][selectedMetric];
                   const change = now - prev;
                   metric = round((change / prev) * 100);
+                }
+              } else {
+                metric = 0;
+              }
+            } else {
+              if (region.length > 3) {
+                if (
+                  region[0][selectedMetric] <
+                  EXCLUDE_PERCENT_INCREASE_CASES_BELOW
+                ) {
+                  metric = 0;
+                } else {
+                  const prev = region[3][selectedMetric];
+                  const now = region[0][selectedMetric];
+                  const change = now - prev;
+                  metric = round((change / prev) * 100);
+                  console.log()
                 }
               } else {
                 metric = 0;
@@ -292,9 +321,13 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
         round(e * max)
       );
       setLegendScales(newLegend);
-    } else {
+    } else  if (dataType === "New") {
       const newLegend = { ...legendScales };
       newLegend.New[level].scale = [0, 5, 10, 25, 50, 100, 200, 400];
+      setLegendScales(newLegend);
+    } else if (dataType === "3DayChange") {
+      const newLegend = { ...legendScales };
+      newLegend["3DayChange"][level].scale = [-10, 0, 10, 25, 50, 100, 200, 400];
       setLegendScales(newLegend);
     }
     return formatedGeoJSON;
@@ -342,7 +375,8 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
       const label: { [d in DataType]: string } = {
         Total: selectedMetric,
         New: "Percent increase",
-        Increase: "Increase"
+        Increase: "Increase",
+        "3DayChange": "3 Day Change"
       };
 
       return (

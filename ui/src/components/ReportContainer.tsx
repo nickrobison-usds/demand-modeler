@@ -5,13 +5,13 @@ import * as _ from "lodash";
 import * as PowerPointUtils from "./PowerPointGenerator/Utils";
 import * as fips from "../utils/fips";
 import { lineColors } from "../utils/reportHelpers";
-import { monthDayCommaYear } from "../utils/DateUtils";
+import { monthDayCommaYear, yearMonthDayDot } from "../utils/DateUtils";
 import { addTitleSlide } from "./PowerPointGenerator/Slides/Templates/TitleSlides/TitleSlide";
 import {
-  addLineChartWithLegend,
-  LineData
+  addLineChartWithLegend
 } from "./PowerPointGenerator/Slides/Templates/InteriorSlides/LineChartWithTitle";
-import {addCBSAMetroAreaSlides} from "./PowerPointGenerator/Slides/CBSASlides/CBSAMetroAreaSlides";
+import {addCBSAStackedBarSlides} from "./PowerPointGenerator/Slides/CBSASlides/CBSAStackedBars";
+import {addCBSATop25} from "./PowerPointGenerator/Slides/CBSASlides/Top25CBSALineGraph";
 
 export interface ReportContainerProps {
   states: State[];
@@ -83,7 +83,7 @@ export const addTopTenStates = (
 const getStateLineData = (states: State[][]) => {
   return states
     .reduce((acc, stateSeries) => {
-      const state: LineData = {
+      const state: ChartData = {
         name: fips.getStateAbr(stateSeries[0].ID),
         labels: [],
         values: []
@@ -99,7 +99,7 @@ const getStateLineData = (states: State[][]) => {
       state.values.shift();
       acc.push(state);
       return acc;
-    }, [] as LineData[])
+    }, [] as ChartData[])
     .sort((a, b) => {
       return b.values[b.values.length - 1] - a.values[a.values.length - 1];
     });
@@ -131,7 +131,8 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       ppt,
       "Cumulative cases per 100,000: All States",
       allStates,
-      lineColors
+      lineColors,
+      "Confirmed cases per 100,000"
     );
 
     const allStatesWithoutNY = getStateLineData(
@@ -141,7 +142,8 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       ppt,
       `Cumulative cases per 100,000: All States Without NY`,
       allStatesWithoutNY,
-      lineColors
+      lineColors,
+      "Confirmed cases per 100,000"
     );
 
     const top12States = getStateLineData(
@@ -151,7 +153,8 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       ppt,
       `Cumulative cases per 100,000: Top 12 States`,
       top12States,
-      lineColors
+      lineColors,
+      "Confirmed cases per 100,000"
     );
 
     const States0to12WithoutNY = getStateLineData(
@@ -163,7 +166,8 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       ppt,
       `Cumulative cases per 100,000: Top States 1-12 Without NY`,
       States0to12WithoutNY,
-      lineColors
+      lineColors,
+      "Confirmed cases per 100,000"
     );
 
     const States12to24WithoutNY = getStateLineData(
@@ -178,7 +182,8 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       ppt,
       `Cumulative cases per 100,000: Top 13-24 States Without NY With NJ`,
       [...States12to24NJ, ...States12to24WithoutNY],
-      lineColors
+      lineColors,
+      "Confirmed cases per 100,000"
     );
 
     const States24to36ithoutNY = getStateLineData(
@@ -193,7 +198,8 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       ppt,
       `Cumulative cases per 100,000: Top 25-36 States Without NY With NJ`,
       [...States24to36NJ, ...States24to36ithoutNY],
-      lineColors
+      lineColors,
+      "Confirmed cases per 100,000"
     );
 
     const States24to51ithoutNY = getStateLineData(
@@ -208,18 +214,21 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       ppt,
       `Cumulative cases per 100,000: Top 37-51 States Without NY With NJ`,
       [...States24to51NJ, ...States24to51ithoutNY],
-      lineColors
+      lineColors,
+      "Confirmed cases per 100,000"
     );
 
     const exceptionStates = ["NY", "NJ", "CT", "WA", "CA"];
     const exceptionStatesData = getStateLineData(
       Object.values(props.historicalTimeSeries.states)
     ).filter(el => exceptionStates.includes(el.name));
+
     addLineChartWithLegend(
       ppt,
       `Cumulative cases per 100,000: ${exceptionStates.join(", ")}`,
       exceptionStatesData,
-      lineColors
+      lineColors,
+      "Confirmed cases per 100,000"
     );
 
     // // Non-exception states
@@ -232,14 +241,16 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
         ", "
       )}`,
       nonExceptionStatesData,
-      lineColors
+      lineColors,
+      "Confirmed cases per 100,000"
     );
 
     const counties = props.historicalTimeSeries.counties;
-    addCBSAMetroAreaSlides(ppt, counties);
+    addCBSATop25(ppt, counties);
+    addCBSAStackedBarSlides(ppt, counties);
 
     console.debug("Writing PPTX");
-    const done = await ppt.writeFile("Sample Presentation.pptx");
+    const done = await ppt.writeFile(`${yearMonthDayDot(new Date())} State line graphs and metropolitan areas.pptx`);
     console.debug("Finished exporting: ", done);
   };
   return (
@@ -247,7 +258,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       <button className="usa-button" onClick={exportPowerPoint}>
         Export
       </button>
-      {/* <>{props.children}</> */}
+      <>{props.children}</>
       <canvas />
     </div>
   );
