@@ -70,11 +70,10 @@ workflows:
     jobs:
       - build-ui
       - build-api
-  deploy-cloudgov:
-    jobs:
       - deploy-cloudgov:
           requires:
-            - deploy
+            - build-ui
+            - build-api
           filters:
             branches:
               only: ronheft/ci-autodeploy
