@@ -26,153 +26,48 @@ import { easeCubic } from "d3";
 import "./CountyMap.css";
 import UsaSelect from "../Forms/USASelect";
 import { transformCountyGeoData } from "./transformCountyGeoData";
-
+import {cbsaCodes} from "../PowerPointGenerator/Slides/CBSASlides/cbsaCodes";
 const countyGeoData = transformCountyGeoData(
   rawCountyGeoData as GeoJSON.FeatureCollection
 );
 
 type GeoLevel = "state" | "county" | "cbsa"
-type DataType = "Total" | "New" | "Increase" | "3DayChange";
+type DataType = "Total" | "New";
 
 const legendLookup = (metric: Metric): { [key in DataType]: string } => {
   const type = metric === "confirmed" ? "confirmed cases" : "Deaths";
   return {
     Total: type,
     New: `Percent increase in ${type}`,
-    Increase: `Increase in ${type}`,
-    "3DayChange": `3DayChange in ${type}`
   };
 };
 
-const EXCLUDE_PERCENT_INCREASE_CASES_BELOW = 20;
-const ALASKA_COORDS = [
-  -173.14944218750094,
-  70.47019617187733,
-  -136.10250208333454,
-  59.29933020239282
-];
-
-const PRESET_COORDINATES = {
-  "New York Area": [
-    -79.71795557211779,
-    44.07230181608911,
-    -70.02386439122805,
-    38.52193337282572
-  ],
-  "Southern California": [
-    -125.8900564950757,
-    40.13543344053817,
-    -109.6595370450612,
-    31.801948669038634
-  ],
-  "Washington State": [
-    -125.31842231224825,
-    49.20099357272757,
-    -113.89959291496478,
-    44.18402705083673
-  ],
-  "New Orleans Area": [
-    -94.55432969348145,
-    32.530443696934704,
-    -86.46212464628054,
-    28.241530292838192
-  ],
-  "Atlanta Area": [
-    -88.02340266829032,
-    35.256633149858665,
-    -81.89923641172831,
-    32.40534252419434
-  ],
-  "Miami Area": [
-    -86.56595321732999,
-    29.557910466003218,
-    -76.78391003722425,
-    23.776191997013665
-  ]
-} as const;
-
 interface LegendRegion {
-  state: {
-    end: number;
-    scale: number[];
-  };
-  cbsa: {
-    end: number;
-    scale: number[];
-  }
-  county: {
-    end: number;
-    scale: number[];
-  };
+
+end: number;
+scale: number[];
+
 }
 
 interface LegendScales {
   Total: LegendRegion;
   New: LegendRegion;
-  Increase: LegendRegion;
-  "3DayChange": LegendRegion;
 }
 
 // make this dynammic
 // maybe exclude NY
-const defaultScale = [0, 0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1];
+const defaultScale = [0, 0.001, 0.01999999999, 0.02, 0.05, 0.1, 0.5, 1];
 const defaultLegend: LegendScales = {
   Total: {
-    state: {
-      end: 15000,
-      scale: defaultScale
-    },
-    cbsa: {
-      end: 15000,
-      scale: defaultScale
-    },
-    county: {
-      end: 9000,
-      scale: defaultScale
-    }
+    end: 50000,
+    scale: defaultScale
+
   },
   New: {
-    state: {
       end: 100,
       scale: defaultScale
-    },
-    cbsa: {
-      end: 100,
-      scale: defaultScale
-    },
-    county: {
-      end: 100,
-      scale: defaultScale
-    }
   },
-  Increase: {
-    state: {
-      end: 5000,
-      scale: defaultScale
-    },
-    cbsa: {
-      end: 3000,
-      scale: defaultScale
-    },
-    county: {
-      end: 3000,
-      scale: defaultScale
-    }
-  },
-  "3DayChange": {
-    state: {
-      end: 100,
-      scale: defaultScale
-    },
-        cbsa: {
-      end: 100,
-      scale: defaultScale
-    },
-    county: {
-      end: 100,
-      scale: defaultScale
-    }
-  },
+
 };
 
 const compare = (a: County | State, b: County | State) => {
@@ -189,26 +84,16 @@ const round = (num: number, decimals: number = 1) =>
   Math.round(num * 10 ** decimals) / 10 ** decimals;
 
 export interface CountyMapProps {
-  reportView?: boolean;
   dataType?: DataType;
   title?: string;
-  presetCoordinates?: keyof typeof PRESET_COORDINATES;
 }
 
 const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
-  const SHOW_COUNTY_ON_ZOOM = props.reportView ? 2 : 4;
-  const FILL_STATE_COUNTIES = 6;
-  const [countyData, setCountyData] = useState<GeoJSON.FeatureCollection>(
-    countyGeoData as any
-  );
-  const [stateData, setStateData] = useState<GeoJSON.FeatureCollection>(
-    stateGeoData as any
-  );
-    const [cbsaData, setCBSAData] = useState<GeoJSON.FeatureCollection>(
+  const [cbsaData, setCBSAData] = useState<GeoJSON.FeatureCollection>(
     cbsaGeoData as any
   );
   const [dataType, setDataType] = useState<DataType>(
-    props.dataType ? props.dataType : "3DayChange"
+    props.dataType ? props.dataType : "Total"
   );
   const [viewport, setViewport] = useState(
     initialState.mapView as ViewportProps
@@ -227,12 +112,12 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
   const selectedMetric =
     state.selection.metric === "confirmed" ? "Confirmed" : "Dead";
 
-  const getDateLayer = (level: GeoLevel) => {
-    const x = legendScales[dataType][level];
+  const getDateLayer = () => {
+    const x = legendScales[dataType];
     return [
-      [x.scale[0], "#326F1F"],
-      [x.scale[1], "#DEE4E8"],
-      [x.scale[2], "#ECAC53"],
+      [x.scale[0], "#DEE4E8"],
+      [x.scale[1], "#DEE4E8"],//FDE296"],
+      [x.scale[2], "#DEE4E8"],//ECAC53"],
       [x.scale[3], "#E58445"],
       [x.scale[4], "#E16742"],
       [x.scale[5], "#BC2D49"],
@@ -241,99 +126,51 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
     ];
   };
 
-  const getGeoData = (level: GeoLevel) => {
-    switch (level) {
-      case "state":
-       return stateData;
-      case "county":
-        return countyData;
-      case "cbsa":
-        return cbsaData;
-    }
-  }
-
-  const formatData = (level: GeoLevel): GeoJSON.Feature[] => {
-    const geoData = getGeoData(level);
-    const timeSeriesDate =
-      level === "state"
-        ? state.lastWeekCovidTimeSeries.states
-        : state.lastWeekCovidTimeSeries.counties;
+  const formatData = (): GeoJSON.Feature[] => {
+    const geoData = cbsaData;
+    const timeSeriesData =state.lastWeekCovidTimeSeries.counties;
+    console.log(timeSeriesData)
     let min = 0;
     let max = 0;
     const formatedGeoJSON = geoData.features.map(f => {
       let metric = 0;
       let Name = "";
       if (f.properties) {
-        Name = f.properties["NAME"];
-        const ID =
-          level === "state"
-            ? `${f.properties["STATE"]}000`
-            : `${f.properties["STATE"]}${f.properties["COUNTY"]}`;
-        const parsedID = parseInt(`${ID}`);
-        if (typeof parsedID === "number") {
-          const region = timeSeriesDate[ID];
+        Name = f.properties["name"];
+        const id = f.properties["cbsafp"];
+        const {fips} = cbsaCodes[id];
+        fips.forEach(fip => {
+          const region = timeSeriesData[fip];
+        //   console.log(Name, fips, region)
+
           if (region && region.length > 0) {
             region.sort(compare);
             if (dataType === "Total") {
-              metric = region[0][selectedMetric];
-            } else if (dataType === "Increase") {
-              metric =
-                region.length > 1
-                  ? region[0][selectedMetric] - region[1][selectedMetric]
-                  : 0;
-            } else if (dataType === "New") {
-              if (region.length > 1) {
-                if (
-                  region[0][selectedMetric] <
-                  EXCLUDE_PERCENT_INCREASE_CASES_BELOW
-                ) {
-                  metric = 0;
-                } else {
-                  const prev = region[1][selectedMetric];
-                  const now = region[0][selectedMetric];
-                  const change = now - prev;
-                  metric = round((change / prev) * 100);
-                }
-              } else {
-                metric = 0;
-              }
-            } else {
-              if (region.length > 3) {
-                if (
-                  region[0][selectedMetric] <
-                  EXCLUDE_PERCENT_INCREASE_CASES_BELOW
-                ) {
-                  metric = 0;
-                } else {
-                  const prev = region[3][selectedMetric];
-                  const now = region[0][selectedMetric];
-                  const change = now - prev;
-                  metric = round((change / prev) * 100);
-                  console.log()
-                }
-              } else {
-                metric = 0;
-              }
+              metric += region[0][selectedMetric];
             }
+            // } if (dataType === "New") {
+            //   if (region.length > 1) {
+            //       const prev = region[1][selectedMetric];
+            //       const now = region[0][selectedMetric];
+            //       const change = now - prev;
+            //       metric = round((change / prev) * 100);
+            //   } else {
+            //     metric = 0;
+            //   }
+            // } 
             if (metric < min) {
               min = metric;
             } else if (metric > max) {
               max = metric;
             }
-            Name =
-              level === "state"
-                ? fips.getStateName(region[0].ID)
-                : `${fips.getCountyName(region[0].ID)}, ${fips.getStateAbr(
-                    region[0].ID
-                  )}`;
           }
-        }
+        });
       }
       return {
         ...f,
         properties: {
           ...f.properties,
-          metric: metric || 0,
+          metric: metric,
           name: Name
         }
       };
@@ -341,46 +178,24 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
 
     if (dataType === "Total") {
       const newLegend = { ...legendScales };
-      if (level === "county") {
-        max = 2000;
-      } else {
-        max = 6000;
-      }
-      newLegend.Total[level].scale = Array.from(defaultScale, e =>
+        max = 50000;
+      newLegend.Total.scale = Array.from(defaultScale, e =>
         round(e * max)
       );
 
       setLegendScales(newLegend);
-    } else if (dataType === "Increase") {
+    }  if (dataType === "New") {
       const newLegend = { ...legendScales };
-      newLegend.Increase[level].scale = Array.from(defaultScale, e =>
-        round(e * max)
-      );
+      newLegend.New.scale = [0, 5, 10, 25, 50, 100, 200, 400];
       setLegendScales(newLegend);
-    } else  if (dataType === "New") {
-      const newLegend = { ...legendScales };
-      newLegend.New[level].scale = [0, 5, 10, 25, 50, 100, 200, 400];
-      setLegendScales(newLegend);
-    } else if (dataType === "3DayChange") {
-      const newLegend = { ...legendScales };
-      newLegend["3DayChange"][level].scale = [-10, 0, 10, 25, 50, 100, 200, 400];
-      setLegendScales(newLegend);
-    }
+    } 
     return formatedGeoJSON;
   };
 
   useEffect(() => {
-    setCountyData({
-      type: "FeatureCollection",
-      features: formatData("county")
-    });
-    setStateData({
-      type: "FeatureCollection",
-      features: formatData("state")
-    });
     setCBSAData({
       type: "FeatureCollection",
-      features: formatData("cbsa")
+      features: formatData()
     });
     // eslint-disable-next-line
   }, [lastWeekCovidTimeSeries, dataType, selectedMetric]);
@@ -395,7 +210,7 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
         lngLat: event.lngLat,
         feature: feature.properties
       };
-      name = feature.properties.NAME;
+      name = feature.properties.name;
       if (!name) {
         setHoverInfo(null);
       } else {
@@ -406,17 +221,12 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
 
   const renderPopup = () => {
     if (hoverInfo) {
-      let name = hoverInfo.feature.NAME;
-      if (hoverInfo.feature.COUNTY) {
-        const stateName = fips.getStateAbr(hoverInfo.feature.STATE + "000");
-        name = `${name}, ${stateName}`;
-      }
+      let name = hoverInfo.feature.name;
+    //   let name = hoverInfo.feature.cbsafp;
 
       const label: { [d in DataType]: string } = {
         Total: selectedMetric,
         New: "Percent increase",
-        Increase: "Increase",
-        "3DayChange": "3 Day Change"
       };
 
       return (
@@ -438,100 +248,14 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
     return null;
   };
 
-  // Zoom to state on selection
-  useEffect(() => {
-    const selectedGeo = state.selection.county
-      ? countyData.features.find(feature => {
-          return (
-            feature.properties?.STATE + feature.properties?.COUNTY ===
-            state.selection.county
-          );
-        })
-      : stateData.features.find(
-          feature => feature.properties?.STATE + "000" === state.selection.state
-        );
-
-    setViewport(viewport => {
-      let newView = {
-        ...viewport,
-        ...initialState.mapView,
-        transitionInterpolator: new FlyToInterpolator(),
-        transitionDuration: 1000,
-        transitionEasing: easeCubic
-      };
-      if (selectedGeo || props.presetCoordinates) {
-        let coords;
-        if (selectedGeo) {
-          coords =
-            selectedGeo.properties?.NAME === "Alaska"
-              ? ALASKA_COORDS
-              : bbox(selectedGeo);
-        }
-        if (props.presetCoordinates) {
-          coords = PRESET_COORDINATES[props.presetCoordinates];
-        }
-        const [minLng, minLat, maxLng, maxLat] = coords;
-        const view = new WebMercatorViewport(viewport);
-        const { latitude, longitude, zoom } = view.fitBounds(
-          [
-            [minLng, minLat],
-            [maxLng, maxLat]
-          ],
-          {
-            padding: 20
-          }
-        );
-        newView.latitude = latitude;
-        newView.longitude = longitude;
-        newView.zoom = zoom;
-      }
-      return newView;
-    });
-  }, [
-    state.selection.state,
-    stateData.features,
-    countyData.features,
-    state.selection.county,
-    props.presetCoordinates
-  ]);
-
-  let filteredCountyData = { ...countyData };
-  if (state.selection.state) {
-    filteredCountyData.features = filteredCountyData.features.filter(
-      feature => {
-        if (state.selection.county) {
-          return (
-            feature?.properties?.STATE + feature?.properties?.COUNTY ===
-            state.selection.county
-          );
-        }
-
-        return feature?.properties?.STATE + "000" === state.selection.state;
-      }
-    );
-  }
-
-  // Special zoom for report
-  useEffect(() => {
-    if (props.reportView) {
-      setViewport(viewport => ({
-        ...viewport,
-        zoom: 3.5
-      }));
-    }
-  }, [props.reportView]);
-
-  const mapHeight = { height: props.reportView ? 760 : 350 };
-  // const legend = getDateLayer(
-  //   viewport.zoom < SHOW_COUNTY_ON_ZOOM ? "state" : "county"
-  // );
-  const legend = getDateLayer("cbsa");
+  const mapHeight = { height: 760 };
+  const legend = getDateLayer();
   return (
     <div id="map-container">
       <ReactMapGL
         {...viewport}
         minZoom={2}
-        width={props.reportView ? window.innerWidth * 0.9 : mapWidth}
+        width={window.innerWidth * 0.9}
         {...mapHeight}
         mapboxApiAccessToken={
           "pk.eyJ1IjoidGltYmVzdHVzZHMiLCJhIjoiY2s4MWtuMXpxMHN3dDNsbnF4Y205eWN2MCJ9.kpKyCbPit97l0vIG1gz5wQ"
@@ -540,55 +264,10 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
         onViewportChange={v => {
           setViewport({ ...v, pitch: 0, bearing: 0 });
         }}
-        // onWheel={() => {
-        //   if (viewport.zoom < SHOW_COUNTY_ON_ZOOM && state.selection.state) {
-        //     dispatch({
-        //       type: ActionType.UPDATE_SELECTED_STATE,
-        //       payload: undefined
-        //     });
-        //   }
-        //   if (viewport.zoom < FILL_STATE_COUNTIES && state.selection.county) {
-        //     dispatch({
-        //       type: ActionType.UPDATE_SELECTED_COUNTY,
-        //       payload: undefined
-        //     });
-        //   }
-        // }}
         onHover={onHover}
         getCursor={({ isDragging }) => {
           if (isDragging) return "grabbing";
           return hoverInfo ? "pointer" : "grab";
-        }}
-        onClick={event => {
-          // const feature = event.features && event.features[0];
-          // if (feature) {
-          //   const clickedState = feature.properties.STATE;
-          //   const clickedCounty = feature.properties.COUNTY;
-          //   if (!clickedState) {
-          //     // Reset selections
-          //     if (!state.selection.county) {
-          //       dispatch({
-          //         type: ActionType.UPDATE_SELECTED_STATE,
-          //         payload: undefined
-          //       });
-          //     }
-          //     dispatch({
-          //       type: ActionType.UPDATE_SELECTED_COUNTY,
-          //       payload: undefined
-          //     });
-          //   } else {
-          //     dispatch({
-          //       type: ActionType.UPDATE_SELECTED_STATE,
-          //       payload: clickedState + "000"
-          //     });
-          //     dispatch({
-          //       type: ActionType.UPDATE_SELECTED_COUNTY,
-          //       payload: clickedCounty
-          //         ? clickedState + clickedCounty
-          //         : undefined
-          //     });
-          //   }
-          // }
         }}
       >
         {state.mapView.zoom > 0 ? (
@@ -596,11 +275,7 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
             <Source
               id="data"
               type="geojson"
-              data={cbsaData
-                // viewport.zoom < SHOW_COUNTY_ON_ZOOM
-                //   ? stateData
-                //   : filteredCountyData
-              }
+              data={cbsaData}
             >
               <Layer
                 {...{
@@ -631,31 +306,30 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
           <span
             key={k[0]}
             style={{
-              marginRight: props.reportView ? "10px" : "5px",
+              marginRight: "10px",
               whiteSpace: "nowrap"
             }}
           >
             <span
               style={{
                 display: "inline-block",
-                width: props.reportView ? "20px" : "10px",
-                height: props.reportView ? "20px" : "10px",
+                width: "20px" ,
+                height: "20px" ,
                 backgroundColor: String(k[1]) as string,
                 marginRight: "5px"
               }}
             ></span>
-            <span style={{ fontSize: props.reportView ? "20px" : undefined }}>
+            <span style={{ fontSize:  "20px"  }}>
               {k[0]}+
             </span>
           </span>
         ))}
       </div>
-      {!props.reportView && (
+      {
         <UsaSelect
           options={[
             { text: "Total", value: "Total" },
-            { text: "Percent increase", value: "New" },
-            { text: "Increase", value: "Increase" }
+            { text: "Percent increase", value: "New" }
           ]}
           placeholder={"Total"}
           name="selectDataType"
@@ -663,7 +337,7 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
           onChange={setDataType}
           label="Map data type "
         />
-      )}
+      }
     </div>
   );
 };
