@@ -73,6 +73,6 @@ workflows:
   deploy-cloudgov:
     jobs:
       - deploy-cloudgov
-    filter:
+    filters:
       branches:
         only: ronheft/ci-autodeploy
