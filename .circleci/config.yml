@@ -76,4 +76,4 @@ workflows:
             - build-api
           filters:
             branches:
-              only: ronheft/ci-autodeploy
+              only: dev
