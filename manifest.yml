@@ -1,14 +1,29 @@
 ---
 applications:
 - name: usds-covid-fearless-dreamer
+
   disk_quota: 2G
   memory: 128MB
-  timeout: 180
+
+  # The go buildpack must be specified last for the go Procfile to be used
   buildpacks:
-    - go_buildpack
+    # The nodejs buildpack only run `yarn install` when specified as first buildpack
+    # To actually build the production resource `yarn build` has to be run somewhere in the process
+    # `yarn build` is currently being run locally with `yarn deploy` instead of building on server due to memory
+    # constraints. When run on the server, cloud.gov throws OOM errors, as the build process require >2GB of memory
+    # We need to optimize the memory during the build process, and then use the commented out command below
+    # When this occurs we can also add `ui/build` to .cfignore
     - nodejs_buildpack
+    - go_buildpack
+
   services:
     - usds-covid-fearless-dreamer-psql
+
+  # Use the default go start command by specifying null
+  command: null
+  #command: yarn build && ./bin/demand-modeling # Build react on the server
+  timeout: 180
+
   env:
     REACT_APP_API_URI: "https://usds-covid-fearless-dreamer-backend.app.cloud.gov"
     OPTIMIZE_MEMORY: true
