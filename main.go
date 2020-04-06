@@ -66,10 +66,18 @@ func runServer(c *cli.Context) error {
 		}
 		defer loader.Close()
 
+		// Truncate the database and start fresh
+		err = loader.Truncate()
+		if err != nil {
+			log.Fatal().Err(err).Send()
+		}
+
+		// Load the latest data
 		err = loader.Load()
 		if err != nil {
 			log.Fatal().Err(err).Send()
 		}
+
 		end := time.Now()
 		duration := end.Sub(start)
 		log.Info().Dur("load_time", duration).Msg("Background data load completed")
