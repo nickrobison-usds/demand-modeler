@@ -215,7 +215,6 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
     const exceptionStatesData = getStateLineData(
       Object.values(props.historicalTimeSeries.states)
     ).filter(el => exceptionStates.includes(el.name));
-    console.log("exception cases", exceptionStatesData)
 
     addLineChartWithLegend(
       ppt,

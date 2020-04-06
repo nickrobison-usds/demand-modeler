@@ -20,7 +20,7 @@ export const metroAreas: { area: string; fipsCodes: string[] }[] = [
   },
   {
     area: "New York, NY",
-    fipsCodes: ["36061", "34003", "36059", "36119", "36087", "34037"].reverse()
+    fipsCodes: ["36061", "36005", "36081", "36047", "34003", "36085", "36059", "36119", "36087", "34037"].reverse()
   },
   // if value = 36061 and date is note today add 36005, 36081,36047, and 36085
   {
@@ -180,17 +180,17 @@ export const addCBSAStackedBarSlides = (
   ppt: pptxgen,
   counties: { [fip: string]: County[] }
 ) => {
-  // metroAreas.forEach(code => {
-  //   const { area, fipsCodes} = code;
-  //   addCountySlide(ppt, counties, area, fipsCodes, "confirmed");
-  //   addCountySlide(ppt, counties, area, fipsCodes, "confirmed", true);
-  //   addCountySlide(ppt, counties, area, fipsCodes, "dead");
-  //   addCountySlide(ppt, counties, area, fipsCodes, "dead", true);
-  // });
+  metroAreas.forEach(code => {
+    const { area, fipsCodes} = code;
+    addCountySlide(ppt, counties, area, fipsCodes, "confirmed");
+    addCountySlide(ppt, counties, area, fipsCodes, "confirmed", true);
+    addCountySlide(ppt, counties, area, fipsCodes, "dead");
+    addCountySlide(ppt, counties, area, fipsCodes, "dead", true);
+  });
 
   addBlankSlideWithTitle(ppt, "Top 25 CBSA ordered by Total Confirmed cases")
 
-  CSBAOrderedByStat(counties, "Confirmed", 25).forEach(id => {
+  CSBAOrderedByStat(counties, "Confirmed", 25, []).forEach(id => {
     const {name, fips} = cbsaCodes[id];
     addCountySlide(ppt, counties, name, fips, "confirmed");
     addCountySlide(ppt, counties, name, fips, "confirmed", true);
