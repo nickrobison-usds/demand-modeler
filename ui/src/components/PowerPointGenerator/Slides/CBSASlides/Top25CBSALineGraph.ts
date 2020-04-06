@@ -4,7 +4,7 @@ import { addLineChartWithLegend } from "../Templates/InteriorSlides/LineChartWit
 import { cbsaCodes } from "./cbsaCodes";
 import { CSBAOrderedByStat } from "./Utils";
 import {isSameDay} from "../../../../utils/DateUtils";
-import * as fipsUtils from "../../../../utils/fips";
+// import * as fipsUtils from "../../../../utils/fips";
 
 export const colors = [
   "69ABDD",
@@ -70,16 +70,16 @@ const getChartData = (
 
     Object.values(counties)[0].forEach((c, index) => {
       let confirmed = 0;
-      let population = 0;
+      // let population = 0;
       fips.forEach(fip => {
         if (counties[fip] !== undefined && counties[fip][index] !== undefined) {
           if (fip === "36061" && !isSameDay(counties[fip][index].Reported, today)) {
             const nyc_combined = ["36061", "36005", "36081", "36047", "36085"];
             confirmed += accumulateNYCData(counties,nyc_combined,index,"Confirmed")
-            nyc_combined.forEach(f => {population += fipsUtils.getPopulation(f)})
+            // nyc_combined.forEach(f => {population += fipsUtils.getPopulation(f)})
           } else {
             confirmed += counties[fip][index].Confirmed;
-            population += fipsUtils.getPopulation(fip)
+            // population += fipsUtils.getPopulation(fip)
           }
         }
 

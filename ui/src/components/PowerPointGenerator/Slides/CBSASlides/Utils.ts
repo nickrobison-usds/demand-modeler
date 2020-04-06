@@ -1,10 +1,6 @@
 import { County } from "../../../../app/AppStore";
 import { cbsaCodes } from "./cbsaCodes";
 
-const getConfirmed = (counties: { [fip: string]: County[] }, id: string) => {
-  return counties[id] ? counties[id][0].Confirmed : 0;
-};
-
 export const getCSBATotal = (
   counties: { [fip: string]: County[] },
   csba: string,
