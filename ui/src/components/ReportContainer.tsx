@@ -2,7 +2,7 @@ import React from "react";
 import pptxgen from "pptxgenjs";
 import { CovidDateData, State } from "../app/AppStore";
 import * as _ from "lodash";
-import * as PowerPointUtils from "./PowerPointGenerator/Utils";
+import * as PowerPointUtils from "./PowerPointGenerator/utils";
 import * as fips from "../utils/fips";
 import { lineColors } from "../utils/reportHelpers";
 import { monthDayCommaYear, yearMonthDayDot } from "../utils/DateUtils";
