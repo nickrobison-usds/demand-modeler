@@ -6,7 +6,9 @@
   "scripts": {
     "install": "yarn --cwd ui/ install --production=false",
     "build.react": "yarn --cwd ui/ run build",
-    "build": "yarn run install && yarn run build.react"
+    "build": "yarn run install && yarn run build.react",
+    "cf.target": "cf target -o dhs-prototyping -s usds-covid",
+    "deploy": "yarn run build && yarn run cf.target && cf push"
   },
   "engines": {
     "yarn": "1.22.x"
