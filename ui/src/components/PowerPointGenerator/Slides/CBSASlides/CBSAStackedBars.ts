@@ -6,6 +6,7 @@ import {
 import { getCountyName, getStateAbr } from "../../../../utils/fips";
 import { cbsaCodes } from "./cbsaCodes"
 import * as fipsUtils from "../../../../utils/fips";
+import {isSameDay} from "../../../../utils/DateUtils";
 import { addBlankSlideWithTitle } from "../Templates/InteriorSlides/BlankWithTitle";
 import { CSBAOrderedByStat } from "./Utils";
 
@@ -20,7 +21,7 @@ export const metroAreas: { area: string; fipsCodes: string[] }[] = [
   },
   {
     area: "New York, NY",
-    fipsCodes: ["36061", "36005", "36081", "36047", "34003", "36085", "36059", "36119", "36087", "34037"].reverse()
+    fipsCodes: ["36061", "34003", "36059", "36119", "36087", "34037"].reverse()
   },
   // if value = 36061 and date is note today add 36005, 36081,36047, and 36085
   {
@@ -52,6 +53,22 @@ export const metroAreas: { area: string; fipsCodes: string[] }[] = [
     fipsCodes: ["16013", "16025", "16063"]
   },
 ];
+
+const accumulateNYCData = (
+  counties: { [fip: string]: County[] },
+  countyFips: string[],
+  index: number,
+  attribute: "Dead" | "Confirmed"
+) => {
+  let total = 0;
+  countyFips.forEach(fip => {
+    const entry = counties[fip][index];
+    if (entry) {
+      total += counties[fip][index][attribute];
+    }
+  });
+  return total;
+};
 
 export const getConfirmedColors = (length: number): string[] => {
   switch (length) {
@@ -109,12 +126,33 @@ const getCountyData = (
     // population is used to approximate outbreak
     .sort((a, b) => fipsUtils.getPopulation(b) - fipsUtils.getPopulation(a))
     .map(fips => {
-      if (counties[fips] === undefined) {
-        console.warn(`API response missing data for FIPS ${fips}`)
-        return [];
+      if (fips === "36061") {
+        const nyc_combined = ["36061", "36005", "36081", "36047", "36085"];
+        return counties[fips].map((county, index) => {
+          var today = new Date();
+          if (isSameDay(county.Reported, today)) {
+            return county;
+          }
+          return {
+            ...county,
+            Dead: accumulateNYCData(counties, nyc_combined, index, "Dead"),
+            Confirmed: accumulateNYCData(
+              counties,
+              nyc_combined,
+              index,
+              "Confirmed"
+            )
+          };
+        });
+      } else {
+        if (counties[fips] === undefined) {
+          return [];
+        }
+        return counties[fips];
       }
-      return counties[fips];
     })
+
+
     .reduce((acc, county) => {
       const data: ChartData = {
         name: county[0] ? getCountyName(county[0].ID) + ", " + getStateAbr(county[0].ID) : "",
@@ -131,6 +169,7 @@ const getCountyData = (
         );
         let value = el[stat === "confirmed" ? "Confirmed" : "Dead"];
         if (daily && orderedCounties[i - 1]) {
+
           value = Math.max(
             value -
               orderedCounties[i - 1][

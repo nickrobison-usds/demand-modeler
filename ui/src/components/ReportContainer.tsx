@@ -131,7 +131,8 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       ppt,
       "Cumulative cases per 100,000: All States",
       allStates,
-      lineColors
+      lineColors,
+      "Confirmed cases per 100,000"
     );
 
     const allStatesWithoutNY = getStateLineData(
@@ -141,7 +142,8 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       ppt,
       `Cumulative cases per 100,000: All States Without NY`,
       allStatesWithoutNY,
-      lineColors
+      lineColors,
+      "Confirmed cases per 100,000"
     );
 
     const top12States = getStateLineData(
@@ -151,7 +153,8 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       ppt,
       `Cumulative cases per 100,000: Top 12 States`,
       top12States,
-      lineColors
+      lineColors,
+      "Confirmed cases per 100,000"
     );
 
     const States0to12WithoutNY = getStateLineData(
@@ -163,7 +166,8 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       ppt,
       `Cumulative cases per 100,000: Top States 1-12 Without NY`,
       States0to12WithoutNY,
-      lineColors
+      lineColors,
+      "Confirmed cases per 100,000"
     );
 
     const States12to24WithoutNY = getStateLineData(
@@ -178,7 +182,8 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       ppt,
       `Cumulative cases per 100,000: Top 13-24 States Without NY With NJ`,
       [...States12to24NJ, ...States12to24WithoutNY],
-      lineColors
+      lineColors,
+      "Confirmed cases per 100,000"
     );
 
     const States24to36ithoutNY = getStateLineData(
@@ -193,7 +198,8 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       ppt,
       `Cumulative cases per 100,000: Top 25-36 States Without NY With NJ`,
       [...States24to36NJ, ...States24to36ithoutNY],
-      lineColors
+      lineColors,
+      "Confirmed cases per 100,000"
     );
 
     const States24to51ithoutNY = getStateLineData(
@@ -208,7 +214,8 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       ppt,
       `Cumulative cases per 100,000: Top 37-51 States Without NY With NJ`,
       [...States24to51NJ, ...States24to51ithoutNY],
-      lineColors
+      lineColors,
+      "Confirmed cases per 100,000"
     );
 
     const exceptionStates = ["NY", "NJ", "CT", "WA", "CA"];
@@ -220,7 +227,8 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       ppt,
       `Cumulative cases per 100,000: ${exceptionStates.join(", ")}`,
       exceptionStatesData,
-      lineColors
+      lineColors,
+      "Confirmed cases per 100,000"
     );
 
     // // Non-exception states
@@ -233,7 +241,8 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
         ", "
       )}`,
       nonExceptionStatesData,
-      lineColors
+      lineColors,
+      "Confirmed cases per 100,000"
     );
 
     const counties = props.historicalTimeSeries.counties;

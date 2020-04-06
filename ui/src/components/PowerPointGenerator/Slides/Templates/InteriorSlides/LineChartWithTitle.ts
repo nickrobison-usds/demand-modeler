@@ -14,7 +14,7 @@ const legendXOffset = (length: number, twoColumns: boolean) => {
   return -0.8;
 }
 
-export const lineChartConfig = (offset?: number) => ({
+export const lineChartConfig = (valueLabel: string, offset?: number) => ({
   x: 0.5,
   y: 1,
   w: 7.4 + (offset ? offset : 0),
@@ -26,7 +26,7 @@ export const lineChartConfig = (offset?: number) => ({
   serGridLine: { style: "none" },
   catGridLine: { style: "none" },
   showValAxisTitle: true,
-  valAxisTitle: "Confirmed cases per 100,000".toUpperCase(),
+  valAxisTitle: valueLabel.toUpperCase(),
   catAxisLabelRotate: 270,
   showTitle: false,
   valAxisTitleFontSize: 7,
@@ -55,7 +55,8 @@ export const addLineChartWithLegend = (
   ppt: pptxgen,
   title: string,
   lineData: ChartData[],
-  lineColors: { [s: string]: string }
+  lineColors: { [s: string]: string },
+  valueLabel: string
 ) => {
   const slide = addBlankSlideWithTitle(ppt, title);
 
@@ -108,7 +109,7 @@ export const addLineChartWithLegend = (
     });
   }
   slide.addChart(ppt.ChartType.line, lines, {
-    ...lineChartConfig(offsetX),
+    ...lineChartConfig(valueLabel, offsetX),
     chartColors
   });
 };

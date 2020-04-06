@@ -3,6 +3,8 @@ import { County } from "../../../../app/AppStore";
 import { addLineChartWithLegend } from "../Templates/InteriorSlides/LineChartWithTitle";
 import { cbsaCodes } from "./cbsaCodes";
 import { CSBAOrderedByStat } from "./Utils";
+import {isSameDay} from "../../../../utils/DateUtils";
+import * as fipsUtils from "../../../../utils/fips";
 
 export const colors = [
   "69ABDD",
@@ -33,10 +35,28 @@ export const colors = [
   "FFC497",
 ];
 
+const accumulateNYCData = (
+  counties: { [fip: string]: County[] },
+  countyFips: string[],
+  index: number,
+  attribute: "Dead" | "Confirmed"
+) => {
+  let total = 0;
+  countyFips.forEach(fip => {
+    const entry = counties[fip][index];
+    if (entry) {
+      total += counties[fip][index][attribute];
+    }
+  });
+  return total;
+};
+
+
 const getChartData = (
   counties: { [fip: string]: County[] },
   exclude: string[]
 ) => {
+  const today = new Date();
   const top25 = CSBAOrderedByStat(counties, "Confirmed", 25, exclude);
   const lineColors: { [s: string]: string } ={};
   const lineData = top25.reduce((acc, id, i) => {
@@ -50,12 +70,22 @@ const getChartData = (
 
     Object.values(counties)[0].forEach((c, index) => {
       let confirmed = 0;
+      let population = 0;
       fips.forEach(fip => {
         if (counties[fip] !== undefined && counties[fip][index] !== undefined) {
-          confirmed += counties[fip][index].Confirmed;
+          if (fip === "36061" && !isSameDay(counties[fip][index].Reported, today)) {
+            const nyc_combined = ["36061", "36005", "36081", "36047", "36085"];
+            confirmed += accumulateNYCData(counties,nyc_combined,index,"Confirmed")
+            nyc_combined.forEach(f => {population += fipsUtils.getPopulation(f)})
+          } else {
+            confirmed += counties[fip][index].Confirmed;
+            population += fipsUtils.getPopulation(fip)
+          }
         }
+
       });
       state.labels.push(c.Reported.getMonth() + 1 + "/" + c.Reported.getDate());
+      // state.values.push(confirmed/ (population / 100000));
       state.values.push(confirmed);
     });
 
@@ -79,9 +109,10 @@ export const addCBSATop25 = (
   console.log(withNY)
   addLineChartWithLegend(
     ppt,
-    `Cumulative cases per 100,000: Top 25 CBSA`,
+    `Cumulative cases: Top 25 CBSA`,
     withNY.lineData,
-    withNY.lineColors
+    withNY.lineColors,
+    "Confirmed cases"
   );
 
   // without NY
@@ -90,8 +121,9 @@ export const addCBSATop25 = (
 
   addLineChartWithLegend(
     ppt,
-    `Cumulative cases per 100,000: Top 25 CBSA without NYC`,
+    `Cumulative cases: Top 25 CBSA without NYC`,
     withoutNY.lineData,
-    withoutNY.lineColors
+    withoutNY.lineColors,
+    "Confirmed cases"
   );
 };

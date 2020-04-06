@@ -42,7 +42,7 @@ export const addStackedBarChartWithTitle = (
   }
 
   slide.addChart(ppt.ChartType.bar, barData, {
-    ...lineChartConfig(),
+    ...lineChartConfig("Confirmed cases per 100,000"),
     barGrouping: "stacked",
     valAxisTitle: axisTitle,
     w: showLegend ? 7.95 : 9,
