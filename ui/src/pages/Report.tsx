@@ -4,7 +4,7 @@ import { AppContext, State } from "../app/AppStore";
 // import { Top10Counties } from "../components/Charts/Top10Counties";
 // import { StateBar } from "../components/Charts/StateBar";
 // import { MixedBar } from "../components/Charts/MixedBar";
-import CountyMap from "../components/Maps/CountyMap";
+import CBSAMap from "../components/Maps/CBSAMap";
 import "./Report.scss";
 import { dateTimeString } from "../utils/DateUtils";
 import * as fips from "../utils/fips";
@@ -39,10 +39,9 @@ export const Report: React.FC<{}> = () => {
   const maps = (lastUpdated: any) => {
     return (
       <>
-      <CountyMap
-        reportView
-        dataType={"3DayChange"}
-        title={"Average Change over 3 days"}
+      <CBSAMap
+        dataType={"Total"}
+        title={"Confirmed Cases"}
       />
       {lastUpdated && pagebreak(lastUpdated)}
       </>
