@@ -7,6 +7,7 @@ import * as fipsUtils from "../../../../utils/fips";
 import { isSameDay } from "../../../../utils/DateUtils";
 import { addBlankSlideWithTitle } from "../Templates/InteriorSlides/BlankWithTitle";
 import { CSBAOrderedByStat } from "./Utils";
+import { slides } from "./multiCbsaPerSlide";
 
 export const metroAreas: { area: string; fipsCodes: string[] }[] = [
   {
@@ -245,5 +246,18 @@ export const addCBSAStackedBarSlides = (
     addCountySlide(ppt, counties, name, [fips], "confirmed", true);
     addCountySlide(ppt, counties, name, [fips], "dead");
     addCountySlide(ppt, counties, name, [fips], "dead", true);
+  });
+};
+
+export const addMultiCBSAStackedBarSlides = (
+  ppt: pptxgen,
+  counties: { [fip: string]: County[] }
+) => {
+  slides.forEach((fipsAreas) => {
+    const fips = fipsAreas.map((code) => cbsaCodes[code].fips);
+    addCountySlide(ppt, counties, "", fips, "confirmed");
+    addCountySlide(ppt, counties, "", fips, "confirmed", true);
+    addCountySlide(ppt, counties, "", fips, "dead");
+    addCountySlide(ppt, counties, "", fips, "dead", true);
   });
 };
