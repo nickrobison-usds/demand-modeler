@@ -1,5 +1,6 @@
 import { County } from "../../../../app/AppStore";
 import { cbsaCodes } from "./cbsaCodes";
+import * as fipsUtils from "../../../../utils/fips";
 
 export const getCSBATotal = (
   counties: { [fip: string]: County[] },
@@ -10,6 +11,18 @@ export const getCSBATotal = (
   let total = 0;
   fips.forEach(fip => {
     total += counties[fip] ? counties[fip][0][stat] : 0;
+  });
+  return total;
+};
+
+export const getCBSAPopulation = (
+  counties: { [fip: string]: County[] },
+  csba: string,
+) => {
+  const { fips } = cbsaCodes[csba];
+  let population = 0;
+  fips.forEach(fip => {
+    total += counties[fip] ? fipsUtils.population(counties[fip]) : 0;
   });
   return total;
 };
