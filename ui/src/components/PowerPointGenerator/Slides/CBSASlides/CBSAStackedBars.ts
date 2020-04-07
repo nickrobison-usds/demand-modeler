@@ -1,56 +1,55 @@
 import pptxgen from "pptxgenjs";
 import { County } from "../../../../app/AppStore";
-import {
-  addStackedBarChartWithTitle
-} from "../Templates/InteriorSlides/StackedBarChartWithTitle";
+import { addMultiStackedBarChartWithTitle } from "../Templates/InteriorSlides/StackedBarChartWithTitle";
 import { getCountyName, getStateAbr } from "../../../../utils/fips";
-import { cbsaCodes } from "./cbsaCodes"
+import { cbsaCodes } from "./cbsaCodes";
 import * as fipsUtils from "../../../../utils/fips";
-import {isSameDay} from "../../../../utils/DateUtils";
+import { isSameDay } from "../../../../utils/DateUtils";
 import { addBlankSlideWithTitle } from "../Templates/InteriorSlides/BlankWithTitle";
 import { CSBAOrderedByStat } from "./Utils";
+import { slides } from "./multiCbsaPerSlide";
 
 export const metroAreas: { area: string; fipsCodes: string[] }[] = [
   {
     area: "Seattle, WA",
-    fipsCodes: ["53053", "53061", "53033"]
+    fipsCodes: ["53053", "53061", "53033"],
   },
   {
     area: "Detroit, MI",
-    fipsCodes: ["26125", "26163"]
+    fipsCodes: ["26125", "26163"],
   },
   {
     area: "New York, NY",
-    fipsCodes: ["36061", "34003", "36059", "36119", "36087", "34037"].reverse()
+    fipsCodes: ["36061", "34003", "36059", "36119", "36087", "34037"].reverse(),
   },
   // if value = 36061 and date is note today add 36005, 36081,36047, and 36085
   {
     area: "Chicago, IL",
-    fipsCodes: ["17031"]
+    fipsCodes: ["17031"],
   },
   {
     area: "New Orleans, LA",
-    fipsCodes: ["22051", "22071"]
+    fipsCodes: ["22051", "22071"],
   },
   {
     area: "Los Angeles, CA",
-    fipsCodes: ["06111", "06071", "06059", "06065", "06037"]
+    fipsCodes: ["06111", "06071", "06059", "06065", "06037"],
   },
   {
     area: "Boston, MA",
-    fipsCodes: ["25021", "25025", "25017", "25023", "25009"]
+    fipsCodes: ["25021", "25025", "25017", "25023", "25009"],
   },
   {
     area: "Washington, DC",
-    fipsCodes: ["11001", "24031", "24033", "24017", "24021", "24009"]
+    fipsCodes: ["11001", "24031", "24033", "24017", "24021", "24009"],
   },
   {
     area: "Baltimore, MD",
-    fipsCodes: ["24005", "24510", "24003", "24027", "24013", "24025", "24035"]
+    fipsCodes: ["24005", "24510", "24003", "24027", "24013", "24025", "24035"],
   },
   {
     area: "Hailey, ID",
-    fipsCodes: ["16013", "16025", "16063"]
+    fipsCodes: ["16013", "16025", "16063"],
   },
 ];
 
@@ -61,7 +60,7 @@ const accumulateNYCData = (
   attribute: "Dead" | "Confirmed"
 ) => {
   let total = 0;
-  countyFips.forEach(fip => {
+  countyFips.forEach((fip) => {
     const entry = counties[fip][index];
     if (entry) {
       total += counties[fip][index][attribute];
@@ -80,7 +79,7 @@ export const getConfirmedColors = (length: number): string[] => {
         "910A0A",
         "B8051A",
         "DE0029",
-        "EF8094"
+        "EF8094",
       ].reverse();
     case 5:
       return ["160004", "52000F", "910A0A", "DE0029", "EF8094"].reverse();
@@ -103,7 +102,7 @@ export const getDeadColors = (length: number): string[] => {
         "4D768A",
         "729BAF",
         "97BFD3",
-        "DEF1FC"
+        "DEF1FC",
       ].reverse();
     case 5:
       return ["032E41", "315B6F", "60899D", "8EB6CA", "BCE3F8"].reverse();
@@ -122,92 +121,104 @@ const getCountyData = (
   stat: Stat,
   daily = false
 ) => {
-  return [...countyFips]
-    // population is used to approximate outbreak
-    .sort((a, b) => fipsUtils.getPopulation(b) - fipsUtils.getPopulation(a))
-    .map(fips => {
-      if (fips === "36061") {
-        const nyc_combined = ["36061", "36005", "36081", "36047", "36085"];
-        return counties[fips].map((county, index) => {
-          var today = new Date();
-          if (isSameDay(county.Reported, today)) {
-            return county;
+  return (
+    [...countyFips]
+      // population is used to approximate outbreak
+      .sort((a, b) => fipsUtils.getPopulation(b) - fipsUtils.getPopulation(a))
+      .map((fips) => {
+        if (fips === "36061") {
+          const nyc_combined = ["36061", "36005", "36081", "36047", "36085"];
+          return counties[fips].map((county, index) => {
+            var today = new Date();
+            if (isSameDay(county.Reported, today)) {
+              return county;
+            }
+            return {
+              ...county,
+              Dead: accumulateNYCData(counties, nyc_combined, index, "Dead"),
+              Confirmed: accumulateNYCData(
+                counties,
+                nyc_combined,
+                index,
+                "Confirmed"
+              ),
+            };
+          });
+        } else {
+          if (counties[fips] === undefined) {
+            return [];
           }
-          return {
-            ...county,
-            Dead: accumulateNYCData(counties, nyc_combined, index, "Dead"),
-            Confirmed: accumulateNYCData(
-              counties,
-              nyc_combined,
-              index,
-              "Confirmed"
-            )
-          };
-        });
-      } else {
-        if (counties[fips] === undefined) {
-          return [];
+          return counties[fips];
         }
-        return counties[fips];
-      }
-    })
+      })
 
+      .reduce((acc, county) => {
+        const data: ChartData = {
+          name: county[0]
+            ? getCountyName(county[0].ID) + ", " + getStateAbr(county[0].ID)
+            : "",
+          labels: [],
+          values: [],
+        };
 
-    .reduce((acc, county) => {
-      const data: ChartData = {
-        name: county[0] ? getCountyName(county[0].ID) + ", " + getStateAbr(county[0].ID) : "",
-        labels: [],
-        values: []
-      };
+        // Data comes in in reverse chronological order
+        const orderedCounties = [...county].reverse();
 
-      // Data comes in in reverse chronological order
-      const orderedCounties = [...county].reverse();
-
-      orderedCounties.forEach((el, i) => {
-        data.labels.push(
-          el.Reported.getMonth() + 1 + "/" + el.Reported.getDate()
-        );
-        let value = el[stat === "confirmed" ? "Confirmed" : "Dead"];
-        if (daily && orderedCounties[i - 1]) {
-
-          value = Math.max(
-            value -
-              orderedCounties[i - 1][
-                stat === "confirmed" ? "Confirmed" : "Dead"
-              ],
-            0
+        orderedCounties.forEach((el, i) => {
+          data.labels.push(
+            el.Reported.getMonth() + 1 + "/" + el.Reported.getDate()
           );
-        }
-        data.values.push(value);
-      });
-      // The first day is only used to calculate diffs. Remove it.
-      data.labels.shift();
-      data.values.shift();
-      acc.push(data);
-      return acc;
-    }, [] as ChartData[]);
+          let value = el[stat === "confirmed" ? "Confirmed" : "Dead"];
+          if (daily && orderedCounties[i - 1]) {
+            value = Math.max(
+              value -
+                orderedCounties[i - 1][
+                  stat === "confirmed" ? "Confirmed" : "Dead"
+                ],
+              0
+            );
+          }
+          data.values.push(value);
+        });
+        // The first day is only used to calculate diffs. Remove it.
+        data.labels.shift();
+        data.values.shift();
+        acc.push(data);
+        return acc;
+      }, [] as ChartData[])
+  );
 };
 
 const addCountySlide = (
   ppt: pptxgen,
   counties: { [fip: string]: County[] },
   metroArea: string,
-  countyFips: string[],
+  countyFips: string[][],
   stat: Stat,
   daily = false
 ) => {
-  const countyData = getCountyData(counties, countyFips, stat, daily);
+  const countyData = countyFips.map((fips) =>
+    getCountyData(counties, fips, stat, daily)
+  );
+  const maxNumberOfCounties = countyData.reduce(
+    (acc, el) => (acc > el.length ? acc : el.length),
+    0
+  );
 
-  const confirmedColors = getConfirmedColors(countyFips.length);
-  const deadColors = getDeadColors(countyFips.length);
+  const confirmedColors = getConfirmedColors(maxNumberOfCounties);
+  const deadColors = getDeadColors(maxNumberOfCounties);
 
   const barColors = stat === "confirmed" ? confirmedColors : deadColors;
-  let firstCounty: string = countyFips.length > 1 ? "" : `(${fipsUtils.getCountyName(countyFips[0])})`;
-  addStackedBarChartWithTitle(
+  let firstCounties: string[] = countyFips
+    .map((fips) =>
+      fips.length > 1 ? "" : `(${fipsUtils.getCountyName(fips[0])})`
+    )
+    .filter((el) => el !== "");
+  addMultiStackedBarChartWithTitle(
     ppt,
-    `Confirmed ${
-      stat === "confirmed" ? "Cases" : "Deaths"
-    }${daily ? " Daily" : ""} in ${metroArea} ${firstCounty}`,
+    `Confirmed ${stat === "confirmed" ? "Cases" : "Deaths"}${
+      daily ? " Daily" : ""
+    } in ${metroArea} ${firstCounties.join(", ")}`,
     countyData,
     `Confirmed ${stat === "confirmed" ? "cases" : "deaths"}`.toUpperCase(),
     barColors,
@@ -219,21 +230,34 @@ export const addCBSAStackedBarSlides = (
   ppt: pptxgen,
   counties: { [fip: string]: County[] }
 ) => {
-  metroAreas.forEach(code => {
-    const { area, fipsCodes} = code;
-    addCountySlide(ppt, counties, area, fipsCodes, "confirmed");
-    addCountySlide(ppt, counties, area, fipsCodes, "confirmed", true);
-    addCountySlide(ppt, counties, area, fipsCodes, "dead");
-    addCountySlide(ppt, counties, area, fipsCodes, "dead", true);
+  metroAreas.forEach((code) => {
+    const { area, fipsCodes } = code;
+    addCountySlide(ppt, counties, area, [fipsCodes], "confirmed");
+    addCountySlide(ppt, counties, area, [fipsCodes], "confirmed", true);
+    addCountySlide(ppt, counties, area, [fipsCodes], "dead");
+    addCountySlide(ppt, counties, area, [fipsCodes], "dead", true);
   });
 
-  addBlankSlideWithTitle(ppt, "Top 25 CBSA ordered by Total Confirmed cases")
+  addBlankSlideWithTitle(ppt, "Top 25 CBSA ordered by Total Confirmed cases");
 
-  CSBAOrderedByStat(counties, "Confirmed", 25, []).forEach(id => {
-    const {name, fips} = cbsaCodes[id];
-    addCountySlide(ppt, counties, name, fips, "confirmed");
-    addCountySlide(ppt, counties, name, fips, "confirmed", true);
-    addCountySlide(ppt, counties, name, fips, "dead");
-    addCountySlide(ppt, counties, name, fips, "dead", true);
+  CSBAOrderedByStat(counties, "Confirmed", 25, []).forEach((id) => {
+    const { name, fips } = cbsaCodes[id];
+    addCountySlide(ppt, counties, name, [fips], "confirmed");
+    addCountySlide(ppt, counties, name, [fips], "confirmed", true);
+    addCountySlide(ppt, counties, name, [fips], "dead");
+    addCountySlide(ppt, counties, name, [fips], "dead", true);
+  });
+};
+
+export const addMultiCBSAStackedBarSlides = (
+  ppt: pptxgen,
+  counties: { [fip: string]: County[] }
+) => {
+  slides.forEach((fipsAreas) => {
+    const fips = fipsAreas.map((code) => cbsaCodes[code].fips);
+    addCountySlide(ppt, counties, "", fips, "confirmed");
+    addCountySlide(ppt, counties, "", fips, "confirmed", true);
+    addCountySlide(ppt, counties, "", fips, "dead");
+    addCountySlide(ppt, counties, "", fips, "dead", true);
   });
 };

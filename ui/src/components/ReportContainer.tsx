@@ -3,11 +3,12 @@ import pptxgen from "pptxgenjs";
 import { CovidDateData, State } from "../app/AppStore";
 import { monthDayCommaYear, yearMonthDayDot } from "../utils/DateUtils";
 import { addTitleSlide } from "./PowerPointGenerator/Slides/Templates/TitleSlides/TitleSlide";
+import { addStateLineGraphs } from "./PowerPointGenerator/Slides/StateLineGraphs";
 import {
-  addStateLineGraphs
-} from "./PowerPointGenerator/Slides/StateLineGraphs";
-import {addCBSAStackedBarSlides} from "./PowerPointGenerator/Slides/CBSASlides/CBSAStackedBars";
-import {addCBSATop25} from "./PowerPointGenerator/Slides/CBSASlides/Top25CBSALineGraph";
+  addCBSAStackedBarSlides,
+  addMultiCBSAStackedBarSlides,
+} from "./PowerPointGenerator/Slides/CBSASlides/CBSAStackedBars";
+import { addCBSATop25 } from "./PowerPointGenerator/Slides/CBSASlides/Top25CBSALineGraph";
 
 export interface ReportContainerProps {
   states: State[];
@@ -15,7 +16,7 @@ export interface ReportContainerProps {
   historicalTimeSeries: CovidDateData;
 }
 
-export const ReportContainer: React.FC<ReportContainerProps> = props => {
+export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
   const exportPowerPoint = async () => {
     // noinspection JSPotentiallyInvalidConstructorUsage
     const ppt = new pptxgen();
@@ -33,14 +34,19 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
     );
     // addTopTenStates(ppt, props.states, props.weeklyTimeSeries)
 
-    addStateLineGraphs(ppt, props.historicalTimeSeries.states)
+    addStateLineGraphs(ppt, props.historicalTimeSeries.states);
 
     const counties = props.historicalTimeSeries.counties;
     addCBSATop25(ppt, counties);
     addCBSAStackedBarSlides(ppt, counties);
+    addMultiCBSAStackedBarSlides(ppt, counties);
 
     console.debug("Writing PPTX");
-    const done = await ppt.writeFile(`${yearMonthDayDot(new Date())} State line graphs and metropolitan areas.pptx`);
+    const done = await ppt.writeFile(
+      `${yearMonthDayDot(
+        new Date()
+      )} State line graphs and metropolitan areas.pptx`
+    );
     console.debug("Finished exporting: ", done);
   };
   return (
