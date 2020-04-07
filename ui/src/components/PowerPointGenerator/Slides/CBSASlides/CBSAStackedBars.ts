@@ -6,8 +6,10 @@ import { cbsaCodes } from "./cbsaCodes";
 import * as fipsUtils from "../../../../utils/fips";
 import { isSameDay } from "../../../../utils/DateUtils";
 import { addBlankSlideWithTitle } from "../Templates/InteriorSlides/BlankWithTitle";
-import { CSBAOrderedByStat } from "./Utils";
+import { CSBAOrderedByStat, getCSBATotal } from "./Utils";
 import { slides } from "./multiCbsaPerSlide";
+
+const OTHER_THRESHOLD = 0.01;
 
 export const metroAreas: { area: string; fipsCodes: string[] }[] = [
   {
@@ -119,48 +121,65 @@ const getCountyData = (
   counties: { [fip: string]: County[] },
   countyFips: string[],
   stat: Stat,
+  cbsaId?: string,
   daily = false
 ) => {
-  return (
-    [...countyFips]
-      // population is used to approximate outbreak
-      .sort((a, b) => fipsUtils.getPopulation(b) - fipsUtils.getPopulation(a))
-      .map((fips) => {
-        if (fips === "36061") {
-          const nyc_combined = ["36061", "36005", "36081", "36047", "36085"];
-          return counties[fips].map((county, index) => {
-            var today = new Date();
-            if (isSameDay(county.Reported, today)) {
-              return county;
-            }
-            return {
-              ...county,
-              Dead: accumulateNYCData(counties, nyc_combined, index, "Dead"),
-              Confirmed: accumulateNYCData(
-                counties,
-                nyc_combined,
-                index,
-                "Confirmed"
-              ),
-            };
-          });
-        } else {
-          if (counties[fips] === undefined) {
-            return [];
-          }
-          return counties[fips];
+  const totalConfirmed = cbsaId ? getCSBATotal(counties, cbsaId, "Confirmed") : 1;
+  const cleanCountyFips = [...countyFips]
+  .map(fips => {
+    if (fips === "36061") {
+      const nyc_combined = ["36061", "36005", "36081", "36047", "36085"];
+      return counties[fips].map((county, index) => {
+        var today = new Date();
+        if (isSameDay(county.Reported, today)) {
+          return county;
         }
-      })
-
-      .reduce((acc, county) => {
-        const data: ChartData = {
-          name: county[0]
-            ? getCountyName(county[0].ID) + ", " + getStateAbr(county[0].ID)
-            : "",
-          labels: [],
-          values: [],
+        return {
+          ...county,
+          Dead: accumulateNYCData(counties, nyc_combined, index, "Dead"),
+          Confirmed: accumulateNYCData(
+            counties,
+            nyc_combined,
+            index,
+            "Confirmed"
+          )
         };
+      });
+    } else {
+      if (counties[fips] === undefined) {
+        return [];
+      }
+      return counties[fips];
+    }).sort((a, b) => {
+      return b[0].Confirmed - a[0].Confirmed;
+    });
 
+    const countiesToKeep = cleanCountyFips.filter(el => (el[0].Confirmed / totalConfirmed) >= OTHER_THRESHOLD)
+    const otherCounties = cleanCountyFips.filter(el => (el[0].Confirmed / totalConfirmed) < OTHER_THRESHOLD)
+
+    const otherTimeseries: County[] = [];
+    otherCounties.forEach((timeseries) => timeseries.forEach((county, index) => {
+      if(otherTimeseries[index]) {
+        otherTimeseries[index][stat === "confirmed" ? "Confirmed" : "Dead"] += county[stat === "confirmed" ? "Confirmed" : "Dead"]
+      } else {
+        otherTimeseries[index] = {...county};
+        otherTimeseries[index].ID = "other";
+      }
+    }));
+    const numberOfOthers = otherCounties.length
+    const combinedCounties = numberOfOthers > 1 ? [...countiesToKeep, otherTimeseries] : [...countiesToKeep];
+    const getName = (county: County[]) => {
+      if (county[0].ID === "other") {
+        return `${numberOfOthers} Other${numberOfOthers > 2 ? "s" : ""}`
+      }
+      return county[0] ? getCountyName(county[0].ID) + ", " + getStateAbr(county[0].ID) : ""
+    }
+    return combinedCounties.reduce((acc, county) => {
+      const data: ChartData = {
+        name:  getName(county),
+        labels: [],
+        values: []
+      };
         // Data comes in in reverse chronological order
         const orderedCounties = [...county].reverse();
 
@@ -195,10 +214,11 @@ const addCountySlide = (
   metroArea: string,
   countyFips: string[][],
   stat: Stat,
+  cbsaId?: string,
   daily = false
 ) => {
   const countyData = countyFips.map((fips) =>
-    getCountyData(counties, fips, stat, daily)
+    getCountyData(counties, fips, stat, cbsaId, daily)
   );
   const maxNumberOfCounties = countyData.reduce(
     (acc, el) => (acc > el.length ? acc : el.length),
@@ -233,19 +253,19 @@ export const addCBSAStackedBarSlides = (
   metroAreas.forEach((code) => {
     const { area, fipsCodes } = code;
     addCountySlide(ppt, counties, area, [fipsCodes], "confirmed");
-    addCountySlide(ppt, counties, area, [fipsCodes], "confirmed", true);
+    addCountySlide(ppt, counties, area, [fipsCodes], "confirmed", undefined, true);
     addCountySlide(ppt, counties, area, [fipsCodes], "dead");
-    addCountySlide(ppt, counties, area, [fipsCodes], "dead", true);
+    addCountySlide(ppt, counties, area, [fipsCodes], "dead", undefined, true);
   });
 
   addBlankSlideWithTitle(ppt, "Top 25 CBSA ordered by Total Confirmed cases");
 
   CSBAOrderedByStat(counties, "Confirmed", 25, []).forEach((id) => {
     const { name, fips } = cbsaCodes[id];
-    addCountySlide(ppt, counties, name, [fips], "confirmed");
-    addCountySlide(ppt, counties, name, [fips], "confirmed", true);
-    addCountySlide(ppt, counties, name, [fips], "dead");
-    addCountySlide(ppt, counties, name, [fips], "dead", true);
+    addCountySlide(ppt, counties, name, [fips], "confirmed", id);
+    addCountySlide(ppt, counties, name, [fips], "confirmed", id, true);
+    addCountySlide(ppt, counties, name, [fips], "dead", id);
+    addCountySlide(ppt, counties, name, [fips], "dead", id, true);
   });
 };
 

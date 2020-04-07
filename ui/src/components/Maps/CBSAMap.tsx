@@ -113,7 +113,6 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
   const formatData = (): GeoJSON.Feature[] => {
     const geoData = cbsaData;
     const timeSeriesData =state.lastWeekCovidTimeSeries.counties;
-    console.log(timeSeriesData)
     let min = 0;
     let max = 0;
     const formatedGeoJSON = geoData.features.map(f => {
