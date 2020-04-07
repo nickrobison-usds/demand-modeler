@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+	// "gopkg.in/robfig/cron.v2"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -23,6 +24,10 @@ import (
 )
 
 func main() {
+
+	// c := cron.New()
+	// c.AddFunc("@hourly", func() { fmt.Println("Every hour") })
+	// c.Start()
 
 	// Initialize logger
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix

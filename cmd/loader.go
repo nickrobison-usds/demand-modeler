@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/csv"
 	"io"
+	"net/http"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -39,11 +40,33 @@ func NewLoader(ctx context.Context, url string, dataDir string) (*DataLoader, er
 	}, nil
 }
 
+func readCSVFromUrl(url string) ([][]string, error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+	reader := csv.NewReader(resp.Body)
+	reader.Comma = ';'
+	data, err := reader.ReadAll()
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
+
 
 // loads the daikon CSV files
 func (d *DataLoader) Load() error {
 	log.Debug().Msgf("Loading Case data from: %s", d.dataDir)
 
+	url := "https://protect.hhs.gov/foundry-data-proxy/api/dataproxy/datasets/ri.foundry.main.dataset.4dd075cf-4925-41b2-a38e-abdc0735781e/branches/master/csv/?includeColumnNames=true"
+	data, err := readCSVFromUrl(url)
+	if err != nil {
+		return err
+	}
 	file := filepath.Join(d.dataDir, "TimeSeriesInput.csv")
 	log.Debug().Msgf("Loading file: %s", file)
 	f, err := os.Open(file)
