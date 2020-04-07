@@ -6,7 +6,7 @@ export const slides = [
   // Los Angeles & San Bernardino & San Diego
   ["31080", "40140", "41740"],
   // Las Vegas
-  ["29780"],
+  ["29820"],
   // Phoenix
   ["38060"],
   // Denver
