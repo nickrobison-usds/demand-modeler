@@ -84,29 +84,37 @@ func (d *DataLoader) Load() error {
 	return nil
 }
 
-//Truncate removes all data from the Cases table
-func (d *DataLoader) Truncate() error {
-	// Truncate the database
-	log.Warn().Msg("Truncating database")
-	_, err := d.conn.Exec(d.ctx, "TRUNCATE TABLE Cases CASCADE;")
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 //Close shutdowns the loader and closes the connection
 func (d *DataLoader) Close() error {
 	return d.conn.Close(d.ctx)
 }
 
 func (d *DataLoader) insertCase(c *CountyCases) error {
-	_, err := d.conn.Exec(d.ctx, "INSERT INTO Cases(Geoid, "+
-	"Confirmed, "+
-	"Dead, Update) VALUES($1, $2, $3, $4)", c.ID, c.Confirmed, c.Dead, c.Reported)
+	rows, err := d.conn.Query(d.ctx, "SELECT c.geoid FROM Cases as c WHERE c.geoid=$1 AND c.update=$2", c.ID, c.Reported)
 	if err != nil {
-		log.Printf("Error inserting county: %s %s", c.ID, c.Reported)
+		log.Printf("Error selecting county: %s %s", c.ID, c.Reported)
 		return err
+	}
+	var geoid = ""
+	for rows.Next() {
+		var id string
+		rows.Scan(&id)
+		geoid = id
+	}
+	log.Printf("selected county id: %s", geoid)
+	if len(geoid) > 0 {
+		log.Printf("updating county: %s %s", c.ID, c.Reported)
+		_, err := d.conn.Exec(d.ctx, "UPDATE Cases SET confirmed=$1, dead=$2 WHERE geoid=$3 AND update=$4", c.Confirmed, c.Dead, c.ID, c.Reported)
+		if err != nil {
+			log.Printf("Error updating county: %s %s", c.ID, c.Reported)
+			return err
+		}
+	} else {
+		_, err := d.conn.Exec(d.ctx, "INSERT INTO Cases(Geoid, Confirmed, Dead, Update) VALUES($1, $2, $3, $4)", c.ID, c.Confirmed, c.Dead, c.Reported)
+		if err != nil {
+			log.Printf("Error inserting county: %s %s", c.ID, c.Reported)
+			return err
+		}
 	}
 	return nil
 }
