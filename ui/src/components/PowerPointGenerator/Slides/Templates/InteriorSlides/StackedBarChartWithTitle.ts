@@ -9,7 +9,7 @@ export const addStackedBarChartWithTitle = (
   barData: ChartData[],
   axisTitle: string,
   barColors: string[],
-  showLegend: boolean
+  showLegend: boolean,
 ) => {
   const slide = addBlankSlideWithTitle(ppt, title);
 
@@ -64,7 +64,9 @@ export const addMultiStackedBarChartWithTitle = (
   barData: ChartData[][],
   axisTitle: string,
   barColors: string[],
-  showLegend: boolean
+  showLegend: boolean,
+  subtitle?: string[]
+
 ) => {
   if (barData.length === 1) {
     return addStackedBarChartWithTitle(
@@ -78,6 +80,20 @@ export const addMultiStackedBarChartWithTitle = (
   }
 
   const slide = addBlankSlideWithTitle(ppt, title);
+
+  if(subtitle) {
+    slide
+    .addText(subtitle.join(' & '), {
+      fontFace: styles.TITLE_FONT_FACE,
+      color: styles.TEXT_COLOR,
+      charSpacing: 2,
+      fontSize: 12,
+      x: 0,
+      y: 0.8,
+      w: "100%",
+      align: "center"
+    });
+  }
 
   // Max value of all chart values for appropriate scale
   const maxValue = barData.reduce((acc, barChart) => {

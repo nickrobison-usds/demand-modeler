@@ -190,13 +190,11 @@ const getCountyData = (
           );
           let value = el[stat === "confirmed" ? "Confirmed" : "Dead"];
           if (daily && orderedCounties[i - 1]) {
-            value = Math.max(
-              value -
-                orderedCounties[i - 1][
-                  stat === "confirmed" ? "Confirmed" : "Dead"
-                ],
-              0
-            );
+            const previous = orderedCounties[i - 1][
+              stat === "confirmed" ? "Confirmed" : "Dead"
+            ];
+            
+            value = Math.max(value - previous, 0);
           }
           data.values.push(value);
         });
@@ -211,7 +209,7 @@ const getCountyData = (
 const addCountySlide = (
   ppt: pptxgen,
   counties: { [fip: string]: County[] },
-  metroArea: string,
+  metroArea: string | string[],
   countyFips: string[][],
   stat: Stat,
   cbsaId?: string,
@@ -234,15 +232,17 @@ const addCountySlide = (
       fips.length > 1 ? "" : `(${fipsUtils.getCountyName(fips[0])})`
     )
     .filter((el) => el !== "");
+  const title =     `Confirmed ${stat === "confirmed" ? "Cases" : "Deaths"}${
+    daily ? " Daily" : ""
+  }${typeof metroArea === "string" ? " in "+metroArea+" "+firstCounties.join(", "): ""}`
   addMultiStackedBarChartWithTitle(
     ppt,
-    `Confirmed ${stat === "confirmed" ? "Cases" : "Deaths"}${
-      daily ? " Daily" : ""
-    }${metroArea ? "in "+metroArea+" "+firstCounties.join(", "): ""}`,
+    title,
     countyData,
     `Confirmed ${stat === "confirmed" ? "cases" : "deaths"}`.toUpperCase(),
     barColors,
-    countyFips.length > 1
+    countyFips.length > 1,
+    typeof metroArea === "object" ? metroArea : undefined
   );
 };
 
@@ -252,9 +252,9 @@ export const addCBSAStackedBarSlides = (
 ) => {
   metroAreas.forEach((code) => {
     const { area, fipsCodes } = code;
-    addCountySlide(ppt, counties, area, [fipsCodes], "confirmed");
+    addCountySlide(ppt, counties, area, [fipsCodes], "confirmed", undefined);
     addCountySlide(ppt, counties, area, [fipsCodes], "confirmed", undefined, true);
-    addCountySlide(ppt, counties, area, [fipsCodes], "dead");
+    addCountySlide(ppt, counties, area, [fipsCodes], "dead", undefined);
     addCountySlide(ppt, counties, area, [fipsCodes], "dead", undefined, true);
   });
 
@@ -275,9 +275,10 @@ export const addMultiCBSAStackedBarSlides = (
 ) => {
   slides.forEach((fipsAreas) => {
     const fips = fipsAreas.map((code) => cbsaCodes[code].fips);
-    addCountySlide(ppt, counties, "", fips, "confirmed", undefined);
-    addCountySlide(ppt, counties, "", fips, "confirmed", undefined, true);
-    addCountySlide(ppt, counties, "", fips, "dead", undefined);
-    addCountySlide(ppt, counties, "", fips, "dead", undefined, true);
+    const names = fipsAreas.map((code) => cbsaCodes[code].name);
+    addCountySlide(ppt, counties, names, fips, "confirmed", undefined);
+    addCountySlide(ppt, counties, names, fips, "confirmed", undefined, true);
+    addCountySlide(ppt, counties, names, fips, "dead", undefined);
+    addCountySlide(ppt, counties, names, fips, "dead", undefined, true);
   });
 };
