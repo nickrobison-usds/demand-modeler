@@ -150,9 +150,10 @@ const getCountyData = (
         return [];
       }
       return counties[fips];
-    }).sort((a, b) => {
-      return b[0].Confirmed - a[0].Confirmed;
-    });
+    }
+  }).sort((a, b) => {
+    return b[0].Confirmed - a[0].Confirmed;
+  });
 
     const countiesToKeep = cleanCountyFips.filter(el => (el[0].Confirmed / totalConfirmed) >= OTHER_THRESHOLD)
     const otherCounties = cleanCountyFips.filter(el => (el[0].Confirmed / totalConfirmed) < OTHER_THRESHOLD)
@@ -204,8 +205,7 @@ const getCountyData = (
         data.values.shift();
         acc.push(data);
         return acc;
-      }, [] as ChartData[])
-  );
+      }, [] as ChartData[]);
 };
 
 const addCountySlide = (
@@ -238,7 +238,7 @@ const addCountySlide = (
     ppt,
     `Confirmed ${stat === "confirmed" ? "Cases" : "Deaths"}${
       daily ? " Daily" : ""
-    } in ${metroArea} ${firstCounties.join(", ")}`,
+    }${metroArea ? "in "+metroArea+" "+firstCounties.join(", "): ""}`,
     countyData,
     `Confirmed ${stat === "confirmed" ? "cases" : "deaths"}`.toUpperCase(),
     barColors,
@@ -275,9 +275,9 @@ export const addMultiCBSAStackedBarSlides = (
 ) => {
   slides.forEach((fipsAreas) => {
     const fips = fipsAreas.map((code) => cbsaCodes[code].fips);
-    addCountySlide(ppt, counties, "", fips, "confirmed");
-    addCountySlide(ppt, counties, "", fips, "confirmed", true);
-    addCountySlide(ppt, counties, "", fips, "dead");
-    addCountySlide(ppt, counties, "", fips, "dead", true);
+    addCountySlide(ppt, counties, "", fips, "confirmed", undefined);
+    addCountySlide(ppt, counties, "", fips, "confirmed", undefined, true);
+    addCountySlide(ppt, counties, "", fips, "dead", undefined);
+    addCountySlide(ppt, counties, "", fips, "dead", undefined, true);
   });
 };
