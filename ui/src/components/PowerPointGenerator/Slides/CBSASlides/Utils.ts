@@ -22,9 +22,9 @@ export const getCBSAPopulation = (
   const { fips } = cbsaCodes[csba];
   let population = 0;
   fips.forEach(fip => {
-    total += counties[fip] ? fipsUtils.population(counties[fip]) : 0;
+    population += counties[fip] ? fipsUtils.population(counties[fip]) : 0;
   });
-  return total;
+  return population;
 };
 
 export const CSBAOrderedByStat = (
