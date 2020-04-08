@@ -9,6 +9,7 @@ import {
   addMultiCBSAStackedBarSlides,
 } from "./PowerPointGenerator/Slides/CBSASlides/CBSAStackedBars";
 import { addCBSATop25 } from "./PowerPointGenerator/Slides/CBSASlides/Top25CBSALineGraph";
+import { addCBSAPopulationOver500k } from "./PowerPointGenerator/Slides/CBSASlides/CBSAPopulationOver500k";
 
 export interface ReportContainerProps {
   states: State[];
@@ -40,6 +41,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
     addCBSATop25(ppt, counties);
     addCBSAStackedBarSlides(ppt, counties);
     addMultiCBSAStackedBarSlides(ppt, counties);
+    addCBSAPopulationOver500k(ppt, counties);
 
     console.debug("Writing PPTX");
     const done = await ppt.writeFile(
