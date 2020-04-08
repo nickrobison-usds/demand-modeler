@@ -1,5 +1,5 @@
 import { CovidDateData } from "./AppStore";
-import { getStateName, getCountyName } from "../utils/fips";
+import { getStateName, getCountyName, getStateAbr } from "../utils/fips";
 
 const shortDate = (date: Date) => date.getMonth() + 1 + "/" + date.getDate();
 
@@ -40,7 +40,9 @@ const casesMustIncrease = (covidDateData: CovidDateData) => {
       if (tomorrow.Confirmed < today.Confirmed) {
         const countyName = getCountyName(fips);
         messages.push(
-          `County ${countyName} (${fips}) cumulative confirmed cases decreased from ${shortDate(
+          `County ${countyName}, ${getStateAbr(
+            fips
+          )} cumulative confirmed cases decreased from ${shortDate(
             today.Reported
           )} to ${shortDate(tomorrow.Reported)}.`
         );
@@ -48,7 +50,9 @@ const casesMustIncrease = (covidDateData: CovidDateData) => {
       if (tomorrow.Dead < today.Dead) {
         const countyName = getCountyName(fips);
         messages.push(
-          `County ${countyName} (${fips}) cumulative deaths decreased from ${shortDate(
+          `County ${countyName}, ${getStateAbr(
+            fips
+          )} cumulative deaths decreased from ${shortDate(
             today.Reported
           )} to ${shortDate(tomorrow.Reported)}.`
         );
@@ -89,7 +93,9 @@ const casesMustPositive = (covidDateData: CovidDateData) => {
       if (today.Confirmed < 0) {
         const countyName = getCountyName(fips);
         messages.push(
-          `County ${countyName} (${fips}) cumulative confirmed cases is a negative number on ${shortDate(
+          `County ${countyName}, ${getStateAbr(
+            fips
+          )} cumulative confirmed cases is a negative number on ${shortDate(
             today.Reported
           )}.`
         );
@@ -97,7 +103,9 @@ const casesMustPositive = (covidDateData: CovidDateData) => {
       if (today.Dead < 0) {
         const countyName = getCountyName(fips);
         messages.push(
-          `County ${countyName} (${fips}) cumulative deaths is a negative number on ${shortDate(
+          `County ${countyName}, ${getStateAbr(
+            fips
+          )} cumulative deaths is a negative number on ${shortDate(
             today.Reported
           )}.`
         );
