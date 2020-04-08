@@ -1,4 +1,4 @@
-import { CovidDateData } from "./AppStore";
+import { CovidDateData, County } from "./AppStore";
 import { getStateName, getCountyName, getStateAbr } from "../utils/fips";
 
 type RuleResult = {
@@ -213,8 +213,61 @@ const abnormalCaseChange = (covidDateData: CovidDateData): RuleResult => {
   };
 };
 
+const suspiciousCountiesEqual = (covidDateData: CovidDateData): RuleResult => {
+  const minCases = 100;
+  const minDeaths = 10;
+  const issues: string[] = [];
+  const equalConfirmations: {[key: string]: County[]}= {}
+  const equalDeaths: {[key: string]: County[]}= {}
+
+  Object.values(covidDateData.counties).forEach(countyData => {
+    countyData.forEach((county) => {
+      if (county.Confirmed >= minCases) {
+        const confirmedkey = `${county.Confirmed}-${county.Reported.getTime()}-${getStateAbr(county.ID)}`
+        if (equalConfirmations[confirmedkey]) {
+          equalConfirmations[confirmedkey].push(county)
+        } else {
+          equalConfirmations[confirmedkey] = [county]
+        }
+      }
+
+      if (county.Dead >= minDeaths) {
+        const deathkey = `${county.Dead}-${county.Reported.getTime()}-${getStateAbr(county.ID)}`
+        if (equalDeaths[deathkey]) {
+          equalDeaths[deathkey].push(county)
+        } else {
+          equalDeaths[deathkey] = [county]
+        }
+      }
+    });
+  });
+
+  Object.values(equalConfirmations).sort((a,b)=> {
+    const date = b[0].Reported.getTime() - a[0].Reported.getTime();
+    return date === 0 ? b[0].Confirmed - a[0].Confirmed: date;
+  }).forEach((equalCounties) => {
+    if(equalCounties.length < 2) {
+      return;
+    }
+    issues.push(`Counties have ${equalCounties[0].Confirmed} cases on ${shortDate(equalCounties[0].Reported)} ` + equalCounties.map(c => `${getCountyName(c.ID)}, ${getStateAbr(c.ID)}`).join(', '))
+  });
+
+  // Object.values(equalDeaths).forEach((equalCounties) => {
+  //   if(equalCounties.length < 2) {
+  //     return;
+  //   }
+  //   issues.push(`Counties have ${equalCounties[0].Dead} deaths on ${shortDate(equalCounties[0].Reported)} ` + equalCounties.map(c => `${getCountyName(c.ID)}, ${getStateAbr(c.ID)}`).join(', '))
+  // });
+
+
+  return {
+    rule: "Counties with the same value on the same day",
+    issues,
+  };
+}
+
 export const getDataIssues = (covidDateData: CovidDateData): RuleResult[] => {
-  const rulesets = [abnormalCaseChange, casesMustIncrease, casesMustPositive];
+  const rulesets = [suspiciousCountiesEqual, abnormalCaseChange, casesMustIncrease, casesMustPositive];
   const issues = rulesets.reduce((acc, rules) => {
     const result = rules(covidDateData);
     if (result.issues.length === 0) return acc;
