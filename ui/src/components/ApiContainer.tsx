@@ -4,7 +4,6 @@ import { getCountyCases, getStateCases } from "../api";
 
 const loadData = async () => {
   const start = new Date("2/29/2020");
-  // const start = new Date("4/1/2020");
 
   const loadStateData = async () => {
     const date = new Date(start);

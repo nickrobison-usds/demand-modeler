@@ -3,7 +3,7 @@ import { CovidDateData } from "../../../../app/AppStore";
 import { CSBAOrderedByStat, CBSAOrderedByPopulation } from "./Utils";
 import { addLineChartWithLegend } from "../Templates/InteriorSlides/LineChartWithTitle";
 import { cbsaCodes } from "./cbsaCodes";
-import { colors, accumulateNYCData } from "./Top25CBSALineGraph";
+import { colors } from "./Top25CBSALineGraph";
 import { isSameDay } from "../../../../utils/DateUtils";
 
 const getChartData = (
@@ -35,22 +35,8 @@ const getChartData = (
       // let population = 0;
       fips.forEach((fip) => {
         if (counties[fip] !== undefined && counties[fip][index] !== undefined) {
-          if (
-            fip === "36061" &&
-            !isSameDay(counties[fip][index].Reported, today)
-          ) {
-            const nyc_combined = ["36061", "36005", "36081", "36047", "36085"];
-            confirmed += accumulateNYCData(
-              counties,
-              nyc_combined,
-              index,
-              "Confirmed"
-            );
-            // nyc_combined.forEach(f => {population += fipsUtils.getPopulation(f)})
-          } else {
             confirmed += counties[fip][index].Confirmed;
             // population += fipsUtils.getPopulation(fip)
-          }
         }
       });
       state.labels.push(c.Reported.getMonth() + 1 + "/" + c.Reported.getDate());
@@ -61,8 +47,6 @@ const getChartData = (
     // The first day is only used to calculate diffs. Remove it.
     state.labels.reverse().shift();
     state.values.reverse().shift();
-    state.labels.reverse();
-    state.values.reverse();
     acc.push(state);
     return acc;
   }, [] as ChartData[]);

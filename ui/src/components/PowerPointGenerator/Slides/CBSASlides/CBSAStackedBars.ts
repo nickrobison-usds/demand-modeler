@@ -127,30 +127,10 @@ const getCountyData = (
   const totalConfirmed = cbsaId ? getCSBATotal(counties, cbsaId, "Confirmed") : 1;
   const cleanCountyFips = [...countyFips]
   .map(fips => {
-    if (fips === "36061") {
-      const nyc_combined = ["36061", "36005", "36081", "36047", "36085"];
-      return counties[fips].map((county, index) => {
-        var today = new Date();
-        if (isSameDay(county.Reported, today)) {
-          return county;
-        }
-        return {
-          ...county,
-          Dead: accumulateNYCData(counties, nyc_combined, index, "Dead"),
-          Confirmed: accumulateNYCData(
-            counties,
-            nyc_combined,
-            index,
-            "Confirmed"
-          )
-        };
-      });
-    } else {
       if (counties[fips] === undefined) {
         return [];
       }
       return counties[fips];
-    }
   }).sort((a, b) => {
     return b[0].Confirmed - a[0].Confirmed;
   });
