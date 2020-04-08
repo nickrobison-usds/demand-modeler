@@ -9,6 +9,7 @@ import "./Report.scss";
 import { dateTimeString } from "../utils/DateUtils";
 import * as fips from "../utils/fips";
 import { ReportContainer } from "../components/ReportContainer";
+import { getDataIssues } from "../app/dataValidation";
 
 export const Report: React.FC<{}> = () => {
   const pagebreak = (lastUpdated: Date | undefined) => {
@@ -39,11 +40,8 @@ export const Report: React.FC<{}> = () => {
   const maps = (lastUpdated: any) => {
     return (
       <>
-      <CBSAMap
-        dataType={"Total"}
-        title={"Confirmed Cases"}
-      />
-      {lastUpdated && pagebreak(lastUpdated)}
+        <CBSAMap dataType={"Total"} title={"Confirmed Cases"} />
+        {lastUpdated && pagebreak(lastUpdated)}
       </>
     );
     // return (
@@ -164,6 +162,8 @@ export const Report: React.FC<{}> = () => {
   return (
     <AppContext.Consumer>
       {({ state }) => {
+        const dataIssues = getDataIssues(state.historicalCovidTimeSeries);
+
         let lastUpdated: Date | undefined = undefined;
         Object.values(state.lastWeekCovidTimeSeries.states)
           .flat()
@@ -175,10 +175,10 @@ export const Report: React.FC<{}> = () => {
 
         const states = Object.keys(
           state.lastWeekCovidTimeSeries.states
-        ).flatMap(k => state.lastWeekCovidTimeSeries.states[k]);
+        ).flatMap((k) => state.lastWeekCovidTimeSeries.states[k]);
         const stateIDs = new Set();
         const dedupedStates: State[] = [];
-        states.forEach(s => {
+        states.forEach((s) => {
           const key = `${fips.getStateName(s.ID)}`;
           if (!stateIDs.has(key)) {
             dedupedStates.push(s);
@@ -186,7 +186,7 @@ export const Report: React.FC<{}> = () => {
           }
         });
         const top10States = [...dedupedStates]
-          .filter(s =>
+          .filter((s) =>
             [
               "New York",
               "New Jersey",
@@ -197,7 +197,7 @@ export const Report: React.FC<{}> = () => {
               "Florida",
               "Louisiana",
               "Massachusetts",
-              "Texas"
+              "Texas",
             ].includes(fips.getStateName(s.ID))
           )
           .sort((s1, s2) => s2.Confirmed - s1.Confirmed);
@@ -210,6 +210,16 @@ export const Report: React.FC<{}> = () => {
             historicalTimeSeries={state.historicalCovidTimeSeries}
           >
             <div className="report grid-container" style={{ marginLeft: 0 }}>
+              {dataIssues.length > 0 && (
+                <>
+                  <h1>Data issues</h1>
+                  <ol>
+                    {dataIssues.map((issue) => (
+                      <li className={issue}>{issue}</li>
+                    ))}
+                  </ol>
+                </>
+              )}
               {maps(lastUpdated)}
               {/* {top10States.map(s => (
                 <>
