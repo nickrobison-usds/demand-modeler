@@ -213,11 +213,18 @@ export const Report: React.FC<{}> = () => {
               {dataIssues.length > 0 && (
                 <>
                   <h1>Data issues</h1>
-                  <ol>
-                    {dataIssues.map((issue) => (
-                      <li className={issue}>{issue}</li>
-                    ))}
-                  </ol>
+                  {dataIssues.map((result) => {
+                    return (
+                      <>
+                        <h2>{result.rule}</h2>
+                        <ol>
+                          {result.issues.map((issue) => (
+                            <li className={issue}>{issue}</li>
+                          ))}
+                        </ol>
+                      </>
+                    );
+                  })}
                 </>
               )}
               {maps(lastUpdated)}
