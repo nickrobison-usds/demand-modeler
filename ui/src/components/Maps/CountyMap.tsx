@@ -273,7 +273,6 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
                   const now = region[0][selectedMetric];
                   const change = now - prev;
                   metric = round((change / prev) * 100);
-                  console.log()
                 }
               } else {
                 metric = 0;

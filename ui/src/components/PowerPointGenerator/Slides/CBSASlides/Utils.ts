@@ -19,6 +19,25 @@ export const getCSBATotal = (
   return total;
 };
 
+export const getCSBATotalPerPopulation = (
+  counties: { [fip: string]: County[] },
+  csba: string,
+  stat: "Confirmed" | "Dead",
+  per: number = 100000
+) => {
+  const { fips } = cbsaCodes[csba];
+  let total = 0;
+  let population = 0;
+  fips.forEach((fip) => {
+    if (counties[fip]) {
+      total += getLatestCounty(counties[fip])[stat];
+      population += fipsUtils.getPopulation(fip)
+    }
+  });
+
+  return total / (population / per);
+};
+
 export const getCBSAPopulation = (
   counties: { [fip: string]: County[] },
   csba: string
