@@ -1,0 +1,12 @@
+{
+  "name": "fearless-dreamer-converter",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "export": "node cnn-json-to-csv.js"
+  },
+  "dependencies": {
+    "request": "^2.88.2",
+    "jsonexport": "^2.4.1"
+  }
+}
