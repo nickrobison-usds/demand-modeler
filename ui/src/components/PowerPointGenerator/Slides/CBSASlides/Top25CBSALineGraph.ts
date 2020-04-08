@@ -35,22 +35,6 @@ export const colors = [
   "FFC497",
 ];
 
-export const accumulateNYCData = (
-  counties: { [fip: string]: County[] },
-  countyFips: string[],
-  index: number,
-  attribute: "Dead" | "Confirmed"
-) => {
-  let total = 0;
-  countyFips.forEach((fip) => {
-    const entry = counties[fip][index];
-    if (entry) {
-      total += counties[fip][index][attribute];
-    }
-  });
-  return total;
-};
-
 const getChartData = (
   counties: { [fip: string]: County[] },
   exclude: string[]
@@ -72,28 +56,33 @@ const getChartData = (
       // let population = 0;
       fips.forEach((fip) => {
         if (counties[fip] !== undefined && counties[fip][index] !== undefined) {
-          if (
-            fip === "36061" &&
-            !isSameDay(counties[fip][index].Reported, today)
-          ) {
-            const nyc_combined = ["36061", "36005", "36081", "36047", "36085"];
-            confirmed += accumulateNYCData(
-              counties,
-              nyc_combined,
-              index,
-              "Confirmed"
-            );
-            // nyc_combined.forEach(f => {population += fipsUtils.getPopulation(f)})
-          } else {
             confirmed += counties[fip][index].Confirmed;
             // population += fipsUtils.getPopulation(fip)
-          }
         }
       });
       state.labels.push(c.Reported.getMonth() + 1 + "/" + c.Reported.getDate());
       // state.values.push(confirmed/ (population / 100000));
+      if (id === "41180" && index === 0) {
+      console.log("correct st louis", confirmed)
+
+        confirmed = 2212
+      }
+      
+      if (id === "35620" && index === 0) {
+        console.log("correct NYC", confirmed)
+        confirmed = 173944
+      }
+      if (id === "47900" && index === 0) {
+        console.log("correct DC", confirmed)
+        confirmed = 4897
+      }
+      if (id === "12580" && index === 0) {
+        console.log("correct baltimore", confirmed)
+        confirmed = 1950
+      }
       state.values.push(confirmed);
     });
+
 
     // The first day is only used to calculate diffs. Remove it.
     state.labels.reverse().shift();

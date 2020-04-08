@@ -44,7 +44,7 @@ func NewLoader(ctx context.Context, url string, dataDir string) (*DataLoader, er
 func (d *DataLoader) Load() error {
 	log.Debug().Msgf("Loading Case data from: %s", d.dataDir)
 
-	file := filepath.Join(d.dataDir, "TimeSeriesInput.csv")
+	file := filepath.Join(d.dataDir, "FIPSData.csv")
 	log.Debug().Msgf("Loading file: %s", file)
 	f, err := os.Open(file)
 	if err != nil {
