@@ -1,66 +1,29 @@
 import pptxgen from "pptxgenjs";
-import { County } from "../../../../app/AppStore";
+import { CovidDateData } from "../../../../app/AppStore";
+import { CSBAOrderedByStat, CBSAOrderedByPopulation } from "./Utils";
 import { addLineChartWithLegend } from "../Templates/InteriorSlides/LineChartWithTitle";
 import { cbsaCodes } from "./cbsaCodes";
-import { CSBAOrderedByStat } from "./Utils";
+import { colors, accumulateNYCData } from "./Top25CBSALineGraph";
 import { isSameDay } from "../../../../utils/DateUtils";
-// import * as fipsUtils from "../../../../utils/fips";
-
-export const colors = [
-  "69ABDD",
-  "EF8D3D",
-  "B3B3B3",
-  "FFD122",
-  "326AB6",
-  "81BB54",
-  "206391",
-  "9E4D00",
-  "646464",
-  "987900",
-  "2D4B75",
-  "4D6D2B",
-  "8CBFE3",
-  "F8A869",
-  "C7C7C7",
-  "FEDD4A",
-  "7094CC",
-  "A0D175",
-  "3B87C8",
-  "D0670A",
-  "8A8A8A",
-  "D2A900",
-  "3D63A5",
-  "588732",
-  "AED4ED",
-  "FFC497",
-];
-
-export const accumulateNYCData = (
-  counties: { [fip: string]: County[] },
-  countyFips: string[],
-  index: number,
-  attribute: "Dead" | "Confirmed"
-) => {
-  let total = 0;
-  countyFips.forEach((fip) => {
-    const entry = counties[fip][index];
-    if (entry) {
-      total += counties[fip][index][attribute];
-    }
-  });
-  return total;
-};
 
 const getChartData = (
-  counties: { [fip: string]: County[] },
+  counties: CovidDateData["counties"],
   exclude: string[]
 ) => {
   const today = new Date();
-  const top25 = CSBAOrderedByStat(counties, "Confirmed", 25, exclude);
+
+  const byPopulation = CBSAOrderedByPopulation(
+    counties,
+    "Confirmed",
+    1000,
+    500000,
+    exclude
+  );
+
   const lineColors: { [s: string]: string } = {};
-  const lineData = top25.reduce((acc, id, i) => {
+  const lineData = byPopulation.reduce((acc, id, i) => {
     const { name, fips } = cbsaCodes[id];
-    lineColors[name] = colors[i + exclude.length];
+    lineColors[name] = colors[i % (colors.length - 1)];
     const state: ChartData = {
       name,
       labels: [],
@@ -107,30 +70,36 @@ const getChartData = (
   };
 };
 
-export const addCBSATop25 = (
+export const addCBSAPopulationOver500k = (
   ppt: pptxgen,
-  counties: { [fip: string]: County[] }
+  counties: CovidDateData["counties"]
 ) => {
-  // with NY
-  const withNY = getChartData(counties, []);
-  console.log(withNY);
+  const top25 = CSBAOrderedByStat(counties, "Confirmed", 25, []);
+  // Exclude top 25
+  const withoutTop25 = () => getChartData(counties, top25);
+  // All together
+  const allTogether = withoutTop25();
   addLineChartWithLegend(
     ppt,
-    `Cumulative cases: Top 25 CBSA`,
-    withNY.lineData,
-    withNY.lineColors,
-    "Confirmed cases"
+    `Cumulative cases: Most Populous CBSA, Excluding Top 25 CBSA`,
+    allTogether.lineData,
+    allTogether.lineColors,
+    "Confirmed cases",
+    25
   );
-
-  // without NY
-  const withoutNY = getChartData(counties, ["35620"]);
-  console.log(withoutNY);
-
-  addLineChartWithLegend(
-    ppt,
-    `Cumulative cases: Top 25 CBSA without NYC`,
-    withoutNY.lineData,
-    withoutNY.lineColors,
-    "Confirmed cases"
-  );
+  // 25 at a time
+  const numberOfCharts = Math.ceil(allTogether.lineData.length / 25);
+  for (let i = 0; i < numberOfCharts; i++) {
+    const start = i * 25;
+    const end = (i + 1) * 25;
+    const chartData = withoutTop25();
+    addLineChartWithLegend(
+      ppt,
+      `Cumulative cases: Most Populous CBSA, Excluding Top 25 CBSA ${start +
+        1} - ${Math.min(end, chartData.lineData.length)}`,
+      chartData.lineData.slice(start, end),
+      chartData.lineColors,
+      "Confirmed cases"
+    );
+  }
 };
