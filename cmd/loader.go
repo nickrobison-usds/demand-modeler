@@ -1,13 +1,10 @@
 package cmd
 
 import (
-	"bufio"
 	"context"
 	"encoding/csv"
-	"io"
 	"net/http"
 	"os"
-	"path/filepath"
 	"regexp"
 
 	"github.com/jackc/pgx/v4"
@@ -41,23 +38,26 @@ func NewLoader(ctx context.Context, url string, dataDir string) (*DataLoader, er
 }
 
 func getTimeseriesData() ([][]string, error) {
-	url := "https://protect.hhs.gov/foundry-data-proxy/api/dataproxy/datasets/ri.foundry.main.dataset.4dd075cf-4925-41b2-a38e-abdc0735781e/branches/master/csv/?includeColumnNames=true"
+	url := "https://protect.hhs.gov/foundry-data-proxy/api/dataproxy/datasets/ri.foundry.main.dataset.4dd075cf-4925-41b2-a38e-abdc0735781e/branches/master/csv/?includeColumnNames=false"
 
 	client := &http.Client{}
 	req, _ := http.NewRequest("GET", url, nil)
-	req.Header.Set("name", os.Getenv("DAIKON_TOKEN"))
+	req.Header.Set("authorization", "Bearer " + os.Getenv("DAIKON_TOKEN"))
 
 	resp, err := client.Do(req)
 	
 	if err != nil {
+		log.Printf("client error %", resp.StatusCode)
 		return nil, err
 	}
 
 	defer resp.Body.Close()
+
 	reader := csv.NewReader(resp.Body)
-	reader.Comma = ';'
+	reader.Comma = ','
 	data, err := reader.ReadAll()
 	if err != nil {
+		log.Printf("Error loading data %", resp.Body)
 		return nil, err
 	}
 
@@ -69,35 +69,13 @@ func getTimeseriesData() ([][]string, error) {
 func (d *DataLoader) Load() error {
 	log.Debug().Msgf("Loading Case data from: %s", d.dataDir)
 
-	data, err := readCSVFromUrl(url)
-	if err != nil {
-		return err
-	}
-	file := filepath.Join(d.dataDir, "TimeSeriesInput.csv")
-	log.Debug().Msgf("Loading file: %s", file)
-	f, err := os.Open(file)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
 
-	// Skip the row header
-	row1, err := bufio.NewReader(f).ReadSlice('\n')
-	if err != nil {
-		return err
-	}
-	_, err = f.Seek(int64(len(row1)), io.SeekStart)
+	data, err := getTimeseriesData()
 	if err != nil {
 		return err
 	}
 
-	// Read remaining rows
-	r := csv.NewReader(f)
-	rows, err := r.ReadAll()
-	if err != nil {
-		return err
-	}
-	for _, row := range rows {
+	for _, row := range data {
 		c, err := CountyCaseFromDaikon(row)
 		if err != nil {
 			return err
@@ -130,18 +108,16 @@ func (d *DataLoader) insertCase(c *CountyCases) error {
 		rows.Scan(&id)
 		geoid = id
 	}
-	log.Printf("selected county id: %s", geoid)
 	if len(geoid) > 0 {
-		log.Printf("updating county: %s %s", c.ID, c.Reported)
 		_, err := d.conn.Exec(d.ctx, "UPDATE Cases SET confirmed=$1, dead=$2 WHERE geoid=$3 AND update=$4", c.Confirmed, c.Dead, c.ID, c.Reported)
 		if err != nil {
-			log.Printf("Error updating county: %s %s", c.ID, c.Reported)
+			log.Printf("Error updating county: %s %s %s %s", c.Confirmed, c.Dead, c.ID, c.Reported)
 			return err
 		}
 	} else {
 		_, err := d.conn.Exec(d.ctx, "INSERT INTO Cases(Geoid, Confirmed, Dead, Update) VALUES($1, $2, $3, $4)", c.ID, c.Confirmed, c.Dead, c.Reported)
 		if err != nil {
-			log.Printf("Error inserting county: %s %s", c.ID, c.Reported)
+			log.Printf("Error inserting county: %s %s %s %s", c.ID, c.Confirmed, c.Dead, c.Reported)
 			return err
 		}
 	}

@@ -21,6 +21,12 @@
   docker-compose up postgres
   ```
 
+1. create `.env.local`
+
+```
+DAIKON_TOKEN=YOUR_TOKEN_HERE
+```
+
 1. start the API
 
   ```bash
