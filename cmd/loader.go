@@ -40,8 +40,15 @@ func NewLoader(ctx context.Context, url string, dataDir string) (*DataLoader, er
 	}, nil
 }
 
-func readCSVFromUrl(url string) ([][]string, error) {
-	resp, err := http.Get(url)
+func getTimeseriesData() ([][]string, error) {
+	url := "https://protect.hhs.gov/foundry-data-proxy/api/dataproxy/datasets/ri.foundry.main.dataset.4dd075cf-4925-41b2-a38e-abdc0735781e/branches/master/csv/?includeColumnNames=true"
+
+	client := &http.Client{}
+	req, _ := http.NewRequest("GET", url, nil)
+	req.Header.Set("name", os.Getenv("DAIKON_TOKEN"))
+
+	resp, err := client.Do(req)
+	
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +69,6 @@ func readCSVFromUrl(url string) ([][]string, error) {
 func (d *DataLoader) Load() error {
 	log.Debug().Msgf("Loading Case data from: %s", d.dataDir)
 
-	url := "https://protect.hhs.gov/foundry-data-proxy/api/dataproxy/datasets/ri.foundry.main.dataset.4dd075cf-4925-41b2-a38e-abdc0735781e/branches/master/csv/?includeColumnNames=true"
 	data, err := readCSVFromUrl(url)
 	if err != nil {
 		return err
