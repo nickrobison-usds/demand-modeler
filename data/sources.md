@@ -15,6 +15,9 @@
 
 ## County Level
 
+### NYT
+https://github.com/nytimes/covid-19-data
+
 ### COVID Tracking
 
 links to state data
