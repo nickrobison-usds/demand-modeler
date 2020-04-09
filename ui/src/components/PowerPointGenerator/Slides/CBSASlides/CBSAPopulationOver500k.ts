@@ -9,6 +9,7 @@ import { addLineChartWithLegend } from "../Templates/InteriorSlides/LineChartWit
 import { cbsaCodes } from "./cbsaCodes";
 import { colors } from "./Top25CBSALineGraph";
 import * as fipsUtils from "../../../../utils/fips";
+import { addBlankSlideWithTitle } from "../Templates/InteriorSlides/BlankWithTitle";
 
 const getChartData = (
   counties: CovidDateData["counties"],
@@ -69,6 +70,8 @@ export const addCBSAPopulationOver500k = (
   ppt: pptxgen,
   counties: CovidDateData["counties"]
 ) => {
+  addBlankSlideWithTitle(ppt, "CBSA's > 500k people excluding top 25 by confirmed cases");
+
   const top25 = CSBAOrderedByStat(counties, "Confirmed", 25, []);
   // Exclude top 25
   const withoutTop25 = () => getChartData(counties, top25);

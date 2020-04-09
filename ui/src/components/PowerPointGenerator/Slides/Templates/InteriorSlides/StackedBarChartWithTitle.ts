@@ -23,12 +23,12 @@ export const addStackedBarChartWithTitle = (
         h: 0.09,
         x: 8.6,
         y: 1.41 + 0.14 * Math.floor(i),
-        fill: { color },
+        fill: { color }
       });
       slide.addText(el.name, {
         x: 8.8,
         y: 1.3 + 0.14 * Math.floor(i),
-        fontSize: 8,
+        fontSize: 8
       });
     });
     slide.addShape(ppt.ShapeType.line, {
@@ -37,7 +37,7 @@ export const addStackedBarChartWithTitle = (
       w: 0,
       h: 0.14 * Math.floor(barData.length),
       line: styles.AXIS_COLOR,
-      lineSize: 1,
+      lineSize: 1
     });
   }
 
@@ -66,7 +66,6 @@ export const addMultiStackedBarChartWithTitle = (
   barColors: string[],
   showLegend: boolean,
   subtitle?: string[]
-
 ) => {
   if (barData.length === 1) {
     return addStackedBarChartWithTitle(
@@ -81,24 +80,10 @@ export const addMultiStackedBarChartWithTitle = (
 
   const slide = addBlankSlideWithTitle(ppt, title);
 
-  if(subtitle) {
-    slide
-    .addText(subtitle.join(' & '), {
-      fontFace: styles.TITLE_FONT_FACE,
-      color: styles.TEXT_COLOR,
-      charSpacing: 2,
-      fontSize: 12,
-      x: 0,
-      y: 0.8,
-      w: "100%",
-      align: "center"
-    });
-  }
-
   // Max value of all chart values for appropriate scale
   const maxValue = barData.reduce((acc, barChart) => {
     const dailyTotals: number[] = [];
-    barChart.forEach((el) => {
+    barChart.forEach(el => {
       el.values.forEach((val, i) => {
         dailyTotals[i] = (dailyTotals[i] || 0) + val;
       });
@@ -124,12 +109,15 @@ export const addMultiStackedBarChartWithTitle = (
       barGapWidthPct: 10,
       dataLabelFontFace: styles.BODY_FONT_FACE,
       dataLabelColor: "EEEEEE",
-      chartColors: barColors,
+      chartColors: chartData.length === 1 ? [barColors[0]] : barColors,
       legendFontFace: styles.BODY_FONT_FACE,
       valGridLine: { style: "solid", color: styles.AXIS_COLOR },
       dataLabelFormatCode: "0;;;",
       valAxisMaxVal: Math.ceil(maxValue / scale) * scale,
       valAxisMinVal: 0,
+      title: subtitle ? subtitle[j] : undefined,
+      titleFontSize: 12,
+      showTitle: true
     });
 
     if (showLegend) {
@@ -141,13 +129,13 @@ export const addMultiStackedBarChartWithTitle = (
           w: 0.18,
           h: 0.09,
           x: barX + 0.8,
-          y: 1.41 + 0.14 * Math.floor(i),
-          fill: { color },
+          y: 1.41 + 0.14 * Math.floor(i) + (subtitle ? 0.3 : 0),
+          fill: { color }
         });
         slide.addText(el.name, {
           x: barX + 0.95,
-          y: 1.3 + 0.14 * Math.floor(i),
-          fontSize: 8,
+          y: 1.3 + 0.14 * Math.floor(i) + (subtitle ? 0.3 : 0),
+          fontSize: 8
         });
       });
     }
