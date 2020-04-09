@@ -38,7 +38,7 @@ export const StateBar = (props: Props) => {
   if (props.stateCount && props.state) {
     return null;
   }
-  const dataMode = props.dataMode || "top10";
+  const dataMode = "top10";
 
   const colors =
     props.stat === "confirmed"
@@ -68,6 +68,7 @@ export const StateBar = (props: Props) => {
           props.stat === "confirmed" ? "confirmed cases" : "deaths"
         }`;
 
+
   const countyData = props.state
     ? timeSeries.getCountyDataForState(props.timeSeries, props.state)
     : timeSeries.getCountyData(props.timeSeries);
@@ -75,13 +76,14 @@ export const StateBar = (props: Props) => {
   if (props.meta) {
     maxCases =
       props.stat === "confirmed"
-        ? props.meta.maxConfirmedCounty
-        : props.meta.maxDeadCounty;
+        ? 10000
+        : 500;
   }
   dates = [
     ...new Set(countyData.map(({ Reported }) => monthDay(Reported)))
   ].sort();
   const popMap: { [ID: string]: number } = {};
+
   const counties = countyData.reduce((acc, el) => {
     popMap[el.ID] = population[el.ID];
     if (!acc[el.ID]) acc[el.ID] = {};
@@ -107,9 +109,11 @@ export const StateBar = (props: Props) => {
       );
     });
 
-  if (dataMode === "over20Cases") {
-    data = data.filter(el => el[dates[dates.length - 1]] >= 20);
-  }
+
+
+  // if (dataMode === "over20Cases") {
+  //   data = data.filter(el => el[dates[dates.length - 1]] >= 20);
+  // }
 
   let dedupedData: { [k: string]: string | number }[] = [];
   data.forEach(e => {
@@ -163,7 +167,7 @@ export const StateBar = (props: Props) => {
     });
     return obj;
   });
-
+  console.log(finalData)
   return (
     <>
       <h3>{props.title ? props.title : title}</h3>

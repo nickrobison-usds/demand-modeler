@@ -2,7 +2,7 @@ import React from "react";
 import { AppContext, State } from "../app/AppStore";
 // import { StateMixedBar } from "../components/Charts/StateMixedBar";
 // import { Top10Counties } from "../components/Charts/Top10Counties";
-// import { StateBar } from "../components/Charts/StateBar";
+import { StateBar } from "../components/Charts/StateBar";
 // import { MixedBar } from "../components/Charts/MixedBar";
 import CBSAMap from "../components/Maps/CBSAMap";
 import "./Report.scss";
@@ -187,18 +187,7 @@ export const Report: React.FC<{}> = () => {
         });
         const top10States = [...dedupedStates]
           .filter((s) =>
-            [
-              "New York",
-              "New Jersey",
-              "Washington",
-              "California",
-              "Michigan",
-              "Illinois",
-              "Florida",
-              "Louisiana",
-              "Massachusetts",
-              "Texas",
-            ].includes(fips.getStateName(s.ID))
+            ["Texas"].includes(fips.getStateName(s.ID))
           )
           .sort((s1, s2) => s2.Confirmed - s1.Confirmed);
         // .slice(0, 10);
@@ -210,7 +199,7 @@ export const Report: React.FC<{}> = () => {
             historicalTimeSeries={state.historicalCovidTimeSeries}
           >
             <div className="report grid-container" style={{ marginLeft: 0 }}>
-              {dataIssues.length > 0 && (
+              {/* {dataIssues.length > 0 && (
                 <>
                   <h1>Data issues</h1>
                   {dataIssues.map((result) => {
@@ -226,9 +215,9 @@ export const Report: React.FC<{}> = () => {
                     );
                   })}
                 </>
-              )}
-              {maps(lastUpdated)}
-              {/* {top10States.map(s => (
+              )} */}
+              {/* {maps(lastUpdated)} */}
+              {top10States.map(s => (
                 <>
                   <StateBar
                     dataMode="over20Cases"
@@ -274,7 +263,7 @@ export const Report: React.FC<{}> = () => {
                   {lastUpdated && pagebreak(lastUpdated)}
                 </>
               ))}
-              <Top10Counties
+              {/*<Top10Counties
                 timeSeries={state.lastWeekCovidTimeSeries}
                 stat="confirmed"
                 reportView
