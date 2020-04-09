@@ -223,10 +223,10 @@ const timeseriesMissingDay = (covidDateData: CovidDateData): RuleResult => {
   };
 };
 
-const countyFIPsMissing = (covidDateData: CovidDateData): RuleResult => {
+const countyFIPSMissing = (covidDateData: CovidDateData): RuleResult => {
   const issues: string[][] = [];
   const knownFIPS = Object.keys(names).filter(fip => fip.substring(2, 5) !== '000');
-  const receivedFIPS = Object.values(covidDateData.counties).map(c => c[0].ID);
+  const receivedFIPS = Object.keys(covidDateData.counties);
   const missingFIPS =  knownFIPS.filter(f => !receivedFIPS.includes(f) );
 
   missingFIPS.forEach(fip => {
@@ -249,6 +249,32 @@ const countyFIPsMissing = (covidDateData: CovidDateData): RuleResult => {
   };
 };
 
+const InvalidFIPS = (covidDateData: CovidDateData): RuleResult => {
+  const issues: string[][] = [];
+  const knownFIPS = Object.keys(names).filter(fip => fip.substring(2, 5) !== '000');
+  const receivedFIPS = Object.keys(covidDateData.counties);
+  const invalidFIPS = receivedFIPS.filter(f => !knownFIPS.includes(f) );
+
+  invalidFIPS.forEach(fip => {
+    issues.push([
+      `${fip}`,
+      `${getCountyName(fip)}, ${getStateAbr(fip)}`,
+      `${getPopulation(fip)}`
+    ])
+  });
+
+  issues.sort((a,b) => {
+    const population = parseInt(b[2]) - parseInt(a[2])
+    return population === 0 ? parseInt(b[0]) - parseInt(a[0]) : population;
+  })
+
+  return {
+    rule: "Invalid FIPS",
+    headers: ["FIPS", "Name", "Population"],
+    issues: issues.splice(0, 25)
+  };
+};
+
 export const getDataIssues = (covidDateData: CovidDateData): RuleResult[] => {
   const rulesets = [
     suspiciousCountiesEqual,
@@ -256,7 +282,8 @@ export const getDataIssues = (covidDateData: CovidDateData): RuleResult[] => {
     casesMustIncrease,
     casesMustPositive,
     timeseriesMissingDay,
-    countyFIPsMissing
+    countyFIPSMissing,
+    InvalidFIPS
   ];
   const issues = rulesets.reduce((acc, rules) => {
     const result = rules(covidDateData);
