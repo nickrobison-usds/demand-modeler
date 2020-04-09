@@ -9,76 +9,76 @@ type RuleResult = {
 
 const shortDate = (date: Date) => date.getMonth() + 1 + "/" + date.getDate();
 
-// const casesMustIncrease = (covidDateData: CovidDateData): RuleResult => {
-//   const issues: string[] = [];
-//   // Counties
-//   const counties = Object.entries(covidDateData.counties);
-//   counties.forEach(([fips, countyData]) => {
-//     countyData.sort((a, b) => (a.Reported > b.Reported ? 1 : -1));
-//     countyData.forEach((today, i) => {
-//       const tomorrow = countyData[i + 1];
-//       if (!tomorrow) return;
-//       if (tomorrow.Confirmed < today.Confirmed) {
-//         const countyName = getCountyName(fips);
-//         issues.push(
-//           `County ${countyName} (${fips}), ${getStateAbr(
-//             fips
-//           )} cumulative confirmed cases decreased from ${shortDate(
-//             today.Reported
-//           )} to ${shortDate(tomorrow.Reported)}.`
-//         );
-//       }
-//       if (tomorrow.Dead < today.Dead) {
-//         const countyName = getCountyName(fips);
-//         issues.push(
-//           `County ${countyName} (${fips}), ${getStateAbr(
-//             fips
-//           )} cumulative deaths decreased from ${shortDate(
-//             today.Reported
-//           )} to ${shortDate(tomorrow.Reported)}.`
-//         );
-//       }
-//     });
-//   });
-//   return {
-//     rule: "States and counties with non-increasing data",
-//     issues,
-//   };
-// };
+const casesMustIncrease = (covidDateData: CovidDateData): RuleResult => {
+  const issues: string[][] = [];
+  // Counties
+  const counties = Object.entries(covidDateData.counties);
+  counties.forEach(([fips, countyData]) => {
+    countyData.sort((a, b) => (a.Reported > b.Reported ? 1 : -1));
+    countyData.forEach((today, i) => {
+      const tomorrow = countyData[i + 1];
+      if (!tomorrow) return;
+      if (tomorrow.Confirmed < today.Confirmed) {
+        const countyName = getCountyName(fips);
+        issues.push(
+          [
+            `${shortDate(today.Reported)}`,
+            "Confirmed",
+            `${today.Confirmed}`,
+            `${tomorrow.Confirmed}`,
+            `${countyName}, ${getStateAbr(fips)}`,
+            `${fips}`
+          ]
+        );
+      }
+    });
+  });
 
-// const casesMustPositive = (covidDateData: CovidDateData): RuleResult => {
-//   const issues: string[] = [];
-//   // Counties
-//   const counties = Object.entries(covidDateData.counties);
-//   counties.forEach(([fips, countyData]) => {
-//     countyData.forEach((today) => {
-//       if (today.Confirmed < 0) {
-//         const countyName = getCountyName(fips);
-//         issues.push(
-//           `County ${countyName} (${fips}), ${getStateAbr(
-//             fips
-//           )} cumulative confirmed cases is a negative number on ${shortDate(
-//             today.Reported
-//           )}.`
-//         );
-//       }
-//       if (today.Dead < 0) {
-//         const countyName = getCountyName(fips);
-//         issues.push(
-//           `County ${countyName} (${fips}), ${getStateAbr(
-//             fips
-//           )} cumulative deaths is a negative number on ${shortDate(
-//             today.Reported
-//           )}.`
-//         );
-//       }
-//     });
-//   });
-//   return {
-//     rule: "States and counties with negative data",
-//     issues,
-//   };
-// };
+  issues.sort((a,b)=> {
+    const date = b[0] > a[0] ? 1 : b[0] === a[0] ? 0 : -1;
+    return date === 0 ? parseInt(b[3]) - parseInt(a[3]): date;
+  })
+
+  return {
+    rule: "States and counties with non-increasing data",
+    headers: ["Reported", "Stat", "Existing Value", "New Value", "name", "fips"],
+    issues: issues.splice(0, 25),
+  };
+};
+
+const casesMustPositive = (covidDateData: CovidDateData): RuleResult => {
+  const issues: string[][] = [];
+  // Counties
+  const counties = Object.entries(covidDateData.counties);
+  counties.forEach(([fips, countyData]) => {
+    countyData.forEach((today) => {
+      if (today.Confirmed < 0) {
+        const countyName = getCountyName(fips);
+        issues.push(
+          [
+            `${shortDate(today.Reported)}`,
+            "Confirmed",
+            `${today.Confirmed}`,
+            `${countyName}, ${getStateAbr(fips)}`,
+            `${fips}`
+          ]
+        );
+      }
+    });
+  });
+
+  issues.sort((a,b)=> {
+    const date = b[0] > a[0] ? 1 : b[0] === a[0] ? 0 : -1;
+    return date === 0 ? parseInt(b[3]) - parseInt(a[3]): date;
+  })
+
+  return {
+    rule: "States and counties with negative data",
+    headers: ["Reported", "Stat","Value", "name", "fips"],
+
+    issues: issues.splice(0, 25),
+  };
+};
 
 const abnormalCaseChange = (covidDateData: CovidDateData): RuleResult => {
   const issues: string[][] = [];
@@ -167,7 +167,7 @@ const suspiciousCountiesEqual = (covidDateData: CovidDateData): RuleResult => {
 }
 
 export const getDataIssues = (covidDateData: CovidDateData): RuleResult[] => {
-  const rulesets = [suspiciousCountiesEqual, abnormalCaseChange];//, casesMustIncrease, casesMustPositive];
+  const rulesets = [suspiciousCountiesEqual, abnormalCaseChange, casesMustIncrease, casesMustPositive];
   const issues = rulesets.reduce((acc, rules) => {
     const result = rules(covidDateData);
     if (result.issues.length === 0) return acc;
