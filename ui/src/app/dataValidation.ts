@@ -1,5 +1,6 @@
 import { CovidDateData, County } from "./AppStore";
-import { getStateName, getCountyName, getStateAbr } from "../utils/fips";
+import { getCountyName, getStateAbr, getPopulation } from "../utils/fips";
+import { isSameDay } from "../utils/DateUtils";
 
 type RuleResult = {
   rule: string;
@@ -178,12 +179,56 @@ const suspiciousCountiesEqual = (covidDateData: CovidDateData): RuleResult => {
   };
 };
 
+const timeseriesMissingDay = (covidDateData: CovidDateData): RuleResult => {
+  const issues: string[][] = [];
+  let start: Date | null = null;
+  let end: Date | null  = null;
+
+  // find earliest and latest reported case
+  Object.values(covidDateData.counties).forEach(countyData => {
+    countyData.forEach(c => {
+      if (!start || c.Reported.getTime() < start.getTime()) {
+        start = c.Reported;
+      }
+      if (!end || c.Reported.getTime() > end.getTime()) {
+        end = c.Reported;
+      }
+    })
+  });
+
+  // find missing data points in exisitng timeseries
+  Object.values(covidDateData.counties).forEach(countyData => {
+    for (let d = new Date((start as Date).getTime()); d <= (end as Date); d.setDate(d.getDate() + 1)) {
+      const dateExists = countyData.find(c => isSameDay(c.Reported, d));
+      if (!dateExists) {
+        issues.push([
+          shortDate(d),
+          `${countyData[0].ID}: ${getCountyName(countyData[0].ID)}, ${getStateAbr(countyData[0].ID)}`,
+          `${getPopulation(countyData[0].ID)}`
+        ])
+      }
+    }
+  });
+
+  issues.sort((a,b) => {
+    const date = b[0] > a[0] ? 1 : b[0] === a[0] ? 0 : -1;
+    return date === 0 ? parseInt(b[2]) - parseInt(a[2]) : date;
+  })
+
+  return {
+    rule: "Missing TimeSeries Data",
+    headers: ["Missing Report", "Name", "Population"],
+    issues: issues.splice(0, 25)
+  };
+};
+
 export const getDataIssues = (covidDateData: CovidDateData): RuleResult[] => {
   const rulesets = [
     suspiciousCountiesEqual,
     abnormalCaseChange,
     casesMustIncrease,
-    casesMustPositive
+    casesMustPositive,
+    timeseriesMissingDay
   ];
   const issues = rulesets.reduce((acc, rules) => {
     const result = rules(covidDateData);
