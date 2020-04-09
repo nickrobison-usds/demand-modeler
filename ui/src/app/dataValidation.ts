@@ -1,5 +1,6 @@
 import { CovidDateData, County } from "./AppStore";
 import { getCountyName, getStateAbr, getPopulation } from "../utils/fips";
+import { names } from "../utils/fips/names";
 import { isSameDay } from "../utils/DateUtils";
 
 type RuleResult = {
@@ -222,13 +223,35 @@ const timeseriesMissingDay = (covidDateData: CovidDateData): RuleResult => {
   };
 };
 
+const countyFIPsMissing = (covidDateData: CovidDateData): RuleResult => {
+  const issues: string[][] = [];
+  const knownFIPS = Object.keys(names).filter(fip => fip.substring(2, 5) !== '000');
+  const receivedFIPS = Object.values(covidDateData.counties).map(c => c[0].ID);
+  const missingFIPS =  knownFIPS.filter(f => !receivedFIPS.includes(f) );
+
+  missingFIPS.forEach(fip => {
+    issues.push([
+      `${fip}: ${getCountyName(fip)}, ${getStateAbr(fip)}`,
+      `${getPopulation(fip)}`
+    ])
+  });
+  issues.sort((a,b) => parseInt(b[1]) - parseInt(a[1]));
+
+  return {
+    rule: "Missing FIPs data",
+    headers: [ "Name", "Population"],
+    issues: issues.splice(0, 25)
+  };
+};
+
 export const getDataIssues = (covidDateData: CovidDateData): RuleResult[] => {
   const rulesets = [
     suspiciousCountiesEqual,
     abnormalCaseChange,
     casesMustIncrease,
     casesMustPositive,
-    timeseriesMissingDay
+    timeseriesMissingDay,
+    countyFIPsMissing
   ];
   const issues = rulesets.reduce((acc, rules) => {
     const result = rules(covidDateData);
