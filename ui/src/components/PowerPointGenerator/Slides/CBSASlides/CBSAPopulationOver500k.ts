@@ -6,6 +6,7 @@ import {
   getCSBATotalPerPopulation
 } from "./Utils";
 import { addLineChartWithLegend } from "../Templates/InteriorSlides/LineChartWithTitle";
+import {getMaxValueOne} from "../Templates/InteriorSlides/Utils";
 import { cbsaCodes } from "./cbsaCodes";
 import { colors } from "./Top25CBSALineGraph";
 import * as fipsUtils from "../../../../utils/fips";
@@ -77,12 +78,15 @@ export const addCBSAPopulationOver500k = (
   const withoutTop25 = () => getChartData(counties, top25);
   // All together
   const allTogether = withoutTop25();
+  const maxValue = getMaxValueOne(allTogether.lineData)
+  console.log(maxValue)
   addLineChartWithLegend(
     ppt,
     `Cumulative cases: CBSA's > 500k people, Excluding Top 25 CBSA`,
     allTogether.lineData,
     allTogether.lineColors,
     "Confirmed cases per 100,000",
+    maxValue,
     25
   );
 
@@ -98,7 +102,8 @@ export const addCBSAPopulationOver500k = (
         1} - ${Math.min(end, chartData.lineData.length)}`,
       chartData.lineData.slice(start, end),
       chartData.lineColors,
-      "Confirmed cases per 100,000"
+      "Confirmed cases per 100,000",
+      maxValue
     );
   }
 };

@@ -39,9 +39,9 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
 
     addStateLineGraphs(ppt, states);
     addCBSATop25(ppt, counties);
-    addSelectCBSASlides(ppt, counties)
+    addSelectCBSASlides(ppt, counties);
     addMultiCBSAStackedBarSlides(ppt, counties);
-    addTop25CBSAByConfirmed(ppt, counties)
+    addTop25CBSAByConfirmed(ppt, counties);
     addCBSAPopulationOver500k(ppt, counties);
 
     console.debug("Writing PPTX");

@@ -2,6 +2,7 @@ import pptxgen from "pptxgenjs";
 import * as styles from "../../../Styles";
 import { lineChartConfig } from "./LineChartWithTitle";
 import { addBlankSlideWithTitle } from "./BlankWithTitle";
+import {getMaxValue} from "./Utils";
 
 export const addStackedBarChartWithTitle = (
   ppt: pptxgen,
@@ -81,17 +82,7 @@ export const addMultiStackedBarChartWithTitle = (
   const slide = addBlankSlideWithTitle(ppt, title);
 
   // Max value of all chart values for appropriate scale
-  const maxValue = barData.reduce((acc, barChart) => {
-    const dailyTotals: number[] = [];
-    barChart.forEach(el => {
-      el.values.forEach((val, i) => {
-        dailyTotals[i] = (dailyTotals[i] || 0) + val;
-      });
-    });
-    const max = Math.max(...dailyTotals);
-    return acc > max ? acc : max;
-  }, 0);
-
+  const maxValue = getMaxValue(barData);
   const scale = maxValue < 100 ? 10 : 100;
 
   barData.forEach((chartData, j) => {

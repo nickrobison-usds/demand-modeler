@@ -56,6 +56,7 @@ export const addLineChartWithLegend = (
   lineData: ChartData[],
   lineColors: { [s: string]: string },
   valueLabel: string,
+  maxYValue?: number,
   maxLegendItems: number = 100
 ) => {
   const slide = addBlankSlideWithTitle(ppt, title);
@@ -121,6 +122,8 @@ export const addLineChartWithLegend = (
   }
   slide.addChart(ppt.ChartType.line, lines, {
     ...lineChartConfig(valueLabel, offsetX),
+    valAxisMaxVal: maxYValue,
+    valAxisMinVal: 0,
     chartColors,
   });
 };
