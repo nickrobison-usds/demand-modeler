@@ -175,10 +175,10 @@ export const Report: React.FC<{}> = () => {
 
         const states = Object.keys(
           state.lastWeekCovidTimeSeries.states
-        ).flatMap((k) => state.lastWeekCovidTimeSeries.states[k]);
+        ).flatMap(k => state.lastWeekCovidTimeSeries.states[k]);
         const stateIDs = new Set();
         const dedupedStates: State[] = [];
-        states.forEach((s) => {
+        states.forEach(s => {
           const key = `${fips.getStateName(s.ID)}`;
           if (!stateIDs.has(key)) {
             dedupedStates.push(s);
@@ -186,9 +186,7 @@ export const Report: React.FC<{}> = () => {
           }
         });
         const top10States = [...dedupedStates]
-          .filter((s) =>
-            ["Texas"].includes(fips.getStateName(s.ID))
-          )
+          .filter(s => ["Texas"].includes(fips.getStateName(s.ID)))
           .sort((s1, s2) => s2.Confirmed - s1.Confirmed);
         // .slice(0, 10);
 
@@ -201,20 +199,42 @@ export const Report: React.FC<{}> = () => {
             <div className="report grid-container" style={{ marginLeft: 0 }}>
               {dataIssues.length > 0 && (
                 <>
-                  <h1>Data issues</h1>
-                  {dataIssues.map((result) => {
+                  <h1>Data Checks</h1>
+                  {dataIssues.map((result, i) => {
                     return (
-                      <>
-                        <h2>{result.rule}</h2>
-                        <table className="usa-table">
-                          <thead>
-                            {result.headers.map((h,i) => (<th>{h}</th>))}
-                          </thead>
-                          <tbody>
-                            {result.issues.map(row => (<tr>{row.map(c => (<td>{c}</td>))}</tr>))}
-                          </tbody>
-                        </table>
-                      </>
+                      <div className="usa-accordion">
+                        <h4 className="usa-accordion__heading">
+                          <button
+                            className="usa-accordion__button"
+                            aria-expanded="false"
+                            aria-controls={`a${i}`}
+                          >
+                            {result.rule}
+                          </button>
+                        </h4>
+                        <div
+                          id={`a${i}`}
+                          className="usa-accordion__content usa-prose"
+                          hidden
+                        >
+                          <table className="usa-table">
+                            <thead>
+                              {result.headers.map((h, i) => (
+                                <th>{h}</th>
+                              ))}
+                            </thead>
+                            <tbody>
+                              {result.issues.map(row => (
+                                <tr>
+                                  {row.map(c => (
+                                    <td>{c}</td>
+                                  ))}
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
                     );
                   })}
                 </>

@@ -40,7 +40,7 @@ const casesMustIncrease = (covidDateData: CovidDateData): RuleResult => {
   });
 
   return {
-    rule: "States and counties with non-increasing data",
+    rule: "Counties with Non-increasing Data",
     headers: [
       "Reported",
       "Stat",
@@ -78,7 +78,7 @@ const casesMustPositive = (covidDateData: CovidDateData): RuleResult => {
   });
 
   return {
-    rule: "States and counties with negative data",
+    rule: "Counties with Negative Data",
     headers: ["Reported", "Stat", "Value", "name", "fips"],
 
     issues: issues.splice(0, 25)
@@ -121,7 +121,7 @@ const abnormalCaseChange = (covidDateData: CovidDateData): RuleResult => {
   });
 
   return {
-    rule: "States and counties with abnormal day-to-day changes",
+    rule: `Counties with > ${abnormalIncreaseThreshold} Cases and Have Increase by a Factor of ${tooLargeIncreaseFactor}`,
     headers: [
       "Reported",
       "Stat",
@@ -174,7 +174,7 @@ const suspiciousCountiesEqual = (covidDateData: CovidDateData): RuleResult => {
     });
 
   return {
-    rule: "Counties with the same value on the same day",
+    rule: "Counties with the Same Value on the Same Day",
     headers: ["Reported", "Stat", "Value", "name"],
     issues: issues.splice(0, 25)
   };
@@ -217,7 +217,7 @@ const timeseriesMissingDay = (covidDateData: CovidDateData): RuleResult => {
   })
 
   return {
-    rule: "Missing TimeSeries Data",
+    rule: "Counties with Missing Data Points",
     headers: ["Missing Report", "Name", "Population"],
     issues: issues.splice(0, 25)
   };
@@ -243,7 +243,7 @@ const countyFIPSMissing = (covidDateData: CovidDateData): RuleResult => {
   })
 
   return {
-    rule: "Missing FIPS data",
+    rule: "Known Counties with No Reporting",
     headers: ["FIPS", "Name", "Population"],
     issues: issues.splice(0, 25)
   };
@@ -269,7 +269,7 @@ const InvalidFIPS = (covidDateData: CovidDateData): RuleResult => {
   })
 
   return {
-    rule: "Invalid FIPS",
+    rule: "Unknown FIPS Value",
     headers: ["FIPS", "Name", "Population"],
     issues: issues.splice(0, 25),
   };
@@ -277,7 +277,7 @@ const InvalidFIPS = (covidDateData: CovidDateData): RuleResult => {
 
 const growthOutliers = (covidDateData: CovidDateData): RuleResult => {
   const issues: string[][] = [];
-
+  const numberOfDays = 5;
   const counties = Object.entries(covidDateData.counties);
   counties.forEach(([fips, countyData]) => {
     countyData.sort((a, b) => (a.Reported > b.Reported ? 1 : -1));
@@ -286,10 +286,10 @@ const growthOutliers = (covidDateData: CovidDateData): RuleResult => {
     countyData.forEach((today, i) => {
       const tomorrow = countyData[i + 1];
       if (!tomorrow) return;
-      if (growth.length === 5) growth = growth.slice(1, 5);
+      if (growth.length === numberOfDays) growth = growth.slice(1, numberOfDays);
       growth.push(tomorrow.Confirmed - today.Confirmed);
       // N/A for first four
-      if (i < 5) return;
+      if (i < numberOfDays) return;
       const todayGrowth = tomorrow.Confirmed - today.Confirmed;
       if (
         yesterdayRollingAverage !== undefined &&
@@ -317,7 +317,7 @@ const growthOutliers = (covidDateData: CovidDateData): RuleResult => {
   });
 
   return {
-    rule: "Counties with outlier growth compared to 5 day average",
+    rule: `Counties with Outlier Growth Compared to ${numberOfDays} Day Average`,
     headers: [
       "Reported",
       "Stat",
