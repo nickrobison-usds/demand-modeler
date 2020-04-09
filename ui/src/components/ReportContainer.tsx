@@ -5,7 +5,8 @@ import { monthDayCommaYear, yearMonthDayDot } from "../utils/DateUtils";
 import { addTitleSlide } from "./PowerPointGenerator/Slides/Templates/TitleSlides/TitleSlide";
 import { addStateLineGraphs } from "./PowerPointGenerator/Slides/StateLineGraphs";
 import {
-  addCBSAStackedBarSlides,
+  addSelectCBSASlides,
+  addTop25CBSAByConfirmed,
   addMultiCBSAStackedBarSlides,
 } from "./PowerPointGenerator/Slides/CBSASlides/CBSAStackedBars";
 import { addCBSATop25 } from "./PowerPointGenerator/Slides/CBSASlides/Top25CBSALineGraph";
@@ -33,14 +34,14 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
       )}`,
       `Data sourced from state health departments and news reports; reporting may be incomplete and delayed`
     );
-    // addTopTenStates(ppt, props.states, props.weeklyTimeSeries)
-
-    addStateLineGraphs(ppt, props.historicalTimeSeries.states);
-
     const counties = props.historicalTimeSeries.counties;
+    const states = props.historicalTimeSeries.states;
+
+    addStateLineGraphs(ppt, states);
     addCBSATop25(ppt, counties);
-    addCBSAStackedBarSlides(ppt, counties);
+    addSelectCBSASlides(ppt, counties);
     addMultiCBSAStackedBarSlides(ppt, counties);
+    addTop25CBSAByConfirmed(ppt, counties);
     addCBSAPopulationOver500k(ppt, counties);
 
     console.debug("Writing PPTX");

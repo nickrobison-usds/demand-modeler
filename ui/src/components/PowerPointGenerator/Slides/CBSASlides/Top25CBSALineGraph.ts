@@ -62,24 +62,6 @@ const getChartData = (
       });
       state.labels.push(c.Reported.getMonth() + 1 + "/" + c.Reported.getDate());
       // state.values.push(confirmed/ (population / 100000));
-      if (id === "41180" && index === 0) {
-      console.log("correct st louis", confirmed)
-
-        confirmed = 2212
-      }
-      
-      if (id === "35620" && index === 0) {
-        console.log("correct NYC", confirmed)
-        confirmed = 173944
-      }
-      if (id === "47900" && index === 0) {
-        console.log("correct DC", confirmed)
-        confirmed = 4897
-      }
-      if (id === "12580" && index === 0) {
-        console.log("correct baltimore", confirmed)
-        confirmed = 1950
-      }
       state.values.push(confirmed);
     });
 
@@ -102,7 +84,6 @@ export const addCBSATop25 = (
 ) => {
   // with NY
   const withNY = getChartData(counties, []);
-  console.log(withNY);
   addLineChartWithLegend(
     ppt,
     `Cumulative cases: Top 25 CBSA`,
@@ -113,8 +94,6 @@ export const addCBSATop25 = (
 
   // without NY
   const withoutNY = getChartData(counties, ["35620"]);
-  console.log(withoutNY);
-
   addLineChartWithLegend(
     ppt,
     `Cumulative cases: Top 25 CBSA without NYC`,
