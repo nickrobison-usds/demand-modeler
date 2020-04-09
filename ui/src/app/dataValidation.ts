@@ -20,29 +20,34 @@ const casesMustIncrease = (covidDateData: CovidDateData): RuleResult => {
       if (!tomorrow) return;
       if (tomorrow.Confirmed < today.Confirmed) {
         const countyName = getCountyName(fips);
-        issues.push(
-          [
-            `${shortDate(today.Reported)}`,
-            "Confirmed",
-            `${today.Confirmed}`,
-            `${tomorrow.Confirmed}`,
-            `${countyName}, ${getStateAbr(fips)}`,
-            `${fips}`
-          ]
-        );
+        issues.push([
+          `${shortDate(today.Reported)}`,
+          "Confirmed",
+          `${today.Confirmed}`,
+          `${tomorrow.Confirmed}`,
+          `${countyName}, ${getStateAbr(fips)}`,
+          `${fips}`
+        ]);
       }
     });
   });
 
-  issues.sort((a,b)=> {
+  issues.sort((a, b) => {
     const date = b[0] > a[0] ? 1 : b[0] === a[0] ? 0 : -1;
-    return date === 0 ? parseInt(b[3]) - parseInt(a[3]): date;
-  })
+    return date === 0 ? parseInt(b[3]) - parseInt(a[3]) : date;
+  });
 
   return {
     rule: "States and counties with non-increasing data",
-    headers: ["Reported", "Stat", "Existing Value", "New Value", "name", "fips"],
-    issues: issues.splice(0, 25),
+    headers: [
+      "Reported",
+      "Stat",
+      "Existing Value",
+      "New Value",
+      "name",
+      "fips"
+    ],
+    issues: issues.splice(0, 25)
   };
 };
 
@@ -51,32 +56,30 @@ const casesMustPositive = (covidDateData: CovidDateData): RuleResult => {
   // Counties
   const counties = Object.entries(covidDateData.counties);
   counties.forEach(([fips, countyData]) => {
-    countyData.forEach((today) => {
+    countyData.forEach(today => {
       if (today.Confirmed < 0) {
         const countyName = getCountyName(fips);
-        issues.push(
-          [
-            `${shortDate(today.Reported)}`,
-            "Confirmed",
-            `${today.Confirmed}`,
-            `${countyName}, ${getStateAbr(fips)}`,
-            `${fips}`
-          ]
-        );
+        issues.push([
+          `${shortDate(today.Reported)}`,
+          "Confirmed",
+          `${today.Confirmed}`,
+          `${countyName}, ${getStateAbr(fips)}`,
+          `${fips}`
+        ]);
       }
     });
   });
 
-  issues.sort((a,b)=> {
+  issues.sort((a, b) => {
     const date = b[0] > a[0] ? 1 : b[0] === a[0] ? 0 : -1;
-    return date === 0 ? parseInt(b[3]) - parseInt(a[3]): date;
-  })
+    return date === 0 ? parseInt(b[3]) - parseInt(a[3]) : date;
+  });
 
   return {
     rule: "States and counties with negative data",
-    headers: ["Reported", "Stat","Value", "name", "fips"],
+    headers: ["Reported", "Stat", "Value", "name", "fips"],
 
-    issues: issues.splice(0, 25),
+    issues: issues.splice(0, 25)
   };
 };
 
@@ -98,76 +101,90 @@ const abnormalCaseChange = (covidDateData: CovidDateData): RuleResult => {
         today.Confirmed > abnormalIncreaseThreshold
       ) {
         const countyName = getCountyName(fips);
-        issues.push(
-          [
-            `${shortDate(today.Reported)}`,
-            "Confirmed",
-            `${today.Confirmed}`,
-            `${tomorrow.Confirmed}`,
-            `${countyName}, ${getStateAbr(fips)}`,
-            `${fips}`
-          ]
-        );
+        issues.push([
+          `${shortDate(today.Reported)}`,
+          "Confirmed",
+          `${today.Confirmed}`,
+          `${tomorrow.Confirmed}`,
+          `${countyName}, ${getStateAbr(fips)}`,
+          `${fips}`
+        ]);
       }
     });
   });
 
-  issues.sort((a,b)=> {
+  issues.sort((a, b) => {
     const date = b[0] > a[0] ? 1 : b[0] === a[0] ? 0 : -1;
-    return date === 0 ? parseInt(b[3]) - parseInt(a[3]): date;
-  })
+    return date === 0 ? parseInt(b[3]) - parseInt(a[3]) : date;
+  });
 
   return {
     rule: "States and counties with abnormal day-to-day changes",
-    headers: ["Reported", "Stat", "Existing Value", "New Value", "name", "fips"],
-    issues: issues.splice(0,25),
+    headers: [
+      "Reported",
+      "Stat",
+      "Existing Value",
+      "New Value",
+      "name",
+      "fips"
+    ],
+    issues: issues.splice(0, 25)
   };
 };
 
 const suspiciousCountiesEqual = (covidDateData: CovidDateData): RuleResult => {
   const minCases = 25;
   const issues: string[][] = [];
-  const equalConfirmations: {[key: string]: County[]}= {}
+  const equalConfirmations: { [key: string]: County[] } = {};
 
   Object.values(covidDateData.counties).forEach(countyData => {
-    countyData.forEach((county) => {
+    countyData.forEach(county => {
       if (county.Confirmed >= minCases) {
-        const confirmedkey = `${county.Confirmed}-${county.Reported.getTime()}-${getStateAbr(county.ID)}`
+        const confirmedkey = `${
+          county.Confirmed
+        }-${county.Reported.getTime()}-${getStateAbr(county.ID)}`;
         if (equalConfirmations[confirmedkey]) {
-          equalConfirmations[confirmedkey].push(county)
+          equalConfirmations[confirmedkey].push(county);
         } else {
-          equalConfirmations[confirmedkey] = [county]
+          equalConfirmations[confirmedkey] = [county];
         }
       }
     });
   });
 
-  Object.values(equalConfirmations).sort((a,b)=> {
-    const date = b[0].Reported.getTime() - a[0].Reported.getTime();
-    return date === 0 ? b[0].Confirmed - a[0].Confirmed: date;
-  }).forEach((equalCounties) => {
-    if(equalCounties.length < 2) {
-      return;
-    }
-    issues.push(
-      [
+  Object.values(equalConfirmations)
+    .sort((a, b) => {
+      const date = b[0].Reported.getTime() - a[0].Reported.getTime();
+      return date === 0 ? b[0].Confirmed - a[0].Confirmed : date;
+    })
+    .forEach(equalCounties => {
+      if (equalCounties.length < 2) {
+        return;
+      }
+      issues.push([
         shortDate(equalCounties[0].Reported),
         "Confirmed",
         `${equalCounties[0].Confirmed}`,
-        equalCounties.map(c => `${c.ID}: ${getCountyName(c.ID)}, ${getStateAbr(c.ID)}`).join(', '),
-      ]
-    )
-  });
+        equalCounties
+          .map(c => `${c.ID}: ${getCountyName(c.ID)}, ${getStateAbr(c.ID)}`)
+          .join(", ")
+      ]);
+    });
 
   return {
     rule: "Counties with the same value on the same day",
     headers: ["Reported", "Stat", "Value", "name"],
-    issues: issues.splice(0,25),
+    issues: issues.splice(0, 25)
   };
-}
+};
 
 export const getDataIssues = (covidDateData: CovidDateData): RuleResult[] => {
-  const rulesets = [suspiciousCountiesEqual, abnormalCaseChange, casesMustIncrease, casesMustPositive];
+  const rulesets = [
+    suspiciousCountiesEqual,
+    abnormalCaseChange,
+    casesMustIncrease,
+    casesMustPositive
+  ];
   const issues = rulesets.reduce((acc, rules) => {
     const result = rules(covidDateData);
     if (result.issues.length === 0) return acc;
