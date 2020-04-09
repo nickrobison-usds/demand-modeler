@@ -199,23 +199,26 @@ export const Report: React.FC<{}> = () => {
             historicalTimeSeries={state.historicalCovidTimeSeries}
           >
             <div className="report grid-container" style={{ marginLeft: 0 }}>
-              {/* {dataIssues.length > 0 && (
+              {dataIssues.length > 0 && (
                 <>
                   <h1>Data issues</h1>
                   {dataIssues.map((result) => {
                     return (
                       <>
                         <h2>{result.rule}</h2>
-                        <ol>
-                          {result.issues.map((issue) => (
-                            <li className={issue}>{issue}</li>
-                          ))}
-                        </ol>
+                        <table className="usa-table">
+                          <thead>
+                            {result.headers.map((h,i) => (<th>{h}</th>))}
+                          </thead>
+                          <tbody>
+                            {result.issues.map(row => (<tr>{row.map(c => (<td>{c}</td>))}</tr>))}
+                          </tbody>
+                        </table>
                       </>
                     );
                   })}
                 </>
-              )} */}
+              )}
               {/* {maps(lastUpdated)} */}
               {top10States.map(s => (
                 <>
