@@ -271,7 +271,62 @@ const InvalidFIPS = (covidDateData: CovidDateData): RuleResult => {
   return {
     rule: "Invalid FIPS",
     headers: ["FIPS", "Name", "Population"],
-    issues: issues.splice(0, 25)
+    issues: issues.splice(0, 25),
+  };
+};
+
+const growthOutliers = (covidDateData: CovidDateData): RuleResult => {
+  const issues: string[][] = [];
+
+  const counties = Object.entries(covidDateData.counties);
+  counties.forEach(([fips, countyData]) => {
+    countyData.sort((a, b) => (a.Reported > b.Reported ? 1 : -1));
+    let growth: number[] = [];
+    let yesterdayRollingAverage: number;
+    countyData.forEach((today, i) => {
+      const tomorrow = countyData[i + 1];
+      if (!tomorrow) return;
+      if (growth.length === 5) growth = growth.slice(1, 5);
+      growth.push(tomorrow.Confirmed - today.Confirmed);
+      // N/A for first four
+      if (i < 5) return;
+      const todayGrowth = tomorrow.Confirmed - today.Confirmed;
+      if (
+        yesterdayRollingAverage !== undefined &&
+        todayGrowth > yesterdayRollingAverage &&
+        todayGrowth > 0 &&
+        today.Confirmed > 50
+      ) {
+        issues.push([
+          shortDate(tomorrow.Reported),
+          "Confirmed",
+          `${yesterdayRollingAverage}`,
+          `${todayGrowth}`,
+          `${Math.round((todayGrowth - yesterdayRollingAverage) * 10) / 10}`,
+          `${today.ID}: ${getCountyName(today.ID)}, ${getStateAbr(today.ID)}`,
+        ]);
+      }
+      yesterdayRollingAverage =
+        growth.reduce((acc, el) => acc + el, 0) / growth.length;
+    });
+  });
+
+  issues.sort((a, b) => {
+    const date = b[0] > a[0] ? 1 : b[0] === a[0] ? 0 : -1;
+    return date === 0 ? parseInt(b[4]) - parseInt(a[4]) : date;
+  });
+
+  return {
+    rule: "Counties with outlier growth compared to 5 day average",
+    headers: [
+      "Reported",
+      "Stat",
+      "5-Day Average Daily Increase",
+      "Today's Increase",
+      "Amount Above",
+      "name",
+    ],
+    issues: issues.splice(0, 25),
   };
 };
 
@@ -283,7 +338,8 @@ export const getDataIssues = (covidDateData: CovidDateData): RuleResult[] => {
     casesMustPositive,
     timeseriesMissingDay,
     countyFIPSMissing,
-    InvalidFIPS
+    InvalidFIPS,
+    growthOutliers
   ];
   const issues = rulesets.reduce((acc, rules) => {
     return acc.concat(rules(covidDateData));
