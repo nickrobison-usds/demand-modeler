@@ -3205,7 +3205,7 @@ export const names: {
   "56043": { County: "Washakie", State: "WY" },
   "56045": { County: "Weston", State: "WY" },
   "60000": { County: "", State: "AS" },
-  "60010": { County: "Unknown", State: "AS" },
+  "60010": { County: "Barrington", State: "AS" },
   "60020": { County: "Manua", State: "AS" },
   "60050": { County: "Tutuila", State: "AS" },
   "66000": { County: "", State: "MP" },

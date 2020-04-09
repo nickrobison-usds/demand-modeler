@@ -231,15 +231,20 @@ const countyFIPsMissing = (covidDateData: CovidDateData): RuleResult => {
 
   missingFIPS.forEach(fip => {
     issues.push([
-      `${fip}: ${getCountyName(fip)}, ${getStateAbr(fip)}`,
+      `${fip}`,
+      `${getCountyName(fip)}, ${getStateAbr(fip)}`,
       `${getPopulation(fip)}`
     ])
   });
-  issues.sort((a,b) => parseInt(b[1]) - parseInt(a[1]));
+
+  issues.sort((a,b) => {
+    const population = parseInt(b[2]) - parseInt(a[2])
+    return population === 0 ? parseInt(b[0]) - parseInt(a[0]) : population;
+  })
 
   return {
-    rule: "Missing FIPs data",
-    headers: [ "Name", "Population"],
+    rule: "Missing FIPS data",
+    headers: ["FIPS", "Name", "Population"],
     issues: issues.splice(0, 25)
   };
 };
