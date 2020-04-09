@@ -286,8 +286,6 @@ export const getDataIssues = (covidDateData: CovidDateData): RuleResult[] => {
     InvalidFIPS
   ];
   const issues = rulesets.reduce((acc, rules) => {
-    const result = rules(covidDateData);
-    if (result.issues.length === 0) return acc;
     return acc.concat(rules(covidDateData));
   }, [] as RuleResult[]);
   return issues;

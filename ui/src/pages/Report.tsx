@@ -219,7 +219,7 @@ export const Report: React.FC<{}> = () => {
                   })}
                 </>
               )}
-              {/* {maps(lastUpdated)} */}
+              {/* {maps(lastUpdated)}
               {top10States.map(s => (
                 <>
                   <StateBar
@@ -265,7 +265,7 @@ export const Report: React.FC<{}> = () => {
                   />
                   {lastUpdated && pagebreak(lastUpdated)}
                 </>
-              ))}
+              ))} */}
               {/*<Top10Counties
                 timeSeries={state.lastWeekCovidTimeSeries}
                 stat="confirmed"
