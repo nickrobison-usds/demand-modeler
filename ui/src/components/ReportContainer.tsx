@@ -33,18 +33,16 @@ const addZerosForMissingDataPoints = (regions: {[FIPS: string]: Region[]}) => {
   }
   Object.entries(regions).forEach(([fips, timeSeries]) => {
     for (var d = new Date(start.getTime()); d <= end; d.setDate(d.getDate() + 1)) {
-      const region = timeSeries.find(dataPoint => isSameDay(dataPoint.Reported, d));
-      if (region) {
-        appendRegion(fips, region);
-      } else {
-        appendRegion(fips, {
-          ID: fips,
-          Reported: d,
-          Confirmed: 0,
-          Dead: 0,
-          mortalityRate: 0,
-        })
-      }
+      const clonedDate = new Date(d.getTime());
+      const region = timeSeries.find(dataPoint => isSameDay(dataPoint.Reported, clonedDate));
+      appendRegion(fips, {
+        ID: fips,
+        Reported: clonedDate,
+        Confirmed: 0,
+        Dead: 0,
+        mortalityRate: 0,
+        ...(region || {})
+      })
     }
   });
   return regionsWithZeros;
@@ -71,9 +69,9 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
 
     addStateLineGraphs(ppt, states);
     addCBSATop25(ppt, counties);
-    // addSelectCBSASlides(ppt, counties);
-    // addMultiCBSAStackedBarSlides(ppt, counties);
-    // addTop25CBSAByConfirmed(ppt, counties);
+    addSelectCBSASlides(ppt, counties);
+    addMultiCBSAStackedBarSlides(ppt, counties);
+    addTop25CBSAByConfirmed(ppt, counties);
     addCBSAPopulationOver500k(ppt, counties);
 
     console.debug("Writing PPTX");
