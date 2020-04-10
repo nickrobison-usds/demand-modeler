@@ -3,7 +3,7 @@ import { County } from "../../../../app/AppStore";
 import { addLineChartWithLegend } from "../Templates/InteriorSlides/LineChartWithTitle";
 import { cbsaCodes } from "./cbsaCodes";
 import { CSBAOrderedByStat } from "./Utils";
-import { isSameDay } from "../../../../utils/DateUtils";
+// import { isSameDay } from "../../../../utils/DateUtils";
 // import * as fipsUtils from "../../../../utils/fips";
 
 export const colors = [
@@ -39,7 +39,6 @@ const getChartData = (
   counties: { [fip: string]: County[] },
   exclude: string[]
 ) => {
-  const today = new Date();
   const top25 = CSBAOrderedByStat(counties, "Confirmed", 25, exclude);
   const lineColors: { [s: string]: string } = {};
   const lineData = top25.reduce((acc, id, i) => {

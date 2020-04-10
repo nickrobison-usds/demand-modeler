@@ -2,48 +2,48 @@ import React from "react";
 import { AppContext, State } from "../app/AppStore";
 // import { StateMixedBar } from "../components/Charts/StateMixedBar";
 // import { Top10Counties } from "../components/Charts/Top10Counties";
-import { StateBar } from "../components/Charts/StateBar";
+// import { StateBar } from "../components/Charts/StateBar";
 // import { MixedBar } from "../components/Charts/MixedBar";
-import CBSAMap from "../components/Maps/CBSAMap";
+// import CBSAMap from "../components/Maps/CBSAMap";
 import "./Report.scss";
-import { dateTimeString } from "../utils/DateUtils";
+// import { dateTimeString } from "../utils/DateUtils";
 import * as fips from "../utils/fips";
 import { ReportContainer } from "../components/ReportContainer";
 import { getDataIssues } from "../app/dataValidation";
 
 export const Report: React.FC<{}> = () => {
-  const pagebreak = (lastUpdated: Date | undefined) => {
-    return (
-      <div style={{ margin: "20px 0", fontSize: "13px" }}>
-        <div>
-          Source:{" "}
-          <a
-            href="https://www.csbs.org/information-covid-19-coronavirus"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Conference of State Bank Supervisors
-          </a>
-          , as of {lastUpdated && dateTimeString(lastUpdated)}. 12 states with
-          highest case count as of 3/17 shown.
-        </div>
-        <div>
-          Data sourced from state health department websites; reporting may be
-          incomplete or delayed. Death data is inconsistent and delayed in
-          reporting
-        </div>
-        <div className="pagebreak" />
-      </div>
-    );
-  };
+  // const pagebreak = (lastUpdated: Date | undefined) => {
+  //   return (
+  //     <div style={{ margin: "20px 0", fontSize: "13px" }}>
+  //       <div>
+  //         Source:{" "}
+  //         <a
+  //           href="https://www.csbs.org/information-covid-19-coronavirus"
+  //           target="_blank"
+  //           rel="noopener noreferrer"
+  //         >
+  //           Conference of State Bank Supervisors
+  //         </a>
+  //         , as of {lastUpdated && dateTimeString(lastUpdated)}. 12 states with
+  //         highest case count as of 3/17 shown.
+  //       </div>
+  //       <div>
+  //         Data sourced from state health department websites; reporting may be
+  //         incomplete or delayed. Death data is inconsistent and delayed in
+  //         reporting
+  //       </div>
+  //       <div className="pagebreak" />
+  //     </div>
+  //   );
+  // };
 
-  const maps = (lastUpdated: any) => {
-    return (
-      <>
-        <CBSAMap dataType={"Total"} title={"Confirmed Cases"} />
-        {lastUpdated && pagebreak(lastUpdated)}
-      </>
-    );
+  // const maps = (lastUpdated: any) => {
+  //   return (
+  //     <>
+  //       <CBSAMap dataType={"Total"} title={"Confirmed Cases"} />
+  //       {lastUpdated && pagebreak(lastUpdated)}
+  //     </>
+  //   );
     // return (
     //   <>
     //     <CountyMap
@@ -157,7 +157,7 @@ export const Report: React.FC<{}> = () => {
     //     {lastUpdated && pagebreak(lastUpdated)}
     //   </>
     // );
-  };
+  // };
 
   return (
     <AppContext.Consumer>
