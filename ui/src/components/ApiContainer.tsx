@@ -3,7 +3,7 @@ import { AppContext, ActionType, CovidDateData } from "../app/AppStore";
 import { getCountyCases, getStateCases } from "../api";
 
 const loadData = async () => {
-  const start = new Date("3/12/2020");
+  const start = new Date("3/10/2020");
 
   const loadStateData = async () => {
     const date = new Date(start);

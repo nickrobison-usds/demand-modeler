@@ -5,7 +5,7 @@ import { stateFullNames } from "./stateFullNames";
 export const getStateAbr = (fips: string) => {
   if (names[fips] === undefined) {
     console.log("no name for", fips);
-    return "";
+    return "Unknown";
   }
   return names[fips].State;
 };
@@ -17,7 +17,7 @@ export const getStateName = (fips: string) => {
 export const getCountyName = (fips: string) => {
   if (names[fips] === undefined) {
     console.log("fips name not found", fips);
-    return "";
+    return "Unknown";
   }
   return names[fips].County;
 };

@@ -209,7 +209,7 @@ export const Report: React.FC<{}> = () => {
                             aria-expanded="false"
                             aria-controls={`a${i}`}
                           >
-                            {result.rule}
+                            {result.rule} ({result.total})
                           </button>
                         </h4>
                         <div

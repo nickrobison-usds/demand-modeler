@@ -7,11 +7,46 @@ type RuleResult = {
   rule: string;
   headers: string[];
   issues: string[][];
+  total: number;
 };
 
 const shortDate = (date: Date) => date.getMonth() + 1 + "/" + date.getDate();
 
+const casesMustPositive = (covidDateData: CovidDateData): RuleResult => {
+  const issues: string[][] = [];
+  // Counties
+  const counties = Object.entries(covidDateData.counties);
+  counties.forEach(([fips, countyData]) => {
+    countyData.forEach(today => {
+      if (today.Confirmed < 0) {
+        const countyName = getCountyName(fips);
+        issues.push([
+          `${shortDate(today.Reported)}`,
+          "Confirmed",
+          `${today.Confirmed}`,
+          `${countyName}, ${getStateAbr(fips)}`,
+          `${fips}`
+        ]);
+      }
+    });
+  });
+
+  issues.sort((a, b) => {
+    const date = b[0] > a[0] ? 1 : b[0] === a[0] ? 0 : -1;
+    return date === 0 ? parseInt(b[3]) - parseInt(a[3]) : date;
+  });
+
+  const total = issues.length;
+  return {
+    total,
+    rule: "Counties with Negative Data",
+    headers: ["Reported", "Stat", "Value", "name", "fips"],
+    issues: issues.splice(0, 25)
+  };
+};
+
 const casesMustIncrease = (covidDateData: CovidDateData): RuleResult => {
+  const minCases = 20;
   const issues: string[][] = [];
   // Counties
   const counties = Object.entries(covidDateData.counties);
@@ -20,10 +55,10 @@ const casesMustIncrease = (covidDateData: CovidDateData): RuleResult => {
     countyData.forEach((today, i) => {
       const tomorrow = countyData[i + 1];
       if (!tomorrow) return;
-      if (tomorrow.Confirmed < today.Confirmed) {
+      if (tomorrow.Confirmed < today.Confirmed && today.Confirmed > minCases) {
         const countyName = getCountyName(fips);
         issues.push([
-          `${shortDate(today.Reported)}`,
+          `${shortDate(tomorrow.Reported)}`,
           "Confirmed",
           `${today.Confirmed}`,
           `${tomorrow.Confirmed}`,
@@ -39,7 +74,9 @@ const casesMustIncrease = (covidDateData: CovidDateData): RuleResult => {
     return date === 0 ? parseInt(b[3]) - parseInt(a[3]) : date;
   });
 
+  const total = issues.length;
   return {
+    total,
     rule: "Counties with Non-increasing Data",
     headers: [
       "Reported",
@@ -66,8 +103,7 @@ const abnormalCaseChange = (covidDateData: CovidDateData): RuleResult => {
       const tomorrow = countyData[i + 1];
       if (!tomorrow) return;
       if (
-        (tomorrow.Confirmed > today.Confirmed * tooLargeIncreaseFactor ||
-          tomorrow.Confirmed === today.Confirmed) &&
+        (tomorrow.Confirmed > today.Confirmed * tooLargeIncreaseFactor) &&
         today.Confirmed > abnormalIncreaseThreshold
       ) {
         const countyName = getCountyName(fips);
@@ -88,7 +124,9 @@ const abnormalCaseChange = (covidDateData: CovidDateData): RuleResult => {
     return date === 0 ? parseInt(b[3]) - parseInt(a[3]) : date;
   });
 
+  const total = issues.length;
   return {
+    total,
     rule: `Counties with > ${abnormalIncreaseThreshold} Cases and Have Increased by a Factor of ${tooLargeIncreaseFactor}`,
     headers: [
       "Reported",
@@ -98,7 +136,7 @@ const abnormalCaseChange = (covidDateData: CovidDateData): RuleResult => {
       "name",
       "fips"
     ],
-    issues: issues.splice(0, 25)
+    issues: issues.splice(0, 25),
   };
 };
 
@@ -141,7 +179,9 @@ const suspiciousCountiesEqual = (covidDateData: CovidDateData): RuleResult => {
       ]);
     });
 
+  const total = issues.length;
   return {
+    total,
     rule: "Counties with the Same Value on the Same Day",
     headers: ["Reported", "Stat", "Value", "name"],
     issues: issues.splice(0, 25)
@@ -169,11 +209,13 @@ const timeseriesMissingDay = (covidDateData: CovidDateData): RuleResult => {
   Object.values(covidDateData.counties).forEach(countyData => {
     for (let d = new Date((start as Date).getTime()); d <= (end as Date); d.setDate(d.getDate() + 1)) {
       const dateExists = countyData.find(c => isSameDay(c.Reported, d));
-      if (!dateExists) {
+      const id = countyData[0].ID;
+      if (!dateExists && id.substring(2, 5) !== '000') {
         issues.push([
           shortDate(d),
-          `${countyData[0].ID}: ${getCountyName(countyData[0].ID)}, ${getStateAbr(countyData[0].ID)}`,
-          `${getPopulation(countyData[0].ID)}`
+          `${id}: ${getCountyName(id)}, ${getStateAbr(id)}`,
+          `${getPopulation(id)}`,
+          `${countyData.length}`
         ])
       }
     }
@@ -181,12 +223,14 @@ const timeseriesMissingDay = (covidDateData: CovidDateData): RuleResult => {
 
   issues.sort((a,b) => {
     const date = b[0] > a[0] ? 1 : b[0] === a[0] ? 0 : -1;
-    return date === 0 ? parseInt(b[2]) - parseInt(a[2]) : date;
+    return date === 0 ? parseInt(b[3]) - parseInt(a[3]) : date;
   })
 
+  const total = issues.length;
   return {
+    total,
     rule: "Counties with Missing Data Points",
-    headers: ["Missing Report", "Name", "Population"],
+    headers: ["Missing Report", "Name", "Population", "Number of Data Points"],
     issues: issues.splice(0, 25)
   };
 };
@@ -209,8 +253,9 @@ const countyFIPSMissing = (covidDateData: CovidDateData): RuleResult => {
     const population = parseInt(b[2]) - parseInt(a[2])
     return population === 0 ? parseInt(b[0]) - parseInt(a[0]) : population;
   })
-
+  const total = issues.length;
   return {
+    total,
     rule: "Known Counties with No Reporting",
     headers: ["FIPS", "Name", "Population"],
     issues: issues.splice(0, 25)
@@ -236,10 +281,12 @@ const InvalidFIPS = (covidDateData: CovidDateData): RuleResult => {
     return population === 0 ? parseInt(b[0]) - parseInt(a[0]) : population;
   })
 
+  const total = issues.length;
   return {
+    total,
     rule: "Unknown FIPS Value",
     headers: ["FIPS", "Name", "Population"],
-    issues: issues.splice(0, 25),
+    issues: issues,
   };
 };
 
@@ -270,6 +317,7 @@ const growthOutliers = (covidDateData: CovidDateData): RuleResult => {
           "Confirmed",
           `${yesterdayRollingAverage}`,
           `${todayGrowth}`,
+          `${today.Confirmed}`,
           `${Math.round((todayGrowth - yesterdayRollingAverage) * 10) / 10}`,
           `${today.ID}: ${getCountyName(today.ID)}, ${getStateAbr(today.ID)}`,
         ]);
@@ -281,16 +329,19 @@ const growthOutliers = (covidDateData: CovidDateData): RuleResult => {
 
   issues.sort((a, b) => {
     const date = b[0] > a[0] ? 1 : b[0] === a[0] ? 0 : -1;
-    return date === 0 ? parseInt(b[4]) - parseInt(a[4]) : date;
+    return date === 0 ? parseInt(b[5]) - parseInt(a[5]) : date;
   });
 
+  const total = issues.length;
   return {
+    total,
     rule: `Counties with Outlier Growth Compared to ${numberOfDays} Day Average`,
     headers: [
       "Reported",
       "Stat",
       "5-Day Average Daily Increase",
       "Today's Increase",
+      "Today's Amount",
       "Amount Above",
       "name",
     ],
@@ -306,7 +357,8 @@ export const getDataIssues = (covidDateData: CovidDateData): RuleResult[] => {
     timeseriesMissingDay,
     countyFIPSMissing,
     InvalidFIPS,
-    growthOutliers
+    growthOutliers,
+    casesMustPositive
   ];
   const issues = rulesets.reduce((acc, rules) => {
     return acc.concat(rules(covidDateData));
