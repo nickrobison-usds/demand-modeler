@@ -41,7 +41,7 @@ const getChartData = (
       values: []
     };
 
-    Object.values(counties)[0].forEach((c, index) => {
+    Object.values(counties)[1].forEach((c, index) => {
       let confirmed = 0;
       let population = 0;
       fips.forEach(fip => {
