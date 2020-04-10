@@ -61,7 +61,7 @@ func (d *DataLoader) loadCases() error {
 		return err
 	}
 	// Find all the temporal data files
-	files, err := filepath.Glob(filepath.Join(d.dataDir, "covid19_county_*.csv"))
+	files, err := filepath.Glob(filepath.Join(d.dataDir, "covid19_county_????-??-??.csv"))
 	if err != nil {
 		return err
 	}
