@@ -118,14 +118,14 @@ const getCountyData = (
       return counties[fips];
     })
     .sort((a, b) => {
-      return getLatestCounty(b).Confirmed - getLatestCounty(a).Confirmed;
+      return getLatestCounty(b)?.Confirmed - getLatestCounty(a)?.Confirmed;
     });
 
   const countiesToKeep = cleanCountyFips.filter(
-    el => getLatestCounty(el).Confirmed / totalConfirmed >= OTHER_THRESHOLD
+    el => getLatestCounty(el)?.Confirmed / totalConfirmed >= OTHER_THRESHOLD
   );
   const otherCounties = cleanCountyFips.filter(
-    el => getLatestCounty(el).Confirmed / totalConfirmed < OTHER_THRESHOLD
+    el => getLatestCounty(el)?.Confirmed / totalConfirmed < OTHER_THRESHOLD
   );
   const otherTimeseries: County[] = [];
   otherCounties.forEach(timeseries =>
@@ -232,7 +232,6 @@ export const addSelectCBSASlides = (
   counties: { [fip: string]: County[] }
 ) => {
   addBlankSlideWithTitle(ppt, "Select Metropolitan areas");
-
   metroAreas.forEach(code => {
     const { area, fipsCodes } = code;
     addCountySlide(ppt, counties, area, [fipsCodes], "confirmed", undefined);
@@ -249,7 +248,6 @@ export const addSelectCBSASlides = (
     addCountySlide(ppt, counties, area, [fipsCodes], "dead", undefined, true);
   });
 };
-
 
 export const addTop25CBSAByConfirmed = (
   ppt: pptxgen,
