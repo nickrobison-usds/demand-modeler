@@ -67,8 +67,8 @@ const getChartData = (
 
 
     // The first day is only used to calculate diffs. Remove it.
-    state.labels.reverse().shift();
-    state.values.reverse().shift();
+    state.labels.reverse();
+    state.values.reverse();
     acc.push(state);
     return acc;
   }, [] as ChartData[]);

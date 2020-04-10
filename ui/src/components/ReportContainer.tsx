@@ -1,7 +1,7 @@
 import React from "react";
 import pptxgen from "pptxgenjs";
-import { CovidDateData, State } from "../app/AppStore";
-import { monthDayCommaYear, yearMonthDayDot } from "../utils/DateUtils";
+import { CovidDateData, State, County } from "../app/AppStore";
+import { isSameDay, monthDayCommaYear, yearMonthDayDot } from "../utils/DateUtils";
 import { addTitleSlide } from "./PowerPointGenerator/Slides/Templates/TitleSlides/TitleSlide";
 import { addStateLineGraphs } from "./PowerPointGenerator/Slides/StateLineGraphs";
 import {
@@ -16,6 +16,38 @@ export interface ReportContainerProps {
   states: State[];
   weeklyTimeSeries: CovidDateData;
   historicalTimeSeries: CovidDateData;
+}
+
+type Region = County | State;
+
+const addZerosForMissingDataPoints = (regions: {[FIPS: string]: Region[]}) => {
+  const start = new Date("03/19/2020");
+  const end = new Date("04/09/2020");
+  const regionsWithZeros: {[FIPS: string]: Region[]} = {};
+  const appendRegion = (fips: string, r: Region) => {
+    if(regionsWithZeros[fips]) {
+      regionsWithZeros[fips].push(r);
+    } else {
+      regionsWithZeros[fips] = [r];
+    }
+  }
+  Object.entries(regions).forEach(([fips, timeSeries]) => {
+    for (var d = new Date(start.getTime()); d <= end; d.setDate(d.getDate() + 1)) {
+      const region = timeSeries.find(dataPoint => isSameDay(dataPoint.Reported, d));
+      if (region) {
+        appendRegion(fips, region);
+      } else {
+        appendRegion(fips, {
+          ID: fips,
+          Reported: d,
+          Confirmed: 0,
+          Dead: 0,
+          mortalityRate: 0,
+        })
+      }
+    }
+  });
+  return regionsWithZeros;
 }
 
 export const ReportContainer: React.FC<ReportContainerProps> = props => {
@@ -34,14 +66,14 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
       )}`,
       `Data sourced from state health departments and news reports; reporting may be incomplete and delayed`
     );
-    const counties = props.historicalTimeSeries.counties;
-    const states = props.historicalTimeSeries.states;
+    const counties = addZerosForMissingDataPoints(props.historicalTimeSeries.counties);
+    const states = addZerosForMissingDataPoints(props.historicalTimeSeries.states);
 
     addStateLineGraphs(ppt, states);
     addCBSATop25(ppt, counties);
-    addSelectCBSASlides(ppt, counties);
-    addMultiCBSAStackedBarSlides(ppt, counties);
-    addTop25CBSAByConfirmed(ppt, counties);
+    // addSelectCBSASlides(ppt, counties);
+    // addMultiCBSAStackedBarSlides(ppt, counties);
+    // addTop25CBSAByConfirmed(ppt, counties);
     addCBSAPopulationOver500k(ppt, counties);
 
     console.debug("Writing PPTX");
