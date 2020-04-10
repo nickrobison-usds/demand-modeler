@@ -7,7 +7,7 @@ import { addStateLineGraphs } from "./PowerPointGenerator/Slides/StateLineGraphs
 import {
   addSelectCBSASlides,
   addTop25CBSAByConfirmed,
-  addMultiCBSAStackedBarSlides,
+  addMultiCBSAStackedBarSlides
 } from "./PowerPointGenerator/Slides/CBSASlides/CBSAStackedBars";
 import { addCBSATop25 } from "./PowerPointGenerator/Slides/CBSASlides/Top25CBSALineGraph";
 import { addCBSAPopulationOver500k } from "./PowerPointGenerator/Slides/CBSASlides/CBSAPopulationOver500k";
@@ -18,7 +18,7 @@ export interface ReportContainerProps {
   historicalTimeSeries: CovidDateData;
 }
 
-export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
+export const ReportContainer: React.FC<ReportContainerProps> = props => {
   const exportPowerPoint = async () => {
     // noinspection JSPotentiallyInvalidConstructorUsage
     const ppt = new pptxgen();
@@ -54,10 +54,14 @@ export const ReportContainer: React.FC<ReportContainerProps> = (props) => {
   };
   return (
     <div>
-      <button className="usa-button" onClick={exportPowerPoint}>
-        Export
-      </button>
       <>{props.children}</>
+      <div className="report grid-container" style={{ marginLeft: 0, marginTop: "15px" }}>
+        {" "}
+        <button className="usa-button" onClick={exportPowerPoint}>
+          Export
+        </button>
+      </div>
+
       <canvas />
     </div>
   );

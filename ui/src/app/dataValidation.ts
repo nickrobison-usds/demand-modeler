@@ -53,38 +53,6 @@ const casesMustIncrease = (covidDateData: CovidDateData): RuleResult => {
   };
 };
 
-const casesMustPositive = (covidDateData: CovidDateData): RuleResult => {
-  const issues: string[][] = [];
-  // Counties
-  const counties = Object.entries(covidDateData.counties);
-  counties.forEach(([fips, countyData]) => {
-    countyData.forEach(today => {
-      if (today.Confirmed < 0) {
-        const countyName = getCountyName(fips);
-        issues.push([
-          `${shortDate(today.Reported)}`,
-          "Confirmed",
-          `${today.Confirmed}`,
-          `${countyName}, ${getStateAbr(fips)}`,
-          `${fips}`
-        ]);
-      }
-    });
-  });
-
-  issues.sort((a, b) => {
-    const date = b[0] > a[0] ? 1 : b[0] === a[0] ? 0 : -1;
-    return date === 0 ? parseInt(b[3]) - parseInt(a[3]) : date;
-  });
-
-  return {
-    rule: "Counties with Negative Data",
-    headers: ["Reported", "Stat", "Value", "name", "fips"],
-
-    issues: issues.splice(0, 25)
-  };
-};
-
 const abnormalCaseChange = (covidDateData: CovidDateData): RuleResult => {
   const issues: string[][] = [];
   const tooLargeIncreaseFactor = 3;
@@ -121,7 +89,7 @@ const abnormalCaseChange = (covidDateData: CovidDateData): RuleResult => {
   });
 
   return {
-    rule: `Counties with > ${abnormalIncreaseThreshold} Cases and Have Increase by a Factor of ${tooLargeIncreaseFactor}`,
+    rule: `Counties with > ${abnormalIncreaseThreshold} Cases and Have Increased by a Factor of ${tooLargeIncreaseFactor}`,
     headers: [
       "Reported",
       "Stat",
@@ -335,7 +303,6 @@ export const getDataIssues = (covidDateData: CovidDateData): RuleResult[] => {
     suspiciousCountiesEqual,
     abnormalCaseChange,
     casesMustIncrease,
-    casesMustPositive,
     timeseriesMissingDay,
     countyFIPSMissing,
     InvalidFIPS,
