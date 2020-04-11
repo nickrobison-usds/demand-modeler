@@ -15,9 +15,12 @@ const USATotalsAlt: React.FunctionComponent<Props> = props => {
     return Math.round((change / total) * 100);
   };
 
+  const defaultComparator = (a: any, b: any) => (a === b ? 0 : a < b ? -1 : 1);
+
+  // TODO: just make getCountyGrandTotal data be indexed by Date objects?
   const grandTotals: GrandTotal = getCountyGrandTotal(state);
   const dates = Object.keys(grandTotals)
-    .sort()
+    .sort((a: string, b: string) => defaultComparator(new Date(a), new Date(b)))
     .reverse();
 
   const total = grandTotals[dates[0]]?.Confirmed;
