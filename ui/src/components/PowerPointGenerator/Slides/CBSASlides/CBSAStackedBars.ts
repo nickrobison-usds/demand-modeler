@@ -189,12 +189,16 @@ const addCountySlide = (
   metroArea: string | string[],
   countyFips: string[][],
   stat: Stat,
-  cbsaId?: string,
+  cbsaId?: string | string[],
   daily = false
 ) => {
-  const countyData = countyFips.map(fips =>
-    getCountyData(counties, fips, stat, cbsaId, daily)
-  );
+  const countyData = countyFips.map((fips, i) => {
+    if (!cbsaId || typeof cbsaId === "string") {
+      return getCountyData(counties, fips, stat, cbsaId, daily)
+    } else {
+      return getCountyData(counties, fips, stat, cbsaId[i], daily)
+    }
+  });
   const maxNumberOfCounties = countyData.reduce(
     (acc, el) => (acc > el.length ? acc : el.length),
     0
@@ -272,9 +276,9 @@ export const addMultiCBSAStackedBarSlides = (
   slides.forEach(fipsAreas => {
     const fips = fipsAreas.map(code => cbsaCodes[code].fips);
     const names = fipsAreas.map(code => cbsaCodes[code].name);
-    addCountySlide(ppt, counties, names, fips, "confirmed", undefined);
-    addCountySlide(ppt, counties, names, fips, "confirmed", undefined, true);
-    addCountySlide(ppt, counties, names, fips, "dead", undefined);
-    addCountySlide(ppt, counties, names, fips, "dead", undefined, true);
+    addCountySlide(ppt, counties, names, fips, "confirmed", fipsAreas);
+    addCountySlide(ppt, counties, names, fips, "confirmed", fipsAreas, true);
+    addCountySlide(ppt, counties, names, fips, "dead", fipsAreas);
+    addCountySlide(ppt, counties, names, fips, "dead", fipsAreas, true);
   });
 };
