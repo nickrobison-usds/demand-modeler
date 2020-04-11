@@ -20,8 +20,8 @@ interface CountyResponse {
 }
 
 const parseDate = (d: string) => {
-  const date = new Date(d.split("T")[0]);
-  date.setDate(date.getDate() + 1);
+  const dateParts = d.split("T")[0].split("-");
+  const date = new Date(`${dateParts[1]}/${dateParts[2]}/${dateParts[0]}`);
   return date;
 };
 
