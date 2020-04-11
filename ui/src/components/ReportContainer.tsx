@@ -21,7 +21,7 @@ export interface ReportContainerProps {
 type Region = County | State;
 
 const addZerosForMissingDataPoints = (regions: {[FIPS: string]: Region[]}) => {
-  const start = new Date("03/19/2020");
+  const start = new Date("03/10/2020");
   const end = new Date("04/09/2020");
   const regionsWithZeros: {[FIPS: string]: Region[]} = {};
   const appendRegion = (fips: string, r: Region) => {

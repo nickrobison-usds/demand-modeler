@@ -3,8 +3,6 @@ import { County } from "../../../../app/AppStore";
 import { addLineChartWithLegend } from "../Templates/InteriorSlides/LineChartWithTitle";
 import { cbsaCodes } from "./cbsaCodes";
 import { CSBAOrderedByStat } from "./Utils";
-// import { isSameDay } from "../../../../utils/DateUtils";
-// import * as fipsUtils from "../../../../utils/fips";
 
 export const colors = [
   "69ABDD",

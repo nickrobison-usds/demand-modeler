@@ -79,7 +79,6 @@ export const addCBSAPopulationOver500k = (
   // All together
   const allTogether = withoutTop25();
   const maxValue = getMaxValueOne(allTogether.lineData)
-  console.log(maxValue)
   addLineChartWithLegend(
     ppt,
     `Cumulative cases: CBSA's > 500k people, Excluding Top 25 CBSA`,

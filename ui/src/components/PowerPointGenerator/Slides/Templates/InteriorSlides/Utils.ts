@@ -19,7 +19,6 @@ export const getMaxValueOne = (chartData: ChartData[]) => {
       dailyTotals[i] = val;
     });
   });
-  console.log(dailyTotals, chartData)
   const max=  Math.max(...dailyTotals);
   const scale = 18;
   return max * scale;

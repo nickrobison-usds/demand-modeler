@@ -124,7 +124,6 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
         const {fips} = cbsaCodes[id];
         fips.forEach(fip => {
           const region = timeSeriesData[fip];
-        //   console.log(Name, fips, region)
 
           if (region && region.length > 0) {
             region.sort(compare);
@@ -140,7 +139,7 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
             //   } else {
             //     metric = 0;
             //   }
-            // } 
+            // }
             if (metric < min) {
               min = metric;
             } else if (metric > max) {
@@ -171,7 +170,7 @@ const CountyMap: React.FunctionComponent<CountyMapProps> = props => {
       const newLegend = { ...legendScales };
       newLegend.New.scale = [0, 5, 10, 25, 50, 100, 200, 400];
       setLegendScales(newLegend);
-    } 
+    }
     return formatedGeoJSON;
   };
 
