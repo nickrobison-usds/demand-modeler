@@ -65,7 +65,7 @@ export const monthDay = (date: Date) => {
   const minute = addZero(date.getMinutes());
   const m = date.getMonth();
   const month = theMonths[m];
-  const day = date.getDate();
+  const day = addZero(date.getDate());
   const year = date.getFullYear();
   // Changing this may break all the bar graphs
   return `${year}${m}${day}${hour}:${minute}|${month}-${day}`;
