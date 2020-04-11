@@ -55,7 +55,7 @@ const casesMustIncrease = (covidDateData: CovidDateData): RuleResult => {
     countyData.forEach((today, i) => {
       const tomorrow = countyData[i + 1];
       if (!tomorrow) return;
-      if (tomorrow.Confirmed < today.Confirmed && today.Confirmed > minCases) {
+      if (tomorrow.Confirmed <= today.Confirmed && today.Confirmed > minCases) {
         const countyName = getCountyName(fips);
         issues.push([
           `${shortDate(tomorrow.Reported)}`,
@@ -351,10 +351,10 @@ const growthOutliers = (covidDateData: CovidDateData): RuleResult => {
 
 export const getDataIssues = (covidDateData: CovidDateData): RuleResult[] => {
   const rulesets = [
-    suspiciousCountiesEqual,
-    abnormalCaseChange,
     casesMustIncrease,
     timeseriesMissingDay,
+    suspiciousCountiesEqual,
+    abnormalCaseChange,
     countyFIPSMissing,
     InvalidFIPS,
     growthOutliers,

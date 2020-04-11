@@ -89,7 +89,7 @@
   "42780": { fips: ["42109"], name: "Selinsgrove, PA" },
   "24740": { fips: ["28151"], name: "Greenville, MS" },
   "39300": {
-    fips: ["25005", "44001", "44003", "44005", "44007", "44009"],
+    fips: ["25005", "44001", "44003", "44005", "44007", "44009", "44000"],
     name: "Providence-Warwick, RI-MA"
   },
   "18860": { fips: ["06015"], name: "Crescent City, CA" },
