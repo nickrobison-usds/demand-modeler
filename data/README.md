@@ -12,7 +12,7 @@
 
 1. `docker-compose down`
 1. `docker-compose up postgres`
-1. `docker-compose up api`
+1. `docker-compose up --build api`
 1. `cd ui && yarn start`
 1. Wait for data load to complete and go to the [report](localhost:3000/?report=true)
 

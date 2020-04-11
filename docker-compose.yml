@@ -13,8 +13,7 @@ services:
   api:
     build:
       context: .
-      # dockerfile: Dockerfile
-      dockerfile: api-dev.Dockerfile
+      dockerfile: Dockerfile
     container_name: "api"
     environment:
       - LOAD=0
