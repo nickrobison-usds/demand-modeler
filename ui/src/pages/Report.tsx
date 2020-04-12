@@ -159,6 +159,14 @@ export const Report: React.FC<{}> = () => {
     // );
   // };
 
+
+  const csvURI = (result: RuleResult) => {
+    const csvHeader = "data:text/csv;charset=utf-8,";
+    const header = result.headers.join(",") + "\n"
+    const rows = result.issues.map(i => i.join(",")).join("\n")
+    return encodeURI(csvHeader + header + rows);
+  }
+
   return (
     <AppContext.Consumer>
       {({ state }) => {
@@ -217,6 +225,12 @@ export const Report: React.FC<{}> = () => {
                           className="usa-accordion__content usa-prose"
                           hidden
                         >
+                          <a
+                            href={csvURI(result)}
+                            download={result.rule.split(" ").join("-") + ".csv"}
+                          >
+                            Export as csv
+                          </a>
                           <table className="usa-table">
                             <thead>
                               {result.headers.map((h, i) => (

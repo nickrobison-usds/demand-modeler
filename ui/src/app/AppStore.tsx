@@ -53,7 +53,7 @@ export interface State extends CovidStats {
   Reported: Date;
 }
 
-type Region = State | County;
+export type Region = State | County;
 
 export interface CovidDateData {
   states: { [key: string]: State[] };

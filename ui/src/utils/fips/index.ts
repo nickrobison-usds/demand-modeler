@@ -25,3 +25,7 @@ export const getCountyName = (fips: string) => {
 export const getPopulation = (fips: string) => {
   return population[fips];
 };
+
+export const isState = (fips: string) => {
+  return fips.substring(2, 5) === '000';
+}

@@ -88,3 +88,5 @@ export const yearMonthDayDot = (date: Date) => {
   // Changing this may break all the bar graphs
   return `${year}.${month}.${day}`;
 };
+
+export const shortDate = (date: Date) => date.getMonth() + 1 + "/" + date.getDate();

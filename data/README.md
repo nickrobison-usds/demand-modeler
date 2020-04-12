@@ -18,8 +18,10 @@
 
 ## Data cleaning
 
-1. review data checks
-1. review known data issue areas in airtable
+1. review data checks (currently in fearless dreamer)
 1. review top ten state county data against state department of health websites
-1. update `FIPSData.csv` with more accurate numbers and restart application
-
+1. review known data issue areas in airtable
+    * [Philadelphia, PA](https://www.health.pa.gov/topics/disease/coronavirus/Pages/Cases.aspx)
+    * [Harris County, TX](https://harriscounty.maps.arcgis.com/apps/opsdashboard/index.html#/c0de71f8ea484b85bb5efcb7c07c6914)
+    * [Wayne County, MI](https://www.michigan.gov/coronavirus/0,9753,7-406-98163_98173---,00.html) Note add Detroit + Wayne values from michigan.gov
+    * [King Couny, WA](https://www.kingcounty.gov/depts/health/communicable-diseases/disease-control/novel-coronavirus/data-dashboard.aspx) kingcounty.gov seems to report the most up to date numbers
