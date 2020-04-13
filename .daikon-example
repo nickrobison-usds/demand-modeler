@@ -1,0 +1,9 @@
+# Settings for FIPS data source
+
+# To use:
+#   - Fill in the correct values for the variables below and rename to .daikon
+#   - Source the file in your shell
+#      . ./.daikon
+
+export DAIKON_URL="https://api.example.com/datasets/1234567890/branches/master/csv/?includeColumnNames=false"
+export DAIKON_TOKEN=

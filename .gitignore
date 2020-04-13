@@ -7,3 +7,7 @@ ui/node_modules
 ui/build
 .env.local
 .DS_Store
+
+# Daikon settings and credentials
+.daikon
+
