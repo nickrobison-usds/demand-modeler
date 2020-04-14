@@ -53,7 +53,7 @@ export const addStateLineGraphs = (
       `Confirmed cases${perPopString}`
     );
   
-    const allStatesWithoutNY = getStateLineData(Object.values(states)).filter(el => !["NY"].includes(el.name), perPopulation);
+    const allStatesWithoutNY = getStateLineData(Object.values(states), perPopulation).filter(el => !["NY"].includes(el.name));
     addLineChartWithLegend(
       ppt,
       `Cumulative cases${perPopString}: All States Without NY`,
@@ -95,7 +95,8 @@ export const addStateLineGraphs = (
       .filter(el => !["NY"].includes(el.name))
       .splice(12, 12);
     const States12to24NJ = getStateLineData(
-      Object.values(states)
+      Object.values(states),
+      perPopulation
     ).filter(el => ["NJ"].includes(el.name));
     addLineChartWithLegend(
       ppt,
@@ -112,7 +113,8 @@ export const addStateLineGraphs = (
       .filter(el => !["NY"].includes(el.name))
       .splice(24, 12);
     const States24to36NJ = getStateLineData(
-      Object.values(states)
+      Object.values(states),
+      perPopulation
     ).filter(el => ["NJ"].includes(el.name));
     addLineChartWithLegend(
       ppt,
@@ -129,7 +131,8 @@ export const addStateLineGraphs = (
       .filter(el => !["NY"].includes(el.name))
       .splice(36, 15);
     const States24to51NJ = getStateLineData(
-      Object.values(states)
+      Object.values(states),
+      perPopulation
     ).filter(el => ["NJ"].includes(el.name));
     addLineChartWithLegend(
       ppt,
