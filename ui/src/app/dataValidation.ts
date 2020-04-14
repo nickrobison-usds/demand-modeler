@@ -21,7 +21,7 @@ const casesMustIncrease = (covidDateData: CovidDateData): RuleResult => {
       ) {
         const countyName = getCountyName(fips);
         issues.push([
-          tomorrow.Reported,
+          today.Reported,
           `${today.Confirmed}`,
           `${tomorrow.Confirmed}`,
           `${countyName}`,
