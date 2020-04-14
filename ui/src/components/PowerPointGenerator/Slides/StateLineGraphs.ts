@@ -5,8 +5,12 @@ import {
 import { State } from "../../../app/AppStore";
 import * as FipUtils from "../../../utils/fips";
 import { lineColors } from "../../../utils/reportHelpers";
+import { addBlankSlideWithTitle } from "./Templates/InteriorSlides/BlankWithTitle";
 
-const getStateLineData = (states: State[][]) => {
+const getStateLineData = (
+  states: State[][],
+  perPopulation?: number
+  ) => {
     return states
       .reduce((acc, stateSeries) => {
         const state: ChartData = {
@@ -18,7 +22,8 @@ const getStateLineData = (states: State[][]) => {
           state.labels.push(
             el.Reported.getMonth() + 1 + "/" + el.Reported.getDate()
           );
-          state.values.push(el.Confirmed / (FipUtils.getPopulation(el.ID) / 100000));
+          const value = perPopulation ? el.Confirmed / (FipUtils.getPopulation(el.ID) / perPopulation) : el.Confirmed;
+          state.values.push(value);
         });
         // The first day is only used to calculate diffs. Remove it.
         state.labels.shift();
@@ -31,121 +36,128 @@ const getStateLineData = (states: State[][]) => {
       });
 };
 
-export const addStateLineGraphs= (ppt: pptxgen, states: {[fips: string]: State[]}) => {
-  const allStates = getStateLineData(Object.values(states));
-  addLineChartWithLegend(
-    ppt,
-    "Cumulative cases per 100,000: All States",
-    allStates,
-    lineColors,
-    "Confirmed cases per 100,000"
-  );
+export const addStateLineGraphs = (
+  ppt: pptxgen,
+  states: {[fips: string]: State[]},
+  perPopulation?: number
+  ) => {
+    const perPopString = perPopulation ? ` per ${perPopulation.toLocaleString()}` : "";
+    addBlankSlideWithTitle(ppt, `States: Cumlative Cases${perPopString}`);
 
-  const allStatesWithoutNY = getStateLineData(Object.values(states)).filter(el => !["NY"].includes(el.name));
-  addLineChartWithLegend(
-    ppt,
-    `Cumulative cases per 100,000: All States Without NY`,
-    allStatesWithoutNY,
-    lineColors,
-    "Confirmed cases per 100,000"
-  );
-
-  const top12States = getStateLineData(
-    Object.values(states)
-  ).splice(0, 12);
-  addLineChartWithLegend(
-    ppt,
-    `Cumulative cases per 100,000: Top 12 States`,
-    top12States,
-    lineColors,
-    "Confirmed cases per 100,000"
-  );
-
-  const States0to12WithoutNY = getStateLineData(
-    Object.values(states)
-  )
-    .filter(el => !["NY"].includes(el.name))
-    .splice(0, 12);
-  addLineChartWithLegend(
-    ppt,
-    `Cumulative cases per 100,000: Top States 1-12 Without NY`,
-    States0to12WithoutNY,
-    lineColors,
-    "Confirmed cases per 100,000"
-  );
-
-  const States12to24WithoutNY = getStateLineData(
-    Object.values(states)
-  )
-    .filter(el => !["NY"].includes(el.name))
-    .splice(12, 12);
-  const States12to24NJ = getStateLineData(
-    Object.values(states)
-  ).filter(el => ["NJ"].includes(el.name));
-  addLineChartWithLegend(
-    ppt,
-    `Cumulative cases per 100,000: Top 13-24 States Without NY With NJ`,
-    [...States12to24NJ, ...States12to24WithoutNY],
-    lineColors,
-    "Confirmed cases per 100,000"
-  );
-
-  const States24to36ithoutNY = getStateLineData(
-    Object.values(states)
-  )
-    .filter(el => !["NY"].includes(el.name))
-    .splice(24, 12);
-  const States24to36NJ = getStateLineData(
-    Object.values(states)
-  ).filter(el => ["NJ"].includes(el.name));
-  addLineChartWithLegend(
-    ppt,
-    `Cumulative cases per 100,000: Top 25-36 States Without NY With NJ`,
-    [...States24to36NJ, ...States24to36ithoutNY],
-    lineColors,
-    "Confirmed cases per 100,000"
-  );
-
-  const States24to51ithoutNY = getStateLineData(
-    Object.values(states)
-  )
-    .filter(el => !["NY"].includes(el.name))
-    .splice(36, 15);
-  const States24to51NJ = getStateLineData(
-    Object.values(states)
-  ).filter(el => ["NJ"].includes(el.name));
-  addLineChartWithLegend(
-    ppt,
-    `Cumulative cases per 100,000: Top 37-51 States Without NY With NJ`,
-    [...States24to51NJ, ...States24to51ithoutNY],
-    lineColors,
-    "Confirmed cases per 100,000"
-  );
-
-  const exceptionStates = ["NY", "NJ", "CT", "WA", "CA"];
-  const exceptionStatesData = getStateLineData(
-    Object.values(states)
-  ).filter(el => exceptionStates.includes(el.name));
-
-  addLineChartWithLegend(
-    ppt,
-    `Cumulative cases per 100,000: ${exceptionStates.join(", ")}`,
-    exceptionStatesData,
-    lineColors,
-    "Confirmed cases per 100,000"
-  );
-
-  // // Non-exception states
-  const nonExceptionStatesData = getStateLineData(
-    Object.values(states)
-  ).filter(el => !exceptionStates.includes(el.name));
-  addLineChartWithLegend(
-    ppt,
-    `Cumulative cases per 100,000: states except ${exceptionStates.join(
-      ", "
-    )}`,
-    nonExceptionStatesData,
-    lineColors,
-    "Confirmed cases per 100,000"
-  );
-}
+    const allStates = getStateLineData(Object.values(states));
+    addLineChartWithLegend(
+      ppt,
+      `Cumulative cases${perPopString}: All States`,
+      allStates,
+      lineColors,
+      `Confirmed cases${perPopString}`
+    );
+  
+    const allStatesWithoutNY = getStateLineData(Object.values(states)).filter(el => !["NY"].includes(el.name));
+    addLineChartWithLegend(
+      ppt,
+      `Cumulative cases${perPopString}: All States Without NY`,
+      allStatesWithoutNY,
+      lineColors,
+      `Confirmed cases${perPopString}`
+    );
+  
+    const top12States = getStateLineData(
+      Object.values(states)
+    ).splice(0, 12);
+    addLineChartWithLegend(
+      ppt,
+      `Cumulative cases${perPopString}: Top 12 States`,
+      top12States,
+      lineColors,
+      `Confirmed cases${perPopString}`
+    );
+  
+    const States0to12WithoutNY = getStateLineData(
+      Object.values(states)
+    )
+      .filter(el => !["NY"].includes(el.name))
+      .splice(0, 12);
+    addLineChartWithLegend(
+      ppt,
+      `Cumulative cases${perPopString}: Top States 1-12 Without NY`,
+      States0to12WithoutNY,
+      lineColors,
+      `Confirmed cases${perPopString}`
+    );
+  
+    const States12to24WithoutNY = getStateLineData(
+      Object.values(states)
+    )
+      .filter(el => !["NY"].includes(el.name))
+      .splice(12, 12);
+    const States12to24NJ = getStateLineData(
+      Object.values(states)
+    ).filter(el => ["NJ"].includes(el.name));
+    addLineChartWithLegend(
+      ppt,
+      `Cumulative cases${perPopString}: Top 13-24 States Without NY With NJ`,
+      [...States12to24NJ, ...States12to24WithoutNY],
+      lineColors,
+      `Confirmed cases${perPopString}`
+    );
+  
+    const States24to36ithoutNY = getStateLineData(
+      Object.values(states)
+    )
+      .filter(el => !["NY"].includes(el.name))
+      .splice(24, 12);
+    const States24to36NJ = getStateLineData(
+      Object.values(states)
+    ).filter(el => ["NJ"].includes(el.name));
+    addLineChartWithLegend(
+      ppt,
+      `Cumulative cases${perPopString}: Top 25-36 States Without NY With NJ`,
+      [...States24to36NJ, ...States24to36ithoutNY],
+      lineColors,
+      `Confirmed cases${perPopString}`
+    );
+  
+    const States24to51ithoutNY = getStateLineData(
+      Object.values(states)
+    )
+      .filter(el => !["NY"].includes(el.name))
+      .splice(36, 15);
+    const States24to51NJ = getStateLineData(
+      Object.values(states)
+    ).filter(el => ["NJ"].includes(el.name));
+    addLineChartWithLegend(
+      ppt,
+      `Cumulative cases${perPopString}: Top 37-51 States Without NY With NJ`,
+      [...States24to51NJ, ...States24to51ithoutNY],
+      lineColors,
+      `Confirmed cases${perPopString}`
+    );
+  
+    const exceptionStates = ["NY", "NJ", "CT", "WA", "CA"];
+    const exceptionStatesData = getStateLineData(
+      Object.values(states)
+    ).filter(el => exceptionStates.includes(el.name));
+  
+    addLineChartWithLegend(
+      ppt,
+      `Cumulative cases${perPopString}: ${exceptionStates.join(", ")}`,
+      exceptionStatesData,
+      lineColors,
+      `Confirmed cases${perPopString}`
+    );
+  
+    // // Non-exception states
+    const nonExceptionStatesData = getStateLineData(
+      Object.values(states)
+    ).filter(el => !exceptionStates.includes(el.name));
+    addLineChartWithLegend(
+      ppt,
+      `Cumulative cases${perPopString}: states except ${exceptionStates.join(
+        ", "
+      )}`,
+      nonExceptionStatesData,
+      lineColors,
+      `Confirmed cases${perPopString}`
+    );
+};
