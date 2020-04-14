@@ -263,7 +263,6 @@ const reportedCasesWithOCases = (covidDateData: CovidDateData): RuleResult => {
 
   // find missing data points in exisitng timeseries
   Object.entries(covidDateData.counties).forEach(([id, countyData]) => {
-
     let hasCase = isState(id)
     countyData.forEach(c => {
       if (hasCase) {
@@ -276,9 +275,6 @@ const reportedCasesWithOCases = (covidDateData: CovidDateData): RuleResult => {
         `${getCountyName(id)}, ${getStateAbr(id)}`,
         id
       ]);
-    }
-    if (id === "29111") {
-      console.log(id, countyData, hasCase, isState(id), issues)
     }
   });
 

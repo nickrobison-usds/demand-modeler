@@ -2,8 +2,10 @@ import { County } from "../../../../app/AppStore";
 import { cbsaCodes } from "./cbsaCodes";
 import * as fipsUtils from "../../../../utils/fips";
 
-export const getLatestCounty = (counties: County[]): County => {
-  return counties.sort((a,b) => b.Reported.getTime() - a.Reported.getTime())[0];
+export const getLatestCountyWithValue = (counties: County[]): County => {
+  const countiesByTime = [...counties].sort((a,b) => b.Reported.getTime() - a.Reported.getTime());
+  const value = countiesByTime.find(c => c.Confirmed > 0);
+  return value || countiesByTime[0];
 }
 
 export const getCSBATotal = (
@@ -14,7 +16,7 @@ export const getCSBATotal = (
   const { fips } = cbsaCodes[csba];
   let total = 0;
   fips.forEach((fip) => {
-    total += counties[fip] ? getLatestCounty(counties[fip])[stat] : 0;
+    total += counties[fip] ? getLatestCountyWithValue(counties[fip])[stat] : 0;
   });
   return total;
 };
@@ -30,7 +32,7 @@ export const getCSBATotalPerPopulation = (
   let population = 0;
   fips.forEach((fip) => {
     if (counties[fip]) {
-      total += getLatestCounty(counties[fip])[stat];
+      total += getLatestCountyWithValue(counties[fip])[stat];
       population += fipsUtils.getPopulation(fip)
     }
   });

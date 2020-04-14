@@ -65,11 +65,9 @@ const getChartData = (
 
       state.values.push(value);
     });
-
-
     // The first day is only used to calculate diffs. Remove it.
-    state.labels.reverse();
-    state.values.reverse();
+    state.labels.shift();
+    state.values.shift();
     acc.push(state);
     return acc;
   }, [] as ChartData[]);
@@ -87,7 +85,7 @@ export const addCBSATop25 = (
   const perPopString = perPopulation ? ` per ${perPopulation.toLocaleString()}` : "";
   addBlankSlideWithTitle(ppt, `Cumlative Cases${perPopString}: Top 25 CBSA`);
   // with NY
-  const withNY = getChartData(counties, []);
+  const withNY = getChartData(counties, [], perPopulation);
   addLineChartWithLegend(
     ppt,
     `Cumulative cases${perPopString}: Top 25 CBSA`,
@@ -97,7 +95,7 @@ export const addCBSATop25 = (
   );
 
   // without NY
-  const withoutNY = getChartData(counties, ["35620"]);
+  const withoutNY = getChartData(counties, ["35620"], perPopulation);
   addLineChartWithLegend(
     ppt,
     `Cumulative cases${perPopString}: Top 25 CBSA without NYC`,

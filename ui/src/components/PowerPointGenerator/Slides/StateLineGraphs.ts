@@ -52,7 +52,7 @@ export const addStateLineGraphs = (
       lineColors,
       `Confirmed cases${perPopString}`
     );
-  
+
     const allStatesWithoutNY = getStateLineData(Object.values(states), perPopulation).filter(el => !["NY"].includes(el.name));
     addLineChartWithLegend(
       ppt,
@@ -61,7 +61,7 @@ export const addStateLineGraphs = (
       lineColors,
       `Confirmed cases${perPopString}`
     );
-  
+
     const top12States = getStateLineData(
       Object.values(states),
       perPopulation
@@ -73,7 +73,7 @@ export const addStateLineGraphs = (
       lineColors,
       `Confirmed cases${perPopString}`
     );
-  
+
     const States0to12WithoutNY = getStateLineData(
       Object.values(states),
       perPopulation
@@ -87,7 +87,7 @@ export const addStateLineGraphs = (
       lineColors,
       `Confirmed cases${perPopString}`
     );
-  
+
     const States12to24WithoutNY = getStateLineData(
       Object.values(states),
       perPopulation
@@ -105,7 +105,7 @@ export const addStateLineGraphs = (
       lineColors,
       `Confirmed cases${perPopString}`
     );
-  
+
     const States24to36ithoutNY = getStateLineData(
       Object.values(states),
       perPopulation
@@ -123,7 +123,7 @@ export const addStateLineGraphs = (
       lineColors,
       `Confirmed cases${perPopString}`
     );
-  
+
     const States24to51ithoutNY = getStateLineData(
       Object.values(states),
       perPopulation
@@ -141,13 +141,13 @@ export const addStateLineGraphs = (
       lineColors,
       `Confirmed cases${perPopString}`
     );
-  
+
     const exceptionStates = ["NY", "NJ", "CT", "WA", "CA"];
     const exceptionStatesData = getStateLineData(
       Object.values(states),
       perPopulation
     ).filter(el => exceptionStates.includes(el.name));
-  
+
     addLineChartWithLegend(
       ppt,
       `Cumulative cases${perPopString}: ${exceptionStates.join(", ")}`,
@@ -155,7 +155,7 @@ export const addStateLineGraphs = (
       lineColors,
       `Confirmed cases${perPopString}`
     );
-  
+
     // // Non-exception states
     const nonExceptionStatesData = getStateLineData(
       Object.values(states),

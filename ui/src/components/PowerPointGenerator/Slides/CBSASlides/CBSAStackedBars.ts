@@ -5,7 +5,7 @@ import { getCountyName, getStateAbr } from "../../../../utils/fips";
 import { cbsaCodes } from "./cbsaCodes";
 import * as fipsUtils from "../../../../utils/fips";
 import { addBlankSlideWithTitle } from "../Templates/InteriorSlides/BlankWithTitle";
-import { CSBAOrderedByStat, getCSBATotal, getLatestCounty } from "./Utils";
+import { CSBAOrderedByStat, getCSBATotal, getLatestCountyWithValue } from "./Utils";
 import { slides } from "./multiCbsaPerSlide";
 
 const OTHER_THRESHOLD = 0.01;
@@ -118,14 +118,14 @@ const getCountyData = (
       return counties[fips];
     })
     .sort((a, b) => {
-      return getLatestCounty(b)?.Confirmed - getLatestCounty(a)?.Confirmed;
+      return getLatestCountyWithValue(b)?.Confirmed - getLatestCountyWithValue(a)?.Confirmed;
     });
 
   const countiesToKeep = cleanCountyFips.filter(
-    el => getLatestCounty(el)?.Confirmed / totalConfirmed >= OTHER_THRESHOLD
+    el => getLatestCountyWithValue(el)?.Confirmed / totalConfirmed >= OTHER_THRESHOLD
   );
   const otherCounties = cleanCountyFips.filter(
-    el => getLatestCounty(el)?.Confirmed / totalConfirmed < OTHER_THRESHOLD
+    el => getLatestCountyWithValue(el)?.Confirmed / totalConfirmed < OTHER_THRESHOLD
   );
   const otherTimeseries: County[] = [];
   otherCounties.forEach(timeseries =>
@@ -159,8 +159,7 @@ const getCountyData = (
       labels: [],
       values: []
     };
-    // Data comes in in reverse chronological order
-    const orderedCounties = [...county].reverse();
+    const orderedCounties = [...county]
 
     orderedCounties.forEach((el, i) => {
       data.labels.push(
