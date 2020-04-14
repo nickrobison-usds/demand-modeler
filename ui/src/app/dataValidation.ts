@@ -21,7 +21,7 @@ const casesMustIncrease = (covidDateData: CovidDateData): RuleResult => {
       ) {
         const countyName = getCountyName(fips);
         issues.push([
-          tomorrow.Reported,
+          today.Reported,
           `${today.Confirmed}`,
           `${tomorrow.Confirmed}`,
           `${countyName}`,
@@ -257,6 +257,36 @@ const suspiciousCountiesEqual = (covidDateData: CovidDateData): RuleResult => {
     issues: issues
   };
 };
+
+const reportedCasesWithOCases = (covidDateData: CovidDateData): RuleResult => {
+  const issues: Issues = [];
+
+  // find missing data points in exisitng timeseries
+  Object.entries(covidDateData.counties).forEach(([id, countyData]) => {
+    let hasCase = isState(id)
+    countyData.forEach(c => {
+      if (hasCase) {
+        return;
+      }
+      hasCase = c.Confirmed > 0;
+    });
+    if (!hasCase) {
+      issues.push([
+        `${getCountyName(id)}, ${getStateAbr(id)}`,
+        id
+      ]);
+    }
+  });
+
+  const total = issues.length;
+  return {
+    total,
+    rule: "Counties with 0 cases",
+    headers: ["Name", "FIPS"],
+    issues: issues
+  };
+};
+
 /**
  * Gets anything where the most recent report is within 14 days, but is
  * missing a more recent report
@@ -482,6 +512,7 @@ export const getDataIssues = (covidDateData: CovidDateData): RuleResult[] => {
     timeseriesMissingDay,
     suspiciousCountiesEqual,
     countyFIPSMissing,
+    reportedCasesWithOCases,
     InvalidFIPS,
     growthOutliers,
   ];
