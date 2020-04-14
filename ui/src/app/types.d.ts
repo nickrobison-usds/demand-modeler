@@ -1,6 +1,8 @@
+type Issues = (Date | stirng)[][]
+
 type RuleResult = {
   rule: string;
   headers: string[];
-  issues: string[][];
+  issues: Issues;
   total: number;
 };

@@ -6,7 +6,7 @@ import { isSameDay, shortDate } from "../utils/DateUtils";
 
 const casesMustIncrease = (covidDateData: CovidDateData): RuleResult => {
   const min = 50;
-  const issues: string[][] = [];
+  const issues: Issues = [];
   // Counties
   const counties = Object.entries(covidDateData.counties);
   counties.forEach(([fips, countyData]) => {
@@ -21,7 +21,7 @@ const casesMustIncrease = (covidDateData: CovidDateData): RuleResult => {
       ) {
         const countyName = getCountyName(fips);
         issues.push([
-          `${shortDate(tomorrow.Reported)}`,
+          tomorrow.Reported,
           `${today.Confirmed}`,
           `${tomorrow.Confirmed}`,
           `${countyName}`,
@@ -33,7 +33,7 @@ const casesMustIncrease = (covidDateData: CovidDateData): RuleResult => {
   });
 
   issues.sort((a, b) => {
-    const date = b[0] > a[0] ? 1 : b[0] === a[0] ? 0 : -1;
+    const date = b[0].getTime() - a[0].getTime();
     const value = parseInt(b[2]) - parseInt(a[2])
     return date === 0 ? value : date;
   });
@@ -56,7 +56,7 @@ const casesMustIncrease = (covidDateData: CovidDateData): RuleResult => {
 
 const deathsMustIncrease = (covidDateData: CovidDateData): RuleResult => {
   const min = 10;
-  const issues: string[][] = [];
+  const issues: Issues = [];
   // Counties
   const counties = Object.entries(covidDateData.counties);
   counties.forEach(([fips, countyData]) => {
@@ -71,7 +71,7 @@ const deathsMustIncrease = (covidDateData: CovidDateData): RuleResult => {
       ) {
         const countyName = getCountyName(fips);
         issues.push([
-          `${shortDate(tomorrow.Reported)}`,
+          tomorrow.Reported,
           `${today.Dead}`,
           `${tomorrow.Dead}`,
           `${countyName}`,
@@ -83,7 +83,7 @@ const deathsMustIncrease = (covidDateData: CovidDateData): RuleResult => {
   });
 
   issues.sort((a, b) => {
-    const date = b[0] > a[0] ? 1 : b[0] === a[0] ? 0 : -1;
+    const date = b[0].getTime() - a[0].getTime();
     const value = parseInt(b[2]) - parseInt(a[2])
     return date === 0 ? value : date;
   });
@@ -106,7 +106,7 @@ const deathsMustIncrease = (covidDateData: CovidDateData): RuleResult => {
 
 
 const abnormalCaseChange = (covidDateData: CovidDateData): RuleResult => {
-  const issues: string[][] = [];
+  const issues: Issues = [];
   const tooLargeIncreaseFactor = 1.4;
   const abnormalIncreaseThreshold = 50;
 
@@ -124,7 +124,7 @@ const abnormalCaseChange = (covidDateData: CovidDateData): RuleResult => {
       ) {
         const countyName = getCountyName(fips);
         issues.push([
-          `${shortDate(tomorrow.Reported)}`,
+          tomorrow.Reported,
           "Confirmed",
           `${today.Confirmed}`,
           `${tomorrow.Confirmed}`,
@@ -136,7 +136,7 @@ const abnormalCaseChange = (covidDateData: CovidDateData): RuleResult => {
   });
 
   issues.sort((a, b) => {
-    const date = b[0] > a[0] ? 1 : b[0] === a[0] ? 0 : -1;
+    const date = b[0].getTime() - a[0].getTime();
     const value = parseInt(b[3]) - parseInt(a[3])
     return date === 0 ? value : date;
   });
@@ -159,7 +159,7 @@ const abnormalCaseChange = (covidDateData: CovidDateData): RuleResult => {
 
 
 const abnormalDeathChange = (covidDateData: CovidDateData): RuleResult => {
-  const issues: string[][] = [];
+  const issues: Issues = [];
   const tooLargeIncreaseFactor = 1.4;
   const abnormalIncreaseThreshold = 10;
 
@@ -177,7 +177,7 @@ const abnormalDeathChange = (covidDateData: CovidDateData): RuleResult => {
       ) {
         const countyName = getCountyName(fips);
         issues.push([
-          `${shortDate(tomorrow.Reported)}`,
+          tomorrow.Reported,
           "Dead",
           `${today.Dead}`,
           `${tomorrow.Dead}`,
@@ -189,7 +189,7 @@ const abnormalDeathChange = (covidDateData: CovidDateData): RuleResult => {
   });
 
   issues.sort((a, b) => {
-    const date = b[0] > a[0] ? 1 : b[0] === a[0] ? 0 : -1;
+    const date = b[0].getTime() - a[0].getTime();
     const value = parseInt(b[3]) - parseInt(a[3])
     return date === 0 ? value : date;
   });
@@ -212,7 +212,7 @@ const abnormalDeathChange = (covidDateData: CovidDateData): RuleResult => {
 
 const suspiciousCountiesEqual = (covidDateData: CovidDateData): RuleResult => {
   const minCases = 50;
-  const issues: string[][] = [];
+  const issues: Issues = [];
   const equalConfirmations: { [key: string]: County[] } = {};
 
   Object.values(covidDateData.counties).forEach(countyData => {
@@ -259,7 +259,7 @@ const suspiciousCountiesEqual = (covidDateData: CovidDateData): RuleResult => {
 };
 
 const timeseriesMissingDay = (covidDateData: CovidDateData): RuleResult => {
-  const issues: string[][] = [];
+  const issues: Issues = [];
   let start: Date | null = null;
   let end: Date | null  = null;
 
@@ -282,7 +282,7 @@ const timeseriesMissingDay = (covidDateData: CovidDateData): RuleResult => {
       const id = countyData[0].ID;
       if (!dateExists && !isState(id)) {
         issues.push([
-          shortDate(d),
+          d,
           `${id}: ${getCountyName(id)}, ${getStateAbr(id)}`,
           `${getPopulation(id)}`,
           `${countyData.length}`
@@ -292,7 +292,7 @@ const timeseriesMissingDay = (covidDateData: CovidDateData): RuleResult => {
   });
 
   issues.sort((a,b) => {
-    const date = b[0] > a[0] ? 1 : b[0] === a[0] ? 0 : -1;
+    const date = b[0].getTime() - a[0].getTime();
     return date === 0 ? parseInt(b[3]) - parseInt(a[3]) : date;
   })
 
@@ -306,7 +306,7 @@ const timeseriesMissingDay = (covidDateData: CovidDateData): RuleResult => {
 };
 
 const countyFIPSMissing = (covidDateData: CovidDateData): RuleResult => {
-  const issues: string[][] = [];
+  const issues: Issues = [];
   const knownFIPS = Object.keys(names).filter(fip => !isState(fip));
   const receivedFIPS = Object.keys(covidDateData.counties);
   const missingFIPS =  knownFIPS.filter(f => !receivedFIPS.includes(f) );
@@ -333,7 +333,7 @@ const countyFIPSMissing = (covidDateData: CovidDateData): RuleResult => {
 };
 
 const InvalidFIPS = (covidDateData: CovidDateData): RuleResult => {
-  const issues: string[][] = [];
+  const issues: Issues = [];
   const knownFIPS = Object.keys(names).filter(fip => !isState(fip));
   const receivedFIPS = Object.keys(covidDateData.counties);
   const invalidFIPS = receivedFIPS.filter(f => !knownFIPS.includes(f) );
@@ -361,7 +361,7 @@ const InvalidFIPS = (covidDateData: CovidDateData): RuleResult => {
 };
 
 const growthOutliers = (covidDateData: CovidDateData): RuleResult => {
-  const issues: string[][] = [];
+  const issues: Issues = [];
   const numberOfDays = 5;
   const counties = Object.entries(covidDateData.counties);
   counties.forEach(([fips, countyData]) => {
@@ -383,7 +383,7 @@ const growthOutliers = (covidDateData: CovidDateData): RuleResult => {
         today.Confirmed > 50
       ) {
         issues.push([
-          shortDate(tomorrow.Reported),
+          tomorrow.Reported,
           "Confirmed",
           `${yesterdayRollingAverage}`,
           `${todayGrowth}`,
@@ -398,7 +398,7 @@ const growthOutliers = (covidDateData: CovidDateData): RuleResult => {
   });
 
   issues.sort((a, b) => {
-    const date = b[0] > a[0] ? 1 : b[0] === a[0] ? 0 : -1;
+    const date = b[0].getTime() - a[0].getTime();
     return date === 0 ? parseInt(b[5]) - parseInt(a[5]) : date;
   });
 

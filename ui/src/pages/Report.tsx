@@ -6,7 +6,7 @@ import { AppContext, State } from "../app/AppStore";
 // import { MixedBar } from "../components/Charts/MixedBar";
 // import CBSAMap from "../components/Maps/CBSAMap";
 import "./Report.scss";
-// import { dateTimeString } from "../utils/DateUtils";
+import { shortDate } from "../utils/DateUtils";
 import * as fips from "../utils/fips";
 import { ReportContainer } from "../components/ReportContainer";
 import { getDataIssues } from "../app/dataValidation";
@@ -241,7 +241,7 @@ export const Report: React.FC<{}> = () => {
                               {result.issues.map(row => (
                                 <tr>
                                   {row.map(c => (
-                                    <td>{c}</td>
+                                    <td>{typeof c === "object" ? shortDate(c) : c}</td>
                                   ))}
                                 </tr>
                               ))}
