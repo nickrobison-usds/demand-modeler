@@ -257,51 +257,105 @@ const suspiciousCountiesEqual = (covidDateData: CovidDateData): RuleResult => {
     issues: issues
   };
 };
-
+/**
+ * Gets anything where the most recent report is within 14 days, but is
+ * missing a more recent report
+ * @param covidDateData
+ */
 const timeseriesMissingDay = (covidDateData: CovidDateData): RuleResult => {
-  const issues: Issues = [];
-  let start: Date | null = null;
-  let end: Date | null  = null;
+  // 12096e5 = 14 days
+  const fortNightAgo = new Date(Date.now() - 12096e5).getTime();
+  const oneDay = 86400000;
 
+  const start = fortNightAgo;
+  let end = fortNightAgo;
+
+  const covidCounties = Object.values(covidDateData.counties);
+
+  // Add TS to counties
   // find earliest and latest reported case
-  Object.values(covidDateData.counties).forEach(countyData => {
-    countyData.forEach(c => {
-      if (!start || c.Reported.getTime() < start.getTime()) {
-        start = c.Reported;
+  const covidDateTimeCounties = covidCounties.map(countyData => {
+    return countyData.map(c => {
+      const ts = new Date(c["Reported"]).getTime();
+      // if (!start || ts < start) {
+      //   start = ts;
+      // }
+
+      // Grab most recent in current dataset
+      if (ts > end) {
+        end = ts;
       }
-      if (!end || c.Reported.getTime() > end.getTime()) {
-        end = c.Reported;
-      }
+      return { ...c, ts };
+    });
+  });
+
+  // Create dateRange for date comparisons and timeRange for equivalent ts
+  const dateRange: Date[] = [];
+  const timeRange: number[] = [];
+  for (let d = start; d <= end; d += oneDay) {
+    dateRange.push(new Date(d));
+    timeRange.push(d);
+  }
+
+  const issues: Issues = covidDateTimeCounties
+    // only get counties that have reported since we started counting (14 days)
+    .filter(c => c[c.length - 1].ts > start)
+    .filter(countyData => {
+      // Don't report states
+      return (
+        !isState(countyData[0].ID) &&
+        // Don't report counties that have all dates
+        !dateRange.reduce((hasAllDates, d) => {
+          if (hasAllDates === false) return false;
+          return (
+            typeof countyData.find(c => isSameDay(c.Reported, d)) != "undefined"
+          );
+        }, true)
+      );
     })
-  });
-
-  // find missing data points in exisitng timeseries
-  Object.values(covidDateData.counties).forEach(countyData => {
-    for (let d = new Date((start as Date).getTime()); d <= (end as Date); d.setDate(d.getDate() + 1)) {
-      const dateExists = countyData.find(c => isSameDay(c.Reported, d));
-      const id = countyData[0].ID;
-      if (!dateExists && !isState(id)) {
-        issues.push([
-          d,
-          `${id}: ${getCountyName(id)}, ${getStateAbr(id)}`,
-          `${getPopulation(id)}`,
-          `${countyData.length}`
-        ])
+    .map(countyData => {
+      // Find most recent missing date
+      let notFound = true;
+      let i;
+      // Count backwards for most recent missing date
+      for (i = dateRange.length - 1; i > 0; i--) {
+        const localI = i;
+        notFound =
+          typeof countyData.find(c =>
+            isSameDay(c.Reported, dateRange[localI])
+          ) == "undefined";
+        if (!notFound) {
+          break;
+        }
       }
-    }
-  });
+      const id = countyData[0].ID;
+      // Return issue + ts
+      return [
+        timeRange[i],
+        dateRange[i],
+        id,
+        `${getCountyName(id)}, ${getStateAbr(id)}`,
+        `${getPopulation(id)}`,
+        `${countyData.length}`
+      ];
+    });
 
-  issues.sort((a,b) => {
-    const date = b[0].getTime() - a[0].getTime();
-    return date === 0 ? parseInt(b[3]) - parseInt(a[3]) : date;
-  })
+  // Sort by ts and cut it off
+  issues.sort((a, b) => b[0] - a[0]);
+  const sortedIssues = issues.map(e => e.slice(1));
 
-  const total = issues.length;
+  const total = sortedIssues.length;
   return {
     total,
     rule: "Counties with Missing Data Points",
-    headers: ["Missing Report", "Name", "Population", "Number of Data Points"],
-    issues: issues
+    headers: [
+      "Missing Report",
+      "FIPS",
+      "Name",
+      "Population",
+      "Number of Data Points"
+    ],
+    issues: sortedIssues
   };
 };
 
