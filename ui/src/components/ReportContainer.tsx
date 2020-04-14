@@ -72,7 +72,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
     addStateLineGraphs(ppt, states);
     addStateLineGraphs(ppt, states, 100000);
     addCBSATop25(ppt, counties);
-    addCBSATop25(ppt, counties);
+    addCBSATop25(ppt, counties, 100000);
     addSelectCBSASlides(ppt, counties);
     addMultiCBSAStackedBarSlides(ppt, counties);
     addTop25CBSAByConfirmed(ppt, counties);
