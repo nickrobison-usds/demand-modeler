@@ -11,6 +11,7 @@ import {
 } from "./PowerPointGenerator/Slides/CBSASlides/CBSAStackedBars";
 import { addCBSATop25 } from "./PowerPointGenerator/Slides/CBSASlides/Top25CBSALineGraph";
 import { addCBSAPopulationOver500k } from "./PowerPointGenerator/Slides/CBSASlides/CBSAPopulationOver500k";
+import { addTopTenStates } from "./PowerPointGenerator/Slides/topTenStates";
 
 export interface ReportContainerProps {
   states: State[];
@@ -22,7 +23,7 @@ type Region = County | State;
 
 const addZerosForMissingDataPoints = (regions: {[FIPS: string]: Region[]}) => {
   const start = new Date("03/11/2020");
-  const end = new Date("04/12/2020");
+  const end = new Date("04/13/2020");
   const regionsWithZeros: {[FIPS: string]: Region[]} = {};
   const appendRegion = (fips: string, r: Region) => {
     if(regionsWithZeros[fips]) {
@@ -67,8 +68,10 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
     const counties = addZerosForMissingDataPoints(props.historicalTimeSeries.counties);
     const states = addZerosForMissingDataPoints(props.historicalTimeSeries.states);
 
+    // addTopTenStates(ppt, ["36000", "44000"], states)
     addStateLineGraphs(ppt, states);
     addStateLineGraphs(ppt, states, 100000);
+    addCBSATop25(ppt, counties);
     addCBSATop25(ppt, counties);
     addSelectCBSASlides(ppt, counties);
     addMultiCBSAStackedBarSlides(ppt, counties);

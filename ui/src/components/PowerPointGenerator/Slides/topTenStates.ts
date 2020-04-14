@@ -6,18 +6,11 @@ import * as FipUtils from "../../../utils/fips";
 
 export const addTopTenStates = (
     ppt: pptxgen,
-    states: State[],
-    timeSeries: CovidDateData
+    slection: string[],
+    states: {[fips: string]: State[]}
   ) => {
     // Do the state things
     const s = ppt.addSlide();
-  
-    const names = states.map(s => s.ID);
-    console.debug(
-      "States",
-      states.map(s => s.ID)
-    );
-    console.debug("Names", names);
   
     // Can we create a chart?
   
@@ -27,7 +20,7 @@ export const addTopTenStates = (
     // filter(s => names.has(s.ID));
   
     // console.debug("Tops: ", topStates);
-    const ts = states.map(s => s.ID).flatMap(i => timeSeries.states[i]);
+    const ts = slection.flatMap(fips => states[fips]);
     console.debug("top states");
   
     const grouped = _.chain(ts)

@@ -3,6 +3,8 @@ import { County } from "../../../../app/AppStore";
 import { addLineChartWithLegend } from "../Templates/InteriorSlides/LineChartWithTitle";
 import { cbsaCodes } from "./cbsaCodes";
 import { CSBAOrderedByStat } from "./Utils";
+import {getPopulation} from "../../../../utils/fips";
+import { addBlankSlideWithTitle } from "../Templates/InteriorSlides/BlankWithTitle";
 
 export const colors = [
   "69ABDD",
@@ -35,7 +37,8 @@ export const colors = [
 
 const getChartData = (
   counties: { [fip: string]: County[] },
-  exclude: string[]
+  exclude: string[],
+  perPopulation?: number
 ) => {
   const top25 = CSBAOrderedByStat(counties, "Confirmed", 25, exclude);
   const lineColors: { [s: string]: string } = {};
@@ -50,16 +53,17 @@ const getChartData = (
 
     Object.values(counties)[1].forEach((c, index) => {
       let confirmed = 0;
-      // let population = 0;
+      let population = 0;
       fips.forEach((fip) => {
         if (counties[fip] !== undefined && counties[fip][index] !== undefined) {
             confirmed += counties[fip][index].Confirmed;
-            // population += fipsUtils.getPopulation(fip)
+            population += getPopulation(fip)
         }
       });
       state.labels.push(c.Reported.getMonth() + 1 + "/" + c.Reported.getDate());
-      // state.values.push(confirmed/ (population / 100000));
-      state.values.push(confirmed);
+      const value = perPopulation ? confirmed / (population / perPopulation) : confirmed;
+
+      state.values.push(value);
     });
 
 
@@ -77,25 +81,28 @@ const getChartData = (
 
 export const addCBSATop25 = (
   ppt: pptxgen,
-  counties: { [fip: string]: County[] }
+  counties: { [fip: string]: County[] },
+  perPopulation?: number
 ) => {
+  const perPopString = perPopulation ? ` per ${perPopulation.toLocaleString()}` : "";
+  addBlankSlideWithTitle(ppt, `Cumlative Cases${perPopString}: Top 25 CBSA`);
   // with NY
   const withNY = getChartData(counties, []);
   addLineChartWithLegend(
     ppt,
-    `Cumulative cases: Top 25 CBSA`,
+    `Cumulative cases${perPopString}: Top 25 CBSA`,
     withNY.lineData,
     withNY.lineColors,
-    "Confirmed cases"
+    `Confirmed cases${perPopString}`
   );
 
   // without NY
   const withoutNY = getChartData(counties, ["35620"]);
   addLineChartWithLegend(
     ppt,
-    `Cumulative cases: Top 25 CBSA without NYC`,
+    `Cumulative cases${perPopString}: Top 25 CBSA without NYC`,
     withoutNY.lineData,
     withoutNY.lineColors,
-    "Confirmed cases"
+    `Confirmed cases${perPopString}`
   );
 };
