@@ -258,6 +258,39 @@ const suspiciousCountiesEqual = (covidDateData: CovidDateData): RuleResult => {
   };
 };
 
+const reportedCasesWithOCases = (covidDateData: CovidDateData): RuleResult => {
+  const issues: Issues = [];
+
+  // find missing data points in exisitng timeseries
+  Object.entries(covidDateData.counties).forEach(([id, countyData]) => {
+
+    let hasCase = isState(id)
+    countyData.forEach(c => {
+      if (hasCase) {
+        return;
+      }
+      hasCase = c.Confirmed > 0;
+    });
+    if (!hasCase) {
+      issues.push([
+        `${getCountyName(id)}, ${getStateAbr(id)}`,
+        id
+      ]);
+    }
+    if (id === "29111") {
+      console.log(id, countyData, hasCase, isState(id), issues)
+    }
+  });
+
+  const total = issues.length;
+  return {
+    total,
+    rule: "Counties with 0 cases",
+    headers: ["Name", "FIPS"],
+    issues: issues
+  };
+};
+
 const timeseriesMissingDay = (covidDateData: CovidDateData): RuleResult => {
   const issues: Issues = [];
   let start: Date | null = null;
@@ -428,6 +461,7 @@ export const getDataIssues = (covidDateData: CovidDateData): RuleResult[] => {
     timeseriesMissingDay,
     suspiciousCountiesEqual,
     countyFIPSMissing,
+    reportedCasesWithOCases,
     InvalidFIPS,
     growthOutliers,
   ];
