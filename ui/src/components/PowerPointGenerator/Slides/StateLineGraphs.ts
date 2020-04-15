@@ -42,7 +42,7 @@ export const addStateLineGraphs = (
   perPopulation?: number
   ) => {
     const perPopString = perPopulation ? ` per ${perPopulation.toLocaleString()}` : "";
-    addBlankSlideWithTitle(ppt, `States: Cumlative Cases${perPopString}`);
+    addBlankSlideWithTitle(ppt, `States: Cumulative Cases${perPopString}`);
 
     const allStates = getStateLineData(Object.values(states), perPopulation);
     addLineChartWithLegend(

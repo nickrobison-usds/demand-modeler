@@ -83,7 +83,7 @@ export const addCBSATop25 = (
   perPopulation?: number
 ) => {
   const perPopString = perPopulation ? ` per ${perPopulation.toLocaleString()}` : "";
-  addBlankSlideWithTitle(ppt, `Cumlative Cases${perPopString}: Top 25 CBSA`);
+  addBlankSlideWithTitle(ppt, `Cumulative Cases${perPopString}: Top 25 CBSA`);
   // with NY
   const withNY = getChartData(counties, [], perPopulation);
   addLineChartWithLegend(
