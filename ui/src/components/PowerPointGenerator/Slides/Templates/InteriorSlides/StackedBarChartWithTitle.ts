@@ -11,6 +11,7 @@ export const addStackedBarChartWithTitle = (
   axisTitle: string,
   barColors: string[],
   showLegend: boolean,
+  footer?: string
 ) => {
   const slide = addBlankSlideWithTitle(ppt, title);
 
@@ -42,6 +43,18 @@ export const addStackedBarChartWithTitle = (
     });
   }
 
+  if (footer) {
+    slide.addText(footer, {
+      fontSize: 8,
+      x: 8.45,
+      y: 4.73,
+      w: 1.44,
+      h: 0.37,
+      dataLabelFontFace: styles.BODY_FONT_FACE,
+      align: "left"
+    });
+  }
+
   slide.addChart(ppt.ChartType.bar, barData, {
     ...lineChartConfig("Confirmed cases per 100,000"),
     barGrouping: "stacked",
@@ -66,8 +79,12 @@ export const addMultiStackedBarChartWithTitle = (
   axisTitle: string,
   barColors: string[],
   showLegend: boolean,
-  subtitle?: string[]
+  options: {
+    subtitle?: string[],
+    footer?: string,
+  }
 ) => {
+  const {subtitle, footer} = options;
   if (barData.length === 1) {
     return addStackedBarChartWithTitle(
       ppt,
@@ -75,7 +92,8 @@ export const addMultiStackedBarChartWithTitle = (
       barData[0],
       axisTitle,
       barColors,
-      true
+      true,
+      footer
     );
   }
 

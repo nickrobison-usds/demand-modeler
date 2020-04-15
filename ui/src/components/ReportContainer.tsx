@@ -12,6 +12,8 @@ import {
 import { addCBSATop25 } from "./PowerPointGenerator/Slides/CBSASlides/Top25CBSALineGraph";
 import { addCBSAPopulationOver500k } from "./PowerPointGenerator/Slides/CBSASlides/CBSAPopulationOver500k";
 // import { addTopTenStates } from "./PowerPointGenerator/Slides/topTenStates";
+import { getEnd } from "../utils/timesSeries";
+
 
 export interface ReportContainerProps {
   states: State[];
@@ -21,9 +23,8 @@ export interface ReportContainerProps {
 
 type Region = County | State;
 
-const addZerosForMissingDataPoints = (regions: {[FIPS: string]: Region[]}) => {
+const addZerosForMissingDataPoints = (regions: {[FIPS: string]: Region[]}, end: Date) => {
   const start = new Date("03/11/2020");
-  const end = new Date("04/14/2020");
   const regionsWithZeros: {[FIPS: string]: Region[]} = {};
   const appendRegion = (fips: string, r: Region) => {
     if(regionsWithZeros[fips]) {
@@ -52,6 +53,7 @@ const addZerosForMissingDataPoints = (regions: {[FIPS: string]: Region[]}) => {
 export const ReportContainer: React.FC<ReportContainerProps> = props => {
   const exportPowerPoint = async () => {
     // noinspection JSPotentiallyInvalidConstructorUsage
+    const end = getEnd(props.historicalTimeSeries)
     const ppt = new pptxgen();
     ppt.layout = "LAYOUT_16x9";
     ppt.company = "United States Digital Service";
@@ -59,14 +61,14 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
     addTitleSlide(
       ppt,
       "Case Data by State and Metropolitan Area",
-      `Data as of ${monthDayCommaYear(new Date())}`,
+      `Data as of ${monthDayCommaYear(end)}`,
       `Source of case & mortality data: Conference of State Bank Supervisors and USAFacts.org, as of ${monthDayCommaYear(
-        new Date()
+        end
       )}`,
       `Data sourced from state health departments and news reports; reporting may be incomplete and delayed`
     );
-    const counties = addZerosForMissingDataPoints(props.historicalTimeSeries.counties);
-    const states = addZerosForMissingDataPoints(props.historicalTimeSeries.states);
+    const counties = addZerosForMissingDataPoints(props.historicalTimeSeries.counties, end);
+    const states = addZerosForMissingDataPoints(props.historicalTimeSeries.states, end);
 
     // addTopTenStates(ppt, ["36000", "44000"], states)
 
@@ -82,7 +84,7 @@ export const ReportContainer: React.FC<ReportContainerProps> = props => {
     console.debug("Writing PPTX");
     const done = await ppt.writeFile(
       `${yearMonthDayDot(
-        new Date()
+        end
       )} State line graphs and metropolitan areas.pptx`
     );
     console.debug("Finished exporting: ", done);

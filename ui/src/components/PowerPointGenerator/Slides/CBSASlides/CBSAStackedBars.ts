@@ -177,6 +177,7 @@ const getCountyData = (
     // The first day is only used to calculate diffs. Remove it.
     data.labels.shift();
     data.values.shift();
+
     acc.push(data);
     return acc;
   }, [] as ChartData[]);
@@ -191,6 +192,9 @@ const addCountySlide = (
   cbsaId?: string | string[],
   daily = false
 ) => {
+  const options: any = {
+    subtitle: typeof metroArea === "object" ? metroArea : undefined
+  }
   const countyData = countyFips.map((fips, i) => {
     if (!cbsaId || typeof cbsaId === "string") {
       return getCountyData(counties, fips, stat, cbsaId, daily)
@@ -219,6 +223,18 @@ const addCountySlide = (
       ? " in " + metroArea + " " + firstCounties.join(", ")
       : ""
   }`;
+
+  // HACK: exception for king county
+  if(countyFips[0].find(id => id=== "53033") && stat === "confirmed") {
+    options.footer ="* King, WA reports case numbers 1 day behind"
+    countyData.forEach(c => {
+      c.forEach(d => {
+        d.labels.splice(-1, 1);
+        d.values.splice(-1, 1);
+      })
+    })
+  }
+
   addMultiStackedBarChartWithTitle(
     ppt,
     title,
@@ -226,7 +242,7 @@ const addCountySlide = (
     `Confirmed ${stat === "confirmed" ? "cases" : "deaths"}`.toUpperCase(),
     barColors,
     countyFips.length > 1,
-    typeof metroArea === "object" ? metroArea : undefined
+    options
   );
 };
 

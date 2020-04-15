@@ -1,5 +1,6 @@
 import { CovidDateData, State, County } from "../../app/AppStore";
 import {getStateAbr} from "../fips";
+
 // Returns an array with a single element per unique state
 export const getStates = (timeseries: CovidDateData): State[] => {
   const stateMap: { [ID: string]: State } = {};
@@ -39,3 +40,17 @@ export const getCountyDataForState = (
 ): County[] => {
   return getCountyData(timeSeries).filter(c => getStateAbr(c.ID) === getStateAbr(stateId));
 };
+
+export const getEnd = (timeSeries: CovidDateData): Date => {
+  let end: Date | undefined;
+  getCountyData(timeSeries).forEach(c => {
+    if (!end) {
+      end = c.Reported;
+      return;
+    }
+    if(c.Reported.getTime() > end.getTime()) {
+      end = c.Reported;
+    }
+  });
+  return end || new Date();
+}
