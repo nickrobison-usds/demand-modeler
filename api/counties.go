@@ -10,7 +10,7 @@ import (
 )
 
 func getTopCounties(w http.ResponseWriter, r *http.Request) {
-	log.Debug().Msg("Loading top counties")
+	log.Debug().Msg("getting top counties")
 	ctx := r.Context()
 	backend := ctx.Value(BackendKey).(DataBackend)
 

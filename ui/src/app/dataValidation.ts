@@ -5,7 +5,7 @@ import { isSameDay, shortDate } from "../utils/DateUtils";
 
 
 const casesMustIncrease = (covidDateData: CovidDateData): RuleResult => {
-  const min = 50;
+  const min = 100;
   const issues: Issues = [];
   // Counties
   const counties = Object.entries(covidDateData.counties);
@@ -21,7 +21,7 @@ const casesMustIncrease = (covidDateData: CovidDateData): RuleResult => {
       ) {
         const countyName = getCountyName(fips);
         issues.push([
-          today.Reported,
+          tomorrow.Reported,
           `${today.Confirmed}`,
           `${tomorrow.Confirmed}`,
           `${countyName}`,

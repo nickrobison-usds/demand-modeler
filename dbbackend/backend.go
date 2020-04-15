@@ -30,7 +30,7 @@ func NewBackend(ctx context.Context, url string) (*DBBackend, error) {
 
 //GetTopCounties fetches the counties with the highest number of confirmed cases
 func (d *DBBackend) GetTopCounties(ctx context.Context, start *time.Time) ([]cmd.CountyCases, error) {
-	log.Debug().Msg("Loading top counties")
+	log.Debug().Msg("getting top counties")
 	var cases []cmd.CountyCases = []cmd.CountyCases{}
 	conn, err := d.pool.Acquire(ctx)
 	if err != nil {
@@ -93,7 +93,7 @@ func queryCountyCases(ctx context.Context, conn *pgxpool.Conn, sql string, args 
 		return cases, err
 	}
 
-	log.Debug().Msg("Case counties are loaded")
+	log.Debug().Msg("Case counties are queried")
 	for rows.Next() {
 		var id string
 		var updated time.Time
