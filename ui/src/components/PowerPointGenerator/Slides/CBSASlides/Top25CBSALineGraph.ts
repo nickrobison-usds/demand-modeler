@@ -3,7 +3,7 @@ import { County } from "../../../../app/AppStore";
 import { addLineChartWithLegend } from "../Templates/InteriorSlides/LineChartWithTitle";
 import { cbsaCodes } from "./cbsaCodes";
 import { CSBAOrderedByStat } from "./Utils";
-import {getPopulation} from "../../../../utils/fips";
+import { getPopulation } from "../../../../utils/fips";
 import { addBlankSlideWithTitle } from "../Templates/InteriorSlides/BlankWithTitle";
 
 export const colors = [
@@ -56,12 +56,14 @@ const getChartData = (
       let population = 0;
       fips.forEach((fip) => {
         if (counties[fip] !== undefined && counties[fip][index] !== undefined) {
-            confirmed += counties[fip][index].Confirmed;
-            population += getPopulation(fip)
+          confirmed += counties[fip][index].Confirmed;
+          population += getPopulation(fip);
         }
       });
       state.labels.push(c.Reported.getMonth() + 1 + "/" + c.Reported.getDate());
-      const value = perPopulation ? confirmed / (population / perPopulation) : confirmed;
+      const value = perPopulation
+        ? confirmed / (population / perPopulation)
+        : confirmed;
 
       state.values.push(value);
     });
@@ -82,7 +84,9 @@ export const addCBSATop25 = (
   counties: { [fip: string]: County[] },
   perPopulation?: number
 ) => {
-  const perPopString = perPopulation ? ` per ${perPopulation.toLocaleString()}` : "";
+  const perPopString = perPopulation
+    ? ` per ${perPopulation.toLocaleString()}`
+    : "";
   addBlankSlideWithTitle(ppt, `Cumulative Cases${perPopString}: Top 25 CBSA`);
   // with NY
   const withNY = getChartData(counties, [], perPopulation);
