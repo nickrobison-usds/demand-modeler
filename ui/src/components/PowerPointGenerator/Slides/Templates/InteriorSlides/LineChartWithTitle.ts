@@ -77,7 +77,13 @@ export const addLineChartWithLegend = (
   });
   const offsetX = legendXOffset(labelLength, twoColumns);
 
-  lines.forEach((el, i) => {
+  // order legend by last data point
+  const lastDataPoint = (d: any) => d.values[d.values.length - 1];
+  const sortedDescLines = lines.sort(
+    (a, b) => lastDataPoint(b) - lastDataPoint(a)
+  );
+
+  sortedDescLines.forEach((el, i) => {
     const color = lineColors[el.name];
     chartColors.push(color);
 
