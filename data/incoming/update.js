@@ -3,8 +3,8 @@ const path = require("path");
 const parse = require("csv-parse/lib/sync");
 const writer = require("csv-writer").createObjectCsvWriter;
 
-const prevDate = "2020-04-22";
-const currentDate = "2020-04-23";
+const prevDate = "2020-04-23";
+const currentDate = "2020-04-24";
 const prevDayCasesFile = path.join(
   __dirname,
   "..",
@@ -156,17 +156,18 @@ allCounties.forEach((c) => {
   }
 });
 Object.entries(stateNewCases).forEach((state) => {
-  if (state[0] === "District of Columbia") return;
+  // if (state[0] === "District of Columbia") return;
 
   if (!state[1]) {
+    console.log(state[0]);
     dataIssues.missingStates.total += 1;
     dataIssues.missingStates.details.push(`No new cases - ${state[0]}`)
   } 
 });
 console.log("Data issues");
-console.log(`confirmed inconsistency total: ${dataIssues.confirmed.total}`);
+console.log(`cases inconsistency total: ${dataIssues.confirmed.total}`);
 console.log(`death inconsistency total: ${dataIssues.death.total}`);
-console.log(`newConfirmed inconsistency total: ${dataIssues.newConfirmed.total}`);
+console.log(`newCases inconsistency total: ${dataIssues.newConfirmed.total}`);
 console.log(`addedCounties total: ${dataIssues.addedCounties.total}`);
 console.log(`missingStates total: ${dataIssues.missingStates.total}`);
 fs.writeFileSync(
