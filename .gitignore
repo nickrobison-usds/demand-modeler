@@ -7,3 +7,4 @@ ui/node_modules
 ui/build
 .env.local
 .DS_Store
+**/scratch

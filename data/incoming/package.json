@@ -10,6 +10,10 @@
   "license": "ISC",
   "dependencies": {
     "csv-parse": "^4.8.8",
-    "csv-writer": "^1.6.0"
+    "csv-writer": "^1.6.0",
+    "moment": "^2.24.0",
+    "pg": "^8.0.3",
+    "stream-transform": "^2.0.1",
+    "uuid": "^8.0.0"
   }
 }
