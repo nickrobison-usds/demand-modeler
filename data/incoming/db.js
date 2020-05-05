@@ -178,11 +178,15 @@ async function getDemandModelerData(source, date){
             AND county_case_data.data_date = $2
             AND county.latitude != '1000'
             AND county.longitude != '1000'
-            AND population_size > 0;
+            AND population_size > 0
+        ORDER BY state_fp ASC, county_case_data.current_cases DESC
         `, values:[source, date]})).rows;
 }
 // County Name,State Name,Confirmed,New,Death,Fatality Rate,Latitude,Longitude,Last Update,STATEFP,COUNTYFP,Population Estimate 2018 (Ths.),Infection Rate
-
+async function getMostRecentDate(){
+    const result =  await client.query("SELECT data_date from county_cases ORDER BY data_date DESC limit 1");
+    return result.rows[0]['data_date']
+}
 module.exports = {
     addCases
     , addDeaths
@@ -194,4 +198,5 @@ module.exports = {
     , getEmptyAreas
     , badCoordinates
     , getDemandModelerData
+    ,getMostRecentDate
 }

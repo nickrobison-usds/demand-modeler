@@ -63,7 +63,7 @@ AS SELECT
     , current_dead
     , current_cases
     , (current_dead - (LAG (current_dead, 1, 0) OVER (PARTITION BY county_deaths.source, county_deaths.geo_id ORDER BY county_deaths.data_date ASC))) as new_deaths
-    , CASE WHEN current_cases > 0 THEN (current_dead::decimal / current_cases) ELSE  0.0 END as fatality_rate
+    , CASE WHEN current_cases > 0 THEN (current_dead::decimal / current_cases)*100 ELSE  0.0 END as fatality_rate
 FROM county_deaths
 LEFT JOIN county ON county.geo_id = county_deaths.geo_id
 LEFT JOIN county_cases 
