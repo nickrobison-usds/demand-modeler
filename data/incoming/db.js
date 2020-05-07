@@ -2,6 +2,7 @@
 
 const { Client } = require('pg');
 const uuidv4 = require('uuid').v4;
+const moment = require('moment');
 
 const connectionString = process.env.DB_STRING || "postgres://kelvinluu-usds@localhost:5431/c19";
 const client = new Client({connectionString});
@@ -9,6 +10,7 @@ const client = new Client({connectionString});
 const impossibleCoord = 1000;
 const issues = [];
 const clientConnected = client.connect();
+const today = moment().format("YYYY-MM-DD");
 /**
  * 
  * @param {*} fips 
@@ -39,7 +41,9 @@ async function addCases(fips, dataDate, source, count, updatedAt, lat, long) {
         });
     } catch (err) {
         if (err.message.includes("unique_case_data_point")){
-            issues.push(`Duplicate Cases Data: ${source},${dataDate},${fips} - ${count} not updated`)
+            if (dataDate == today){
+                issues.push(`Duplicate Cases Data: ${source},${dataDate},${fips} - ${count} not updated`)
+            }
         } else {
             console.log("county err", err);
         }
@@ -77,7 +81,9 @@ async function addDeaths(fips, dataDate, source, count, updatedAt, lat, long) {
         });
     } catch (err) {
         if (err.message.includes("unique_death_data_point")){
+            if (dataDate == today){
             issues.push(`Duplicate deaths Data: ${source},${dataDate},${fips} - ${count} not updated`)
+            }
         } else {
             console.log("deaths err", err);
         }
@@ -169,7 +175,8 @@ async function getDemandModelerData(source, date){
         , population_size
         , infection_rate
         from county_case_data
-        LEFT JOIN county ON county.geo_id = county_case_data.geo_id
+        LEFT JOIN county ON 
+            county.geo_id = county_case_data.geo_id
         LEFT JOIN county_death_data ON
             county_death_data.geo_id = county_case_data.geo_id
             AND county_death_data.source = county_case_data.source
@@ -179,7 +186,10 @@ async function getDemandModelerData(source, date){
             AND county.latitude != '1000'
             AND county.longitude != '1000'
             AND population_size > 0
-        ORDER BY state_fp ASC, county_case_data.current_cases DESC
+        ORDER BY 
+            state_fp ASC,
+            county_case_data.current_cases DESC,
+            county_fp ASC
         `, values:[source, date]})).rows;
 }
 // County Name,State Name,Confirmed,New,Death,Fatality Rate,Latitude,Longitude,Last Update,STATEFP,COUNTYFP,Population Estimate 2018 (Ths.),Infection Rate

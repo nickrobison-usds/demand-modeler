@@ -6,22 +6,19 @@ const { clientConnected, closeConnection, getDemandModelerData, getMostRecentDat
 
 clientConnected.then(async () => {
     let date = moment(await getMostRecentDate()).format("YYYY-MM-DD");
-    for (var i = 0; i < 14; i++) {
-        // if (moment(date).isAfter("2020-04-23")){
+    for (var i = 0; i < 15; i++) {
         await writeDataForDate("usafacts", date);
-        // } else {
-        //     await writeDataForDate('csbs', date);
-        // }
         date = moment(date).subtract(1, "days").format("YYYY-MM-DD");
     }
-
     closeConnection();
 }).catch(err => {
     console.log(err);
 });
 
+let i = 0;
 async function writeDataForDate(source, date) {
     const results = (await getDemandModelerData(source, date)).map(r => {
+        if (++i % 1000 === 0) { console.log(`${i} cases processed`)}
         let county_name = r['county_name'];
         if (county_name === 'New York County') {
             county_name = 'New York';
@@ -56,5 +53,9 @@ async function writeDataForDate(source, date) {
             { id: "infection_rate", title: "Infection Rate" },
         ],
     });
+    if (!results.length){
+        console.log(`No results for date ${date}`);
+        return;
+    }
     await writeCleaned.writeRecords(results);
 }

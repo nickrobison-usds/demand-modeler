@@ -8,3 +8,4 @@ ui/build
 .env.local
 .DS_Store
 **/scratch_data
+**/.env.local

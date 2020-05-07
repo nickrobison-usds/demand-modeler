@@ -11,11 +11,14 @@ const { addCases
     , updatePopulation
     , clientConnected
     , closeConnection} = require('./db');
-const pFile = path.join(__dirname, 'scratch_data','cases_by_county_with_overrides.csv');
+const pFile = path.join(__dirname, 'scratch_data','cases_by_county_today.csv');
 const counties = {};
+let i = 0;
 const pAdapterStream = new stream.Writable({
     objectMode: true,
     async write(record, _encoding, callback) {
+        i++;
+        if (i % 1000 == 0){ console.log(i)}
         if (record['unit'] !== 'persons'){ return callback();}
 
         await clientConnected;

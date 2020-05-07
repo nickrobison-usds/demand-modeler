@@ -7,7 +7,7 @@ const { updatePopulation
     , updateLatLong
     , getEmptyAreas
     , badCoordinates } = require('./db')
-const countyFile = path.join(__dirname, '../covid19_county_2020-04-08.csv');
+const countyFile = path.join(__dirname, 'scratch_data', 'covid19_county_fips..csv');
 const countyData = fs.readFileSync(countyFile)
 
 Promise.all(parse(countyData, {
