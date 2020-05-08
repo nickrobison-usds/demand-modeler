@@ -11,7 +11,7 @@ const { addCases
     , updatePopulation
     , clientConnected
     , closeConnection} = require('./db');
-const pFile = path.join(__dirname, 'scratch_data','cases_by_county_today.csv');
+const pFile = path.join(__dirname, 'scratch_data','cases_by_county_with_overrides.csv');
 const counties = {};
 let i = 0;
 const pAdapterStream = new stream.Writable({
