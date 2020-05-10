@@ -195,9 +195,6 @@ async function getDemandModelerData(date) {
             AND county_death_data.data_date = county_case_data.data_date
         WHERE
             county_case_data.data_date = $1
-            AND county.latitude != '1000'
-            AND county.longitude != '1000'
-            AND population_size > 0
         ORDER BY 
             state_fp ASC,
             county_case_data.current_cases DESC,
