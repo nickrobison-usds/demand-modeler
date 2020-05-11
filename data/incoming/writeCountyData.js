@@ -1,4 +1,6 @@
+const fs = require('fs');
 const path = require('path');
+
 const moment = require('moment');
 const writer = require("csv-writer").createObjectCsvWriter;
 
@@ -10,7 +12,14 @@ clientConnected.then(async () => {
         await writeDataForDate(date);
         date = moment(date).subtract(1, "days").format("YYYY-MM-DD");
     }
-    closeConnection();
+    await closeConnection();
+
+    let fileName;
+    do {
+        fileName = path.join(__dirname, '..', `covid19_county_${date}.csv`)
+        fs.unlinkSync(fileName)
+        date = moment(date).subtract(1, "days").format("YYYY-MM-DD");
+    } while (fs.existsSync(fileName));
 }).catch(err => {
     console.log(err);
 });
