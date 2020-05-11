@@ -44,11 +44,12 @@ const pAdapterStream = new stream.Writable({
                 , fips.slice(2)
                 , +record['Total_Total_Pop'] / 1000
             );
-            counties[fips] = false; // pop could be set by anyone....
-        } else if (counties[fips] === false && source === 'csbs'){
-            await updatePopulation(fips, +record['Total_Total_Pop'] / 1000);
-            counties[fips] = true;
-        }
+            // counties[fips] = false; // pop could be set by anyone....
+        } 
+        // else if (counties[fips] === false && source === 'csbs'){
+        //     await updatePopulation(fips, +record['Total_Total_Pop'] / 1000);
+        //     counties[fips] = true;
+        // }
         switch (record['type'].toLowerCase()) {
             case "cases": await addCases(fips, date, source, record['value'], date); break;
             case "deaths": await addDeaths(fips, date, source, record['value'], date); break;

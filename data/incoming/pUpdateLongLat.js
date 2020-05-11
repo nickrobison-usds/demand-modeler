@@ -16,7 +16,7 @@ Promise.all(parse(countyData, {
 }).map(async (data) => {
     await clientConnected;
     const fips = `${data['STATEFP']}${data['COUNTYFP']}`;
-    await updatePopulation(fips, data['Population Estimate 2018 (Ths.)']);
+    // await updatePopulation(fips, data['Population Estimate 2018 (Ths.)']);
     await updateLatLong(fips, data['Latitude'], data['Longitude']);
 })).finally(async () => {
     console.log(await getEmptyAreas());
