@@ -15,7 +15,7 @@
     "@types/react-modal": "^3.10.5",
     "@types/recharts": "^1.8.7",
     "@types/urijs": "^1.19.7",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "d3": "^5.15.0",
     "dotenv": "^8.2.0",
     "leaflet": "^1.6.0",
