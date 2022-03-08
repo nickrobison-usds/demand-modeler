@@ -27,7 +27,7 @@
     "react-scripts": "3.4.0",
     "recharts": "^1.8.5",
     "typescript": "~3.7.2",
-    "urijs": "^1.19.2",
+    "urijs": "^1.19.10",
     "uswds": "^2.5.1"
   },
   "scripts": {
